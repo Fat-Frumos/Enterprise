@@ -1,4 +1,4 @@
-package com.enterprise.dao.jdbc;
+package com.enterprise.car.dao.jdbc;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -7,7 +7,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
-public class PropsHolder implements AutoCloseable {
+public class PropsReader implements AutoCloseable {
 
     private static final String DB_URL_PROPERTY_NAME = "db.url";
     private static final String DB_NAME_PROPERTY_NAME = "db.username";
@@ -16,7 +16,7 @@ public class PropsHolder implements AutoCloseable {
 
     private Properties properties;
 
-    public PropsHolder() {
+    public PropsReader() {
         loadProperties();
     }
 

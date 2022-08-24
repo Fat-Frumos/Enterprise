@@ -6,6 +6,7 @@
     <groupId>com.enterprise</groupId>
     <artifactId>rent-a-car</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>war</packaging>
     <name>Car rental</name>
     <description>OnlineUA Final Task Description UA</description>
 
@@ -13,25 +14,30 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jetty.version>11.0.11</jetty.version>
         <slf4j.version>1.7.36</slf4j.version>
         <mockito.version>4.7.0</mockito.version>
         <exec.mainClass>com.enterprise.Starter</exec.mainClass>
         <heroku.appName>rent-a-car-enterprise</heroku.appName>
     </properties>
-
+    <distributionManagement>
+        <repository>
+            <id>internal.repo</id>
+            <name>Internal repo</name>
+            <url>file:///cars/rental/</url>
+        </repository>
+    </distributionManagement>
     <dependencies>
-
         <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-server</artifactId>
-            <version>${jetty.version}</version>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-inline</artifactId>
+            <version>${mockito.version}</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-servlet</artifactId>
-            <version>${jetty.version}</version>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-dbcp2</artifactId>
+            <version>2.9.0</version>
         </dependency>
 
         <dependency>
@@ -73,59 +79,78 @@
             <version>${mockito.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>4.0.1</version>
+            <scope>provided</scope>
+        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>javax</groupId>-->
+<!--            <artifactId>javaee-web-api</artifactId>-->
+<!--            <version>6.0</version>-->
+<!--            <scope>provided</scope>-->
+<!--        </dependency>-->
     </dependencies>
 
     <build>
-        <plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.2</version>
+                    <configuration>
+                        <verbose>true</verbose>
+                        <source>${maven.compiler.source}</source>
+                        <target>${maven.compiler.target}</target>
+                        <showWarnings>true</showWarnings>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.tomcat.maven</groupId>
+                    <artifactId>tomcat7-maven-plugin</artifactId>
+                    <version>2.2</version>
+                    <configuration>
+                        <server>TomcatServer</server>
+                        <url>http://localhost:8080/car/rental/html</url>
+                        <contextReloadable>true</contextReloadable>
+                        <path>/</path>
+                        <mode>war</mode>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <version>3.3.1</version>
+                    <configuration>
+                        <attachClasses>true</attachClasses>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>com.heroku.sdk</groupId>
+                    <artifactId>heroku-maven-plugin</artifactId>
+                    <version>3.0.4</version>
+                    <configuration>
+                        <appName>${heroku.appName}</appName>
+                        <jdkVersion>${maven.compiler.source}</jdkVersion>
+                    </configuration>
+                </plugin>
 
-            <plugin>
-                <groupId>com.heroku.sdk</groupId>
-                <artifactId>heroku-maven-plugin</artifactId>
-                <version>3.0.4</version>
-                <configuration>
-                    <appName>${heroku.appName}</appName>
-                    <jdkVersion>${maven.compiler.source}</jdkVersion>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>2.8</version>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>2.6</version>
-                <configuration>
-                    <failOnMissingWebXml>false</failOnMissingWebXml>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.target}</target>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.flywaydb</groupId>
-                <artifactId>flyway-maven-plugin</artifactId>
-                <version>8.5.0</version>
-                <configuration>
-                    <url>jdbc:postgresql://localhost:5432/postgres</url>
-                    <user>admin</user>
-                    <password>root</password>
-                    <schemas>
-                        <schema>yaos</schema>
-                    </schemas>
-                </configuration>
-            </plugin>
-
-        </plugins>
+                <plugin>
+                    <groupId>org.flywaydb</groupId>
+                    <artifactId>flyway-maven-plugin</artifactId>
+                    <version>8.5.0</version>
+                    <configuration>
+                        <url>jdbc:postgresql://localhost:5432/postgres</url>
+                        <user>admin</user>
+                        <password>admin</password>
+                        <schemas>
+                            <schema>yaos</schema>
+                        </schemas>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
 </project>

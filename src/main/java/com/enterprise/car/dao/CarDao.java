@@ -1,11 +1,13 @@
-package com.enterprise.dao;
+package com.enterprise.car.dao;
 
-import com.enterprise.entity.Car;
+import com.enterprise.car.dao.entity.Car;
 
 import java.util.List;
 
 public interface CarDao {
     List<Car> findAll();
+
+    List<Car> findById(Long id);
 
     boolean save(Car car);
 

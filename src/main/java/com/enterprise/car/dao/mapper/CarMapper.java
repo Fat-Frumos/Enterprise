@@ -1,10 +1,9 @@
-package com.enterprise.dao.mapper;
+package com.enterprise.car.dao.mapper;
 
-import com.enterprise.entity.Car;
+import com.enterprise.car.dao.entity.Car;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 
 public class CarMapper {
     public Car carRow(ResultSet resultSet) throws SQLException {
@@ -12,9 +11,9 @@ public class CarMapper {
         String name = resultSet.getString("name");
         String brand = resultSet.getString("brand");
         String model = resultSet.getString("model");
-        int price = resultSet.getInt("price");
-        Timestamp date = resultSet.getTimestamp("date");
-        return new Car(id, name, brand, model, price, date.toLocalDateTime());
+        Double price = resultSet.getDouble("price");
+//        Timestamp date = resultSet.getTimestamp("date"); // date.toLocalDateTime()
+        return new Car(id, name, brand, model, price);
     }
 }
 
