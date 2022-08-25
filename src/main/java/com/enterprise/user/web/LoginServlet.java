@@ -1,5 +1,6 @@
 package com.enterprise.user.web;
 
+import com.enterprise.car.entity.Car;
 import com.enterprise.car.service.CarService;
 import com.enterprise.user.service.LoginService;
 
@@ -9,16 +10,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /*
- * Browser sends Http Request to Web Server
+ * Client sends Http Request to Web Server
  *
- * Code in Web Server => Input:HttpRequest, Output: HttpResponse
- * JEE with Servlets
+ * Code in Web Server => Input:HttpRequest, Output: HttpResponse JEE with Servlets
  *
  * Web Server responds with Http Response
  */
-
 //Java Platform, Enterprise Edition (Java EE) JEE6
 
 //Servlet is a Java programming language class
@@ -34,9 +35,9 @@ import java.io.IOException;
 @WebServlet(urlPatterns = "/login")
 public class LoginServlet extends HttpServlet {
 
-    private final LoginService loginService = new LoginService();
-
+    private static final long serialVersionUID = 1L;
     private final CarService carService = new CarService();
+    private final LoginService loginService = new LoginService();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -52,13 +53,12 @@ public class LoginServlet extends HttpServlet {
         String password = request.getParameter("password");
 
         boolean isValidUser = loginService.validateUser(name, password);
-
         if (isValidUser) {
-            request.setAttribute("name", name);
-            request.setAttribute("todos", carService.retrieveCars());
+            request.setAttribute("cars", carService.retrieveCars());
             request.getRequestDispatcher("/WEB-INF/views/main.jsp").forward(request, response);
+
         } else {
-            request.setAttribute("errorMessage", "Invalid Credentials!!");
+            request.setAttribute("errorMessage", "Invalid Credentials");
             request.getRequestDispatcher("/WEB-INF/views/login.jsp").forward(request, response);
         }
     }

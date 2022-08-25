@@ -1,6 +1,6 @@
 package com.enterprise.car.dao;
 
-import com.enterprise.car.dao.entity.Car;
+import com.enterprise.car.entity.Car;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.enterprise.car.dao.entity;
+package com.enterprise.car.entity;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -9,19 +9,22 @@ public class Car {
 
     private Long carId;
     private String name;
-    private final String brand;
+    private String brand;
     private String model;
+    private int year;
     private Double price;
+    private String path;
 
-    public Car(Long carId, String name, String brand, String model, Double price) {
-        this.carId = carId;
-        this.name = name;
-        this.brand = brand;
-        this.model = model;
-        this.price = price;
-    }
-
-    public Car(String brand) {
-        this.brand = brand;
+    @Override
+    public String toString() {
+        return "Car{" +
+                "carId=" + carId +
+                ", name='" + name + '\'' +
+                ", brand='" + brand + '\'' +
+                ", model='" + model + '\'' +
+                ", year='" + year + '\'' +
+                ", price=" + price +
+                ", path='" + path + '\'' +
+                '}';
     }
 }

@@ -1,8 +1,8 @@
 package com.enterprise.car.dao.jdbc;
 
-import com.enterprise.car.dao.mapper.CarMapper;
 import com.enterprise.car.dao.CarDao;
-import com.enterprise.car.dao.entity.Car;
+import com.enterprise.car.dao.mapper.CarMapper;
+import com.enterprise.car.entity.Car;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,15 +14,16 @@ import java.util.List;
 public class JdbcCarDao extends PropsReader implements CarDao {
 
     private static final CarMapper ROW_MAPPER = new CarMapper();
-    private static final String FIND_ALL_SQL = "SELECT card_id, name, brand, price, date FROM cars;";
+    private static final String FIND_ALL_SQL = "SELECT car_id, name, brand, price, date FROM car;";
 
-    private static final String FIND_ASC_SQL = "select price from cars order by CAST(price AS Double) asc";
+    private static final String FIND_ASC_SQL = "SELECT price FROM car order by CAST(price AS Double) asc";
 
-    private static final String FIND_DESC_SQL = "select price from cars order by CAST(price AS Double) desc";
+    private static final String FIND_DESC_SQL = "SELECT price FROM car order by CAST(price AS Double) desc";
 
-    private static final String FILTER_BY_BRAND_DESC_SQL = "SELECT card_id, name, brand, price, date FROM cars WHERE brand = 'brand' ORDER BY price DESC";
+    private static final String FILTER_BY_BRAND_DESC_SQL = "SELECT car_id, name, brand, price, date FROM car WHERE brand = 'brand' ORDER BY price DESC";
 
-    private static final String FILTER_BY_ID_SQL = "SELECT card_id, name, brand, price, date FROM cars WHERE card_id = ?";
+    private static final String FILTER_BY_ID_SQL = "SELECT car_id, name, brand, price, date FROM car WHERE car_id = ?";
+
     @Override
     public List<Car> findAll() {
         return select(FIND_ALL_SQL);
@@ -30,7 +31,7 @@ public class JdbcCarDao extends PropsReader implements CarDao {
 
     @Override
     public List<Car> findById(Long id) {
-        return select(FIND_ALL_SQL);
+        return select(FILTER_BY_ID_SQL);
     }
 
     @Override

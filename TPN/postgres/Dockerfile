@@ -1,0 +1,5 @@
+FROM postgres:9.4  
+
+ENV POSTGRES_USER admin
+ENV POSTGRES_PASSWORD root
+ENV POSTGRES_DB store
