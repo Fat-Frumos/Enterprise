@@ -9,6 +9,8 @@ public interface CarDao {
 
     List<Car> findById(Long id);
 
+    List<Car> findByBrand(String brand);
+
     boolean save(Car car);
 
     Car edit(Car car);

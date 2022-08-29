@@ -8,6 +8,12 @@ public class User {
     private Token token;
     private LocalDateTime deactivateDate;
 
+    private boolean active = true;
+
+    public boolean isActive() {
+        return active;
+    }
+
     public String getName() {
         return name;
     }

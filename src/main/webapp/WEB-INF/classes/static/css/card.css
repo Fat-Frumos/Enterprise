@@ -1,0 +1,51 @@
+.fw-900 {
+    font-weight: 900;
+}
+
+.card {
+    position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    border-radius: 0.25rem;
+}
+
+.card-image {
+    width: 100%;
+    border-radius: calc(0.25rem - 1px);
+}
+
+.cars {
+
+    /*position: relative;*/
+
+}
+
+.car:after {
+    content: "";
+    flex: auto;
+}
+
+.car {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-start;
+    margin: 0 auto;
+    width: 60vw;
+    padding: 0;
+}
+
+.col-md-4 {
+    -ms-flex: 0 0 33.333333%;
+    flex: 0 0 33.333333%;
+    max-width: 33.333333%;
+}
+.rounded {
+    border-radius: 0.25rem !important;
+}

@@ -12,8 +12,8 @@ public class CarService {
     private static List<Car> cars = new ArrayList();
 
     static {
-        cars.add(Car.builder().brand("BMW").name("X8").price(22000.0).year(2022).path("https://raw.githubusercontent.com/Fat-Frumos/Cars/master/images/slider-1.jpg").build());
         cars.add(Car.builder().brand("Mustang").name("Camaro").price(20000.0).year(2020).path("https://raw.githubusercontent.com/Fat-Frumos/Cars/master/images/slider-2.jpg").build());
+        cars.add(Car.builder().brand("BMW").name("X8").price(22000.0).year(2022).path("https://raw.githubusercontent.com/Fat-Frumos/Cars/master/images/slider-1.jpg").build());
         cars.add(Car.builder().brand("Porsche").name("Cayenne").model("Turbo GT").price(25000.0).year(2022).path("https://raw.githubusercontent.com/Fat-Frumos/Cars/master/images/slider-3.jpg").build());
     }
 
@@ -26,6 +26,16 @@ public class CarService {
     }
 
     public List<Car> getAll() {
-        return jdbcCarDao.findAll();
+        cars.clear();
+        List<Car> all = jdbcCarDao.findAll();
+        for (Car car : all) {
+            cars.add(car);
+        }
+
+        return cars;
+    }
+
+    public List<Car> getByBrand(String brand) {
+        return jdbcCarDao.findByBrand(brand);
     }
 }
