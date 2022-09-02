@@ -6,33 +6,34 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-    <title>PopUp</title>
-    <!doctype html>
-    <html lang="en">
-    <head>
-        <style>
-            input {
-                margin-bottom: 5px;
-            }
+<title>PopUp</title>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Car</title>
+    <style>
+        input {
+            margin-bottom: 5px;
+        }
 
-            .wrap {
-                width: 20vw;
-            }
+        .wrap {
+            width: 20vw;
+        }
 
-            .popup {
-                margin: 10px 10px;
-                background: #fff;
-                border-radius: 5px;
-                width: 90%;
-                position: relative;
-                transition: all 5s ease-in-out;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-            }
-        </style>
-    </head>
+        .popup {
+            margin: 10px 10px;
+            background: #fff;
+            border-radius: 5px;
+            width: 90%;
+            position: relative;
+            transition: all 5s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
 <body>
 <div class="modal fade" id="myPopup">
     <div class="modal-dialog wrap">

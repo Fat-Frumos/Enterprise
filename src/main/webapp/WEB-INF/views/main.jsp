@@ -17,8 +17,6 @@
 </style>
 
 <body>
-<jsp:include page="nav.jsp"/>
-<jsp:include page="modal.jsp"/>
 <div class="container">
     <div class="row m-0">
         <div class="col-lg-7 pb-5 pe-lg-5">
@@ -37,6 +35,7 @@
         });
     });
 </script>
+<jsp:include page="modal.jsp"/>
 </body>
 </html>
 

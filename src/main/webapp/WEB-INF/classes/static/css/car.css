@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500&family=Work+Sans:wght@800&display=swap');
 nav {
-    top: 0;
-    left: 20vw;
+    top: 1vw;
+    left: 12vh;
     position: absolute;
 }
 * {

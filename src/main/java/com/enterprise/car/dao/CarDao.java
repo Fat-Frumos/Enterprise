@@ -3,11 +3,12 @@ package com.enterprise.car.dao;
 import com.enterprise.car.entity.Car;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface CarDao {
     List<Car> findAll();
 
-    List<Car> findById(Long id);
+    Optional<Car> findById(Long id);
 
     List<Car> findByBrand(String brand);
 
@@ -15,5 +16,5 @@ public interface CarDao {
 
     Car edit(Car car);
 
-    boolean delete(int id);
+    boolean delete(long id);
 }

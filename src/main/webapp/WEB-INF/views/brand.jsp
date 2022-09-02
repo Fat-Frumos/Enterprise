@@ -7,7 +7,7 @@
   Time: 8:18 PM
   To change this template use File | Settings | File Templates.
 --%>
-<html>
+<!DOCTYPE html>
 <head>
     <title>Brand</title>
 </head>
@@ -44,4 +44,3 @@
     </div>
 </div>
 </body>
-</html>

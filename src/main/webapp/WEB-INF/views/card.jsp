@@ -25,6 +25,7 @@
 <body>
 <div>
     <div class="cars">
+        <jsp:include page="nav.jsp"/>
         <jsp:include page="popup.jsp"/>
         <div class="car" id="ads">
             <c:forEach items="${cars}" var="cars">
@@ -32,7 +33,7 @@
                     <div class="card rounded">
                         <div class="card-image fw-900">
                             <span class="card-detail-badge m-2">${cars.brand} ${cars.name} ${cars.model}</span>
-                            <figure>
+                            <figure onclick="addCar(${cars.id})">
                                 <img class="img-fluid"
                                      src="${cars.path}"
                                      alt="url">
@@ -50,13 +51,24 @@
         </div>
     </div>
 </div>
-
 <script>
     $(document).ready(function () {
         $('#ads').click(function () {
             $('#myPopup').modal('show').text($.param())
         });
     });
+
+    function addCar(id) {
+        let url = '/cars' + '?id=' + id;
+        console.log(url);
+        fetch(url, {
+            method: 'POST',
+        }).then(response => {
+            console.log('Ok:', response);
+        }).catch(err => {
+            console.error(err)
+        })
+    }
 </script>
 </body>
 </html>

@@ -20,8 +20,7 @@
     <div style="background: white" class="row m-0">
         <div class="col-12 px-4">
             <div class="d-flex align-items-end mt-4 mb-2">
-                <p class="h4 m-0"><span class="pe-1">ZAZ</span><span class="pe-1">966</span><span
-                        class="pe-1">B</span></p>
+                <p class="h4 m-0"><span class="pe-1">Bugatti</span><span class="pe-1">Chiron</span>
                 <P class="ps-3 muted">1L</P>
             </div>
             <div class="d-flex justify-content-between mb-2">
@@ -55,7 +54,7 @@
                 <div class="col-12 px-4">
                     <div class="d-flex  mb-4">
                                     <span class="">
-                                        <p class="text-muted">Card number</p>
+                                        <span class="text-muted">Card number</span>
                                         <input class="form-control" type="text" value="4485 6888 2359 1498"
                                                placeholder="1234 5678 9012 3456">
                                     </span>
@@ -66,12 +65,12 @@
                     </div>
                     <div class="d-flex mb-5">
                                     <span class="me-5">
-                                        <p class="text-muted">Cardholder name</p>
+                                        <span class="text-muted">Cardholder name</span>
                                         <input class="form-control" type="text" value="David J.Frias"
                                                placeholder="Name">
                                     </span>
                         <div class="w-100 d-flex flex-column align-items-end">
-                            <p class="text-muted">CVC</p>
+                            <span class="text-muted">CVC</span>
                             <input class="form-control3" type="text" value="630" placeholder="XXX">
                         </div>
                     </div>
@@ -79,14 +78,11 @@
             </div>
             <div class="row m-0">
                 <div class="col-12 mb-4 p-0">
-                    <%--                    <form action="/cars" method="get">--%>
-                    <input type="submit" id="purchase" name="brand" value="Purchase" class="btn btn-primary"><span
-                        class="fas fa-arrow-right ps-2"></span></input>
-                    <%--                    </form>--%>
+                    <input type="submit" id="purchase" name="brand" value="Purchase" class="btn btn-primary">
+                    <span class="fas fa-arrow-right ps-2"></span>
                 </div>
             </div>
         </div>
     </div>
 </div>
 </body>
-</html>

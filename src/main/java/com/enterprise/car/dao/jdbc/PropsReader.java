@@ -9,6 +9,10 @@ import java.util.Properties;
 
 public class PropsReader implements AutoCloseable {
 
+    public static synchronized PropsReader getInstance() {
+        return new PropsReader();
+    }
+
     private static final String DB_URL_PROPERTY_NAME = "db.url";
     private static final String DB_NAME_PROPERTY_NAME = "db.username";
     private static final String DB_PASSWORD_PROPERTY_NAME = "db.password";
@@ -42,7 +46,7 @@ public class PropsReader implements AutoCloseable {
         return properties.getProperty(DB_PASSWORD_PROPERTY_NAME);
     }
 
-    public Connection getConnection() throws SQLException {
+    protected Connection getConnection() throws SQLException {
         return DriverManager.getConnection(getDBUrl(), getDBName(), getDBPassword());
     }
 

@@ -13,7 +13,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>Main</title>
+    <title>Enterprise</title>
     <style>
         <%@include file="../classes/static/css/carousel.css"%>
         <%@include file="../classes/static/css/style.css"%>
@@ -42,14 +42,14 @@
         <div class="carousel-inner">
             <div class="carousel-item active">
                 <img class="d-block w-100"
-                     src="https://raw.githubusercontent.com/Fat-Frumos/Cars/master/images/slider-45.jpg"
-                     alt="Third slide">
-                <div class="slide_style_bottom">
+                     src="https://raw.githubusercontent.com/Fat-Frumos/Cars/master/images/slider-47.jpg"
+                     alt=" ">
+                <div class="slide_style_left text-center">
                     <div class="row">
-                        <div class="col-12 slide-text text-center">
-                            <h2 class="animate__animated animate__zoomIn mb-4 slide-heading-1">Rental Car</h2>
+                        <div class="col-12 slide-text text-left">
+                            <h1 class="animate__animated animate__lightSpeedInLeft">Rental Car</h1>
                             <p class="animate__animated animate__fadeInUp"><small>one touch</small></p>
-                            <a href="/login" target="_blank" class="btn btn-danger animate__animated animate__zoomIn">
+                            <a href="/login" class="btn btn-primary animate__animated animate__zoomIn">
                                 select one
                             </a>
                         </div>
@@ -58,7 +58,7 @@
             </div>
             <div class="carousel-item">
                 <img class="d-block w-100"
-                     src="https://raw.githubusercontent.com/Fat-Frumos/Cars/master/images/slider-42.jpg"
+                     src="https://raw.githubusercontent.com/Fat-Frumos/Cars/master/images/slider-49.jpg"
                      alt="First slide">
 
                 <!-- Slide Text Layer -->
@@ -67,7 +67,7 @@
                         <div class="col-12 slide-text text-right">
                             <h1 class="animate__animated animate__lightSpeedInRight">Bugatti</h1>
                             <p class="animate__animated animate__fadeInUp">now touch enable</p>
-                            <a href="/login" target="_blank" class="btn btn-warning  animate__animated animate__fadeInUp">
+                            <a href="/login" class="btn btn-warning animate__animated animate__fadeInUp">
                                 select one
                             </a>
                         </div>
@@ -84,7 +84,7 @@
                         <div class="col-12 slide-text text-left">
                             <h1 class="animate__animated animate__lightSpeedInLeft">Need For Speed</h1>
                             <p class="animate__animated animate__fadeInUp"><small>one touch</small></p>
-                            <a href="/login" target="_blank" class="btn btn-primary animate__animated animate__fadeInUp">
+                            <a href="/login" class="btn btn-danger animate__animated animate__fadeInUp">
                                 select two
                             </a>
                         </div>
@@ -94,14 +94,14 @@
             <div class="carousel-item">
                 <img class="d-block w-100"
                      src="https://raw.githubusercontent.com/Fat-Frumos/Cars/master/images/slider-41.jpg"
-                     alt="Third slide">
+                     alt=" ">
                 <!-- Slide Text Layer -->
                 <div class="slide_style_left">
                     <div class="row">
                         <div class="col-12 slide-text text-left">
                             <h2 class="animate__animated animate__lightSpeedInLeft slide-heading">Prior</h2>
                             <p class="animate__animated animate__fadeInUp"><small>now touch enable </small></p>
-                            <a href="/login" target="_blank" class="btn btn-warning  animate__animated animate__fadeInUp">
+                            <a href="/login" class="btn btn-warning  animate__animated animate__fadeInUp">
                                 select one</a>
                         </div>
                     </div>

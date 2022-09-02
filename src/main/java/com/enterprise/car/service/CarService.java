@@ -2,40 +2,59 @@ package com.enterprise.car.service;
 
 import com.enterprise.car.dao.jdbc.JdbcCarDao;
 import com.enterprise.car.entity.Car;
+import com.enterprise.car.exception.CarException;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 
 public class CarService {
+    private static final Logger log = Logger.getLogger(CarService.class.getName());
+    private final JdbcCarDao carDao;
 
-    private final JdbcCarDao jdbcCarDao = new JdbcCarDao();
-    private static List<Car> cars = new ArrayList();
-
-    static {
-        cars.add(Car.builder().brand("Mustang").name("Camaro").price(20000.0).year(2020).path("https://raw.githubusercontent.com/Fat-Frumos/Cars/master/images/slider-2.jpg").build());
-        cars.add(Car.builder().brand("BMW").name("X8").price(22000.0).year(2022).path("https://raw.githubusercontent.com/Fat-Frumos/Cars/master/images/slider-1.jpg").build());
-        cars.add(Car.builder().brand("Porsche").name("Cayenne").model("Turbo GT").price(25000.0).year(2022).path("https://raw.githubusercontent.com/Fat-Frumos/Cars/master/images/slider-3.jpg").build());
+    public CarService(JdbcCarDao carDao) {
+        this.carDao = carDao;
     }
 
-    public List<Car> retrieveCars() {
-        return cars;
+    public CarService() {
+        this.carDao = new JdbcCarDao();
     }
 
-    public void addCar(Car car) {
-        cars.add(car);
+
+    public boolean addCar(Car car) {
+        boolean save = carDao.save(car);
+        log.log(Level.INFO, "New car saved: {0} ", save);
+        return save;
     }
 
     public List<Car> getAll() {
-        cars.clear();
-        List<Car> all = jdbcCarDao.findAll();
-        for (Car car : all) {
-            cars.add(car);
-        }
+
+        List<Car> cars = carDao.findAll();
 
         return cars;
     }
 
     public List<Car> getByBrand(String brand) {
-        return jdbcCarDao.findByBrand(brand);
+        return carDao.findByBrand(brand);
+    }
+
+    public boolean delete(long id) {
+        return carDao.delete(id);
+    }
+
+    public Car getById(long id) {
+        Optional<Car> car = carDao.findById(id);
+        log.info(String.valueOf(car.get()));
+        return car.orElseThrow(() ->
+                new CarException("Car not found"));
+    }
+
+    public List<Car> getRandom() {
+        List<Car> cars = carDao.findAll();
+        Collections.shuffle(cars);
+        return cars.subList(0, 3);
     }
 }

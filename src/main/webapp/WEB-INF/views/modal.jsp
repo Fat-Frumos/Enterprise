@@ -43,8 +43,12 @@
                 <label>Enter Name</label>
                 <input type="text" name="name" placeholder="Enter your name"/><br><label>Enter Password</label>
                 <input type="password" name="password" placeholder="Enter your password"/><br>
-                <input type="hidden" name="path" value="https://raw.githubusercontent.com/Fat-Frumos/Cars/master/images/slider-21.jpg"/>
-                <input type="number" name="path" value="50000.0"/>
+                <input type="number" name="price" value="50000.0"/>
+                <input type="hidden" name="path"
+                       value="https://raw.githubusercontent.com/Fat-Frumos/Cars/master/images/slider-21.jpg"/>
+                <input type="hidden" name="brand" value="Jeep"/><br>
+                <input type="hidden" name="model" value="Hammer"/><br>
+                <input type="hidden" name="year" value="2020"/><br>
                 <input type="submit" class="btn btn-default" name="submit" value="Submit"/>
             </form>
         </div>

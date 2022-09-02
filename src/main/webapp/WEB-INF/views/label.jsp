@@ -6,7 +6,7 @@
   Time: 7:47 PM
   To change this template use File | Settings | File Templates.
 --%>
-<html>
+<!DOCTYPE html>
 <head>
     <title>Scale</title>
 </head>

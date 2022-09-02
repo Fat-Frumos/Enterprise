@@ -5,17 +5,17 @@
       http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
          id="WebApp_ID" version="3.0">
 
-    <display-name>Auth</display-name>
+    <display-name>auth</display-name>
     <welcome-file-list>
         <welcome-file>login.jsp</welcome-file>
     </welcome-file-list>
 
-    <display-name>main-page</display-name>
+    <display-name>main</display-name>
     <welcome-file-list>
         <welcome-file>main.jsp</welcome-file>
     </welcome-file-list>
 
-    <display-name>car-deploy</display-name>
+    <display-name>cars</display-name>
     <welcome-file-list>
         <welcome-file>cars.jsp</welcome-file>
     </welcome-file-list>

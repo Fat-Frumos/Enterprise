@@ -1,4 +1,6 @@
-###There is a list of Cars in the system,for which it is necessary to implement:
+###There is a list of Cars in the system, for which it is necessary to implement:
+index.jsp /
+login.jsp /login
 
 - choice by brand;
 - choice according to quality class;
@@ -15,3 +17,6 @@
 - adding, deleting cars, editing car information;
 - blocking / unblocking- the user;
 - registration of managers in the system.
+//TODO open in the same window
+//- conf\server.xml
+- 

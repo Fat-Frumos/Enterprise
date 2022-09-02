@@ -18,9 +18,9 @@
 
 <div class="loginBox">
     <img class="user" height="100px" width="100px"
-         src="https://www.pngitem.com/pimgs/m/560-5603874_product-image-logo-avatar-minimalist-flat-line-hd.png">
+         src="https://raw.githubusercontent.com/Fat-Frumos/Enterprise/ca326d093a7cff3780abf117daca9fdf101a9eef/src/main/webapp/WEB-INF/views/ava.jpg">
     <p><span style="color: red;">${errorMessage}</span></p>
-    <h3>Sign In</h3>
+    <h3>Sign in</h3>
     <form action="/login" method="post">
         <div class="inputBox">
             <label for="name"></label><input id="name" type="text" name="name" placeholder="Username">
@@ -29,7 +29,7 @@
     </form>
     <a href="#">Forget Password<br> </a>
     <div class="text-center">
-        <p style="color: #59238F;">Sign-Up</p>
+        <p style="color: #59238F;">Sign up</p>
     </div>
 </div>
 </body>

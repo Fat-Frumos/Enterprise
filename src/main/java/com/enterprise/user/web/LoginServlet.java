@@ -10,8 +10,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /*
  * Client sends Http Request to Web Server
@@ -30,9 +30,10 @@ import java.util.stream.Collectors;
 //1. extends javax.servlet.http.HttpServlet
 //2. @WebServlet(urlPatterns = "/login")
 //3. doGet(HttpServletRequest request, HttpServletResponse response)
+//3. doPost(HttpServletRequest request, HttpServletResponse response)
 //4. How is the response created?
 
-@WebServlet(urlPatterns = "/login")
+@WebServlet(urlPatterns = "/")
 public class LoginServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
@@ -54,12 +55,16 @@ public class LoginServlet extends HttpServlet {
 
         boolean isValidUser = loginService.validateUser(name, password);
         if (isValidUser) {
-            request.setAttribute("cars", carService.retrieveCars());
+
+            List<Car> cars = carService.getRandom();
+
+            request.setAttribute("cars", cars);
+
             request.getRequestDispatcher("/WEB-INF/views/main.jsp").forward(request, response);
 
         } else {
             request.setAttribute("errorMessage", "Invalid Credentials");
-            request.getRequestDispatcher("/WEB-INF/views/login.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/index.jsp").forward(request, response);
         }
     }
 }
