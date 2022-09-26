@@ -2,6 +2,7 @@ package com.enterprise.user.web;
 
 import com.enterprise.car.entity.Car;
 import com.enterprise.car.service.CarService;
+import com.enterprise.car.service.Service;
 import com.enterprise.user.service.LoginService;
 
 import javax.servlet.ServletException;
@@ -10,7 +11,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 
 /*
@@ -37,7 +37,7 @@ import java.util.List;
 public class LoginServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
-    private final CarService carService = new CarService();
+    private final Service service = new CarService();
     private final LoginService loginService = new LoginService();
 
     @Override
@@ -45,7 +45,6 @@ public class LoginServlet extends HttpServlet {
             throws IOException, ServletException {
         request.getRequestDispatcher("/WEB-INF/views/login.jsp").forward(request, response);
     }
-
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -56,7 +55,7 @@ public class LoginServlet extends HttpServlet {
         boolean isValidUser = loginService.validateUser(name, password);
         if (isValidUser) {
 
-            List<Car> cars = carService.getRandom();
+            List<Car> cars = service.getRandom();
 
             request.setAttribute("cars", cars);
 

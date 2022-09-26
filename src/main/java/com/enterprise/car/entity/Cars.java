@@ -1,10 +1,12 @@
 package com.enterprise.car.entity;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Cars {
     private static Cars instance;
+
     protected List<Car> car;
 
     public static Cars getInstance() {
@@ -22,5 +24,4 @@ public class Cars {
     public String toString() {
         return "Cars=" + car;
     }
-
 }

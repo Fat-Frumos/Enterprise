@@ -8,7 +8,6 @@ public class CarException extends RuntimeException {
     public CarException(String message) {
         log.info(message);
     }
-
     public CarException(String message, SQLException sqlException) {
         new CarException(message);
     }

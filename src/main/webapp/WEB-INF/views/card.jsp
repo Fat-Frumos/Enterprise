@@ -31,7 +31,7 @@
             <c:forEach items="${cars}" var="cars">
                 <div class="col-md-4">
                     <div class="card rounded">
-                        <div class="card-image fw-900">
+                        <div class="card-image fw-900" onclick="flip(${cars.path})">
                             <span class="card-detail-badge m-2">${cars.brand} ${cars.name} ${cars.model}</span>
                             <figure onclick="addCar(${cars.id})">
                                 <img class="img-fluid"
@@ -54,7 +54,7 @@
 <script>
     $(document).ready(function () {
         $('#ads').click(function () {
-            $('#myPopup').modal('show').text($.param())
+            $('#myPopup').modal('show')
         });
     });
 
@@ -62,7 +62,7 @@
         let url = '/cars' + '?id=' + id;
         console.log(url);
         fetch(url, {
-            method: 'POST',
+            method: 'GET',
         }).then(response => {
             console.log('Ok:', response);
         }).catch(err => {

@@ -1,5 +1,6 @@
 package com.enterprise.car.exception;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 
@@ -15,6 +16,10 @@ public class DataException extends RuntimeException {
     }
 
     public DataException(String message, SQLException exception) {
-        new DataException(message);
+        throw new DataException(message + exception.getMessage());
+    }
+
+    public DataException(String message, IOException exception) {
+        throw new DataException(message + exception.getMessage());
     }
 }

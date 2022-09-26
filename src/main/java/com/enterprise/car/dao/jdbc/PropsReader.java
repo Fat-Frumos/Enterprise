@@ -1,5 +1,7 @@
 package com.enterprise.car.dao.jdbc;
 
+import com.enterprise.car.exception.DataException;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.Connection;
@@ -12,11 +14,10 @@ public class PropsReader implements AutoCloseable {
     public static synchronized PropsReader getInstance() {
         return new PropsReader();
     }
-
     private static final String DB_URL_PROPERTY_NAME = "db.url";
     private static final String DB_NAME_PROPERTY_NAME = "db.username";
     private static final String DB_PASSWORD_PROPERTY_NAME = "db.password";
-    private static final String filename = "src/main/resources/application.properties";
+    private static final String FILE_PROPS = "src/main/resources/application.properties";
 
     private Properties properties;
 
@@ -25,12 +26,11 @@ public class PropsReader implements AutoCloseable {
     }
 
     private void loadProperties() {
-        try {
-            properties = new Properties();
-            FileInputStream inputStream = new FileInputStream(filename);
+        properties = new Properties();
+        try (FileInputStream inputStream = new FileInputStream(FILE_PROPS)) {
             properties.load(inputStream);
         } catch (IOException exception) {
-            throw new RuntimeException(exception.getMessage(), exception);
+            throw new DataException(exception.getMessage(), exception);
         }
     }
 
@@ -51,7 +51,7 @@ public class PropsReader implements AutoCloseable {
     }
 
     @Override
-    public void close() {
-
+    public void close() throws SQLException {
+        getConnection().close();
     }
 }

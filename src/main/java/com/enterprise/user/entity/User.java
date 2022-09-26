@@ -4,11 +4,11 @@ import java.time.LocalDateTime;
 
 public class User {
     private String name;
+    private String email;
     private String password;
     private Token token;
     private LocalDateTime deactivateDate;
-
-    private boolean active = true;
+    private final boolean active = false;
 
     public boolean isActive() {
         return active;
@@ -20,6 +20,14 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {

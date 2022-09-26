@@ -10,7 +10,7 @@ public interface CarDao {
 
     Optional<Car> findById(Long id);
 
-    List<Car> findByBrand(String brand);
+    List<Car> findAll(String brand);
 
     boolean save(Car car);
 

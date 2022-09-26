@@ -15,30 +15,20 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.logging.Logger;
 
+import static com.enterprise.car.dao.jdbc.Constants.FILTER_BY_ID_SQL;
+import static com.enterprise.car.dao.jdbc.Constants.INSERT_CAR_SQL;
+
 public class JdbcCarTemplate extends PropsReader {
     private static final CarMapper ROW_MAPPER = new CarMapper();
     private static final Logger log = Logger.getLogger(JdbcCarTemplate.class.getName());
-    private static final int COLUMN = 1;
 
-    protected static List<Car> getCarByBrand(String sql, String brand) {
-        List<Car> cars = new ArrayList<>();
-        try (Connection connection = getInstance().getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, brand);
-            return exec(cars, statement);
-        } catch (SQLException ex) {
-            throw new DataException(ex);
-        }
-
-    }
-
-    private static List<Car> exec(List<Car> cars, PreparedStatement statement) throws SQLException {
+    private static List<Car> exec(PreparedStatement statement) throws SQLException {
         try (ResultSet resultSet = statement.executeQuery()) {
             if (resultSet.next()) {
+                List<Car> cars = new ArrayList<>();
                 while (resultSet.next()) {
                     Car car = ROW_MAPPER.mapRow(resultSet);
                     cars.add(car);
-                    log.info(car.toString());
                 }
                 return cars;
             }
@@ -46,9 +36,9 @@ public class JdbcCarTemplate extends PropsReader {
         }
     }
 
-    protected static Optional<Car> getCarById(String sql, long id) {
+    protected static Optional<Car> getCarById(long id) {
         try (Connection connection = getInstance().getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+             PreparedStatement statement = connection.prepareStatement(FILTER_BY_ID_SQL)) {
             statement.setLong(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
                 return !resultSet.next()
@@ -56,34 +46,34 @@ public class JdbcCarTemplate extends PropsReader {
                         : Optional.of(ROW_MAPPER.mapRow(resultSet));
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DataException(e);
         }
     }
 
     protected static List<Car> getCarsQuery(String sql) {
-        List<Car> cars = new ArrayList<>();
+        log.info(sql);
         try (Connection connection = getInstance().getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
-            return exec(cars, statement);
+            return exec(statement);
         } catch (SQLException ex) {
             throw new DataException(ex);
         }
     }
 
-    protected static boolean setCarQuery(String sql, Car car) throws DataException {
+    protected static boolean setCarQuery(Car car) throws DataException {
         if (car != null) {
 
             try (Connection connection = getInstance().getConnection();
-                 PreparedStatement statement = connection.prepareStatement(sql)) {
+                 PreparedStatement statement = connection.prepareStatement(INSERT_CAR_SQL)) {
 
                 long id = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
+
                 String name = car.getName();
                 String brand = car.getBrand();
                 String model = car.getModel();
                 String path = car.getPath();
                 Double price = car.getPrice();
                 int year = car.getYear();
-                log.info("New car " + name + " " + brand + " " + model + " " + year + " " + " " + path);
 
                 statement.setLong(1, id);
                 statement.setString(2, name);
@@ -92,8 +82,8 @@ public class JdbcCarTemplate extends PropsReader {
                 statement.setString(5, path);
                 statement.setDouble(6, price);
                 statement.setInt(7, year);
-
-                return statement.execute();
+                statement.execute();
+                return true;
             } catch (SQLException e) {
                 log.info("Car can`t be created");
                 throw new DataException(e);

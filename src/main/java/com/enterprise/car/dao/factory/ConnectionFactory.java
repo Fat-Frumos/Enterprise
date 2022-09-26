@@ -46,10 +46,12 @@ public class ConnectionFactory implements DataSource {
 
     @Override
     public void setLogWriter(PrintWriter out) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void setLoginTimeout(int seconds) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -63,12 +65,12 @@ public class ConnectionFactory implements DataSource {
     }
 
     @Override
-    public <T> T unwrap(Class<T> iface) {
+    public <T> T unwrap(Class<T> face) {
         return null;
     }
 
     @Override
-    public boolean isWrapperFor(Class<?> iface) {
+    public boolean isWrapperFor(Class<?> face) {
         return false;
     }
 }
