@@ -25,4 +25,8 @@
         <location>/WEB-INF/views/error/404.jsp</location>
     </error-page>
 
+    <listener>
+        <listener-class>com.enterprise.rental.utils.Listener</listener-class>
+    </listener>
+
 </web-app>

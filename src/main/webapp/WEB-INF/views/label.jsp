@@ -16,7 +16,7 @@
         <figure>
             <img class="img-fluid"
                  id="main"
-                 src="https://raw.githubusercontent.com/Fat-Frumos/Cars/master/images/main.jpg"
+                 src="https://raw.githubusercontent.com/Fat-Frumos/Cars/master/main.jpg"
                  alt="main">
             <figcaption></figcaption>
         </figure>

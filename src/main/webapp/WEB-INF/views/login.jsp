@@ -18,7 +18,7 @@
 
 <div class="loginBox">
     <img class="user" height="100px" width="100px"
-         src="https://raw.githubusercontent.com/Fat-Frumos/Enterprise/ca326d093a7cff3780abf117daca9fdf101a9eef/src/main/webapp/WEB-INF/views/ava.jpg">
+         src="https://raw.githubusercontent.com/Fat-Frumos/Cars/master/ava.jpg">
     <p><span style="color: red;">${errorMessage}</span></p>
     <h3>Sign in</h3>
     <form action="/login" method="post">
