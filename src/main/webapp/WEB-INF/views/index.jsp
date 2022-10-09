@@ -15,8 +15,8 @@
     <meta name="author" content="">
     <title>Enterprise</title>
     <style>
-        <%@include file="../classes/static/css/carousel.css"%>
-        <%@include file="../classes/static/css/style.css"%>
+        <%@include file="templates/css/carousel.css"%>
+        <%@include file="templates/css/style.css"%>
     </style>
     <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>

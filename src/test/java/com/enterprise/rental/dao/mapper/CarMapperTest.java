@@ -1,5 +1,6 @@
-package com.enterprise.rental.dao.mapper;
+package com.enterprise.rental.service.mapper;
 
+import com.enterprise.rental.dao.mapper.CarMapper;
 import com.enterprise.rental.entity.Car;
 import org.junit.jupiter.api.Test;
 

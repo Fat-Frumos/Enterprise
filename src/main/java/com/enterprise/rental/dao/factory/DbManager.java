@@ -9,20 +9,29 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
-public class PropsReader implements AutoCloseable {
-
-    public static synchronized PropsReader getInstance() {
-        return new PropsReader();
-    }
+public class DbManager implements AutoCloseable {
     private static final String DB_URL_PROPERTY_NAME = "db.url";
     private static final String DB_NAME_PROPERTY_NAME = "db.username";
     private static final String DB_PASSWORD_PROPERTY_NAME = "db.password";
     private static final String FILE_PROPS = "src/main/resources/application.properties";
-
     private Properties properties;
+    private static DbManager dbManager;
 
-    public PropsReader() {
+    public DbManager() {
         loadProperties();
+    }
+
+    public static synchronized DbManager getInstance() {
+        return dbManager == null ? new DbManager() : dbManager;
+    }
+
+    public Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(getDBUrl(), getDBName(), getDBPassword());
+    }
+
+    @Override
+    public void close() throws SQLException {
+        getConnection().close();
     }
 
     private void loadProperties() {
@@ -46,12 +55,4 @@ public class PropsReader implements AutoCloseable {
         return properties.getProperty(DB_PASSWORD_PROPERTY_NAME);
     }
 
-    protected Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(getDBUrl(), getDBName(), getDBPassword());
-    }
-
-    @Override
-    public void close() throws SQLException {
-        getConnection().close();
-    }
 }

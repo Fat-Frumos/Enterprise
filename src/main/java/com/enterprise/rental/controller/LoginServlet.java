@@ -18,34 +18,13 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Logger;
 
-/*
- * Client sends Http Request to Web Server
- *
- * Code in Web Server => Input:HttpRequest, Output: HttpResponse JEE with Servlets
- *
- * Web Server responds with Http Response
- */
-
-//Java Platform, Enterprise Edition (Java EE) JEE6
-
-//Servlet is a Java programming language class
-//used to extend the capabilities of servers
-//that host applications accessed by means of
-//a request-response programming model.
-
-//1. extends javax.servlet.http.HttpServlet
-//2. @WebServlet(urlPatterns = "/login")
-//3. doGet(HttpServletRequest request, HttpServletResponse response)
-//3. doPost(HttpServletRequest request, HttpServletResponse response)
-//4. How is the response created?
-
-@WebServlet(urlPatterns = "/")
+@WebServlet(urlPatterns = "/login")
 public class LoginServlet extends HttpServlet {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2338626292552177485L;
     private final Service service = new CarService();
-    private final OrderService orderService = new OrderService();
 
+    private final OrderService orderService = new OrderService();
     private final UserService userService = new UserService();
 
     private static final Logger log = Logger.getLogger(LoginServlet.class.getName());
@@ -53,9 +32,11 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
+
         request.getRequestDispatcher("/WEB-INF/views/login.jsp").forward(request, response);
     }
 
+    //TODO Logout
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
@@ -83,7 +64,31 @@ public class LoginServlet extends HttpServlet {
 
         } else {
             request.setAttribute("errorMessage", "Invalid Credentials");
-            request.getRequestDispatcher("/WEB-INF/views/index.jsp").forward(request, response);
+
+            request.getRequestDispatcher("/WEB-INF/views/login.jsp").forward(request, response);
+
+//            request.getRequestDispatcher("/WEB-INF/views/index.jsp").forward(request, response);
         }
     }
+    /*
+     * Client sends Http Request to Web Server
+     *
+     * Code in Web Server => Input:HttpRequest, Output: HttpResponse JEE with Servlets
+     *
+     * Web Server responds with Http Response
+     */
+
+//Java Platform, Enterprise Edition (Java EE) JEE6
+
+//Servlet is a Java programming language class
+//used to extend the capabilities of servers
+//that host applications accessed by means of
+//a request-response programming model.
+
+//1. extends javax.servlet.http.HttpServlet
+//2. @WebServlet(urlPatterns = "/login")
+//3. doGet(HttpServletRequest request, HttpServletResponse response)
+//3. doPost(HttpServletRequest request, HttpServletResponse response)
+//4. How is the response created?
 }
+
