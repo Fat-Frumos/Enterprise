@@ -1,6 +1,7 @@
-package com.enterprise.rental.service;
+package com.enterprise.rental.security;
 
 import com.enterprise.rental.entity.User;
+import com.enterprise.rental.service.UserService;
 
 import java.util.Objects;
 

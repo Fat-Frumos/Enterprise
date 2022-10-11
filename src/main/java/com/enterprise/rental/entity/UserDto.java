@@ -1,18 +1,24 @@
 package com.enterprise.rental.entity;
 
+import com.enterprise.rental.security.Token;
+
 public class UserDto {
 
     private String name;
     private String password;
+
+    private String email;
+    private Token token;
     private Role role;
     private boolean active;
 
-//    public UserDto(User user) {
-//        this.setToken(user.getToken());
-//        this.setLogin(user.getLogin());
-//        this.setLogin(user.getLogin());
-//        this.setActive(user.getDeactivationDate() == null);
-//    }
+    public UserDto(String name, String password, String email, Token token, Role role) {
+        this.name = name;
+        this.password = password;
+        this.email = email;
+        this.token = token;
+        this.role = role;
+    }
 
     public String getName() {
         return name;
@@ -30,12 +36,12 @@ public class UserDto {
         this.password = password;
     }
 
-    public Role getToken() {
-        return role;
+    public Token getToken() {
+        return token;
     }
 
-    public void setToken(Role role) {
-        this.role = role;
+    public void setToken(Token token) {
+        this.token = token;
     }
 
     public boolean isActive() {

@@ -1,5 +1,6 @@
 package com.enterprise.rental.service;
 
+import com.enterprise.rental.dao.CarDao;
 import com.enterprise.rental.dao.Dao;
 import com.enterprise.rental.entity.Car;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,7 +17,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(org.mockito.junit.jupiter.MockitoExtension.class)
 class CarServiceTest {
     @Mock
-    private Dao dao;
+    private CarDao dao;
     private Service service;
     List<Car> cars = new ArrayList<>();
     static final Car X7 = new Car.Builder().id(1l).name("X7").brand("BMW").model("G07").path("http//").price(25000.0).year(2022).build();

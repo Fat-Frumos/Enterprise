@@ -11,10 +11,11 @@
 <!DOCTYPE html>
 <head>
     <title>Rental Car</title>
+    <style>
+        <%@include file="../classes/templates/css/form.css"%>
+    </style>
 </head>
-<style>
-    <%@include file="../classes/static/css/form.css"%>
-</style>
+
 <body>
 <div class="col-lg-5 p-0 ps-lg-4">
     <div style="background: white" class="row m-0">

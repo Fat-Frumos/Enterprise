@@ -12,13 +12,11 @@
 <head>
     <title>Cars</title>
     <style>
-        <%@include file="../classes/static/css/card.css"%>
-        <%@include file="../classes/static/css/car.css"%>
-
+        <%@include file="../classes/templates/css/card.css"%>
+        <%@include file="../classes/templates/css/car.css"%>
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
-
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
           integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
 </head>
@@ -40,7 +38,6 @@
                                 <figcaption></figcaption>
                             </figure>
                         </div>
-
                         <div class="card-image-overlay m-auto">
                             <span class="badge">Used</span>
                             <span class="card-detail-badge">$${cars.price}</span>
@@ -54,12 +51,12 @@
 <script>
     $(document).ready(function () {
         $('#ads').click(function () {
+            $("#myPopup").load("b.html");
             $('#myPopup').modal('show')
         });
     });
-
     function addCar(id) {
-        let url = '/cars' + '?id=' + id;
+        let url = '/' + '?id=' + id;
         console.log(url);
         fetch(url, {
             method: 'GET',

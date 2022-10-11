@@ -1,11 +1,17 @@
 package com.enterprise.rental.utils;
 
-import com.enterprise.rental.dao.factory.ConnectionFactory;
+import com.enterprise.rental.dao.factory.DbManager;
 
-import javax.servlet.*;
-import javax.servlet.http.*;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+import javax.servlet.annotation.WebListener;
+import java.util.logging.Logger;
 
+@WebListener
 public class Listener implements ServletContextListener {
+
+    private static final Logger log = Logger.getLogger(Listener.class.getName());
 
     public Listener() {
     }
@@ -14,7 +20,11 @@ public class Listener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
 
-        ServletContext servletContext = sce.getServletContext();
+//        DbManager dbManager = DbManager.getInstance();
+//
+//        ServletContext servletContext = sce.getServletContext();
+
+//        servletContext.setAttribute("factory", dbManager);
 
     }
 

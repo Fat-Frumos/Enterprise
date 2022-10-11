@@ -1,4 +1,4 @@
-package com.enterprise.rental.dao.jdbc;
+package com.enterprise.rental.dao.factory;
 
 import com.enterprise.rental.exception.DataException;
 
@@ -25,8 +25,12 @@ public class DbManager implements AutoCloseable {
         return dbManager == null ? new DbManager() : dbManager;
     }
 
-    public Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(getDBUrl(), getDBName(), getDBPassword());
+    public Connection getConnection()  {
+        try {
+            return DriverManager.getConnection(getDBUrl(), getDBName(), getDBPassword());
+        } catch (SQLException e) {
+            throw new DataException(e);
+        }
     }
 
     @Override
@@ -54,5 +58,4 @@ public class DbManager implements AutoCloseable {
     private String getDBPassword() {
         return properties.getProperty(DB_PASSWORD_PROPERTY_NAME);
     }
-
 }

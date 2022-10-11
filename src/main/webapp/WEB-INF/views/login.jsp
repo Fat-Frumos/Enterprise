@@ -12,7 +12,10 @@
     <title>Login</title>
 </head>
 <style>
-    <%@include file="../classes/static/css/login.css"%>
+    <%@include file="../classes/templates/css/login.css"%>
+    .sign{
+        color: #59238F;
+    }
 </style>
 <body>
 
@@ -27,10 +30,9 @@
             <label for="pass"></label><input id="pass" type="password" name="password" placeholder="Password"></div>
         <input type="submit" name="" value="Login">
     </form>
-    <a href="#">Forget Password<br> </a>
-    <div class="text-center">
-        <p style="color: #59238F;">Sign up</p>
-    </div>
+        <a href="/view">Forget Password </a>
+        <br>
+        <a class="sign" href="/user/new">SignUp</a>
 </div>
 </body>
 </html>

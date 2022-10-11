@@ -15,14 +15,16 @@
     <meta name="author" content="">
     <title>Enterprise</title>
     <style>
-        <%@include file="templates/css/carousel.css"%>
-        <%@include file="templates/css/style.css"%>
+        <%@include file="../classes/templates/css/carousel.css"%>
+        <%@include file="../classes/templates/css/style.css"%>
     </style>
     <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
           integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
 </head>
 <body>
 <div class="slide_style_bottom">

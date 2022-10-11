@@ -1,7 +1,5 @@
 package com.enterprise.rental.dao.mapper;
 
-import com.enterprise.rental.dao.jdbc.JdbcUserTemplate;
-import com.enterprise.rental.entity.Car;
 import com.enterprise.rental.entity.User;
 import com.enterprise.rental.entity.UserDto;
 
@@ -21,12 +19,12 @@ public class UserMapper extends Mapper<User> {
         return new User(id, name, password, email);
     }
 
-//    public UserDto toDto(User user) {
-//        UserDto dto = new UserDto();
-//        dto.setLogin(user.getName());
-//        dto.setPassword(user.getPassword());
-//        dto.setActive(user.getDeactivationDate() == null);
-//        return dto;
-//    }
-
+    public UserDto toDto(User user) {
+        return new UserDto(
+                user.getName(),
+                user.getPassword(),
+                user.getEmail(),
+                user.getToken(),
+                user.getRole());
+    }
 }

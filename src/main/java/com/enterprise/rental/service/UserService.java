@@ -1,31 +1,32 @@
 package com.enterprise.rental.service;
 
-import com.enterprise.rental.dao.UserDao;
-import com.enterprise.rental.dao.mapper.UserMapper;
+import com.enterprise.rental.dao.jdbc.JdbcUserDao;
 import com.enterprise.rental.entity.User;
 
+import java.util.List;
 import java.util.Optional;
 
-public class UserServiceImpl implements UserService {
-    private final UserDao userDao;
+public class UserService {
 
-    private final UserMapper userMapper;
+    private final JdbcUserDao jdbcUserDao;
 
-    public UserServiceImpl(UserDao userDao, UserMapper userMapper) {
-        this.userDao = userDao;
-        this.userMapper = userMapper;
+    public UserService(JdbcUserDao jdbcUserDao) {
+        this.jdbcUserDao = jdbcUserDao;
     }
 
-    public UserServiceImpl(UserDao userDao) {
-        this.userDao = userDao;
-        this.userMapper = new UserMapper();
+    public UserService() {
+        this.jdbcUserDao = new JdbcUserDao();
     }
 
     public Optional<User> findByName(String name) {
-        return userDao.findByName(name);
+        return jdbcUserDao.findByName(name);
     }
 
     public boolean validateUser(String name, String password, User user) {
         return name.equalsIgnoreCase(user.getName()) && password.equals(user.getPassword());
+    }
+
+    public List<User> findAll() {
+        return jdbcUserDao.findAll();
     }
 }

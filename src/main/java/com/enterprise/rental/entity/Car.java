@@ -14,7 +14,7 @@ public class Car implements Serializable {
     private String path;
     private Double price;
     private int year;
-    private final LocalDateTime created = LocalDateTime.now();
+    private LocalDateTime created;
 
     public long getId() {
         return id;
@@ -48,6 +48,14 @@ public class Car implements Serializable {
         this.name = name;
     }
 
+    public LocalDateTime getCreated() {
+        return created;
+    }
+
+    public void setCreated(LocalDateTime created) {
+        this.created = created;
+    }
+
     public static class Builder {
         private long id;
         private String name;
@@ -56,6 +64,8 @@ public class Car implements Serializable {
         private String path;
         private Double price;
         private int year;
+
+        private LocalDateTime created;
 
         public Builder id(long id) {
             this.id = id;
@@ -92,6 +102,11 @@ public class Car implements Serializable {
             return this;
         }
 
+        public Builder created(LocalDateTime time) {
+            this.created = time;
+            return this;
+        }
+
         public Car build() {
             Car car = new Car();
             car.id = this.id;
@@ -101,6 +116,7 @@ public class Car implements Serializable {
             car.path = this.path;
             car.price = this.price;
             car.year = this.year;
+            car.created = this.created;
             return car;
         }
     }

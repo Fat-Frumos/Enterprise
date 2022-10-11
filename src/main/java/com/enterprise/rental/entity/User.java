@@ -1,5 +1,7 @@
 package com.enterprise.rental.entity;
 
+import com.enterprise.rental.security.Token;
+
 import javax.persistence.OneToMany;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -10,6 +12,7 @@ public class User implements Serializable {
     private String name;
     private String password;
     private String email;
+    private Token token;
     private Role role;
 
     @OneToMany
@@ -55,12 +58,12 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    public Role getToken() {
-        return role;
+    public Token getToken() {
+        return getToken();
     }
 
-    public void setToken(Role role) {
-        this.role = role;
+    public void setToken(Token token) {
+        this.token = token;
     }
 
     public LocalDateTime getDeactivationDate() {
@@ -76,5 +79,9 @@ public class User implements Serializable {
         this.name = name;
         this.password = password;
         this.email = email;
+    }
+
+    public Role getRole() {
+        return role;
     }
 }

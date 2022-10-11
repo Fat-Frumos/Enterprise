@@ -29,8 +29,8 @@ public class JdbcCarDao implements CarDao {
     }
 
     @Override
-    public List<Car> findAll(String param) {
-        String sql = FILTER_BY_SQL + "WHERE " + param + "';";
+    public List<Car> findAll(String params) {
+        String sql = FILTER_BY_SQL + "WHERE " + params + "';";
         return getCarsQuery(sql);
     }
 

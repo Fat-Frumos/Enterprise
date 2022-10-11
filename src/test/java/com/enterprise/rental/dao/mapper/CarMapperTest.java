@@ -1,4 +1,4 @@
-package com.enterprise.rental.service.mapper;
+package com.enterprise.rental.dao.mapper;
 
 import com.enterprise.rental.dao.mapper.CarMapper;
 import com.enterprise.rental.entity.Car;

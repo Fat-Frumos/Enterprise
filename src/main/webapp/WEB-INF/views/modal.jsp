@@ -10,26 +10,7 @@
 <html lang="en">
 <head>
     <style>
-        input {
-            margin-bottom: 5px;
-        }
-
-        .wrap {
-            width: 20vw;
-        }
-
-        .popup {
-            margin: 10px 10px;
-            background: #fff;
-            border-radius: 5px;
-            width: 90%;
-            position: relative;
-            transition: all 5s ease-in-out;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
+        <%@include file="../classes/templates/css/modal.css"%>
     </style>
 </head>
 <body>
@@ -39,7 +20,7 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"></button>
             </div>
-            <form class="popup" id="MyForm" action="/cars" method="post">
+            <form class="popup" id="MyForm" action="/" method="post">
                 <label>Enter Name</label>
                 <input type="text" name="name" placeholder="Enter your name"/><br><label>Enter Password</label>
                 <input type="password" name="password" placeholder="Enter your password"/><br>

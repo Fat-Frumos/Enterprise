@@ -13,11 +13,12 @@
 </head>
 
 <style>
-    <%@include file="../classes/static/css/car.css"%>
+    <%@include file="../classes/templates/css/car.css"%>
 </style>
 
 <body>
 <div class="container">
+    <jsp:include page="nav.jsp"/>
     <div class="row m-0">
         <div class="col-lg-7 pb-5 pe-lg-5">
             <jsp:include page="label.jsp"/>
@@ -38,4 +39,3 @@
 <jsp:include page="modal.jsp"/>
 </body>
 </html>
-

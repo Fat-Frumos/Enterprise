@@ -15,11 +15,7 @@ public class DataException extends RuntimeException {
         log.info(message);
     }
 
-    public DataException(String message, SQLException exception) {
-        throw new DataException(message + exception.getMessage());
-    }
-
     public DataException(String message, IOException exception) {
-        throw new DataException(message + exception.getMessage());
+        throw new DataException(String.format("%s%s", message, exception.getMessage()));
     }
 }
