@@ -18,7 +18,6 @@ public class User implements Serializable {
     @OneToMany
     private List<Order> orders;
 
-
     private LocalDateTime deactivateDate;
     private final boolean active = false;
 

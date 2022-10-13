@@ -5,12 +5,14 @@ import com.enterprise.rental.dao.factory.DbManager;
 import com.enterprise.rental.dao.mapper.UserMapper;
 import com.enterprise.rental.entity.Car;
 import com.enterprise.rental.entity.User;
+import com.enterprise.rental.exception.CarException;
 import com.enterprise.rental.exception.DataException;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -18,6 +20,8 @@ import java.util.logging.Logger;
 
 public class JdbcUserDao implements UserDao {
     private static final UserMapper ROW_MAPPER = new UserMapper();
+
+    protected static final String USERS_SQL = "SELECT id, email, nickname, password FROM users";
     private static final String FILTER_BY_NAME_SQL = "SELECT id, email, nickname, password FROM users WHERE nickname=";
     private final Logger log = Logger.getLogger(JdbcUserDao.class.getName());
 
@@ -28,6 +32,69 @@ public class JdbcUserDao implements UserDao {
 
         log.info(sql);
 
+        return getGetSql(sql);
+    }
+
+    @Override
+    public Optional<User> findById(Long id) {
+        return Optional.empty();
+    }
+
+    @Override
+    public List<User> findAll() {
+//        return new ArrayList<>();
+//
+        Connection connection;
+
+        try {
+            connection = DbManager.getInstance().getConnection();
+            connection.setAutoCommit(false);
+        } catch (SQLException e) {
+            throw new DataException(e);
+        }
+        try {
+            PreparedStatement statement = connection.prepareStatement(USERS_SQL);
+            try (ResultSet resultSet = statement.executeQuery()) {
+
+                connection.commit();
+
+                if (resultSet.next()) {
+                    List<User> users = new ArrayList<>();
+                    while (resultSet.next()) {
+                        User user = ROW_MAPPER.mapRow(resultSet);
+                        users.add(user);
+                    }
+                    return users;
+                }
+                throw new CarException("Vehicle not found");
+            }
+        } catch (SQLException ex) {
+            throw new CarException(ex.getMessage());
+        }
+    }
+
+    @Override
+    public boolean save(User user) {
+        return false;
+    }
+
+    @Override
+    public User edit(User user) {
+        return null;
+    }
+
+    @Override
+    public boolean delete(long id) {
+        return false;
+    }
+
+    @Override
+    public List<User> findAll(String params) {
+        return new ArrayList<>();
+    }
+
+
+    private Optional<User> getGetSql(String sql) {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -78,35 +145,5 @@ public class JdbcUserDao implements UserDao {
                 }
             }
         }
-    }
-
-    @Override
-    public Optional<User> findById(Long id) {
-        return Optional.empty();
-    }
-
-    @Override
-    public List<User> findAll() {
-        return null;
-    }
-
-    @Override
-    public boolean save(User user) {
-        return false;
-    }
-
-    @Override
-    public User edit(User user) {
-        return null;
-    }
-
-    @Override
-    public boolean delete(long id) {
-        return false;
-    }
-
-    @Override
-    public List<Car> findAll(String params) {
-        return null;
     }
 }

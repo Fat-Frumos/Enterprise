@@ -1,8 +1,8 @@
 <%--
   Created by IntelliJ IDEA.
   User: Pasha
-  Date: 8/27/2022
-  Time: 6:02 PM
+  Date: 8/28/2022
+  Time: 10:58 PM
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -13,10 +13,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>500</title>
+    <title>Enterprise</title>
     <style>
-        <%@include file="../../classes/templates/css/carousel.css"%>
-        <%@include file="../../classes/templates/css/style.css"%>
+        <%@include file="../classes/templates/css/carousel.css"%>
+        <%@include file="../classes/templates/css/style.css"%>
     </style>
     <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
@@ -39,7 +39,7 @@
             <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
             <li data-target="#myCarousel" data-slide-to="1"></li>
             <li data-target="#myCarousel" data-slide-to="2"></li>
-            <%--            <li data-target="#myCarousel" data-slide-to="3"></li>--%>
+<%--            <li data-target="#myCarousel" data-slide-to="3"></li>--%>
         </ol>
         <div class="carousel-inner">
             <div class="carousel-item active">
@@ -58,24 +58,6 @@
                     </div>
                 </div>
             </div>
-            <%--            <div class="carousel-item">--%>
-            <%--                <img class="d-block w-100"--%>
-            <%--                     src="https://raw.githubusercontent.com/Fat-Frumos/Cars/master/images/slider-49.jpg"--%>
-            <%--                     alt="First slide">--%>
-
-            <%--                <!-- Slide Text Layer -->--%>
-            <%--                <div class="slide_style_right">--%>
-            <%--                    <div class="row">--%>
-            <%--                        <div class="col-12 slide-text text-right">--%>
-            <%--                            <h1 class="animate__animated animate__lightSpeedInRight">Bugatti</h1>--%>
-            <%--                            <p class="animate__animated animate__fadeInUp">now touch enable</p>--%>
-            <%--                            <a href="/login" class="btn btn-warning animate__animated animate__fadeInUp">--%>
-            <%--                                select one--%>
-            <%--                            </a>--%>
-            <%--                        </div>--%>
-            <%--                    </div>--%>
-            <%--                </div>--%>
-            <%--            </div>--%>
             <div class="carousel-item">
                 <img class="d-block w-100"
                      src="https://raw.githubusercontent.com/Fat-Frumos/Cars/master/images/slider-40.jpg"

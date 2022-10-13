@@ -1,5 +1,5 @@
 INSERT INTO car (name, brand, model, price, year, path)
-VALUES ('GRAN COUPE', 'BMW', 'X8',  22000.0, 2020, 'https://raw.githubusercontent.com/Fat-Frumos/Cars/master/images/main.jpg');
+VALUES ('GRAN COUPE', 'BMW', 'X8',  22000.0, 2020, 'https://raw.githubusercontent.com/Fat-Frumos/Cars/master/main.jpg');
 alter table car add date TIMESTAMP;
 INSERT INTO car (name, brand, model, price, year, path)
 VALUES ('Gran Coupe', 'BMW', 'X9',  22500.0, 2022, 'https://raw.githubusercontent.com/Fat-Frumos/Cars/master/images/slider-1.jpg');

@@ -18,15 +18,22 @@
 <style>
     <%@include file="../classes/templates/css/card.css"%>
     <%@include file="../classes/templates/css/car.css"%>
+
+    .day {
+        position: absolute;
+        top: 5vh;
+        left: 10vw;
+    }
 </style>
 </head>
 
 <body>
 <div class="cars">
     <%--<jsp:include page="sorting.jsp"/>--%>
-
     <jsp:include page="card.jsp"/>
-    <h4><ct:today format="MMMM:dd:yyyy"/></h4>
+        <div class="day">
+            <h5><ct:today format="MMMM dd yyyy"/></h5>
+        </div>
 
 </div>
 </body>

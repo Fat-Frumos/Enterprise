@@ -7,8 +7,7 @@ import com.enterprise.rental.entity.User;
 import java.util.List;
 import java.util.Optional;
 
-import static com.enterprise.rental.dao.jdbc.Constants.FILTER_BY_SQL;
-import static com.enterprise.rental.dao.jdbc.Constants.FIND_ALL_SQL;
+import static com.enterprise.rental.dao.jdbc.Constants.*;
 import static com.enterprise.rental.dao.jdbc.JdbcCarTemplate.*;
 
 public class JdbcCarDao implements CarDao {
@@ -30,7 +29,7 @@ public class JdbcCarDao implements CarDao {
 
     @Override
     public List<Car> findAll(String params) {
-        String sql = FILTER_BY_SQL + "WHERE " + params + "';";
+        String sql = String.format("%sWHERE %s;", FILTER_BY_SQL, params);
         return getCarsQuery(sql);
     }
 
@@ -49,5 +48,26 @@ public class JdbcCarDao implements CarDao {
     @Override
     public boolean delete(long id) {
         return false;
+    }
+
+    @Override
+    public List<Car> findAll(int page, int recordsPerPage) {
+
+        int start = page * recordsPerPage - recordsPerPage;
+
+        if (start < 0) {
+            start = 0;
+        }
+        if (recordsPerPage <= 0) {
+            recordsPerPage = 9;
+        }
+            String sql = String.format("%sFROM car LIMIT %d OFFSET %d",FIELDS, recordsPerPage, start);
+        return getCarsQuery(sql);
+
+    }
+    @Override
+    public List<Car> findAll(String params, int limit, int offset) {
+        String sql = String.format("%s LIMIT %d OFFSET %d WHERE %s';", FILTER_BY_SQL, params, limit, offset);
+        return getCarsQuery(sql);
     }
 }

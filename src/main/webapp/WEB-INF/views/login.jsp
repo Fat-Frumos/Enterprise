@@ -26,13 +26,15 @@
     <h3>Sign in</h3>
     <form action="/login" method="post">
         <div class="inputBox">
-            <label for="name"></label><input id="name" type="text" name="name" placeholder="Username">
-            <label for="pass"></label><input id="pass" type="password" name="password" placeholder="Password"></div>
+            <label for="name"></label>
+            <input id="name" type="text" name="name" placeholder="Username">
+            <label for="pass"></label>
+            <input id="pass" type="password" name="password" placeholder="Password"></div>
         <input type="submit" name="" value="Login">
     </form>
-        <a href="/view">Forget Password </a>
+        <a href="/user/new">Forget Password </a>
         <br>
-        <a class="sign" href="/user/new">SignUp</a>
+        <a class="sign" href="/view">SignUp</a>
 </div>
 </body>
 </html>

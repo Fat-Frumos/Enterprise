@@ -50,6 +50,14 @@ public class CarService implements Service {
     }
 
     @Override
+    public List<Car> getAll(String params, int limit, int offset) {
+        return carDao.findAll(params, limit, offset);
+    }
+
+    public List<Car> getAll(int currentPage, int recordsPerPage) {
+        return carDao.findAll(currentPage, recordsPerPage);
+    }
+
     public List<Car> getAll(String params) {
         return carDao.findAll(params);
     }

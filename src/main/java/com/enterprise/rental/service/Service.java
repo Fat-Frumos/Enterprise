@@ -9,11 +9,13 @@ public interface Service {
 
     List<Car> getAll();
 
+    List<Car> getAll(String params);
+
     boolean delete(long id);
 
     Car getById(long id);
 
     List<Car> getRandom();
 
-    List<Car> getAll(String brand);
+    List<Car> getAll(String params, int limit, int offset);
 }

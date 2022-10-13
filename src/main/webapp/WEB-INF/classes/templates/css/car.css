@@ -12,7 +12,6 @@ nav {
 
 body {
     padding: 15px;
-    background-color: #ddc3c3;
     /*overflow: hidden;*/
 }
 
@@ -53,7 +52,7 @@ img {
 }
 
 h5, .text-muted {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Roboto', 'Verdana', sans-serif;
 }
 
 img {
@@ -62,7 +61,7 @@ img {
 
 img:hover {
     cursor: pointer;
-    transform: scale(1.2);
+    transform: scale(1.25);
     z-index: -1;
 }
 

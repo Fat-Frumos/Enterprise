@@ -3,6 +3,7 @@ package com.enterprise.rental.controller;
 import com.enterprise.rental.entity.Car;
 import com.enterprise.rental.service.CarService;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -43,21 +44,68 @@ public class CarsServlet extends HttpServlet {
             field = (String.format("%s='%s", fields[2],
                     request.getParameter(fields[2])));
         }
-        //TODO & params
+
+        response.setContentType("text/html;charset=UTF-8");
+
+        int page;
+        int recordsPerPage;
+        try {
+            page = Integer.parseInt(request.getParameter("page"));
+        } catch (NumberFormatException e) {
+            page = 0;
+        }
+
+        try {
+            recordsPerPage = Integer.parseInt(request.getParameter("recordsPerPage"));
+        } catch (NumberFormatException e) {
+            recordsPerPage = 10;
+        }
 
         List<Car> cars;
 
-        if (field.equals("")) {
-            cars = carService.getAll();
+        if (field.equals("") ) {
+            cars = carService.getAll(page, recordsPerPage);
         } else {
-            cars = carService.getAll(field);
+            cars = carService.getAll(String.format("%s'", field));
+//            cars = carService.getAll(field, currentPage, recordsPerPage);
         }
-
+        int rows = cars.size();
+        log.info(rows + " total cars");
         request.setAttribute("cars", cars);
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.setContentType("text/html;charset=utf-8");
-        request.getRequestDispatcher("/WEB-INF/views/cars.jsp")
-                .forward(request, response);
+
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/views/cars.jsp");
+        dispatcher.forward(request, response);
+
+
+        //TODO & params
+        //
+        //        log.info(currentPage + " records per page");
+//        log.info(recordsPerPage + " records per total");
+
+//        int nOfPages = rows / recordsPerPage;
+//
+//        if (nOfPages % recordsPerPage > 0) {
+//
+//            nOfPages++;
+//        }
+//
+//        request.setAttribute("noOfPages", nOfPages);
+//        request.setAttribute("currentPage", currentPage);
+//        request.setAttribute("recordsPerPage", recordsPerPage);
+
+//  cars = carService.getAll(String.format("id BETWEEN 220 AND 228 LIMIT %d OFFSET %d", total, page));
+//        int page = 1;
+//
+//        int total = 12;
+//
+//        if (request.getParameter("page") != null) {
+//            page = Integer.parseInt(request.getParameter("page"));
+//        }
+//
+//
+//        request.setAttribute("page", page);
+//
+//
     }
 
 

@@ -14,6 +14,43 @@
     <style>
         <%@include file="../classes/templates/css/card.css"%>
         <%@include file="../classes/templates/css/car.css"%>
+
+        .option {
+            position: absolute;
+            top: 5rem;
+        }
+
+        .priceInput {
+            position: absolute;
+            top: 1rem;
+        }
+
+        .button {
+            background-color: #c0c0c0;
+            width: 20px;
+            height: 20px;
+            float: left;
+            margin-right: 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: 0.3s ease width;
+            text-align: center;
+            font-family: Calibri;
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        button:hover {
+            color: #ccc;
+            /*cursor: pointer;*/
+            width: 60px;
+            cursor: auto;
+        }
+
+        .button:last-child {
+            margin-right: 0;
+        }
+
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
@@ -21,40 +58,174 @@
           integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
 </head>
 <body>
-<div>
-    <div class="cars">
-        <jsp:include page="nav.jsp"/>
-        <jsp:include page="popup.jsp"/>
-        <div class="car" id="ads">
-            <c:forEach items="${cars}" var="cars">
-                <div class="col-md-4">
-                    <div class="card rounded">
-                        <div class="card-image fw-900" onclick="flip(${cars.path})">
-                            <span class="card-detail-badge m-2">${cars.brand} ${cars.name} ${cars.model}</span>
-                            <figure onclick="addCar(${cars.id})">
-                                <img class="img-fluid"
-                                     src="${cars.path}"
-                                     alt="url">
-                                <figcaption></figcaption>
-                            </figure>
-                        </div>
-                        <div class="card-image-overlay m-auto">
-                            <span class="badge">Used</span>
-                            <span class="card-detail-badge">$${cars.price}</span>
-                        </div>
-                    </div>
+<nav aria-label="Navigation for countries">
+
+<%--    <c:forEach begin="1" end="${noOfPages}" var="i">--%>
+<%--        <c:choose>--%>
+<%--            <c:when test="${page eq i}">--%>
+<%--                <li class="page-item active"><a class="page-link">--%>
+<%--                        ${i} <span class="sr-only">(current)</span></a>--%>
+<%--                </li>--%>
+<%--            </c:when>--%>
+<%--            <c:otherwise>--%>
+<%--                <li class="page-item"><a class="page-link"--%>
+<%--                                         href="?recordsPerPage=${recordsPerPage}&page=${i}">${i}</a>--%>
+<%--                </li>--%>
+<%--            </c:otherwise>--%>
+<%--        </c:choose>--%>
+<%--    </c:forEach>--%>
+    <%--    <ul class="pagination">--%>
+    <%--        <c:if test="${page != 1}">--%>
+    <%--            <li class="page-item"><a class="page-link"--%>
+    <%--                                     href="?recordsPerPage=${recordsPerPage}?Page=${page-1}">Previous</a>--%>
+    <%--            </li>--%>
+    <%--        </c:if>--%>
+
+    <%--        <c:forEach begin="1" end="${noOfPages}" var="i">--%>
+    <%--            <c:choose>--%>
+    <%--                <c:when test="${page eq i}">--%>
+    <%--                    <li class="page-item active"><a class="page-link">--%>
+    <%--                            ${i} <span class="sr-only">(current)</span></a>--%>
+    <%--                    </li>--%>
+    <%--                </c:when>--%>
+    <%--                <c:otherwise>--%>
+    <%--                    <li class="page-item"><a class="page-link"--%>
+    <%--                                             href="?recordsPerPage=${recordsPerPage}?Page=${i}">${i}</a>--%>
+    <%--                    </li>--%>
+    <%--                </c:otherwise>--%>
+    <%--            </c:choose>--%>
+    <%--        </c:forEach>--%>
+
+    <%--        <c:if test="${page lt noOfPages}">--%>
+    <%--            <li class="page-item"><a class="page-link"--%>
+    <%--                                     href="?recordsPerPage=${recordsPerPage}?Page=${page+1}">Next</a>--%>
+    <%--            </li>--%>
+    <%--        </c:if>--%>
+    <%--    </ul>--%>
+</nav>
+<main class="m-3">
+    <div>
+        <div class="option">
+            <form action="/?recordsPerPage=${recordsPerPage}&page=${page}">
+                <label for="brand">Brand:</label>
+                <select id="brand" name="brand">
+                    <option value="" selected disabled hidden></option>
+                    <option value="Porsche">Porsche</option>
+                    <option value="Ferrari">Ferrari</option>
+                    <option value="BMW">BMW</option>
+                    <option value="Mercedes">Mercedes</option>
+                    <option value="Xpeng">Xpeng</option>
+                </select>
+                <br>
+                <br>
+                <br>
+                <div class="priceInput">
+                    <br>
+                    <label for="price">Price: </label>
+                    <input type="number" id="price" name="price" min="1" max="100000">
+                    <br>
+                    <input type="hidden" name="page" value="1">
+                    <select class="form-control" id="records" name="recordsPerPage">
+                        <option value="0" selected></option>
+                        <option value="4">3</option>
+                        <option value="7">6</option>
+                        <option value="10">9</option>
+                        <option value="13">12</option>
+                    </select>
+                    <br>
+
+                    <c:if test="${page != 1}">
+                            <a class="page-link" href="?recordsPerPage=${recordsPerPage}&page=${page-1}">Previous</a>
+                        <br>
+                        <a class="button" href="?page=1">1</a>
+                        <a class="button" href="?page=2">2</a>
+                        <a class="button" href="?page=3">3</a>
+                        <a class="button" href="?page=4">4</a>
+                        <a class="button" href="?page=5">5</a>
+                        <br>
+                    </c:if>
+                    <br>
+                    <input type="submit" name="submit" class="btn btn-primary" value="Submit">
                 </div>
-            </c:forEach>
+            </form>
+            <br>
+        </div>
+
+        </form>
+        <div class="cars">
+            <jsp:include page="nav.jsp"/>
+            <jsp:include page="popup.jsp"/>
+            <div class="car" id="ads">
+                <c:forEach items="${cars}" var="cars">
+                    <ul class="col-md-4">
+                        <li class="card rounded">
+                            <div class="card-image fw-900" onclick="flip(${cars.path})">
+                                <span class="card-detail-badge m-2">${cars.brand} ${cars.name} ${cars.model}</span>
+                                <figure onclick="addCar(${cars.id})">
+                                    <img class="img-fluid"
+                                         src="${cars.path}"
+                                         alt="url">
+                                    <figcaption></figcaption>
+                                </figure>
+                            </div>
+                            <div class="card-image-overlay m-auto">
+                                <span class="badge">Used</span>
+                                <span class="card-detail-badge">$${cars.price}</span>
+                            </div>
+                        </li>
+                    </ul>
+                </c:forEach>
+            </div>
         </div>
     </div>
-</div>
+
+</main>
+<%--    <a class="button" href="?page=${page}">${page}</a>--%>
+<%--    <a class="button" href="?page=${page+1}">${page+1}</a>--%>
 <script>
-    $(document).ready(function () {
-        $('#ads').click(function () {
-            $("#myPopup").load("b.html");
-            $('#myPopup').modal('show')
-        });
-    });
+
+
+    // $(function () {
+    // var button = $(".button");
+    // function switchToNext() {
+    // var _this = $(this);
+    // if (_this.hasClass("active")) {
+    // return false;
+    // } else {
+    // $(".button.active").removeClass("active");
+    // _this.addClass("active");
+    // }
+    // }
+    // button.on("click", switchToNext);
+    // });
+
+    function update() {
+
+        let auto = document.getElementById('brand');
+        let text = document.getElementById('text');
+        let button = document.getElementsByClassName('button');
+        let price = document.getElementById('price');
+        let value = document.getElementById('value');
+
+        let url = `?${value}=` + value;
+
+        console.log(button);
+        console.log(auto);
+        console.log(price);
+        console.log(value);
+        console.log(url);
+
+        // fetch(url, {
+        // method: 'GET',
+        // }).then(response => {
+        // console.log('Ok:', response);
+        // }).catch(err => {
+        // console.error(err)
+        // })
+    }
+
+    update();
+
     function addCar(id) {
         let url = '/' + '?id=' + id;
         console.log(url);
@@ -66,6 +237,14 @@
             console.error(err)
         })
     }
+
+    $(document).ready(function () {
+        $('#ads').click(function () {
+            $("#myPopup").load("b.html");
+            $('#myPopup').modal('show')
+        });
+    });
+
 </script>
 </body>
 </html>

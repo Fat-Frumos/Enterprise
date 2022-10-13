@@ -6,7 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<title>PopUp</title>
+<title>Car</title>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -46,7 +46,7 @@
                     <figure>
                         <img class="img-fluid"
                              id="main"
-                             src="https://raw.githubusercontent.com/Fat-Frumos/Cars/master/images/main.jpg"
+                             src="https://raw.githubusercontent.com/Fat-Frumos/Cars/master/main.jpg"
                              alt="main">
                         <figcaption></figcaption>
                     </figure>

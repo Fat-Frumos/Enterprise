@@ -19,5 +19,5 @@ public interface Dao<T> {
 
     boolean delete(long id);
 
-    List<Car> findAll(String params);
+    List<T> findAll(String params);
 }
