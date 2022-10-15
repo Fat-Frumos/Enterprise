@@ -6,11 +6,10 @@ public class UserDto {
 
     private String name;
     private String password;
-
     private String email;
     private Token token;
     private Role role;
-    private boolean active;
+    private boolean locked;
 
     public UserDto(String name, String password, String email, Token token, Role role) {
         this.name = name;
@@ -44,11 +43,11 @@ public class UserDto {
         this.token = token;
     }
 
-    public boolean isActive() {
-        return active;
+    public boolean isLocked() {
+        return locked;
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
+    public void setLocked(boolean locked) {
+        this.locked = locked;
     }
 }

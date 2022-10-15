@@ -1,6 +1,6 @@
 ###There is a list of Cars in the system, for which it is necessary to implement: 
 + choice by brand, price;
-- choice according to quality class ? (expensive -> cheap) sorting by price();
++ choice according to quality class ? (expensive -> cheap) sorting by price();
 - sort by rental price;
 - sort by name. (UI)
 
@@ -26,8 +26,9 @@ UI
 #####TODO: pagination &page=
 #####TODO: navigator
 #####TODO: validation fields
-#####TODO: Autocomplete
+#####TODO: Autocomplete regex
 #####TODO: Access denied(UI)
+#####TODO edit/delete/ByName
 
 #####TODO: @WebServlet(@WebServlet(urlPatterns = "/user") && urlPatterns = "/card")
 #####TODO: Authentication, authorization, and accounting: /login/registration user login.jsp
@@ -49,7 +50,7 @@ UI
 #####TODO: PRG redirect
 
 #####TODO http://localhost:8080/manager/text/deploy?war=file:/path/to/bar.war
-
+#####TODO: package.json
 conf\server.xml
 - listener.xml
 

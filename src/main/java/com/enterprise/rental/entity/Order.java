@@ -5,10 +5,10 @@ import java.sql.Timestamp;
 import java.util.List;
 
 public class Order {
-    private long id;
+    private long orderId;
     private long userId;
     private long carId;
-    private boolean driver;
+    private boolean withDriver;
     private Timestamp start;
     private Timestamp end;
     @OneToMany

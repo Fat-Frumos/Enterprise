@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500&family=Work+Sans:wght@800&display=swap');
 nav {
     top: 1vw;
-    left: 12vh;
+    left: 5vh;
     position: absolute;
 }
 * {
@@ -12,17 +12,12 @@ nav {
 
 body {
     padding: 15px;
-    /*overflow: hidden;*/
 }
 
 .container {
     max-width: 1000px;
     background-color: white;
     padding: 0;
-    margin: 0;
-}
-
-p {
     margin: 0;
 }
 
@@ -33,39 +28,22 @@ img {
     object-fit: fill;
 }
 
-.text-muted {
-    font-size: 10px;
-}
-
-.btn.btn-primary:hover .fas {
-    transform: translateX(10px);
-    transition: transform 0.5s ease
-}
-
-
-::placeholder {
-    font-size: 12px;
-}
-
-.ps-30 {
-    padding-left: 30px;
-}
 
 h5, .text-muted {
     font-family: 'Roboto', 'Verdana', sans-serif;
 }
 
 img {
-    transition: transform .7s ease;
+    transition: transform .7s ease-out;
 }
 
 img:hover {
     cursor: pointer;
-    transform: scale(1.25);
+    transform: perspective(500px) scale(1.2) translateY(-5px);
+    width: 1000px;
     z-index: -1;
 }
 
 figure {
-    top: -100px;
     overflow: hidden;
 }

@@ -11,16 +11,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-@WebServlet(urlPatterns = "/")
+@WebServlet(urlPatterns = "/cars")
 public class CarsServlet extends HttpServlet {
     private final CarService carService = new CarService();
-    private final String[] fields = {"id", "name", "brand", "model", "price", "year"};
-    private final String[] params = new String[fields.length];
+    private final String[] fields = {"id", "name", "brand", "model", "price", "year", "sort", "direction"};
     private static final Logger log = Logger.getLogger(CarsServlet.class.getName());
 
     @Override
@@ -29,23 +28,20 @@ public class CarsServlet extends HttpServlet {
             HttpServletResponse response)
             throws IOException, ServletException {
 
-        String field = "";
+        Map<String, String> params = new HashMap<>();
 
-        IntStream.range(0, fields.length).forEachOrdered(i ->
-                params[i] = request.getParameter(fields[i]));
-
-        log.info(String.format("Params: %s", params));
-
-        if (request.getParameter(fields[1]) != null) {
-            field = (String.format("%s='%s", fields[1],
-                    request.getParameter(fields[1])));
-        }
-        if (request.getParameter(fields[2]) != null) {
-            field = (String.format("%s='%s", fields[2],
-                    request.getParameter(fields[2])));
+        for (String field : fields) {
+            try {
+                String parameter = request.getParameter(field);
+                if (!parameter.equals("")) {
+                    params.put(field, parameter);
+                }
+            } catch (Exception e) {
+                // INFO: Params: null
+            }
         }
 
-        response.setContentType("text/html;charset=UTF-8");
+        log.info(String.format("%s", params));
 
         int page;
         int recordsPerPage;
@@ -61,51 +57,22 @@ public class CarsServlet extends HttpServlet {
             recordsPerPage = 10;
         }
 
-        List<Car> cars;
+        String field = params.keySet()
+                .stream()
+                .map(key -> String.format("&%s=%s", key, params.get(key)))
+                .collect(Collectors.joining());
 
-        if (field.equals("") ) {
-            cars = carService.getAll(page, recordsPerPage);
-        } else {
-            cars = carService.getAll(String.format("%s'", field));
-//            cars = carService.getAll(field, currentPage, recordsPerPage);
-        }
-        int rows = cars.size();
-        log.info(rows + " total cars");
-        request.setAttribute("cars", cars);
+        List<Car> auto = field.equals("")
+                ? carService.getAll(page, recordsPerPage)
+                : carService.getAll(params, page, recordsPerPage);
+
+        response.setContentType("text/html;charset=UTF-8");
+        request.setAttribute("page", page);
+        request.setAttribute("cars", auto);
 
         RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/views/cars.jsp");
         dispatcher.forward(request, response);
 
-
-        //TODO & params
-        //
-        //        log.info(currentPage + " records per page");
-//        log.info(recordsPerPage + " records per total");
-
-//        int nOfPages = rows / recordsPerPage;
-//
-//        if (nOfPages % recordsPerPage > 0) {
-//
-//            nOfPages++;
-//        }
-//
-//        request.setAttribute("noOfPages", nOfPages);
-//        request.setAttribute("currentPage", currentPage);
-//        request.setAttribute("recordsPerPage", recordsPerPage);
-
-//  cars = carService.getAll(String.format("id BETWEEN 220 AND 228 LIMIT %d OFFSET %d", total, page));
-//        int page = 1;
-//
-//        int total = 12;
-//
-//        if (request.getParameter("page") != null) {
-//            page = Integer.parseInt(request.getParameter("page"));
-//        }
-//
-//
-//        request.setAttribute("page", page);
-//
-//
     }
 
 

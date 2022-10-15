@@ -7,6 +7,7 @@ import com.enterprise.rental.exception.CarException;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class CarService implements Service {
@@ -50,12 +51,12 @@ public class CarService implements Service {
     }
 
     @Override
-    public List<Car> getAll(String params, int limit, int offset) {
+    public List<Car> getAll(Map<String, String> params, int limit, int offset) {
         return carDao.findAll(params, limit, offset);
     }
 
-    public List<Car> getAll(int currentPage, int recordsPerPage) {
-        return carDao.findAll(currentPage, recordsPerPage);
+    public List<Car> getAll(int page, int limit) {
+        return carDao.findAll(page, limit);
     }
 
     public List<Car> getAll(String params) {

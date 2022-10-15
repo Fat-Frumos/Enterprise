@@ -12,7 +12,7 @@ public class UserMapper extends Mapper<User> {
 
     public User mapRow(ResultSet resultSet) throws SQLException {
         long id = resultSet.getLong("id");
-        String name = resultSet.getString("nickname");
+        String name = resultSet.getString("name");
         String password = resultSet.getString("password");
         String email = resultSet.getString("email");
         log.info(String.format("id: %d, name: %s, pwd: %s, email: %s", id, name, password, email));

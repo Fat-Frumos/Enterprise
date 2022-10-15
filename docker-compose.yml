@@ -1,0 +1,113 @@
+version: "3.7"
+
+services:
+  db:
+    image: postgres:12.2
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: cars
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      PGDATA: /var/lib/postgresql/data
+
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+    # networks:
+    #   - postgres
+
+  pgadmin:
+    # container_name: pgadmin_container
+    image: dpage/pgadmin4:4.18
+    restart: always
+
+    environment:
+      PGADMIN_DEFAULT_EMAIL: fghjkl11@gmail.com  #${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: admin #${PGADMIN_DEFAULT_PASSWORD:-root}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      PGADMIN_LISTEN_PORT: 80
+
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    links:
+      - "db:pgsql-server"
+
+    # networks:
+    #   - postgres
+
+volumes:
+  db-data:
+  pgadmin-data:
+
+networks:
+  static-network:
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+
+  # sftp:
+  #   build: sftp/
+    # volumes:
+    #     - ./result:/home/devops/upload
+    #     - ./logs:/home/devops/logs
+    # ports:
+    #     - "223:22"
+    # command: devops:pass:::upload
+    # healthcheck:
+    #    test:  ["CMD-SHELL", "test -f /home/devops/logs/car.log"]
+    #    interval: 5s
+    #    timeout: 10s
+    #    retries: 50 
+    #    start_period: 10s
+
+  # tomcat:
+  #   image: tomcat:8.5-jre8
+  #   ports:
+  #     - "80:8080"
+  #   container_name: tomcat
+  #   volumes:
+  #     - ./logs/:/usr/local/tomcat/logs/
+
+  # react_server:
+  #   build: react_server
+  #   ports:
+  #     - "7000:7000"
+  #   links:
+  #     - target_nginx
+  #   networks:
+  #     static-network:
+  #       ipv4_address: 172.20.128.10
+  #   extra_hosts:
+  #    - "car.rental.com:172.20.128.20"
+
+  # nginx:
+  #   depends_on:
+  #     python:
+  #       condition: service_started
+  #   build: docker/nginx/
+  #   container_name: nginx    
+  #   links:
+  #     - dummy_web_server
+  #   networks:
+  #     static-network:
+  #       ipv4_address: 172.20.128.20    
+  #   ports:
+  #       - "883:80"
+  #   volumes:
+  #       - ./ftp:/opt/app
+  #       - ./nginx/custom.conf:/etc/nginx/nginx.conf:ro
+  #       - ./nginx/app:/opt/app
+  #   environment:
+  #     - ENV=development
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "ls", "-lsa"]
+  #     interval: 3s
+  #     timeout: 5s
+  #     retries: 5
+  #     start_period: 1s

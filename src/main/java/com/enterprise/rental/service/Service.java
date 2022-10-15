@@ -3,6 +3,7 @@ package com.enterprise.rental.service;
 import com.enterprise.rental.entity.Car;
 
 import java.util.List;
+import java.util.Map;
 
 public interface Service {
     boolean addCar(Car car);
@@ -17,5 +18,5 @@ public interface Service {
 
     List<Car> getRandom();
 
-    List<Car> getAll(String params, int limit, int offset);
+    List<Car> getAll(Map<String, String> params, int limit, int offset);
 }

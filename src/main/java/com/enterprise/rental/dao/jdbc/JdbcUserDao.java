@@ -20,9 +20,8 @@ import java.util.logging.Logger;
 
 public class JdbcUserDao implements UserDao {
     private static final UserMapper ROW_MAPPER = new UserMapper();
-
-    protected static final String USERS_SQL = "SELECT id, email, nickname, password FROM users";
-    private static final String FILTER_BY_NAME_SQL = "SELECT id, email, nickname, password FROM users WHERE nickname=";
+    protected static final String USERS_SQL = "SELECT id, email, name, password FROM users";
+    private static final String FILTER_BY_NAME_SQL = "SELECT id, email, name, password FROM users WHERE name=";
     private final Logger log = Logger.getLogger(JdbcUserDao.class.getName());
 
     @Override
@@ -42,8 +41,7 @@ public class JdbcUserDao implements UserDao {
 
     @Override
     public List<User> findAll() {
-//        return new ArrayList<>();
-//
+
         Connection connection;
 
         try {

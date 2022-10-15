@@ -12,9 +12,11 @@
 </head>
 <body>
 <nav>
-  <a href="/">Main</a> |
-  <a href="/card">Card</a> |
-  <a href="/user">Users</a> |
-  <a href="/login">Log Out</a>
+    <a href="/cars">Main</a> |
+    <a href="/card">Card</a> |
+    <a href="/user">Users</a> |
+    <a href="/login">Log Out</a>
+    <hr>
 </nav>
 </body>
+</html>

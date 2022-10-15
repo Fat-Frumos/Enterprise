@@ -1,0 +1,43 @@
+.option {
+    position: absolute;
+    top: 5rem;
+    left: 5vh;
+}
+
+.priceInput {
+    top: 1rem;
+}
+
+.button {
+    background-color: #cccccc;
+    width: 20px;
+    height: 20px;
+    float: left;
+    margin-right: 20px;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: 0.3s ease width;
+    text-align: center;
+    font-family: Verdana, Roboto, sans-serif;
+    font-size: 14px;
+    color: #ffffff;
+    line-height: 19px;
+}
+
+body > div.option > form > div > a:hover{
+    text-decoration: none;
+    color: #ffffff;
+}
+
+.button:hover{
+    background: #5a5a5a;
+}
+
+.button:last-child {
+    margin-right: 0;
+}
+
+input {
+    border-radius: 5px;
+    margin-bottom: 0px;
+}

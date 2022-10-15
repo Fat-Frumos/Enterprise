@@ -27,9 +27,9 @@
     <form action="/login" method="post">
         <div class="inputBox">
             <label for="name"></label>
-            <input id="name" type="text" name="name" placeholder="Username">
+            <input id="name" type="text" name="name" placeholder="Username" autocomplete="on">
             <label for="pass"></label>
-            <input id="pass" type="password" name="password" placeholder="Password"></div>
+            <input id="pass" type="password" name="password" placeholder="Password" autocomplete="on"></div>
         <input type="submit" name="" value="Login">
     </form>
         <a href="/user/new">Forget Password </a>

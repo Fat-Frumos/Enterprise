@@ -61,7 +61,8 @@ public class JdbcCarTemplate extends DbManager {
                     }
                     return cars;
                 }
-                throw new CarException("Vehicle not found");
+                return new ArrayList<>();
+//                throw new CarException("Vehicle not found");
             }
         } catch (SQLException ex) {
             throw new CarException(ex.getMessage());

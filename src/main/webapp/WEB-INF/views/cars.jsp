@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
   Created by IntelliJ IDEA.
   User: Pasha
@@ -7,12 +8,7 @@
 --%>
 <%@ taglib uri="/WEB-INF/dataTag.tld" prefix="ct" %>
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" %>
-<%--<%@ taglib uri="/WEB-INF/lib/customTag.jar" prefix="ct" %>--%>
 <html>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
-      integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
 </head>
 <title>Cars</title>
 <style>
@@ -21,20 +17,17 @@
 
     .day {
         position: absolute;
-        top: 5vh;
-        left: 10vw;
+        top: 2vh;
+        left: 90vw;
     }
 </style>
 </head>
-
 <body>
-<div class="cars">
-    <%--<jsp:include page="sorting.jsp"/>--%>
+    <jsp:include page="option.jsp"/>
     <jsp:include page="card.jsp"/>
-        <div class="day">
-            <h5><ct:today format="MMMM dd yyyy"/></h5>
-        </div>
-
+    <div class="day">
+        <h6><ct:today format="MMMM dd yyyy"/></h6>
+    </div>
 </div>
 </body>
 </html>

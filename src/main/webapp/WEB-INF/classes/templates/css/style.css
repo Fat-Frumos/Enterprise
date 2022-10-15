@@ -161,6 +161,7 @@ h1, h2 {
     transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
 }
 .slide-text > a:hover, .slide-text > a:active {
+    text-decoration: none;
     color: #ffffff;
     background: #222222;
     -webkit-transition: background 0.5s ease-in-out, color 0.5s ease-in-out;
