@@ -1,10 +1,10 @@
 package com.enterprise.rental.exception;
 
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
 
 public class CarException extends RuntimeException {
-    private static final Logger log = Logger.getLogger(CarException.class.getName());
+    private static final Logger log = Logger.getLogger(CarException.class);
     public CarException(String message) {
-        log.info(message);
+        log.debug(message);
     }
 }

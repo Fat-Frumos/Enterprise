@@ -4,7 +4,7 @@
             xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd">
         <tlib-version>1.0</tlib-version>
         <short-name>ct</short-name>
-        <uri>/WEB-INF/customTag</uri>
+        <uri>/WEB-INF/dataTag</uri>
         <tag>
             <name>today</name>
             <tag-class>com.enterprise.rental.utils.TodayTag</tag-class>

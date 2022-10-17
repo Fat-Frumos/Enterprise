@@ -10,15 +10,14 @@ import javax.validation.constraints.NotNull;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
 
 import static com.enterprise.rental.dao.jdbc.Constants.FILTER_BY_ID_SQL;
 import static com.enterprise.rental.dao.jdbc.Constants.INSERT_CAR_SQL;
 
-
 public class JdbcCarTemplate extends DbManager {
     private static final CarMapper ROW_MAPPER = new CarMapper();
-    private static final Logger log = Logger.getLogger(JdbcCarTemplate.class.getName());
+    private static final Logger log = Logger.getLogger(JdbcCarTemplate.class);
 
     protected static Optional<Car> getCarById(long id) {
         try (Connection connection = getInstance().getConnection();

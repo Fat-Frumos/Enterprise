@@ -3,26 +3,22 @@ package com.enterprise.rental.dao.jdbc;
 import com.enterprise.rental.dao.UserDao;
 import com.enterprise.rental.dao.factory.DbManager;
 import com.enterprise.rental.dao.mapper.UserMapper;
-import com.enterprise.rental.entity.Car;
 import com.enterprise.rental.entity.User;
 import com.enterprise.rental.exception.CarException;
 import com.enterprise.rental.exception.DataException;
+import org.apache.log4j.Logger;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.logging.Logger;
+import javax.validation.constraints.NotNull;
+import java.sql.*;
+import java.util.*;
 
 public class JdbcUserDao implements UserDao {
     private static final UserMapper ROW_MAPPER = new UserMapper();
     protected static final String USERS_SQL = "SELECT id, email, name, password FROM users";
-    private static final String FILTER_BY_NAME_SQL = "SELECT id, email, name, password FROM users WHERE name=";
-    private final Logger log = Logger.getLogger(JdbcUserDao.class.getName());
+    private static final String FILTER_BY_NAME_SQL = "SELECT id, name, email, password FROM users WHERE name=";
+    protected static final String FIELD = " id, name, email, password ";
+    protected static final String INSERT_USER_SQL = "INSERT INTO users(" + FIELD + ") VALUES ( ?, ?, ?, ?);";
+    private final Logger log = Logger.getLogger(JdbcUserDao.class);
 
     @Override
     public Optional<User> findByName(String name) {
@@ -31,7 +27,7 @@ public class JdbcUserDao implements UserDao {
 
         log.info(sql);
 
-        return getGetSql(sql);
+        return getUserSql(sql);
     }
 
     @Override
@@ -64,7 +60,7 @@ public class JdbcUserDao implements UserDao {
                     }
                     return users;
                 }
-                throw new CarException("Vehicle not found");
+                throw new CarException("Customer not found");
             }
         } catch (SQLException ex) {
             throw new CarException(ex.getMessage());
@@ -73,7 +69,7 @@ public class JdbcUserDao implements UserDao {
 
     @Override
     public boolean save(User user) {
-        return false;
+        return setUserQuery(user);
     }
 
     @Override
@@ -87,12 +83,52 @@ public class JdbcUserDao implements UserDao {
     }
 
     @Override
-    public List<User> findAll(String params) {
-        return new ArrayList<>();
+    public List<User> findAll(String sql) {
+        //TODO List<User> return GetSql(USERS_SQL);
+        return findAll();
     }
 
+    private boolean setUserQuery(@NotNull User user) throws DataException {
 
-    private Optional<User> getGetSql(String sql) {
+        Connection connection = null;
+        PreparedStatement statement = null;
+
+        connection = DbManager.getInstance().getConnection();
+        String userName = user.getName();
+        try {
+            connection.setAutoCommit(false);
+            statement = connection.prepareStatement(INSERT_USER_SQL);
+
+
+            String password = user.getPassword();
+            String email = user.getEmail();
+
+            statement.setLong(1, UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE);
+            statement.setString(2, userName);
+            statement.setString(3, email);
+            statement.setString(4, password);
+            statement.execute();
+            connection.commit();
+            return true;
+        } catch (SQLException e) {
+            try {
+                Objects.requireNonNull(connection).rollback();
+            } catch (SQLException ex) {
+                log.info("rollback");
+                throw new DataException(ex.getMessage());
+            }
+            log.info(String.format("%s User can`t added, maybe account already exists", userName));
+            throw new DataException(e);
+        } finally {
+            try {
+                Objects.requireNonNull(connection).close();
+            } catch (SQLException e) {
+                log.info(String.format("Connection not closed: %s", e.getMessage()));
+            }
+        }
+    }
+
+    private Optional<User> getUserSql(String sql) {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;

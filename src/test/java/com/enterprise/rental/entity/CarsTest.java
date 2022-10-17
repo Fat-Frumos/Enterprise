@@ -7,8 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -22,20 +21,20 @@ import static org.mockito.Mockito.when;
 
 class CarsTest {
 //    private static final Cars INSTANCE = Cars.getInstance();
-    Logger logger = LoggerFactory.getLogger(CarsTest.class);
+    Logger logger = Logger.getLogger(CarsTest.class);
     private static final List<Car> cars = new ArrayList<>();
     static final Car X7 = new Car.Builder().id(1l).name("X7").brand("BMW").model("G07").path("http//").price(25000.0).year(2022).build();
     static final Car X5 = new Car.Builder().id(2l).name("X5").brand("BMW").model("GT-2").path("http//").price(22000.0).year(2020).build();
     JdbcCarDao mockCarDao = mock(JdbcCarDao.class);
-    Service service = new CarService(mockCarDao);
+    CarService service = new CarService(mockCarDao);
 
     @BeforeEach
     void init() {
         cars.add(X5);
         cars.add(X7);
         service = new CarService(mockCarDao);
-        service.addCar(X5);
-        service.addCar(X7);
+        service.save(X5);
+        service.save(X7);
     }
 
     @Test
@@ -179,7 +178,7 @@ class CarsTest {
     @Test
     void save() {
         when(mockCarDao.save(X5)).thenReturn(true);
-        assertTrue(service.addCar(X5));
+        assertTrue(service.save(X5));
     }
 
     @Test

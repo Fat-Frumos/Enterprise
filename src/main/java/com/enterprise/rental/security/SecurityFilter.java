@@ -6,12 +6,12 @@
 //import javax.servlet.http.HttpServletResponse;
 //import javax.servlet.http.HttpSession;
 //import java.io.IOException;
-//import java.util.logging.Logger;
+
 //
-//@WebServlet(name = "SecurityFilter", urlPatterns = "/user")
+//@WebServlet(name = "SecurityFilter", urlPatterns = "/users")
 //public class SecurityFilter implements Filter {
 //
-//    private static final Logger log = Logger.getLogger(SecurityFilter.class.getName());
+//    private static final Logger log = Logger.getLogger(SecurityFilter.class);
 //
 //    @Override
 //    public void init(FilterConfig filterConfig) throws ServletException {

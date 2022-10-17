@@ -30,7 +30,7 @@ body {
 }
 
 .form-popup {
-    top: 65%;
+    top: 35%;
     left: 45%;
     display: none;
     position: fixed;
@@ -60,10 +60,11 @@ body {
 
 #myForm:hover {
     cursor: pointer;
+    transform: perspective(500px) scale(1.2) translateY(-5px);
 }
 #myForm {
-    background-color: #ccc;
-    width: 300px;
+    width: 250px;
     text-align: center;
     border-radius: 8px;
+    transition: transform .7s ease-out;
 }

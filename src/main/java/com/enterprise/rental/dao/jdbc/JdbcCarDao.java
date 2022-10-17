@@ -4,17 +4,16 @@ import com.enterprise.rental.dao.CarDao;
 import com.enterprise.rental.entity.Car;
 import com.enterprise.rental.entity.User;
 
-import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.logging.Logger;
 
-import static com.enterprise.rental.dao.jdbc.Constants.*;
+import static com.enterprise.rental.dao.jdbc.Constants.FILTER_BY_SQL;
+import static com.enterprise.rental.dao.jdbc.Constants.FIND_ALL_SQL;
 import static com.enterprise.rental.dao.jdbc.JdbcCarTemplate.*;
 
 public class JdbcCarDao implements CarDao {
-    private static final Logger log = Logger.getLogger(JdbcCarDao.class.getName());
+
     @Override
     public List<Car> findAll() {
         return getCarsQuery(FIND_ALL_SQL);
@@ -51,28 +50,33 @@ public class JdbcCarDao implements CarDao {
         return false;
     }
 
+//    @Override
+//    public List<Car> findAll(int page, int limit) {
+//
+//        int start = page * limit - limit;
+//
+//        if (start < 0) {
+//            start = 0;
+//        }
+//        if (limit <= 1) {
+//            limit = 10;
+//        }
+//        String sql = String.format("%sFROM car LIMIT %d OFFSET %d", FIELDS, limit, start);
+//        return getCarsQuery(sql);
+//
+//    }
+
     @Override
-    public List<Car> findAll(int page, int recordsPerPage) {
+    public List<Car> findAll(Map<String, String> params, int offset) {
 
-        int start = page * recordsPerPage - recordsPerPage;
-
-        if (start < 0) {
-            start = 0;
-        }
-        if (recordsPerPage <= 0) {
-            recordsPerPage = 9;
-        }
-            String sql = String.format("%sFROM car LIMIT %d OFFSET %d", FIELDS, recordsPerPage, start);
-        return getCarsQuery(sql);
-
-    }
-    @Override
-    public List<Car> findAll(@NotNull Map<String, String> params, int limit, int offset) {
         String sort = params.get("sort");
         sort = sort == null ? "" : sort;
 
         String direction = params.get("direction");
         direction = direction == null ? "" : direction;
+        if (direction.equals("")) {
+            direction = "price";
+        }
 
         String brand = params.get("brand");
         brand = brand == null ? "" : String.format(" brand='%s' AND", brand);
@@ -82,17 +86,41 @@ public class JdbcCarDao implements CarDao {
         try {
             price = Integer.parseInt(params.get("price"));
         } catch (NumberFormatException e) {
-            price = 1;
+            price = 0;
         }
 
-        if (limit == 0) {
-            limit = 10;
+        String records = params.get("limit");
+
+        int limit = records
+                != null && Integer.parseInt(records) >= 1
+                ? Integer.parseInt(records)
+                : 10;
+
+//        if (sort.equals("")) {
+//            sort = "ASC";
+//        }
+
+        int page;
+        try {
+            page = Integer.parseInt(params.get("page"));
+        } catch (NumberFormatException e) {
+            page = 0;
         }
 
-        String sql = String.format("%sWHERE%s price>%d ORDER BY price %s LIMIT %d OFFSET %d;", FILTER_BY_SQL, brand, price, sort, limit, offset);
 
-        log.info(sql);
-        //TODO direction
+        int start = page * limit - limit;
+
+        if (start < 0) {
+            start = 0;
+        }
+
+        String sql = String.format("%sWHERE%s price>%d ORDER BY %s %s LIMIT %d OFFSET %d;", FILTER_BY_SQL, brand, price, direction, sort, limit, start);
+
         return getCarsQuery(sql);
+    }
+
+    @Override
+    public List<Car> findAll(Map<String, String> params) {
+        return findAll(params);
     }
 }

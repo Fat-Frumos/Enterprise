@@ -2,13 +2,12 @@ package com.enterprise.rental.dao.mapper;
 
 import com.enterprise.rental.entity.User;
 import com.enterprise.rental.entity.UserDto;
-
+import org.apache.log4j.Logger;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.logging.Logger;
 
 public class UserMapper extends Mapper<User> {
-    private static final Logger log = Logger.getLogger(UserMapper.class.getName());
+    private static final Logger log = Logger.getLogger(UserMapper.class);
 
     public User mapRow(ResultSet resultSet) throws SQLException {
         long id = resultSet.getLong("id");
@@ -16,7 +15,7 @@ public class UserMapper extends Mapper<User> {
         String password = resultSet.getString("password");
         String email = resultSet.getString("email");
         log.info(String.format("id: %d, name: %s, pwd: %s, email: %s", id, name, password, email));
-        return new User(id, name, password, email);
+        return new User(id, name, password, email, "ua", true);
     }
 
     public UserDto toDto(User user) {

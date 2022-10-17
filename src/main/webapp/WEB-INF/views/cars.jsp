@@ -9,7 +9,7 @@
 <%@ taglib uri="/WEB-INF/dataTag.tld" prefix="ct" %>
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" %>
 <html>
-</head>
+<head>
 <title>Cars</title>
 <style>
     <%@include file="../classes/templates/css/card.css"%>
@@ -21,6 +21,7 @@
         left: 90vw;
     }
 </style>
+<link rel="shortcut icon" href="https://iconarchive.com/download/i18444/iconshock/global-warming/wheel.ico" type="image/x-icon">
 </head>
 <body>
     <jsp:include page="option.jsp"/>

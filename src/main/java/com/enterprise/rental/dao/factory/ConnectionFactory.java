@@ -5,10 +5,10 @@ import org.apache.commons.dbcp2.BasicDataSource;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
 
 public class ConnectionFactory implements AutoCloseable {
-    private static final Logger log = Logger.getLogger(ConnectionFactory.class.getName());
+    private static final Logger log = Logger.getLogger(ConnectionFactory.class);
     private final BasicDataSource dataSource;
 
     public ConnectionFactory(String url, String user, String password) {

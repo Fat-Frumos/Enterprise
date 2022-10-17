@@ -1,7 +1,6 @@
 package com.enterprise.rental.service;
 
 import com.enterprise.rental.dao.CarDao;
-import com.enterprise.rental.dao.Dao;
 import com.enterprise.rental.entity.Car;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,8 +30,8 @@ class CarServiceTest {
 
     @Test
     void addCar() {
-        service.addCar(X7);
-        service.addCar(X5);
+        service.save(X7);
+        service.save(X5);
         assertEquals(2, service.getAll().size());
         when(service.getAll("BMW")).thenReturn(cars);
     }

@@ -4,18 +4,6 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
       http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
          id="WebApp_ID" version="3.0">
-    <servlet>
-        <servlet-name>Main</servlet-name>
-        <jsp-file>/WEB-INF/views/index.jsp</jsp-file>
-        <init-param>
-            <param-name>Main</param-name>
-            <param-value>Main Value</param-value>
-        </init-param>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>Main</servlet-name>
-        <url-pattern>/view/</url-pattern>
-    </servlet-mapping>
 
     <!--    <filter>-->
     <!--        <filter-name>UserFilter</filter-name>-->
@@ -36,16 +24,50 @@
     <!--        <url-pattern>/card</url-pattern>-->
     <!--    </servlet-mapping>-->
 
-        <listener>
-            <listener-class>com.enterprise.rental.utils.Listener</listener-class>
-        </listener>
 
-        <jsp-config>
-            <taglib>
-                <taglib-uri>rental.enterprise.com</taglib-uri>
-                <taglib-location>/WEB-INF/dataTag.tld</taglib-location>
-            </taglib>
-        </jsp-config>
+<!--    <servlet>-->
+<!--        <servlet-name>user</servlet-name>-->
+<!--        <jsp-file>/WEB-INF/views/users.jsp</jsp-file>-->
+<!--        <init-param>-->
+<!--            <param-name>user</param-name>-->
+<!--            <param-value>user-page</param-value>-->
+<!--        </init-param>-->
+<!--    </servlet>-->
+
+<!--    <servlet-mapping>-->
+<!--        <servlet-name>user</servlet-name>-->
+<!--        <url-pattern>/views/users.jsp</url-pattern>-->
+<!--    </servlet-mapping>-->
+
+<!--    <servlet>-->
+<!--        <servlet-name>view</servlet-name>-->
+<!--        <jsp-file>/WEB-INF/views/index.jsp</jsp-file>-->
+<!--        <init-param>-->
+<!--            <param-name>view</param-name>-->
+<!--            <param-value>view-page</param-value>-->
+<!--        </init-param>-->
+<!--    </servlet>-->
+
+<!--    <servlet-mapping>-->
+<!--        <servlet-name>view</servlet-name>-->
+<!--        <url-pattern>/views/index.jsp</url-pattern>-->
+<!--    </servlet-mapping>-->
+
+    <listener>
+        <listener-class>com.enterprise.rental.utils.Listener</listener-class>
+    </listener>
+
+    <context-param>
+        <param-name>log4jConfiguration</param-name>
+        <param-value>/WEB-INF/classes/log4j.xml</param-value>
+    </context-param>
+
+    <jsp-config>
+        <taglib>
+            <taglib-uri>rental.enterprise.com</taglib-uri>
+            <taglib-location>/WEB-INF/dataTag.tld</taglib-location>
+        </taglib>
+    </jsp-config>
 
     <session-config>
         <session-timeout>3</session-timeout>

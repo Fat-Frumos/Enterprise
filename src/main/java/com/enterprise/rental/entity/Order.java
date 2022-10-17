@@ -7,10 +7,14 @@ import java.util.List;
 public class Order {
     private long orderId;
     private long userId;
-    private long carId;
     private boolean withDriver;
+    private boolean rejected;
     private Timestamp start;
     private Timestamp end;
+    private int day;
+    private String damage;
+    private double repairs;
+    private boolean closed;
     @OneToMany
     private List<Cars> cars;
 }

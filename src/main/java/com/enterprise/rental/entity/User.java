@@ -4,7 +4,6 @@ import com.enterprise.rental.security.Token;
 
 import javax.persistence.OneToMany;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.List;
 
 public class User implements Serializable {
@@ -13,13 +12,13 @@ public class User implements Serializable {
     private String password;
     private String email;
     private Token token;
+
+    private String language;
     private Role role;
 
     @OneToMany
     private List<Order> orders;
-
-    private LocalDateTime deactivateDate;
-    private final boolean active = false;
+    private boolean active;
 
     public long getUserId() {
         return userId;
@@ -58,29 +57,39 @@ public class User implements Serializable {
     }
 
     public Token getToken() {
-        return getToken();
+        return token;
     }
 
     public void setToken(Token token) {
         this.token = token;
     }
 
-    public LocalDateTime getDeactivationDate() {
-        return deactivateDate;
+    public Role getRole() {
+        return role;
     }
 
-    public void setDeactivateDate(LocalDateTime deactivateDate) {
-        this.deactivateDate = deactivateDate;
+    public void setRole(Role role) {
+        this.role = role;
     }
 
-    public User(long userId, String name, String password, String email) {
+    public User(long userId, String name, String password, String email, String language, boolean active) {
         this.userId = userId;
         this.name = name;
         this.password = password;
         this.email = email;
+        this.language = language;
+        this.active = active;
     }
 
-    public Role getRole() {
-        return role;
+    @Override
+    public String toString() {
+        return "User{" +
+                ", name='" + name + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", language='" + language + '\'' +
+                ", role=" + role +
+                ", active=" + active +
+                '}';
     }
 }

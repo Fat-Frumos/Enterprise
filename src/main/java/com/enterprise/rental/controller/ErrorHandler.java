@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
 
 @WebServlet("/error")
 public class ErrorHandler extends HttpServlet {
@@ -14,7 +14,7 @@ public class ErrorHandler extends HttpServlet {
     private static final long serialVersionUID = 31L;
 
     private static final Logger log = Logger
-            .getLogger(ErrorHandler.class.getName());
+            .getLogger(ErrorHandler.class);
 
     @Override
     protected void doGet(

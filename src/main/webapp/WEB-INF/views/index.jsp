@@ -18,18 +18,23 @@
     <style>
         <%@include file="../classes/templates/css/car.css"%>
         <%@include file="../classes/templates/css/slider.css"%>
+
+        body > div.carousel > figure.carousel-item.active > img:hover{
+            transform: scale(1.2);
+            cursor: pointer;
+        }
     </style>
 </head>
 
 <body>
 
 <div class="carousel">
-    <div class="form-popup" id="myForm" onclick="closeForm()"></div>
+    <button class="form-popup" id="myForm" onclick="closeForm()"></button>
     <c:forEach items="${cars}" var="cars">
-        <figure class="carousel-item"><img onclick="openForm(`${cars.brand} • ${cars.name} • ${cars.model}`)" src="${cars.path}" alt="">
+        <figure class="carousel-item">
+            <img onclick="openForm(`${cars.brand} • ${cars.name} • ${cars.model}`)" src="${cars.path}" alt="${cars.brand}">
         </figure>
     </c:forEach>
-
 
 </div>
 <script>
@@ -48,23 +53,10 @@
 
     function closeForm() {
         document.getElementById("myForm").style.display = "none";
-        window.location.href = "/login";
+        window.location.href = "/cars";
 
     }
-
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-
-
-<%--<script src="https://code.jquery.com/jquery-3.6.1.slim.min.js" integrity="sha256-w8CvhFs7iHNVUtnSP0YKEg00p9Ih13rlL9zGqvLdePA="crossorigin="anonymous">--%>
-
-<%--    $(document).ready(function(){--%>
-<%--        $('.carousel').carousel();--%>
-<%--      });--%>
-<%--    $('.carousel-item').ready(function(){--%>
-<%--        console.log--%>
-<%--      });--%>
-<%--</script>--%>
-
 </body>
 </html>

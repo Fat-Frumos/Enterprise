@@ -11,17 +11,16 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(urlPatterns = "/view")
+@WebServlet(urlPatterns = "/views")
 public class StaticServlet extends HttpServlet {
     private final CarService carService = new CarService();
+    private final List<Car> cars = carService.getAll("id BETWEEN 220 AND 228");
 
     @Override
     protected void doGet(
             HttpServletRequest request,
             HttpServletResponse response)
             throws ServletException, IOException {
-
-        List<Car> cars = carService.getAll("id BETWEEN 220 AND 228");
 
         request.setAttribute("cars", cars);
 

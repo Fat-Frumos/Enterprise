@@ -10,15 +10,18 @@
 <!DOCTYPE html>
 <head>
     <title>Rental Car</title>
+    <link rel="shortcut icon" href="https://iconarchive.com/download/i18444/iconshock/global-warming/wheel.ico" type="image/x-icon">
 </head>
 
 <style>
     <%@include file="../classes/templates/css/car.css"%>
+
 </style>
 
 <body>
 <div class="container">
     <jsp:include page="nav.jsp"/>
+    ${user}
     <div class="row m-0">
         <div class="col-lg-7 pb-5 pe-lg-5">
             <jsp:include page="label.jsp"/>

@@ -12,7 +12,7 @@
 </head>
 <body>
 <nav>
-    <a href="/cars">Main</a> |
+    <a href="/cars">Cars</a> |
     <a href="/card">Card</a> |
     <a href="/user">Users</a> |
     <a href="/login">Log Out</a>

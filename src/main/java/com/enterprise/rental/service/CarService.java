@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class CarService implements Service {
+public class CarService implements Service<Car> {
     private final CarDao carDao;
 
     public CarService(CarDao carDao) {
@@ -22,7 +22,7 @@ public class CarService implements Service {
     }
 
     @Override
-    public boolean addCar(Car car) {
+    public boolean save(Car car) {
         return carDao.save(car);
     }
 
@@ -51,15 +51,15 @@ public class CarService implements Service {
     }
 
     @Override
-    public List<Car> getAll(Map<String, String> params, int limit, int offset) {
-        return carDao.findAll(params, limit, offset);
+    public List<Car> getAll(Map<String, String> params, int offset) {
+        return carDao.findAll(params, offset);
     }
 
-    public List<Car> getAll(int page, int limit) {
-        return carDao.findAll(page, limit);
-    }
-
-    public List<Car> getAll(String params) {
+    public List<Car> getAll(Map<String, String> params) {
         return carDao.findAll(params);
+    }
+
+    public List<Car> getAll(String sql) {
+        return carDao.findAll(sql);
     }
 }
