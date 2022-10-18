@@ -25,7 +25,8 @@ class CarMapperTest {
         when(resultSet.getString("brand")).thenReturn("BMW");
         when(resultSet.getString("model")).thenReturn("G07");
         when(resultSet.getString("path")).thenReturn("http//");
-        when(resultSet.getDouble("price")).thenReturn(25000.0);
+        when(resultSet.getDouble("price")).thenReturn(500.0);
+        when(resultSet.getDouble("cost")).thenReturn(25000.0);
         when(resultSet.getInt("year")).thenReturn(2022);
 
         Car car = mapper.mapRow(resultSet);
@@ -35,7 +36,8 @@ class CarMapperTest {
         assertEquals("X7", car.getName());
         assertEquals("G07", car.getModel());
         assertEquals("http//", car.getPath());
-        assertEquals(25000.0, car.getPrice());
+        assertEquals(500.0, car.getPrice());
+        assertEquals(25000.0, car.getCost());
         assertEquals(2022, car.getYear());
 
     }

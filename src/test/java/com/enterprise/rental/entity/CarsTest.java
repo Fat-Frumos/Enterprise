@@ -2,7 +2,6 @@ package com.enterprise.rental.entity;
 
 import com.enterprise.rental.dao.jdbc.JdbcCarDao;
 import com.enterprise.rental.service.CarService;
-import com.enterprise.rental.service.Service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,9 +9,7 @@ import org.mockito.Mockito;
 import org.apache.log4j.Logger;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -22,9 +19,9 @@ import static org.mockito.Mockito.when;
 class CarsTest {
 //    private static final Cars INSTANCE = Cars.getInstance();
     Logger logger = Logger.getLogger(CarsTest.class);
-    private static final List<Car> cars = new ArrayList<>();
-    static final Car X7 = new Car.Builder().id(1l).name("X7").brand("BMW").model("G07").path("http//").price(25000.0).year(2022).build();
-    static final Car X5 = new Car.Builder().id(2l).name("X5").brand("BMW").model("GT-2").path("http//").price(22000.0).year(2020).build();
+    private static final Set<Car> cars = new HashSet<>();
+    static final Car X7 = new Car.Builder().id(1l).name("X7").brand("BMW").model("G07").path("http//").price(25000.0).cost(10000.0).year(2022).build();
+    static final Car X5 = new Car.Builder().id(2l).name("X5").brand("BMW").model("GT-2").path("http//").price(22000.0).cost(10000.0).year(2020).build();
     JdbcCarDao mockCarDao = mock(JdbcCarDao.class);
     CarService service = new CarService(mockCarDao);
 
@@ -40,7 +37,7 @@ class CarsTest {
     @Test
     @DisplayName(value = "Test-Mock Get Cars from db")
     void testGetCars() {
-        List<Car> actual = service.getAll();
+        Set<Car> actual = service.getAll();
         assertEquals(cars, actual);
     }
 
@@ -94,7 +91,7 @@ class CarsTest {
 
     @Test
     public void testFindByBrand() {
-        Car car = new Car.Builder().id(2l).name("X5").brand("BMW").model("GT-2").path("http//").price(10000.0).year(2020).build();
+        Car car = new Car.Builder().id(2l).name("X5").brand("BMW").model("GT-2").path("http//").price(10000.0).cost(10000.0).year(2020).build();
         when(service.getAll("BMW")).thenReturn(cars);
 
         logger.info(String.format("%s", service.getAll()));
@@ -109,7 +106,7 @@ class CarsTest {
     @Test
     public void testFindAllReturnCorrectData() {
         JdbcCarDao jdbcCarDao = new JdbcCarDao();
-        List<Car> cars = jdbcCarDao.findAll();
+        Set<Car> cars = jdbcCarDao.findAll();
         assertFalse(cars.isEmpty());
 
         for (Car car : cars) {
@@ -131,7 +128,7 @@ class CarsTest {
         String brand = "BMW";
 //        List<Car> cars = mockCarDao.findAll(brand);
 
-        when(mockCarDao.findAll(brand)).thenReturn(List.of(X5, X7));
+        when(mockCarDao.findAll(brand)).thenReturn(Set.of(X5, X7));
         assertEquals(2, service.getAll().size());
 
     }
@@ -165,7 +162,7 @@ class CarsTest {
 
     @Test
     void getAll() {
-        when(mockCarDao.findAll()).thenReturn(List.of(X5, X7));
+        when(mockCarDao.findAll()).thenReturn(Set.of(X5, X7));
         assertEquals(2, service.getAll().size());
     }
 

@@ -26,13 +26,14 @@
                             <figure>
                                 <img class="img-fluid"
                                      src="${cars.path}"
-                                     alt="url">
+                                     alt="${cars.brand} ${cars.name} ${cars.model}">
                                 <figcaption></figcaption>
                             </figure>
                         </div>
                         <div class="card-image-overlay m-auto">
                             <span class="card-detail-badge">Used</span>
                             <span class="card-detail-badge">$${cars.price}</span>
+                            <span class="card-detail-badge">$${cars.cost}</span>
                         </div>
                         <div class="card-body text-center">
                             <a class="ad-btn" href="#">View</a>

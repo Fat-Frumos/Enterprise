@@ -20,7 +20,8 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"></button>
             </div>
-            <form class="popup" id="MyForm" action="/" method="post">
+            <form class="popup" id="MyForm" action="/card" method="post">
+
                 <label>Enter Name</label>
                 <input type="text" name="name" placeholder="Enter your name"/><br><label>Enter Password</label>
                 <input type="password" name="password" placeholder="Enter your password"/><br>

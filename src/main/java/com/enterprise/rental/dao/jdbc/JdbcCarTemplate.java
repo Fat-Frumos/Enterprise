@@ -5,12 +5,12 @@ import com.enterprise.rental.dao.mapper.CarMapper;
 import com.enterprise.rental.entity.Car;
 import com.enterprise.rental.exception.CarException;
 import com.enterprise.rental.exception.DataException;
+import org.apache.log4j.Logger;
 
 import javax.validation.constraints.NotNull;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.*;
-import org.apache.log4j.Logger;
 
 import static com.enterprise.rental.dao.jdbc.Constants.FILTER_BY_ID_SQL;
 import static com.enterprise.rental.dao.jdbc.Constants.INSERT_CAR_SQL;
@@ -20,6 +20,7 @@ public class JdbcCarTemplate extends DbManager {
     private static final Logger log = Logger.getLogger(JdbcCarTemplate.class);
 
     protected static Optional<Car> getCarById(long id) {
+
         try (Connection connection = getInstance().getConnection();
              PreparedStatement statement = connection.prepareStatement(FILTER_BY_ID_SQL)) {
             statement.setLong(1, id);
@@ -30,10 +31,12 @@ public class JdbcCarTemplate extends DbManager {
             }
         } catch (SQLException e) {
             throw new DataException(e);
+        } finally {
+            //TODO
         }
     }
 
-    protected static List<Car> getCarsQuery(String sql) {
+    protected static Set<Car> getCarsQuery(String sql) {
 
         log.info(sql);
 
@@ -53,15 +56,14 @@ public class JdbcCarTemplate extends DbManager {
                 connection.commit();
 
                 if (resultSet.next()) {
-                    List<Car> cars = new ArrayList<>();
+                    Set<Car> cars = new HashSet<>();
                     while (resultSet.next()) {
                         Car car = ROW_MAPPER.mapRow(resultSet);
                         cars.add(car);
                     }
                     return cars;
                 }
-                return new ArrayList<>();
-//                throw new CarException("Vehicle not found");
+                throw new CarException("Vehicle not found");
             }
         } catch (SQLException ex) {
             throw new CarException(ex.getMessage());
@@ -78,12 +80,13 @@ public class JdbcCarTemplate extends DbManager {
 
             try (PreparedStatement statement = connection.prepareStatement(INSERT_CAR_SQL)) {
 
-                long id = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
+                long id = UUID.randomUUID().getMostSignificantBits() & Integer.MAX_VALUE;
                 String name = car.getName();
                 String brand = car.getBrand();
                 String model = car.getModel();
                 String path = car.getPath();
                 Double price = car.getPrice();
+                Double cost = car.getCost();
                 int year = car.getYear();
 
                 LocalDateTime time = LocalDateTime.now();
@@ -94,8 +97,9 @@ public class JdbcCarTemplate extends DbManager {
                 statement.setString(4, model);
                 statement.setString(5, path);
                 statement.setDouble(6, price);
-                statement.setInt(7, year);
-                statement.setTimestamp(8, Timestamp.valueOf(time));
+                statement.setDouble(7, cost);
+                statement.setInt(8, year);
+                statement.setTimestamp(9, Timestamp.valueOf(time));
                 statement.execute();
 
                 connection.commit();

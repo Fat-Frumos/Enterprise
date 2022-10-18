@@ -42,7 +42,7 @@
             <div class="carousel-item active">
                 <img class="d-block w-100"
                      src="https://raw.githubusercontent.com/Fat-Frumos/Cars/master/images/slider-47.jpg"
-                     alt=" ">
+                     alt="slide">
                 <div class="slide_style_left text-center">
                     <div class="row">
                         <div class="col-12 slide-text text-left">

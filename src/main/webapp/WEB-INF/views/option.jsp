@@ -12,39 +12,6 @@
     <title>Search</title>
     <style>
         <%@include file="../classes/templates/css/option.css"%>
-        span > i {
-            color: white;
-        }
-
-        span > input {
-            background: none;
-            color: white;
-            border: 0;
-            padding: 0;
-        }
-
-        #records {
-            width: 10vw;
-        }
-
-        select {
-            border-radius: 5px;
-            width: 7.2vw;
-        }
-
-        body > div.option > form > div > div.btn-group.sort-btn > button > input {
-            display: none;
-        }
-
-        #direction {
-            width: 3.5vw;
-        }
-
-        .buttons {
-            margin-bottom: 2vh;
-            left: 1vw;
-        }
-
     </style>
 
     <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css'>
@@ -68,31 +35,24 @@
                     <option value="Xpeng">Xpeng</option>
                 </select>
             </div>
-            <select behavior="listBox" class="form-control" id="records" name="limit">
-                <option value="0" selected></option>
-                <option value="4">3</option>
-                <option value="7">6</option>
-                <option value="10">9</option>
-                <option value="13">12</option>
-            </select>
-
-<%--                            <c:if test="${page = 0 }"> </c:if>--%>
+            <label for="price">Price:</label>
+            <input type="number" id="price" name="price" min="100" max="1500">
+<%--            <label for="price">Cost:</label>--%>
+<%--            <input type="number" id="cost" name="cost" min="100" max="100000">--%>
+<%--            <br>--%>
             <div class="buttons">
                 <br>
                 <a class="button" href="?page=${page-1}"><</a>
-                <a class="button" href="?page=${page}">${page}</a>
-                <a class="button" href="?page=${page+1}">${page+1}</a>
-                <a class="button" href="?page=${page+2}">${page+2}</a>
+                <a class="button" href="?page=${page}">${page+1}</a>
+                <a class="button" href="?page=${page+1}">${page+2}</a>
+                <a class="button" href="?page=${page+2}">${page+3}</a>
+                <a class="button" href="?page=${page+3}">${page+4}</a>
                 <a class="button" href="?page=${page+1}">></a>
             </div>
             <br>
-            <label for="price"></label>
-            <input type="number submit" id="price" name="price" min="100" max="1000000">
-            <br>
-            <br>
             <div class="btn-group sort-btn">
-                <button id="direction" class="btn btn-secondary" data="none">Name
-                    <input name="direction" value="name" data="none" class="fa fa-sort">
+                <button id="direction" class="btn btn-secondary" data="none">Cost
+                    <input name="direction" value="cost" data="none" class="fa fa-sort">
                 </button>
                 <button id="search" class="btn btn-secondary" data-sort="none">
                     <input name="sort" value="" class="fa fa-sort"><i class="fa fa-sort"></i>
@@ -102,11 +62,10 @@
                     <i class="fa fa-search"></i>
                 </button>
             </div>
-            <br>
-            <br>
         </div>
     </form>
 </div>
+
 <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js'></script>
 <script>
     $("input").on("keydown", function search(e) {
@@ -124,13 +83,13 @@
             $('.sort-btn').on('click', '[data]', function (event) {
                 event.preventDefault();
                 let direction = document.querySelector("#direction");
-                let $this = $(this), param = 'name';
+                let $this = $(this), param = 'cost';
 
                 if ($this.data('direction') !== 'price') {
                     param = 'price';
                     direction.innerHTML = "Price<input name=\"direction\" value=\"price\">";
                 } else {
-                    direction.innerHTML = "Name<input name=\"direction\" value=\"name\">";
+                    direction.innerHTML = "Cost<input name=\"direction\" value=\"cost\">";
                 }
                 $this.data('direction', param).find('.fa').attr('value', '' + param);
             });
@@ -139,28 +98,27 @@
         $(function () {
             $('.sort-btn').on('click', '[data-sort]', function (event) {
                 event.preventDefault();
-
-                let $this = $(this), sortDir = 'asc';
-
+                let $this = $(this), dir = 'asc';
                 if ($this.data('sort') !== 'desc') {
-                    sortDir = 'desc';
+                    dir = 'desc';
                 }
 
-                $this.data('sort', sortDir).find('.fa').attr('class', 'fa fa-sort-' + sortDir);
-                $this.data('sort', sortDir).find('.fa').attr('value', '' + sortDir);
+                $this.data('sort', dir).find('.fa').attr('class', 'fa fa-sort-' + dir);
+                $this.data('sort', dir).find('.fa').attr('value', '' + dir);
             });
         });
     }));
 </script>
-<script>
-    function brand() {
-        const $select = document.querySelector('#brand');
-        let text = $select.options[$select.selectedIndex].value;
-        const $options = Array.from($select.options);
-        const optionToSelect = $options.find(item => item.text === text);
-        optionToSelect.selected = true;
-        console.log(": " + text);
-    }
-</script>
+
+<%--<script>--%>
+<%--    function brand() {--%>
+<%--        const $select = document.querySelector('#brand');--%>
+<%--        let text = $select.options[$select.selectedIndex].value;--%>
+<%--        const $options = Array.from($select.options);--%>
+<%--        const optionToSelect = $options.find(item => item.text === text);--%>
+<%--        optionToSelect.selected = true;--%>
+<%--        console.log(": " + text);--%>
+<%--    }--%>
+<%--</script>--%>
 </body>
 </html>

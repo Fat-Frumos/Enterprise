@@ -9,6 +9,7 @@
 }
 
 .button {
+    border: none;
     background-color: #cccccc;
     width: 20px;
     height: 20px;
@@ -24,12 +25,12 @@
     line-height: 19px;
 }
 
-body > div.option > form > div > a:hover{
+body > div.option > form > div > a:hover {
     text-decoration: none;
     color: #ffffff;
 }
 
-.button:hover{
+.button:hover {
     background: #cccccc;
 }
 
@@ -40,4 +41,38 @@ body > div.option > form > div > a:hover{
 input {
     border-radius: 5px;
     margin-bottom: 0px;
+    width: 200px;
+}
+
+span > i {
+    color: white;
+}
+
+span > input {
+    background: none;
+    color: white;
+    border: 0;
+    padding: 0;
+}
+
+select {
+    border-radius: 5px;
+    width: 190px;
+}
+
+body > div.option > form > div > div.btn-group.sort-btn > button > input {
+    display: none;
+}
+
+div.btn-group.sort-btn {
+    width: 240px;
+}
+
+#direction {
+    width: 3.5vw;
+}
+
+.buttons {
+    margin-bottom: 2vh;
+    left: 1vw;
 }

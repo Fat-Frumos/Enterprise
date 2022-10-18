@@ -2,10 +2,9 @@ package com.enterprise.rental.service;
 
 import com.enterprise.rental.dao.jdbc.JdbcUserDao;
 import com.enterprise.rental.entity.User;
-
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 public class UserService implements Service<User> {
 
@@ -27,7 +26,7 @@ public class UserService implements Service<User> {
         return name.equalsIgnoreCase(user.getName()) && password.equals(user.getPassword());
     }
 
-    public List<User> findAll() {
+    public Set<User> findAll() {
         return jdbcUserDao.findAll();
     }
 
@@ -37,27 +36,27 @@ public class UserService implements Service<User> {
     }
 
     @Override
-    public List<User> getAll() {
+    public Set<User> getAll() {
         return null;
     }
 
     @Override
-    public List<User> getAll(String sql) {
+    public Set<User> getAll(String sql) {
         return null;
     }
 
     @Override
-    public List<User> getAll(Map<String, String> params) {
+    public Set<User> getAll(Map<String, String> params) {
         return null;
     }
 
     @Override
-    public List<User> getAll(Map<String, String> params, int offset) {
+    public Set<User> getAll(Map<String, String> params, int offset) {
         return null;
     }
 
     @Override
-    public List<User> getRandom() {
+    public Set<User> getRandom(int size) {
         return null;
     }
 
@@ -69,5 +68,9 @@ public class UserService implements Service<User> {
     @Override
     public User getById(long id) {
         return null;
+    }
+
+    public String sendEmail(String name) {
+        return name;
     }
 }

@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @WebServlet(urlPatterns = "/cars")
 public class CarsServlet extends HttpServlet {
     private final CarService carService = new CarService();
-    private final String[] fields = {"id", "name", "brand", "model", "path", "price", "year", "sort", "direction", "page"};
+    private final String[] fields = {"id", "name", "brand", "model", "path", "price", "cost", "year", "sort", "direction", "page"};
     private static final Logger log = Logger.getLogger(CarsServlet.class);
 
     @Override
@@ -52,20 +52,20 @@ public class CarsServlet extends HttpServlet {
 
         params.put("limit", String.valueOf(limit));
 
-
         log.info(String.format("Params: %s", params));
 
-        String field = params.keySet()
+
+        Set<Car> auto = params.keySet()
                 .stream()
                 .map(key -> String.format("&%s=%s", key, params.get(key)))
-                .collect(Collectors.joining());
-
-        List<Car> auto = field.equals("")
+                .collect(Collectors.joining())
+                .equals("")
                 ? carService.getAll(params)
                 : carService.getAll(params, page);
 
         response.setContentType("text/html;charset=UTF-8");
 
+        request.setAttribute("user", "guest");
         request.setAttribute("page", page);
         request.setAttribute("cars", auto);
 
@@ -85,7 +85,7 @@ public class CarsServlet extends HttpServlet {
 
         log.info(String.format("saved %s %s", car.toString(), saved));
 
-        List<Car> cars = carService.getAll();
+        Set<Car> cars = carService.getAll();
 
         request.setAttribute("cars", cars);
 
@@ -108,6 +108,7 @@ public class CarsServlet extends HttpServlet {
         String model = request.getParameter("model");
         String path = request.getParameter("path");
         Double price = Double.parseDouble(request.getParameter("price"));
+        Double cost = Double.parseDouble(request.getParameter("cost"));
         int year = Integer.parseInt(request.getParameter("year"));
         LocalDateTime time = LocalDateTime.now();
 
@@ -122,6 +123,7 @@ public class CarsServlet extends HttpServlet {
                 .model(model)
                 .path(path)
                 .price(price)
+                .cost(cost)
                 .year(year)
                 .created(time)
                 .build();

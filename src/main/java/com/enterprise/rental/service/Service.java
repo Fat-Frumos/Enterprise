@@ -1,20 +1,20 @@
 package com.enterprise.rental.service;
 
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface Service<T> {
     boolean save(T t);
 
-    List<T> getAll();
+    Set<T> getAll();
 
-    List<T> getAll(String sql);
+    Set<T> getAll(String sql);
 
-    List<T> getAll(Map<String, String> params);
+    Set<T> getAll(Map<String, String> params);
 
-    List<T> getAll(Map<String, String> params, int offset);
+    Set<T> getAll(Map<String, String> params, int offset);
 
-    List<T> getRandom();
+    Set<T> getRandom(int size);
 
     boolean delete(long id);
 

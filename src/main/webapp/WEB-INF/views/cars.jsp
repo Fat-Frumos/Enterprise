@@ -17,7 +17,7 @@
 
     .day {
         position: absolute;
-        top: 2vh;
+        top: 3vh;
         left: 90vw;
     }
 </style>
@@ -25,10 +25,14 @@
 </head>
 <body>
     <jsp:include page="option.jsp"/>
+    <jsp:include page="nav.jsp"/>
     <jsp:include page="card.jsp"/>
     <div class="day">
         <h6><ct:today format="MMMM dd yyyy"/></h6>
+        <a style="text-transform: capitalize" href="/user/${user}">(${user})</a>
     </div>
 </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
 </body>
 </html>

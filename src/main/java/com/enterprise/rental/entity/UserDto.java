@@ -1,21 +1,17 @@
 package com.enterprise.rental.entity;
 
-import com.enterprise.rental.security.Token;
-
 public class UserDto {
 
     private String name;
     private String password;
     private String email;
-    private Token token;
     private Role role;
     private boolean locked;
 
-    public UserDto(String name, String password, String email, Token token, Role role) {
+    public UserDto(String name, String password, String email, Role role) {
         this.name = name;
         this.password = password;
         this.email = email;
-        this.token = token;
         this.role = role;
     }
 
@@ -33,14 +29,6 @@ public class UserDto {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public Token getToken() {
-        return token;
-    }
-
-    public void setToken(Token token) {
-        this.token = token;
     }
 
     public boolean isLocked() {

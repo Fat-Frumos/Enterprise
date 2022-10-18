@@ -9,15 +9,18 @@ import com.enterprise.rental.exception.DataException;
 import org.apache.log4j.Logger;
 
 import javax.validation.constraints.NotNull;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
 
 public class JdbcUserDao implements UserDao {
     private static final UserMapper ROW_MAPPER = new UserMapper();
-    protected static final String USERS_SQL = "SELECT id, email, name, password FROM users";
-    private static final String FILTER_BY_NAME_SQL = "SELECT id, name, email, password FROM users WHERE name=";
-    protected static final String FIELD = " id, name, email, password ";
-    protected static final String INSERT_USER_SQL = "INSERT INTO users(" + FIELD + ") VALUES ( ?, ?, ?, ?);";
+    protected static final String USERS_SQL = "SELECT id, email, name, password, role, active FROM users";
+    private static final String FILTER_BY_NAME_SQL = "SELECT id, email, name, password, role, active FROM users WHERE name=";
+    protected static final String USER_FIELD = " id, name, email, password, role, active ";
+    protected static final String INSERT_USER_SQL = "INSERT INTO users(" + USER_FIELD + ") VALUES ( ?, ?, ?, ?);";
     private final Logger log = Logger.getLogger(JdbcUserDao.class);
 
     @Override
@@ -31,40 +34,8 @@ public class JdbcUserDao implements UserDao {
     }
 
     @Override
-    public Optional<User> findById(Long id) {
-        return Optional.empty();
-    }
-
-    @Override
-    public List<User> findAll() {
-
-        Connection connection;
-
-        try {
-            connection = DbManager.getInstance().getConnection();
-            connection.setAutoCommit(false);
-        } catch (SQLException e) {
-            throw new DataException(e);
-        }
-        try {
-            PreparedStatement statement = connection.prepareStatement(USERS_SQL);
-            try (ResultSet resultSet = statement.executeQuery()) {
-
-                connection.commit();
-
-                if (resultSet.next()) {
-                    List<User> users = new ArrayList<>();
-                    while (resultSet.next()) {
-                        User user = ROW_MAPPER.mapRow(resultSet);
-                        users.add(user);
-                    }
-                    return users;
-                }
-                throw new CarException("Customer not found");
-            }
-        } catch (SQLException ex) {
-            throw new CarException(ex.getMessage());
-        }
+    public Set<User> findAll() {
+        return findAll(USERS_SQL);
     }
 
     @Override
@@ -83,42 +54,34 @@ public class JdbcUserDao implements UserDao {
     }
 
     @Override
-    public List<User> findAll(String sql) {
-        //TODO List<User> return GetSql(USERS_SQL);
-        return findAll();
-    }
+    public Set<User> findAll(String sql) {
 
-    private boolean setUserQuery(@NotNull User user) throws DataException {
+        Connection connection;
 
-        Connection connection = null;
-        PreparedStatement statement = null;
-
-        connection = DbManager.getInstance().getConnection();
-        String userName = user.getName();
         try {
+            connection = DbManager.getInstance().getConnection();
             connection.setAutoCommit(false);
-            statement = connection.prepareStatement(INSERT_USER_SQL);
-
-
-            String password = user.getPassword();
-            String email = user.getEmail();
-
-            statement.setLong(1, UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE);
-            statement.setString(2, userName);
-            statement.setString(3, email);
-            statement.setString(4, password);
-            statement.execute();
-            connection.commit();
-            return true;
         } catch (SQLException e) {
-            try {
-                Objects.requireNonNull(connection).rollback();
-            } catch (SQLException ex) {
-                log.info("rollback");
-                throw new DataException(ex.getMessage());
-            }
-            log.info(String.format("%s User can`t added, maybe account already exists", userName));
             throw new DataException(e);
+        }
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            try (ResultSet resultSet = statement.executeQuery()) {
+
+                connection.commit();
+                Set<User> users = new HashSet<>();
+
+                if (resultSet.next()) {
+                    while (resultSet.next()) {
+                        User user = ROW_MAPPER.mapRow(resultSet);
+                        users.add(user);
+                    }
+                    return users;
+                }
+                throw new CarException("Customer not found");
+            }
+        } catch (SQLException ex) {
+            throw new CarException(ex.getMessage());
         } finally {
             try {
                 Objects.requireNonNull(connection).close();
@@ -126,6 +89,12 @@ public class JdbcUserDao implements UserDao {
                 log.info(String.format("Connection not closed: %s", e.getMessage()));
             }
         }
+    }
+
+    @Override
+    public Optional<User> findById(Long id) {
+
+        return Optional.empty();
     }
 
     private Optional<User> getUserSql(String sql) {
@@ -177,6 +146,46 @@ public class JdbcUserDao implements UserDao {
                 } catch (SQLException e) {
                     log.info("Connection closed");
                 }
+            }
+        }
+    }
+
+    private boolean setUserQuery(@NotNull User user) throws DataException {
+
+        Connection connection = null;
+        PreparedStatement statement = null;
+
+        connection = DbManager.getInstance().getConnection();
+        String userName = user.getName();
+        try {
+            connection.setAutoCommit(false);
+            statement = connection.prepareStatement(INSERT_USER_SQL);
+
+
+            String password = user.getPassword();
+            String email = user.getEmail();
+
+            statement.setLong(1, UUID.randomUUID().getMostSignificantBits() & Integer.MAX_VALUE);
+            statement.setString(2, userName);
+            statement.setString(3, email);
+            statement.setString(4, password);
+            statement.execute();
+            connection.commit();
+            return true;
+        } catch (SQLException e) {
+            try {
+                Objects.requireNonNull(connection).rollback();
+            } catch (SQLException ex) {
+                log.info("rollback");
+                throw new DataException(ex.getMessage());
+            }
+            log.info(String.format("%s User can`t added, maybe account already exists", userName));
+            throw new DataException(e);
+        } finally {
+            try {
+                Objects.requireNonNull(connection).close();
+            } catch (SQLException e) {
+                log.info(String.format("Connection not closed: %s", e.getMessage()));
             }
         }
     }

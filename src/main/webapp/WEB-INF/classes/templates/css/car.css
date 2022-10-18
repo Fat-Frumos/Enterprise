@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500&family=Work+Sans:wght@800&display=swap');
+
 nav {
     top: 1vw;
     left: 5vh;
@@ -41,5 +42,23 @@ img {
 }
 
 figure {
-    overflow: hidden;
+    /*overflow: hidden;*/
+}
+
+input {
+    margin-bottom: 5px;
+}
+
+.wrap {
+    margin: 10px 10px;
+    max-width: 40vw;
+    top: 10vh;
+    left: 25vw;
+    transform: perspective(500px) translateY(-5px);
+    position: relative;
+    transition: all 5s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }

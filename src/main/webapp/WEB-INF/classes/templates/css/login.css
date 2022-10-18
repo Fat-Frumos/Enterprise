@@ -98,27 +98,8 @@ h3 {
     display: block;
 }
 
-a:hover {
+a:hover, p {
     color: #59238F;
-}
-
-p {
-    color: #0000ff;
-}
-.button {
-    background-color: #cccccc;
-    width: 20px;
-    height: 20px;
-    float: left;
-    margin-right: 20px;
-    border-radius: 50px;
-    cursor: pointer;
-    transition: 0.3s ease width;
-    text-align: center;
-    font-family: Verdana, Roboto, sans-serif;
-    font-size: 14px;
-    color: #ffffff;
-    line-height: 19px;
 }
 
 .sign{

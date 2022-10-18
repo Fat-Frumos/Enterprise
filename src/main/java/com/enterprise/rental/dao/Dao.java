@@ -1,13 +1,12 @@
 package com.enterprise.rental.dao;
 
-import com.enterprise.rental.entity.Car;
 import com.enterprise.rental.entity.User;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface Dao<T> {
-    List<T> findAll();
+    Set<T> findAll();
 
     Optional<T> findById(Long id);
 
@@ -19,5 +18,5 @@ public interface Dao<T> {
 
     boolean delete(long id);
 
-    List<T> findAll(String params);
+    Set<T> findAll(String params);
 }

@@ -8,15 +8,26 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <head>
-    <title>NavBar</title>
+    <title>Navbar</title>
+    <style>
+        .bar {
+            position: absolute;
+            top: 3vh;
+            left: 2.8vw;
+            font-weight: 500;
+        }
+        div.bar > a:hover{
+            text-decoration: none;
+            color: #59238F;
+        }
+    </style>
 </head>
 <body>
-<nav>
+<div class="bar">
     <a href="/cars">Cars</a> |
-    <a href="/card">Card</a> |
     <a href="/user">Users</a> |
-    <a href="/login">Log Out</a>
-    <hr>
-</nav>
+    <a href="/card">Card</a> |
+    <a style="text-transform: capitalize" href="/login">LogOut(${user})</a>
+</div>
 </body>
 </html>

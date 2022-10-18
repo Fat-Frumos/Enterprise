@@ -8,12 +8,13 @@ body {
     height: 400px;
     height: 850px;
     perspective: 250px;
-    overflow: hidden;
+    /*overflow: hidden;*/
 }
 
 
 .carousel .carousel-item {
     width: 600px;
+    position: absolute;
 }
 
 .open-button {
@@ -30,7 +31,8 @@ body {
 }
 
 .form-popup {
-    top: 35%;
+    top: 28vw;
+    border: none;
     left: 45%;
     display: none;
     position: fixed;

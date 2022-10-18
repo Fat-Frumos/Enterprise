@@ -1,24 +1,35 @@
 package com.enterprise.rental.entity;
 
-import com.enterprise.rental.security.Token;
-
-import javax.persistence.OneToMany;
 import java.io.Serializable;
-import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 public class User implements Serializable {
     private long userId;
     private String name;
     private String password;
     private String email;
-    private Token token;
-
     private String language;
-    private Role role;
-
-    @OneToMany
-    private List<Order> orders;
+    private String role;
     private boolean active;
+    private Set<Order> orders;
+
+    private Set<Car> cars;
+
+    public User(Set<Car> cars) {
+        this.cars = cars;
+    }
+
+    public User() {
+    }
+
+    public Set<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(Set<Order> orders) {
+        this.orders = orders;
+    }
 
     public long getUserId() {
         return userId;
@@ -56,20 +67,25 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    public Token getToken() {
-        return token;
-    }
-
-    public void setToken(Token token) {
-        this.token = token;
-    }
-
-    public Role getRole() {
+    public String getRole() {
         return role;
     }
 
-    public void setRole(Role role) {
+    public void setRole(String role) {
         this.role = role;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+        User user = (User) o;
+        return userId == user.userId && active == user.active && Objects.equals(name, user.name) && Objects.equals(password, user.password) && Objects.equals(email, user.email) && Objects.equals(language, user.language) && Objects.equals(role, user.role) && Objects.equals(orders, user.orders) && Objects.equals(cars, user.cars);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(userId, name, password, email, language, role, active, orders, cars);
     }
 
     public User(long userId, String name, String password, String email, String language, boolean active) {
@@ -81,14 +97,23 @@ public class User implements Serializable {
         this.active = active;
     }
 
+    public User(long userId, String name, String password, String email, String role) {
+        this.userId = userId;
+        this.name = name;
+        this.password = password;
+        this.email = email;
+        this.role = role;
+    }
+
+
     @Override
     public String toString() {
         return "User{" +
-                ", name='" + name + '\'' +
+                "name='" + name + '\'' +
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
                 ", language='" + language + '\'' +
-                ", role=" + role +
+                ", role='" + role + '\'' +
                 ", active=" + active +
                 '}';
     }

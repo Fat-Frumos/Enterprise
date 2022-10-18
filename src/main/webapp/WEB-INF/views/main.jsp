@@ -21,18 +21,21 @@
 <body>
 <div class="container">
     <jsp:include page="nav.jsp"/>
-    ${user}
     <div class="row m-0">
         <div class="col-lg-7 pb-5 pe-lg-5">
             <jsp:include page="label.jsp"/>
         </div>
         <jsp:include page="car.jsp"/>
+
         <jsp:include page="card.jsp"/>
+
+<%--        <jsp:include page="slider.jsp"/>--%>
+
     </div>
 </div>
-<div>
-</div>
+
 <script>
+
     $(document).ready(function () {
         $('#main').click(function () {
             $('#Mymodal').modal('show')

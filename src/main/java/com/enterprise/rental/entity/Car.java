@@ -1,23 +1,35 @@
 package com.enterprise.rental.entity;
 
-
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-public class Car implements Serializable {
 
+public class Car implements Serializable {
     private long id;
+    private long userId;
     private String name;
     private String brand;
     private String model;
     private String path;
     private Double price;
+    private Double cost;
     private int year;
     private LocalDateTime created;
 
+    public Car() {
+    }
+
     public long getId() {
         return id;
+    }
+
+    public long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
     }
 
     public String getName() {
@@ -56,6 +68,14 @@ public class Car implements Serializable {
         this.created = created;
     }
 
+    public Double getCost() {
+        return cost;
+    }
+
+    public void setCost(Double cost) {
+        this.cost = cost;
+    }
+
     public static class Builder {
         private long id;
         private String name;
@@ -63,6 +83,7 @@ public class Car implements Serializable {
         private String model;
         private String path;
         private Double price;
+        private Double cost;
         private int year;
 
         private LocalDateTime created;
@@ -97,6 +118,11 @@ public class Car implements Serializable {
             return this;
         }
 
+        public Builder cost(Double cost) {
+            this.cost = cost;
+            return this;
+        }
+
         public Builder year(int year) {
             this.year = year;
             return this;
@@ -115,13 +141,11 @@ public class Car implements Serializable {
             car.model = this.model;
             car.path = this.path;
             car.price = this.price;
+            car.cost = this.cost;
             car.year = this.year;
             car.created = this.created;
             return car;
         }
-    }
-
-    Car() {
     }
 
     @Override
@@ -129,23 +153,25 @@ public class Car implements Serializable {
         if (this == o) return true;
         if (!(o instanceof Car)) return false;
         Car car = (Car) o;
-        return id == car.id && year == car.year && Objects.equals(name, car.name) && Objects.equals(brand, car.brand) && Objects.equals(model, car.model) && Objects.equals(price, car.price) && Objects.equals(path, car.path) && Objects.equals(created, car.created);
+        return id == car.id && year == car.year && Objects.equals(name, car.name) && Objects.equals(brand, car.brand) && Objects.equals(model, car.model) && Objects.equals(price, car.price) && Objects.equals(cost, car.cost) && Objects.equals(path, car.path) && Objects.equals(created, car.created);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, brand, model, year, price, path, created);
+        return Objects.hash(id, name, brand, model, year, price, cost, path, created);
     }
 
     @Override
     public String toString() {
         return "{ \"car\": {" +
                 "\"id\":" + id +
+                "\"user id\":" + userId +
                 ", \"name\":\"" + name + "\"" +
                 ", \"brand\":\"" + brand + "\"" +
                 ", \"model\":\"" + model + "\"" +
                 ", \"year\":\"" + year + "\"" +
                 ", \"price\":\"" + price + "\"" +
+                ", \"cost\":\"" + cost + "\"" +
                 "}";
     }
 }

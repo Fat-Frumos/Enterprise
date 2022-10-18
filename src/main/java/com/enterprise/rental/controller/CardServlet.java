@@ -10,16 +10,41 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @WebServlet(urlPatterns = "/card")
 public class CardServlet extends HttpServlet {
+    private Set<Car> cars = new HashSet<>();
+    private final CarService carService = new CarService();
 
-    private static final long serialVersionUID = 123L;
-    private final CarService carService;
+    @Override
+    protected void doPost(
+            HttpServletRequest request,
+            HttpServletResponse response)
+            throws ServletException, IOException {
 
-    public CardServlet(CarService carService) {
-        this.carService = carService;
+//        try {
+//            long id = Long.parseLong(request.getParameter("id"));
+//            Car car = carService.getById(id);
+//            cars.add(car);
+//        } catch (Exception e) {
+//            cars = carService.getAll();
+//        }
+        request.setAttribute("cars", cars);
+        request.getRequestDispatcher("/WEB-INF/views/index.jsp")
+                .forward(request, response);
+
+        boolean isAuth = false;
+//        Cookie[] cookies = request.getCookies();
+//        if (cookies != null) {
+//            for (Cookie cookie : cookies) {
+//                if (cookie.getName().equals("user-token")) {
+//                    log.info("Auth token user");
+//                    isAuth = true;
+//                }
+//            }
+//        }
     }
 
     @Override
@@ -27,26 +52,15 @@ public class CardServlet extends HttpServlet {
             HttpServletRequest request,
             HttpServletResponse response)
             throws IOException, ServletException {
-
-        List<Car> cars = carService.getRandom();
-
+        try {
+            long id = Long.parseLong(request.getParameter("id"));
+            Car car = carService.getById(id);
+            cars.add(car);
+        } catch (Exception e) {
+            cars = carService.getAll();
+        }
         request.setAttribute("cars", cars);
-
-        request.getRequestDispatcher("/WEB-INF/views/main.jsp")
+        request.getRequestDispatcher("/WEB-INF/views/index.jsp")
                 .forward(request, response);
-
-        boolean isAuth = false;
-        Cookie[] cookies = request.getCookies();
-
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("user-token")) {
-                    isAuth = true;
-                }
-            }
-        }
-        if (isAuth) {
-            log("Auth token user");
-        }
     }
 }

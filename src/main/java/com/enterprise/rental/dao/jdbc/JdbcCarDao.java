@@ -4,9 +4,9 @@ import com.enterprise.rental.dao.CarDao;
 import com.enterprise.rental.entity.Car;
 import com.enterprise.rental.entity.User;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import static com.enterprise.rental.dao.jdbc.Constants.FILTER_BY_SQL;
 import static com.enterprise.rental.dao.jdbc.Constants.FIND_ALL_SQL;
@@ -15,7 +15,7 @@ import static com.enterprise.rental.dao.jdbc.JdbcCarTemplate.*;
 public class JdbcCarDao implements CarDao {
 
     @Override
-    public List<Car> findAll() {
+    public Set<Car> findAll() {
         return getCarsQuery(FIND_ALL_SQL);
     }
 
@@ -30,7 +30,7 @@ public class JdbcCarDao implements CarDao {
     }
 
     @Override
-    public List<Car> findAll(String params) {
+    public Set<Car> findAll(String params) {
         String sql = String.format("%sWHERE %s;", FILTER_BY_SQL, params);
         return getCarsQuery(sql);
     }
@@ -50,24 +50,8 @@ public class JdbcCarDao implements CarDao {
         return false;
     }
 
-//    @Override
-//    public List<Car> findAll(int page, int limit) {
-//
-//        int start = page * limit - limit;
-//
-//        if (start < 0) {
-//            start = 0;
-//        }
-//        if (limit <= 1) {
-//            limit = 10;
-//        }
-//        String sql = String.format("%sFROM car LIMIT %d OFFSET %d", FIELDS, limit, start);
-//        return getCarsQuery(sql);
-//
-//    }
-
     @Override
-    public List<Car> findAll(Map<String, String> params, int offset) {
+    public Set<Car> findAll(Map<String, String> params, int offset) {
 
         String sort = params.get("sort");
         sort = sort == null ? "" : sort;
@@ -75,7 +59,7 @@ public class JdbcCarDao implements CarDao {
         String direction = params.get("direction");
         direction = direction == null ? "" : direction;
         if (direction.equals("")) {
-            direction = "price";
+            direction = "cost";
         }
 
         String brand = params.get("brand");
@@ -86,7 +70,7 @@ public class JdbcCarDao implements CarDao {
         try {
             price = Integer.parseInt(params.get("price"));
         } catch (NumberFormatException e) {
-            price = 0;
+            price = 1;
         }
 
         String records = params.get("limit");
@@ -96,10 +80,6 @@ public class JdbcCarDao implements CarDao {
                 ? Integer.parseInt(records)
                 : 10;
 
-//        if (sort.equals("")) {
-//            sort = "ASC";
-//        }
-
         int page;
         try {
             page = Integer.parseInt(params.get("page"));
@@ -107,6 +87,12 @@ public class JdbcCarDao implements CarDao {
             page = 0;
         }
 
+        int cost;
+        try {
+            cost = Integer.parseInt(params.get("cost"));
+        } catch (NumberFormatException e) {
+            cost = 1;
+        }
 
         int start = page * limit - limit;
 
@@ -114,13 +100,13 @@ public class JdbcCarDao implements CarDao {
             start = 0;
         }
 
-        String sql = String.format("%sWHERE%s price>%d ORDER BY %s %s LIMIT %d OFFSET %d;", FILTER_BY_SQL, brand, price, direction, sort, limit, start);
+        String sql = String.format("%sWHERE%s cost>=%d ORDER BY %s %s LIMIT %d OFFSET %d;", FILTER_BY_SQL, brand, cost, direction, sort, limit, start);
 
         return getCarsQuery(sql);
     }
 
     @Override
-    public List<Car> findAll(Map<String, String> params) {
-        return findAll(params);
+    public Set<Car> findAll(Map<String, String> params) {
+        return findAll(params, 0);
     }
 }

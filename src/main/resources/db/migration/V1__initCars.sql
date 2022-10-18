@@ -6,6 +6,7 @@ create table car
     brand text             not null,
     model text             not null,
     price double precision not null,
+    cost double precision not null,
     year  integer          not null,
     path  text             not null,
     date  timestamp

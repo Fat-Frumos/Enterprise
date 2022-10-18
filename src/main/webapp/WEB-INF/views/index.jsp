@@ -18,45 +18,88 @@
     <style>
         <%@include file="../classes/templates/css/car.css"%>
         <%@include file="../classes/templates/css/slider.css"%>
+        img {
+            border-radius: 20px;
+        }
 
-        body > div.carousel > figure.carousel-item.active > img:hover{
+        img:hover {
             transform: scale(1.2);
             cursor: pointer;
         }
+
+        button {
+            background-color: #5d5d5d;
+            width: 20px;
+            height: 20px;
+            float: left;
+            border: none;
+            border-radius: 10px;
+            margin-right: 20px;
+            cursor: pointer;
+            transition: 0.2s ease width;
+            text-align: center;
+            font-family: Verdana, Roboto, sans-serif;
+            font-size: 14px;
+            color: #ffffff;
+            line-height: 15px;
+        }
+
+        .hide {
+            opacity: .5;
+            /*display: none;*/
+        }
+
+        .img:hover + .hide {
+            /*display: block;*/
+            /*color: red;*/
+        }
+
     </style>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
 </head>
 
 <body>
 
 <div class="carousel">
-    <button class="form-popup" id="myForm" onclick="closeForm()"></button>
+
+    <button class="mySlides fade form-popup" id="myForm" onclick="closeForm()"></button>
     <c:forEach items="${cars}" var="cars">
         <figure class="carousel-item">
-            <img onclick="openForm(`${cars.brand} • ${cars.name} • ${cars.model}`)" src="${cars.path}" alt="${cars.brand}">
+            <img class="" onclick="openForm(`${cars.brand} | ${cars.name} | ${cars.model}`)" src="${cars.path}"
+                 alt="${cars.brand} | ${cars.name} | ${cars.model}">
         </figure>
-    </c:forEach>
 
+    </c:forEach>
+    <%--    <button onclick="history.back()">•</button>--%>
 </div>
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        let elems = document.querySelectorAll('.carousel');
-        M.Carousel.init(elems);
 
-    });
+        let htmlElement = document.getElementById("myForm");
+        htmlElement.innerText = document.getElementsByTagName('img')[0].alt;
+
+        $(document).ready(function () {
+            let car = document.getElementsByTagName('img')[0].alt
+            let htmlElement = document.getElementById("myForm");
+            htmlElement.innerText = car;
+            $('.carousel').carousel();
+            htmlElement.style.display = "block";
 
 
-    function openForm(car) {
-        console.log(car)
-        document.getElementById("myForm").innerText = car;
-        document.getElementById("myForm").style.display = "block";
-    }
+        });
 
-    function closeForm() {
-        document.getElementById("myForm").style.display = "none";
-        window.location.href = "/cars";
+        function openForm(car) {
+            console.log(car)
+            htmlElement.innerText = car;
+        }
 
-    }
-</script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+        function closeForm() {
+            htmlElement.style.display = "none";
+            window.location.href = "/cars";
+        }
+
+
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 </body>
 </html>
+

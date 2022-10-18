@@ -1,21 +1,20 @@
 package com.enterprise.rental.entity;
 
-
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Cars {
     private static Cars instance;
 
-    protected List<Car> car;
+    protected Set<Car> car;
 
     public static Cars getInstance() {
         return instance;
     }
 
-    public List<Car> getCars() {
+    public Set<Car> getCars() {
         if (car == null) {
-            car = new ArrayList<>();
+            car = new HashSet<>();
         }
         return this.car;
     }

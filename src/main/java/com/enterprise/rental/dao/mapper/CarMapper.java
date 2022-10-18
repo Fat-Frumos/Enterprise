@@ -15,6 +15,7 @@ public class CarMapper extends Mapper<Car> {
         String model = resultSet.getString("model");
         String path = resultSet.getString("path");
         Double price = resultSet.getDouble("price");
+        Double cost = resultSet.getDouble("cost");
         int year = Integer.parseInt(resultSet.getString("year"));
         return new Car.Builder()
                 .id(id)
@@ -23,6 +24,7 @@ public class CarMapper extends Mapper<Car> {
                 .model(model)
                 .path(path)
                 .price(price)
+                .cost(cost)
                 .year(year)
                 .build();
     }

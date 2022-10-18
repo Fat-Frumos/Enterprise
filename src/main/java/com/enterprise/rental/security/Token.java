@@ -4,15 +4,15 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class Token {
-    private final String uuid;
+    private final long uuid;
     private final LocalDateTime expired;
 
     public Token(long time) {
-        uuid = UUID.randomUUID().toString();
+        uuid = UUID.randomUUID().getMostSignificantBits() & Integer.MAX_VALUE;
         expired = LocalDateTime.now().plusSeconds(time);
     }
 
-    public String getUuid() {
+    public long getUuid() {
         return uuid;
     }
 
