@@ -18,88 +18,82 @@
     <style>
         <%@include file="../classes/templates/css/car.css"%>
         <%@include file="../classes/templates/css/slider.css"%>
-        img {
-            border-radius: 20px;
-        }
 
-        img:hover {
-            transform: scale(1.2);
-            cursor: pointer;
+        .carousel {
+            overflow: visible;
+            caret-color: transparent;
         }
-
-        button {
-            background-color: #5d5d5d;
-            width: 20px;
-            height: 20px;
-            float: left;
-            border: none;
-            border-radius: 10px;
-            margin-right: 20px;
-            cursor: pointer;
-            transition: 0.2s ease width;
-            text-align: center;
-            font-family: Verdana, Roboto, sans-serif;
-            font-size: 14px;
-            color: #ffffff;
-            line-height: 15px;
-        }
-
-        .hide {
-            opacity: .5;
-            /*display: none;*/
-        }
-
-        .img:hover + .hide {
-            /*display: block;*/
-            /*color: red;*/
-        }
-
     </style>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 </head>
 
 <body>
-
 <div class="carousel">
-
-    <button class="mySlides fade form-popup" id="myForm" onclick="closeForm()"></button>
     <c:forEach items="${cars}" var="cars">
         <figure class="carousel-item">
-            <img class="" onclick="openForm(`${cars.brand} | ${cars.name} | ${cars.model}`)" src="${cars.path}"
-                 alt="${cars.brand} | ${cars.name} | ${cars.model}">
+            <img class="fade" onclick="closeForm(${cars.id})" src="${cars.path}"
+                 alt=${cars.id}>
+            <div class="mySlides fade form-popup" id="myForm">
+            </div>
         </figure>
-
     </c:forEach>
-    <%--    <button onclick="history.back()">•</button>--%>
 </div>
+<%--onclick="openForm(`${cars.brand} | ${cars.name} | ${cars.model}`)"--%>
 <script>
 
-        let htmlElement = document.getElementById("myForm");
-        htmlElement.innerText = document.getElementsByTagName('img')[0].alt;
+//    window.addEventListener('contextmenu', (event) => {
+//        event.preventDefault()
+//        window.history.back();
+//    })
 
-        $(document).ready(function () {
-            let car = document.getElementsByTagName('img')[0].alt
-            let htmlElement = document.getElementById("myForm");
-            htmlElement.innerText = car;
-            $('.carousel').carousel();
-            htmlElement.style.display = "block";
-
-
-        });
-
-        function openForm(car) {
-            console.log(car)
-            htmlElement.innerText = car;
+    $(document).on('contextmenu', function (event){
+        if (!$(event.target).hasClass("carousel-item")){
+            event.preventDefault()
+            // alert("Car removed")
+            window.history.back();
         }
+    })
+    let htmlElement = document.getElementsByClassName("carousel-item");
 
-        function closeForm() {
-            htmlElement.style.display = "none";
-            window.location.href = "/cars";
-        }
+    // // htmlElement.innerText = document.getElementsByTagName('img')[0].alt;
+    //
+
+    $(document).ready(function () {
+        $('.carousel').carousel();
+
+        // let car = document.getElementsByTagName('img')[0].alt
+        // let htmlElement = document.getElementById("myForm");
+        // htmlElement.innerText = car;
+        // htmlElement.style.display = "block";
 
 
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    });
+
+    function openForm(car) {
+        // window.location.href = "/cars";
+        console.log(car)
+        // htmlElement.innerText = car;
+    }
+
+    function closeForm(id) {
+        let url = '/order?id=' + id;
+        fetch(url, {
+            method: 'GET',
+        }).then(response => {
+            console.log('Ok:', response);
+            alert("Success")
+            window.location.href = url;
+        }).catch(err => {
+            console.error(err)
+        })
+            // window.location.href = "/cars";
+         // saveCar(id);
+        // let element = document.querySelector("body > div.carousel > figure.carousel-item.active");
+        // htmlElement.style.display = "none";
+    }
+</script>
+
 </body>
 </html>
 

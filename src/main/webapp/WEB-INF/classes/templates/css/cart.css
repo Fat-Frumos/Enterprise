@@ -2,7 +2,7 @@
     font-weight: 900;
 }
 
-.card {
+.cart {
     position: relative;
     display: -ms-flexbox;
     display: flex;
@@ -16,17 +16,9 @@
     border-radius: 0.25rem;
 }
 
-.card-image {
-    width: 100%;
+.cart-image {
     border-radius: calc(0.25rem - 1px);
 }
-
-.cars {
-
-    /*position: relative;*/
-
-}
-
 .car:after {
     content: "";
     flex: auto;

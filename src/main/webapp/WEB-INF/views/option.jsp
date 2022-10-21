@@ -37,16 +37,14 @@
             </div>
             <label for="price">Price:</label>
             <input type="number" id="price" name="price" min="100" max="1500">
-<%--            <label for="price">Cost:</label>--%>
-<%--            <input type="number" id="cost" name="cost" min="100" max="100000">--%>
-<%--            <br>--%>
+
             <div class="buttons">
                 <br>
                 <a class="button" href="?page=${page-1}"><</a>
-                <a class="button" href="?page=${page}">${page+1}</a>
-                <a class="button" href="?page=${page+1}">${page+2}</a>
-                <a class="button" href="?page=${page+2}">${page+3}</a>
-                <a class="button" href="?page=${page+3}">${page+4}</a>
+                <a class="button" href="?page=${page+1}">${page+1}</a>
+                <a class="button" href="?page=${page+2}">${page+2}</a>
+                <a class="button" href="?page=${page+3}">${page+3}</a>
+                <a class="button" href="?page=${page+4}">${page+4}</a>
                 <a class="button" href="?page=${page+1}">></a>
             </div>
             <br>

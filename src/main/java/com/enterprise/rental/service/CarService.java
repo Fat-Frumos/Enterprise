@@ -27,7 +27,7 @@ public class CarService implements Service<Car> {
     }
 
     @Override
-    public Set<Car> getAll() {
+    public List<Car> getAll() {
         return carDao.findAll();
     }
 
@@ -39,13 +39,12 @@ public class CarService implements Service<Car> {
     @Override
     public Car getById(long id) {
         Optional<Car> car = carDao.findById(id);
-
         return car.orElseThrow(() ->
                 new CarException("Car not found"));
     }
 
     @Override
-    public Set<Car> getRandom(int size) {
+    public List<Car> getRandom(int size) {
 
         List<Car> list = new ArrayList<>(carDao.findAll());
 
@@ -53,19 +52,19 @@ public class CarService implements Service<Car> {
 
         return IntStream.range(0, size)
                 .mapToObj(list::get)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Set<Car> getAll(Map<String, String> params, int offset) {
+    public List<Car> getAll(Map<String, String> params, int offset) {
         return carDao.findAll(params, offset);
     }
 
-    public Set<Car> getAll(Map<String, String> params) {
+    public List<Car> getAll(Map<String, String> params) {
         return carDao.findAll(params);
     }
 
-    public Set<Car> getAll(String sql) {
+    public List<Car> getAll(String sql) {
         return carDao.findAll(sql);
     }
 }

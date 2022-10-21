@@ -1,33 +1,26 @@
 package com.enterprise.rental.service;
 
+import com.enterprise.rental.controller.UserServlet;
 import com.enterprise.rental.dao.jdbc.JdbcUserDao;
+import com.enterprise.rental.entity.Car;
 import com.enterprise.rental.entity.User;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import org.apache.log4j.Logger;
+
+import javax.validation.constraints.NotNull;
+import java.util.*;
 
 public class UserService implements Service<User> {
 
-    private final JdbcUserDao jdbcUserDao;
+    private Set<Car> auto = new HashSet<>();
+    private static final Logger log = Logger.getLogger(UserService.class);
+    private final JdbcUserDao jdbcUserDao = new JdbcUserDao();
 
-    public UserService(JdbcUserDao jdbcUserDao) {
-        this.jdbcUserDao = jdbcUserDao;
-    }
-
-    public UserService() {
-        this.jdbcUserDao = new JdbcUserDao();
-    }
-
-    public Optional<User> findByName(String name) {
+    public Optional<User> findByName(@NotNull String name) {
         return jdbcUserDao.findByName(name);
     }
 
     public boolean validateUser(String name, String password, User user) {
         return name.equalsIgnoreCase(user.getName()) && password.equals(user.getPassword());
-    }
-
-    public Set<User> findAll() {
-        return jdbcUserDao.findAll();
     }
 
     @Override
@@ -36,27 +29,27 @@ public class UserService implements Service<User> {
     }
 
     @Override
-    public Set<User> getAll() {
-        return null;
+    public List<User> getAll() {
+        return jdbcUserDao.findAll();
     }
 
     @Override
-    public Set<User> getAll(String sql) {
-        return null;
+    public List<User> getAll(String sql) {
+        return jdbcUserDao.findAll(sql);
     }
 
     @Override
-    public Set<User> getAll(Map<String, String> params) {
-        return null;
+    public List<User> getAll(Map<String, String> params) {
+        return jdbcUserDao.findAll();
     }
 
     @Override
-    public Set<User> getAll(Map<String, String> params, int offset) {
-        return null;
+    public List<User> getAll(Map<String, String> params, int offset) {
+        return jdbcUserDao.findAll();
     }
 
     @Override
-    public Set<User> getRandom(int size) {
+    public List<User> getRandom(int size) {
         return null;
     }
 
@@ -71,6 +64,17 @@ public class UserService implements Service<User> {
     }
 
     public String sendEmail(String name) {
-        return name;
+        Optional<User> optionalUser = jdbcUserDao.findByName(name);
+
+        log.info(optionalUser);
+
+        return optionalUser.isPresent() ? optionalUser.get().getName() : "User not found";
+
+    }
+
+    public User bookCar(@NotNull Car car, @NotNull User user) {
+        user.addCar(car);
+        auto = user.getCars();
+        return user;
     }
 }

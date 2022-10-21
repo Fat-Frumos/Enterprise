@@ -4,6 +4,7 @@ import com.enterprise.rental.dao.factory.DbManager;
 import com.enterprise.rental.dao.mapper.CarMapper;
 import com.enterprise.rental.entity.Car;
 import com.enterprise.rental.exception.CarException;
+import com.enterprise.rental.exception.CarNotFoundException;
 import com.enterprise.rental.exception.DataException;
 import org.apache.log4j.Logger;
 
@@ -16,27 +17,43 @@ import static com.enterprise.rental.dao.jdbc.Constants.FILTER_BY_ID_SQL;
 import static com.enterprise.rental.dao.jdbc.Constants.INSERT_CAR_SQL;
 
 public class JdbcCarTemplate extends DbManager {
-    private static final CarMapper ROW_MAPPER = new CarMapper();
+    private static final CarMapper CAR_ROW_MAPPER = new CarMapper();
     private static final Logger log = Logger.getLogger(JdbcCarTemplate.class);
 
     protected static Optional<Car> getCarById(long id) {
-
         try (Connection connection = getInstance().getConnection();
              PreparedStatement statement = connection.prepareStatement(FILTER_BY_ID_SQL)) {
             statement.setLong(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
                 return !resultSet.next()
                         ? Optional.empty()
-                        : Optional.of(ROW_MAPPER.mapRow(resultSet));
+                        : Optional.of(CAR_ROW_MAPPER.mapRow(resultSet));
             }
         } catch (SQLException e) {
             throw new DataException(e);
         } finally {
-            //TODO
+            //TODO close
         }
     }
 
-    protected static Set<Car> getCarsQuery(String sql) {
+    protected static Optional<Car> getCarQuery(String sql, String name) {
+        List<Car> cars = new ArrayList<>();
+        try (Connection connection = getInstance().getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, name);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    cars.add(CAR_ROW_MAPPER.mapRow(resultSet));
+                }
+            }
+        } catch (Exception e) {
+            throw new DataException(e.getMessage());
+        }
+        //TODO unique user
+        return Optional.of(cars.get(0));
+    }
+
+    protected static List<Car> getCarsQuery(String sql) {
 
         log.info(sql);
 
@@ -56,14 +73,14 @@ public class JdbcCarTemplate extends DbManager {
                 connection.commit();
 
                 if (resultSet.next()) {
-                    Set<Car> cars = new HashSet<>();
+                    List<Car> cars = new ArrayList<>();
                     while (resultSet.next()) {
-                        Car car = ROW_MAPPER.mapRow(resultSet);
+                        Car car = CAR_ROW_MAPPER.mapRow(resultSet);
                         cars.add(car);
                     }
                     return cars;
                 }
-                throw new CarException("Vehicle not found");
+                throw new CarNotFoundException(("Vehicle not found"));
             }
         } catch (SQLException ex) {
             throw new CarException(ex.getMessage());

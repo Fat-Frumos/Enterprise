@@ -16,14 +16,10 @@ public class UserMapper extends Mapper<User> {
         String name = resultSet.getString("name");
         String password = resultSet.getString("password");
         String email = resultSet.getString("email");
-        String role = resultSet.getString("role");
         boolean status = resultSet.getBoolean("active");
-
-        if (role == null) {
-            role = "guest";
-        }
+        String role = resultSet.getString("role") != null ? resultSet.getString("role") : "guest";
 //        log.info(String.format("id: %d, name: %s, pwd: %s, email: %s, role: %s", id, name, password, email, role));
-        return new User(id, name, password, email, role, status);
+        return new User(id, name, password, email, "en", role, status);
     }
 
     public UserDto toDto(User user) {

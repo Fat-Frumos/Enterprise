@@ -19,7 +19,7 @@ import static org.mockito.Mockito.when;
 class CarsTest {
 //    private static final Cars INSTANCE = Cars.getInstance();
     Logger logger = Logger.getLogger(CarsTest.class);
-    private static final Set<Car> cars = new HashSet<>();
+    private static final List<Car> cars = new ArrayList<>();
     static final Car X7 = new Car.Builder().id(1l).name("X7").brand("BMW").model("G07").path("http//").price(25000.0).cost(10000.0).year(2022).build();
     static final Car X5 = new Car.Builder().id(2l).name("X5").brand("BMW").model("GT-2").path("http//").price(22000.0).cost(10000.0).year(2020).build();
     JdbcCarDao mockCarDao = mock(JdbcCarDao.class);
@@ -37,7 +37,7 @@ class CarsTest {
     @Test
     @DisplayName(value = "Test-Mock Get Cars from db")
     void testGetCars() {
-        Set<Car> actual = service.getAll();
+        List<Car> actual = service.getAll();
         assertEquals(cars, actual);
     }
 
@@ -106,7 +106,7 @@ class CarsTest {
     @Test
     public void testFindAllReturnCorrectData() {
         JdbcCarDao jdbcCarDao = new JdbcCarDao();
-        Set<Car> cars = jdbcCarDao.findAll();
+        List<Car> cars = jdbcCarDao.findAll();
         assertFalse(cars.isEmpty());
 
         for (Car car : cars) {
@@ -128,7 +128,7 @@ class CarsTest {
         String brand = "BMW";
 //        List<Car> cars = mockCarDao.findAll(brand);
 
-        when(mockCarDao.findAll(brand)).thenReturn(Set.of(X5, X7));
+        when(mockCarDao.findAll(brand)).thenReturn(List.of(X5, X7));
         assertEquals(2, service.getAll().size());
 
     }
@@ -162,7 +162,7 @@ class CarsTest {
 
     @Test
     void getAll() {
-        when(mockCarDao.findAll()).thenReturn(Set.of(X5, X7));
+        when(mockCarDao.findAll()).thenReturn(List.of(X5, X7));
         assertEquals(2, service.getAll().size());
     }
 

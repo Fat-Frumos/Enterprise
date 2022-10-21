@@ -1,42 +1,36 @@
 name: Java install openjdk-11-jdk
+# This workflow will build a package using Maven and then publish it to GitHub packages when a release is created
+# For more information see: https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md#apache-maven-with-a-settings-path
 
 on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
-  workflow_dispatch:
+  release:
+    types: [created]
 
 jobs:
   build:
 
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up JDK 11
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           java-version: '11'
-          distribution: 'adopt'
-          cache: maven
+          distribution: 'temurin'
+          server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
+          settings-path: ${{ github.workspace }} # location for the settings.xml file
 
-      - name: sudo apt-get update
-        run: sudo apt-get update
-
-      - name: sudo apt-get install openjdk-11-jdk
-        run: sudo apt-get install openjdk-11-jdk -y
-
-      - name: mvn -B package --file pom.xml
+      - name: Build with Maven
         run: mvn -B package --file pom.xml
 
-      - name: clean install test surefire-report:report
-        run: mvn clean install test surefire-report:report
+      - name: Publish to GitHub Packages Apache Maven
+        run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
 
-#      - name: bash_profile
-#        run: source .bash_profile
-
-      - name: Run maven script
-        uses: guillonapa/action-maven-cli/jdk11@master
-        with:
-          lifecycle: 'clean package test'
+      - name: Run with Tomcat
+        run: mvn tomcat7:run -X

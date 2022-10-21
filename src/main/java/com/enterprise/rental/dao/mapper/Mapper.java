@@ -7,12 +7,17 @@ import java.util.Set;
 public abstract class Mapper<T> {
     abstract T mapRow(ResultSet resultSet) throws SQLException;
 
-    public Set<T> getAll(ResultSet resultSet, Set<T> elements) throws SQLException {
+    public Set<T> getAll(
+            ResultSet resultSet,
+            Set<T> elements)
+            throws SQLException {
+
         if (!resultSet.next()) {
             return elements;
+        } else {
+            T t = mapRow(resultSet);
+            elements.add(t);
+            return getAll(resultSet, elements);
         }
-        T t = mapRow(resultSet);
-        elements.add(t);
-        return getAll(resultSet, elements);
     }
 }

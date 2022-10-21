@@ -15,16 +15,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
+import static com.enterprise.rental.dao.jdbc.Constants.*;
+
 public class JdbcUserDao implements UserDao {
     private static final UserMapper ROW_MAPPER = new UserMapper();
-    protected static final String USERS_SQL = "SELECT id, email, name, password, role, active FROM users";
-    private static final String FILTER_BY_NAME_SQL = "SELECT id, email, name, password, role, active FROM users WHERE name=";
-    protected static final String USER_FIELD = " id, name, email, password, role, active ";
-    protected static final String INSERT_USER_SQL = "INSERT INTO users(" + USER_FIELD + ") VALUES ( ?, ?, ?, ?);";
+
     private final Logger log = Logger.getLogger(JdbcUserDao.class);
 
     @Override
-    public Optional<User> findByName(String name) {
+    public Optional<User> findByName(@NotNull String name) {
 
         String sql = String.format("%s'%s'", FILTER_BY_NAME_SQL, name);
 
@@ -34,7 +33,7 @@ public class JdbcUserDao implements UserDao {
     }
 
     @Override
-    public Set<User> findAll() {
+    public List<User> findAll() {
         return findAll(USERS_SQL);
     }
 
@@ -54,7 +53,7 @@ public class JdbcUserDao implements UserDao {
     }
 
     @Override
-    public Set<User> findAll(String sql) {
+    public List<User> findAll(String sql) {
 
         Connection connection;
 
@@ -69,7 +68,7 @@ public class JdbcUserDao implements UserDao {
             try (ResultSet resultSet = statement.executeQuery()) {
 
                 connection.commit();
-                Set<User> users = new HashSet<>();
+                List<User> users = new ArrayList<>();
 
                 if (resultSet.next()) {
                     while (resultSet.next()) {
@@ -157,20 +156,26 @@ public class JdbcUserDao implements UserDao {
 
         connection = DbManager.getInstance().getConnection();
         String userName = user.getName();
+
         try {
             connection.setAutoCommit(false);
             statement = connection.prepareStatement(INSERT_USER_SQL);
 
-
             String password = user.getPassword();
             String email = user.getEmail();
+            String role = user.getRole();
 
-            statement.setLong(1, UUID.randomUUID().getMostSignificantBits() & Integer.MAX_VALUE);
+            log.info(user);
+
+            statement.setLong(1, UUID.randomUUID().getMostSignificantBits() & 0x7fffL);
             statement.setString(2, userName);
             statement.setString(3, email);
             statement.setString(4, password);
+            statement.setString(5, role);
+            statement.setBoolean(6, true);
             statement.execute();
             connection.commit();
+
             return true;
         } catch (SQLException e) {
             try {

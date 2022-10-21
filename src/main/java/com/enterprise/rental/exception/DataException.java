@@ -8,11 +8,11 @@ public class DataException extends RuntimeException {
     private static final Logger log = Logger.getLogger(DataException.class);
 
     public DataException(SQLException e) {
-        log.debug(e.getMessage());
+        log.info(e.getMessage());
     }
 
     public DataException(String message) {
-        log.debug(message);
+        log.info(message);
     }
 
     public DataException(String message, IOException exception) {

@@ -10,7 +10,8 @@
 <!DOCTYPE html>
 <head>
     <title>Rental Car</title>
-    <link rel="shortcut icon" href="https://iconarchive.com/download/i18444/iconshock/global-warming/wheel.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="https://iconarchive.com/download/i18444/iconshock/global-warming/wheel.ico"
+          type="image/x-icon">
 </head>
 
 <style>
@@ -27,21 +28,21 @@
         </div>
         <jsp:include page="car.jsp"/>
 
-        <jsp:include page="card.jsp"/>
+        <%--        <jsp:include page="slide.jsp"/>--%>
 
-<%--        <jsp:include page="slider.jsp"/>--%>
-
+        <jsp:include page="modal.jsp"/>
     </div>
+    <jsp:include page="cart.jsp"/>
 </div>
-
 <script>
-
+    //TODO modal dialog
     $(document).ready(function () {
         $('#main').click(function () {
             $('#Mymodal').modal('show')
         });
     });
 </script>
-<jsp:include page="modal.jsp"/>
+
 </body>
+
 </html>

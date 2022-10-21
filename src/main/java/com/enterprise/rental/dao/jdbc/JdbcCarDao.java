@@ -2,20 +2,18 @@ package com.enterprise.rental.dao.jdbc;
 
 import com.enterprise.rental.dao.CarDao;
 import com.enterprise.rental.entity.Car;
-import com.enterprise.rental.entity.User;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
-import static com.enterprise.rental.dao.jdbc.Constants.FILTER_BY_SQL;
-import static com.enterprise.rental.dao.jdbc.Constants.FIND_ALL_SQL;
+import static com.enterprise.rental.dao.jdbc.Constants.*;
 import static com.enterprise.rental.dao.jdbc.JdbcCarTemplate.*;
 
 public class JdbcCarDao implements CarDao {
 
     @Override
-    public Set<Car> findAll() {
+    public List<Car> findAll() {
         return getCarsQuery(FIND_ALL_SQL);
     }
 
@@ -25,13 +23,16 @@ public class JdbcCarDao implements CarDao {
     }
 
     @Override
-    public Optional<User> findByName(String name) {
-        return Optional.empty();
+    public Optional<Car> findByName(String name) {
+        Optional<Car> carQuery = getCarQuery(name,
+                FILTER_BY_CAR_NAME_SQL);
+        return carQuery;
     }
 
     @Override
-    public Set<Car> findAll(String params) {
-        String sql = String.format("%sWHERE %s;", FILTER_BY_SQL, params);
+    public List<Car> findAll(String params) {
+        String sql = String.format("%sWHERE %s;",
+                FILTER_CAR_BY_SQL, params);
         return getCarsQuery(sql);
     }
 
@@ -51,62 +52,60 @@ public class JdbcCarDao implements CarDao {
     }
 
     @Override
-    public Set<Car> findAll(Map<String, String> params, int offset) {
+    public List<Car> findAll(Map<String, String> params, int offset) {
 
-        String sort = params.get("sort");
-        sort = sort == null ? "" : sort;
-
-        String direction = params.get("direction");
-        direction = direction == null ? "" : direction;
-        if (direction.equals("")) {
-            direction = "cost";
-        }
-
-        String brand = params.get("brand");
-        brand = brand == null ? "" : String.format(" brand='%s' AND", brand);
-
-
-        int price;
-        try {
-            price = Integer.parseInt(params.get("price"));
-        } catch (NumberFormatException e) {
-            price = 1;
-        }
+        String sort = Optional.ofNullable(params.get("sort")).orElse("");
+        String direction = Optional.ofNullable(params.get("direction")).orElse("cost");
+        String brand = Optional.ofNullable(String.format(" brand='%s' AND", params.get("brand"))).orElse("");
+        String model = Optional.ofNullable(String.format(" model='%s' AND", params.get("model"))).orElse("");
+        int price = Optional.of(Integer.parseInt(params.get("price"))).orElse(100);
+        int page = Optional.of(Integer.parseInt(params.get("page"))).orElse(0);
+        int cost = Optional.of(Integer.parseInt(params.get("cost"))).orElse(1);
 
         String records = params.get("limit");
-
         int limit = records
                 != null && Integer.parseInt(records) >= 1
                 ? Integer.parseInt(records)
                 : 10;
-
-        int page;
-        try {
-            page = Integer.parseInt(params.get("page"));
-        } catch (NumberFormatException e) {
-            page = 0;
-        }
-
-        int cost;
-        try {
-            cost = Integer.parseInt(params.get("cost"));
-        } catch (NumberFormatException e) {
-            cost = 1;
-        }
 
         int start = page * limit - limit;
 
         if (start < 0) {
             start = 0;
         }
-
-        String sql = String.format("%sWHERE%s cost>=%d ORDER BY %s %s LIMIT %d OFFSET %d;", FILTER_BY_SQL, brand, cost, direction, sort, limit, start);
+        String sql = String.format("%sWHERE%s price>=%d ORDER BY %s %s LIMIT %d OFFSET %d;",
+                FILTER_CAR_BY_SQL, brand, price, direction, sort, limit, start);
 
         return getCarsQuery(sql);
+
+        //TODO
+//        try {
+//            price = Integer.parseInt(params.get("price"));
+//        } catch (NumberFormatException e) {
+//            price = 100;
+//        }
+//        int page;
+//
+//        try {
+//            page = Integer.parseInt(params.get("page"));
+//        } catch (NumberFormatException e) {
+//            page = 0;
+//        }
+//
+//        int cost;
+//        try {
+//            cost = Integer.parseInt(params.get("cost"));
+//        } catch (NumberFormatException e) {
+//            cost = 1;
+//        }
     }
 
     @Override
-    public Set<Car> findAll(Map<String, String> params) {
-        return findAll(params, 0);
+    public List<Car> findAll(
+            Map<String, String> params) {
+
+        return params == null
+                ? findAll()
+                : findAll(params, 0);
     }
 }

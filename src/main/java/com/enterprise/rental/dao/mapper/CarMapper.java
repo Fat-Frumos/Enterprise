@@ -3,11 +3,9 @@ package com.enterprise.rental.dao.mapper;
 import com.enterprise.rental.entity.Car;
 
 import java.sql.ResultSet;
-
 import java.sql.SQLException;
 
 public class CarMapper extends Mapper<Car> {
-
     public Car mapRow(ResultSet resultSet) throws SQLException {
         long id = resultSet.getLong("id");
         String name = resultSet.getString("name");

@@ -19,10 +19,10 @@
         <div class="car" id="ads">
             <c:forEach items="${cars}" var="cars">
                 <div class="col-md-4">
-                    <div class="card rounded">
-                        <div class="card-image fw-900">
-                            <span class="card-notify-badge m-2">${cars.brand} ${cars.name} ${cars.model}</span>
-                            <span class="card-notify-year">${cars.year}</span>
+                    <div class="cart rounded">
+                        <div class="cart-image fw-900">
+                            <span class="cart-notify-badge m-2">${cars.brand} ${cars.name} ${cars.model}</span>
+                            <span class="cart-notify-year">${cars.year}</span>
                             <figure>
                                 <img class="img-fluid"
                                      src="${cars.path}"
@@ -30,12 +30,12 @@
                                 <figcaption></figcaption>
                             </figure>
                         </div>
-                        <div class="card-image-overlay m-auto">
-                            <span class="card-detail-badge">Used</span>
-                            <span class="card-detail-badge">$${cars.price}</span>
-                            <span class="card-detail-badge">$${cars.cost}</span>
+                        <div class="cart-image-overlay m-auto">
+                            <span class="cart-detail-badge">Used</span>
+                            <span class="cart-detail-badge">$${cars.price}</span>
+                            <span class="cart-detail-badge">$${cars.cost}</span>
                         </div>
-                        <div class="card-body text-center">
+                        <div class="cart-body text-center">
                             <a class="ad-btn" href="#">View</a>
                         </div>
                     </div>

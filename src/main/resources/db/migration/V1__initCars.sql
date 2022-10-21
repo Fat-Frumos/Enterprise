@@ -1,6 +1,6 @@
 create table car
 (
-    id    bigserial
+    id    bigserial        not null,
         primary key,
     name  text             not null,
     brand text             not null,

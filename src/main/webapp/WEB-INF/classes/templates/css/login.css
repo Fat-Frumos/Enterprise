@@ -3,7 +3,7 @@ body {
     padding: 0;
     height: 100vh;
     font-family: Verdana, Roboto, sans-serif;
-    background: url(https://image.winudf.com/v2/image/Y29tLmZyZWUud2FsbHBhcGVycy5jYXIuaGRfc2NyZWVuc2hvdHNfMF8zNGU4N2FmMw/screen-0.jpg?fakeurl=1&type=.webp) no-repeat center;
+    background: url("https://raw.githubusercontent.com/Fat-Frumos/Cars/master/images/screen.jpg") no-repeat center;
     background-size: cover;
     overflow: hidden;
 }
@@ -21,7 +21,8 @@ body {
     transform: translate(-50%, -50%);
     width: 350px;
     min-height: 200px;
-    background: #000000;
+    background: rgba(0, 0, 0, .92);
+
     border-radius: 8px;
     padding: 40px;
     box-sizing: border-box;
@@ -45,7 +46,7 @@ h3 {
     margin-bottom: 20px
 }
 
-.loginBox input[type="text"], .loginBox input[type="password"] {
+.loginBox input[type="text"], .loginBox input[type="password"], .loginBox input[type="email"] {
     border: none;
     border-bottom: 2px solid #262626;
     outline: none;
@@ -57,14 +58,14 @@ h3 {
     box-sizing: border-box
 }
 
-.loginBox input[type="text"]:hover, .loginBox input[type="password"]:hover {
-    color: #42F3FA;
-    border: 1px solid #42F3FA;
+.loginBox input[type="text"]:hover, .loginBox input[type="email"], .loginBox input[type="password"]:hover {
+    color: #04AA6D;
+    border: 1px solid #04AA6D;
     box-shadow: 0 0 5px rgba(0, 255, 0, .3), 0 0 10px rgba(0, 255, 0, .2), 0 0 15px rgba(0, 255, 0, .1), 0 2px 0 black;
 }
 
-.loginBox input[type="text"]:focus, .loginBox input[type="password"]:focus {
-    border-bottom: 2px solid #42F3FA;
+.loginBox input[type="text"]:focus, .loginBox input[type="email"], .loginBox input[type="password"]:focus {
+    border-bottom: 2px solid #04AA6D;
 }
 
 .inputBox {
@@ -99,7 +100,8 @@ h3 {
 }
 
 a:hover, p {
-    color: #59238F;
+    color: #e5e5e5;
+    cursor: pointer;
 }
 
 .sign{
@@ -108,12 +110,12 @@ a:hover, p {
 }
 
 /* Full-width input fields */
-input[type=text], input[type=password] {
+input[type=text], input[type=password], input[type=email] {
     width: 100%;
     padding: 12px 20px;
     margin: 8px 0;
     display: inline-block;
-    border: 1px solid #ccc;
+    border: 1px solid #e5e5e5;
     box-sizing: border-box;
 }
 
@@ -143,9 +145,6 @@ button:hover {
 
 .btn-cancel:hover {
     cursor: pointer;
-}
-.container {
-    /*padding: 16px;*/
 }
 
 /* The Modal (background) */

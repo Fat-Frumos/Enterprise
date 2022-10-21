@@ -48,14 +48,28 @@ public class DbManager implements AutoCloseable {
     }
 
     private String getDBUrl() {
-        return properties.getProperty(DB_URL_PROPERTY_NAME);
+
+        return "jdbc:postgresql://ec2-18-235-114-62.compute-1.amazonaws.com:5432/dbgo3fr277jh86";
     }
 
     private String getDBName() {
-        return properties.getProperty(DB_NAME_PROPERTY_NAME);
+
+        return "xhhiprtyikbzhv";
     }
 
     private String getDBPassword() {
-        return properties.getProperty(DB_PASSWORD_PROPERTY_NAME);
+
+        return "7e80cfaecb05a3a2ed082c914d07d5245f12fb7c41f0714047a38096481ae7f8";
     }
+//    private String getDBUrl() {
+//        return properties.getProperty(DB_URL_PROPERTY_NAME);
+//    }
+//
+//    private String getDBName() {
+//        return properties.getProperty(DB_NAME_PROPERTY_NAME);
+//    }
+//
+//    private String getDBPassword() {
+//        return properties.getProperty(DB_PASSWORD_PROPERTY_NAME);
+//    }
 }

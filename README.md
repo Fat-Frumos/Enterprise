@@ -1,10 +1,9 @@
 ###There is a list of Cars in the system, for which it is necessary to implement: 
 + choice by brand, price;
-- choice according to quality class ? (expensive -> cheap) sorting by cost();
++ choice according to quality class ? (expensive -> cheap) sorting by cost();
 + sort by rental price;
-+ sort by name. (UI)
 
-####An unregistered customer cannot place an order.
++ An unregistered customer cannot place an order.
 
 ####The customer: 
 + registers user in the system, (validate User) 
@@ -18,8 +17,8 @@
 - submit the price
 
 ####The system: 
-- generates an Invoice, which the client pays 
-- (send to email )
+- generates an Invoice, which the client pays Invoice + (itextpdf) 
+- (send to email ) MimeMessage with the invoice pdf
 
 ####The manager:
 - reviews the order 
@@ -38,36 +37,64 @@ The system administrator has the rights:
 -- registration of managers in the system (role).
 
 ===============================
+####INFO: FATAL: order
+####INFO: FATAL: Basket/cart
 
-service: log. err(msg, cause)
-connections.rollback
-throw new CarException
+SEVERE: Servlet.service() for servlet [com.enterprise.rental.controller.CardServlet] in context with path [] threw exception
+java.lang.NullPointerException: Cannot invoke "javax.servlet.http.HttpSession.getAttribute(String)" because "session" is null
+at com.enterprise.rental.controller.CardServlet.doGet(CardServlet.java:42)
 
+
+SEVERE: Servlet.service() for servlet [com.enterprise.rental.controller.CarsServlet] in context with path [] threw exception
+java.lang.NullPointerException: Cannot invoke "com.enterprise.rental.entity.User.getParams()" because "user" is null
+at com.enterprise.rental.controller.CarsServlet.doGet(CarsServlet.java:72)
+
+
+//upload img
+
+####INFO: FATAL: O: At least one JAR was scanned for TLDs yet contained no TLDs. 
+Enable debug logging for this logger for a complete list of JARs that were scanned but no TLDs were found in them. 
+Skipping unneeded JARs during scanning can improve startup time and JSP compilation time.
+
+
+#####TODO: @One to Many
+
+validate html w3c curl
+
+java.lang.NullPointerException: Cannot invoke "com.enterprise.rental.entity.User.addCar(com.enterprise.rental.entity.Car)" because "user" is null
+at com.enterprise.rental.controller.CardServlet.doPut(CardServlet.java:56)
+
+
+#####TODO: user save params
+####INFO: check session
 #####TODO: customer Role manger getOrders
 #####TODO: customer Role
 context xml screen
-####INFO: session 
+
+// TODO admin option  - > user.setRole()
 
 ####INFO: FATAL: add car to db
-####INFO: FATAL: sort price/ cost/
 
-####INFO: FATAL: get forward
-####INFO: FATAL: post send redirect to customer
+service: log. err(msg, cause)
+connection rollback
+throw new CarException
+
 ####INFO: FATAL: admin option
+
 ####INFO: FATAL: tag file/ internationalization
 
 #####TODO: sign up user email
 #####TODO: limit page
-#####TODO: select customer, http://localhost:8080/card?id=132121
+#####TODO: select customer, http://localhost:8080/cart?id=132121
 
 ####INFO: FATAL: new field cost price
-####INFO: FATAL: order
+
 ####INFO: FATAL: date
 ####INFO: FATAL: UI -role
-#####TODO: Test 40%
-
+#####TODO FATAL:: Test 40%
+####INFO: FATAL: post send redirect to customer
 #####!http://localhost:8080/views/ to http://localhost:8080/ 
-####INFO: FATAL: too many connections for role "heroku"
+
 //views/index.html (? static view index.jsp /)
 
 #####TODO: save params, pagination &page into params
@@ -77,22 +104,22 @@ context xml screen
 #####TODO: Access denied(UI)
 #####TODO edit/delete/ByName
 
-#####TODO: @WebServlet(@WebServlet(urlPatterns = "/users") && urlPatterns = "/card")
+#####TODO: @WebServlet(@WebServlet(urlPatterns = "/users") && urlPatterns = "/cart")
+
 #####TODO: Authentication, authorization, and accounting: /login/registration user login.jsp
 #####TODO: PopUp && update cars
 #####TODO: DataTag layer support
+
 #####TODO: ConnectionFactory vs DBManager
 #####TODO: transactional getConnection Factory, dao setConnection
-#####TODO: @One to Many
-#####TODO: User frontend in card storage
+
+#####TODO: User frontend in cart storage
 #####TODO: Click only image. Btn +/-
 #####TODO: cars list randomize? input
 #####TODO: listener
 #####TODO: request scope
 #####TODO: Token /session
 #####TODO: web.xml file
-#####TODO: Forget Password email
-#####TODO: Sign up
 
 #####TODO: PRG redirect
 #####TODO boolean validateUser = userService.validateUser(name, password, user);
@@ -103,8 +130,7 @@ context xml screen
 #####TODO: itext
 conf\server.xml
 - listener.xml
-  //TODO boolean saved
-- 
+
 - At least one JAR was scanned for TLDs yet contained no TLDs. 
 - Enable debug logging for this logger for a complete list of JARs that were scanned but no TLDs were found in them. 
 - Skipping unneeded JARs during scanning can improve startup time and JSP compilation time.
@@ -126,7 +152,6 @@ conf\server.xml
 //3. doGet(HttpServletRequest request, HttpServletResponse response)
 //3. doPost(HttpServletRequest request, HttpServletResponse response)
 //4. How is the response created?
-
 
 
 //        if (isValid) {
@@ -160,10 +185,11 @@ conf\server.xml
 //            request.getRequestDispatcher("/WEB-INF/views/index.jsp").forward(request, response);
 
 //2022-10-18 12:24:28 INFO  JdbcCarTemplate:38 SELECT id, name, brand, model, path, price, cost, year FROM car LIMIT 100;
+
 //2022-10-18 12:24:29 INFO  JdbcUserDao:28 SELECT id, email, name, password, role FROM users WHERE name='admin'
 //        2022-10-18 12:24:31 INFO  UserMapper:19 id: 1, name: admin, pwd: admin, email: admin@i.ua, role: admin
 //        2022-10-18 12:24:31 INFO  LoginServlet:50 User: User{name='admin', password='admin', email='admin@i.ua', language='null', role='admin', active=false}, login: admin & admin
-// at java.base/java.lang.String.format(String.java:4140)
+
 at com.enterprise.rental.dao.jdbc.JdbcCarDao.findAll(JdbcCarDao.java:124)
 at com.enterprise.rental.service.CarService.getAll(CarService.java:56)
 at com.enterprise.rental.controller.CarsServlet.doGet(CarsServlet.java:65)

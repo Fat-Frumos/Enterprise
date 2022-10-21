@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-
 public class Car implements Serializable {
     private long id;
     private long userId;
@@ -15,6 +14,8 @@ public class Car implements Serializable {
     private Double price;
     private Double cost;
     private int year;
+
+    private boolean rent;
     private LocalDateTime created;
 
     public Car() {
@@ -86,6 +87,7 @@ public class Car implements Serializable {
         private Double cost;
         private int year;
 
+        private int rent;
         private LocalDateTime created;
 
         public Builder id(long id) {
@@ -163,15 +165,17 @@ public class Car implements Serializable {
 
     @Override
     public String toString() {
-        return "{ \"car\": {" +
-                "\"id\":" + id +
-                "\"user id\":" + userId +
-                ", \"name\":\"" + name + "\"" +
-                ", \"brand\":\"" + brand + "\"" +
-                ", \"model\":\"" + model + "\"" +
-                ", \"year\":\"" + year + "\"" +
-                ", \"price\":\"" + price + "\"" +
-                ", \"cost\":\"" + cost + "\"" +
-                "}";
+        return "Car{" +
+                "id=" + id +
+                ", userId=" + userId +
+                ", name='" + name + '\'' +
+                ", brand='" + brand + '\'' +
+                ", model='" + model + '\'' +
+                ", price=" + price +
+                ", cost=" + cost +
+                ", year=" + year +
+                ", rent=" + rent +
+                ", created=" + created +
+                '}';
     }
 }

@@ -35,7 +35,7 @@
         #slider {
             margin: 0 auto;
             width: 80%;
-            overflow: hidden;
+            /*overflow: hidden;*/
         }
 
         .slides {

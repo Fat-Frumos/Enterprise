@@ -21,42 +21,54 @@
          src="https://raw.githubusercontent.com/Fat-Frumos/Cars/master/ava.jpg" alt="avatar">
     <p><span style="color: red;">${errorMessage}</span></p>
     <h3>Sign in</h3>
-    <form action="/login" method="post">
+    <form action="/" method="post">
         <div class="inputBox">
-            <label for="name"></label><input id="name" type="text" name="name" placeholder="Username" autocomplete="on">
-            <label for="pass"></label><input id="pass" type="password" name="password" placeholder="Password" autocomplete="on"></div>
+            <input type="text" pattern="[a-zA-Z0-9]+" minlength="3" maxlength="10" placeholder="Enter Username" name="name" autocomplete="on" required>
+            <input type="password" placeholder="Enter Password" name="password" minlength="2" maxlength="16" autocomplete="on" required>
+            <%--pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{2,12}$"--%>
+        </div>
         <br>
         <input type="submit" name="" value="Login">
     </form>
 
 
-
     <a onclick="document.getElementById('id01').style.display='block'" class="sign" style="width:auto;">Sign Up</a>
 
     <div id="id01" class="modal">
-        <form class="loginBox" action="/" method="post">
+        <form class="loginBox" action="/login" method="post">
             <img class="user" height="100px" width="100px"
                  src="https://raw.githubusercontent.com/Fat-Frumos/Cars/master/ava.jpg">
-                <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
             <div class="container">
-                <input type="text" placeholder="Enter Username" name="name" required>
-                <input type="text" placeholder="Enter Email" name="email" required>
-                <input type="password" placeholder="Enter Password" name="password" required>
+                <input type="text" placeholder="Enter Username" name="name" pattern="[a-zA-Z0-9]+" autocomplete="on" required>
+                <input type="email" placeholder="Enter Email" name="email" pattern="/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/" autocomplete="on" required>
+                <input type="password" placeholder="Enter Password" name="password" pattern="[a-zA-Z0-9]+" autocomplete="on" required>
                 <button type="submit">Sign Up</button>
             </div>
-
             <div class="forget">
                 <a class="btn-cancel" onclick="document.getElementById('id01').style.display='none'">Cancel</a>
-                <a href="/user">Forgot password?</a>
+                <a onclick="toCard()">Forgot password?</a>
             </div>
         </form>
     </div>
 </div>
+<span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
 <script>
+
+    function toCard() {
+        let url = '/user';
+        fetch(url, {
+            method: 'GET',
+        }).then(response => {
+            console.log('Ok:', response);
+            window.location.href = url;
+        }).catch(err => {
+            console.error(err)
+        })
+    }
 
     let modal = document.getElementById('id01');
 
-    window.onclick = function(event) {
+    window.onclick = function (event) {
         if (event.target == modal) {
             modal.style.display = "none";
         }

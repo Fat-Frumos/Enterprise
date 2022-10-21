@@ -1,8 +1,7 @@
 package com.enterprise.rental.entity;
 
 import java.io.Serializable;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 public class User implements Serializable {
     private long userId;
@@ -13,30 +12,41 @@ public class User implements Serializable {
     private String role;
     private boolean active;
     private Set<Order> orders;
+    private Set<Car> cars = new HashSet<>();
+    private Map<String, String> params = new HashMap<>();
 
-    private Set<Car> cars;
+    public User() {
+    }
 
-    public User(Set<Car> cars) {
+    public void addCar(Car car) {
+        cars.add(car);
+    }
+
+    public Set<Car> getCars() {
+        return cars;
+    }
+
+    public void setCars(Set<Car> cars) {
         this.cars = cars;
     }
 
-    public User() {
+    public void addParams(Map<String, String> params) {
+        params.keySet()
+                .stream()
+                .filter(key -> params.get(key) != null)
+                .forEach(key -> this.params.put(key, params.get(key)));
+    }
+
+    public Map<String, String> getParams() {
+        return params;
     }
 
     public Set<Order> getOrders() {
         return orders;
     }
 
-    public void setOrders(Set<Order> orders) {
-        this.orders = orders;
-    }
-
     public long getUserId() {
         return userId;
-    }
-
-    public void setUserId(long userId) {
-        this.userId = userId;
     }
 
     public boolean isActive() {
@@ -47,24 +57,12 @@ public class User implements Serializable {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public String getPassword() {
         return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getRole() {
@@ -97,24 +95,31 @@ public class User implements Serializable {
         this.active = active;
     }
 
-    public User(long userId, String name, String password, String email, String role) {
+    public User(long userId, String name, String password, String email, String language, String role, boolean active) {
         this.userId = userId;
         this.name = name;
         this.password = password;
         this.email = email;
+        this.language = language;
         this.role = role;
+        this.active = active;
     }
-
 
     @Override
     public String toString() {
         return "User{" +
-                "name='" + name + '\'' +
+                "userId=" + userId +
+                ", name='" + name + '\'' +
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
                 ", language='" + language + '\'' +
                 ", role='" + role + '\'' +
                 ", active=" + active +
+                ", orders=" + orders +
                 '}';
+    }
+
+    public void setOrders(Set<Order> orders) {
+        this.orders = orders;
     }
 }

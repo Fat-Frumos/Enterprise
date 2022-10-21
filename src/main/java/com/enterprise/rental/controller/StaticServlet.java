@@ -12,69 +12,88 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+
+import static com.enterprise.rental.dao.jdbc.Constants.*;
 
 @WebServlet(urlPatterns = "/")
 public class StaticServlet extends HttpServlet {
     private final CarService carService = new CarService();
     private final UserService userService = new UserService();
     private static final Logger log = Logger.getLogger(StaticServlet.class);
-    private Set<Car> cars = carService.getAll("id BETWEEN 219 AND 229");
+    private List<Car> cars = carService.getAll("id BETWEEN 219 AND 231");
+    List<Car> auto = carService.getRandom(3);
 
+    /**
+     * Main view
+     */
     @Override
     protected void doGet(
             HttpServletRequest request,
             HttpServletResponse response)
             throws ServletException, IOException {
-
+        Collections.shuffle(cars);
         request.setAttribute("cars", cars);
-
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.setContentType("text/html;charset=utf-8");
-
-        request.getRequestDispatcher("/WEB-INF/views/index.jsp")
-                .forward(request, response);
+        dispatch(request, response, index);
     }
 
     /**
-     * Auth & valid user
+     * Create new user
      */
     @Override
     protected void doPost(
-
             HttpServletRequest request,
             HttpServletResponse response)
             throws IOException, ServletException {
 
+        HttpSession session = request.getSession();
+
         String name = request.getParameter("name");
         String password = request.getParameter("password");
 
-        Optional<User> optionalUser = userService.findByName(name);
+        if (name == null) {
 
-        log.info(String.format("optionalUser: %s. name:%s password:%s",
-                optionalUser, name, password));
-
-
-        if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
-
-            log.info(String.format("User: %s. Input %s %s", user, name, password));
-
-            boolean isValid = Objects.equals(name, user.getName())
-                    && password.equals(user.getPassword());
-
-            if (isValid) {
-                request.setAttribute("cars", carService.getRandom(20));
-                request.setAttribute("user", user);
-            }
-            request.setAttribute("errorMessage", "User is exists");
         }
-        RequestDispatcher dispatcher = getServletContext()
-                .getRequestDispatcher("/WEB-INF/views/login.jsp");
 
+        User user = userService.findByName(name)
+                .orElse(new User(0, "guest", "", "guest@i.ua", "en", false));
+
+        boolean isValid = Objects.equals(name, user.getName()) && password.equals(user.getPassword());
+
+        if (isValid) {
+
+            session.setAttribute("user", user);
+
+            request.setAttribute("cars", auto);
+
+            dispatch(request, response, "/WEB-INF/views/main.jsp");
+
+            log.info(String.format("Session customer: %s", session.getAttribute("user")));
+
+        } else {
+            request.setAttribute("errorMessage", "Invalid credentials");
+            dispatch(request, response, login);
+        }
+
+    }
+
+    /**
+     * Request Dispatcher
+     */
+    void dispatch(
+            HttpServletRequest request,
+            HttpServletResponse response, String path)
+            throws IOException, ServletException {
+
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.setContentType("text/html;charset=utf-8");
+
+        RequestDispatcher dispatcher = getServletContext()
+                .getRequestDispatcher(path);
         dispatcher.include(request, response);
     }
 }

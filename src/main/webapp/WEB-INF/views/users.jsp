@@ -141,7 +141,7 @@
         <div class="col-lg-12">
             <div class="row mt-5">
                 <div class="col-lg-12">
-                    <h5>List of Jobs</h5>
+                    <h5>List of Users</h5>
                 </div>
             </div>
             <div class="row">
