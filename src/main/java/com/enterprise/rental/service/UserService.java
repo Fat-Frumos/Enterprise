@@ -1,17 +1,18 @@
 package com.enterprise.rental.service;
 
-import com.enterprise.rental.controller.UserServlet;
 import com.enterprise.rental.dao.jdbc.JdbcUserDao;
 import com.enterprise.rental.entity.Car;
 import com.enterprise.rental.entity.User;
 import org.apache.log4j.Logger;
 
 import javax.validation.constraints.NotNull;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 public class UserService implements Service<User> {
 
-    private Set<Car> auto = new HashSet<>();
     private static final Logger log = Logger.getLogger(UserService.class);
     private final JdbcUserDao jdbcUserDao = new JdbcUserDao();
 
@@ -69,12 +70,12 @@ public class UserService implements Service<User> {
         log.info(optionalUser);
 
         return optionalUser.isPresent() ? optionalUser.get().getName() : "User not found";
-
     }
 
     public User bookCar(@NotNull Car car, @NotNull User user) {
-        user.addCar(car);
-        auto = user.getCars();
+        if (!user.getCars().contains(car)) {
+            user.addCar(car);
+        }
         return user;
     }
 }

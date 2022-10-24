@@ -22,7 +22,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
           integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-    <link rel="shortcut icon" href="https://iconarchive.com/download/i18444/iconshock/global-warming/wheel.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="https://raw.githubusercontent.com/Fat-Frumos/Cars/master/wheel.ico" type="image/x-icon">
 </head>
 <body>
 <div class="slide_style_bottom">
@@ -49,7 +49,7 @@
                         <div class="col-12 slide-text text-left">
                             <h1 class="animate__animated animate__lightSpeedInLeft">Rental Car</h1>
                             <p class="animate__animated animate__fadeInUp"><small>one touch</small></p>
-                            <a href="/login" class="btn btn-warning animate__animated animate__zoomIn">
+                            <a href="/" class="btn btn-warning animate__animated animate__zoomIn">
                                 select one
                             </a>
                         </div>
@@ -66,7 +66,7 @@
                         <div class="col-12 slide-text text-left">
                             <h1 class="animate__animated animate__lightSpeedInLeft">Need For Speed</h1>
                             <p class="animate__animated animate__fadeInUp"><small>one touch</small></p>
-                            <a href="/login" class="btn btn-primary animate__animated animate__fadeInUp">
+                            <a href="/cars" class="btn btn-primary animate__animated animate__fadeInUp">
                                 select two
                             </a>
                         </div>
@@ -99,7 +99,7 @@
                         <div class="col-12 slide-text text-left">
                             <h1 class="animate__animated animate__lightSpeedInLeft">Riders of the road</h1>
                             <p class="animate__animated animate__fadeInUp"><small>one touch</small></p>
-                            <a href="/login" class="btn btn-primary animate__animated animate__fadeInUp">
+                            <a href="/cars" class="btn btn-primary animate__animated animate__fadeInUp">
                                 select two
                             </a>
                         </div>
@@ -109,7 +109,7 @@
         </div>
     </div>
 </div>
-</body>
 <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
+</body>
 </html>

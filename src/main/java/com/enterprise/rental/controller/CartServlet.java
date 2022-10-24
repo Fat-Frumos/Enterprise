@@ -20,10 +20,10 @@ import java.util.Set;
 import static com.enterprise.rental.dao.jdbc.Constants.*;
 
 @WebServlet(urlPatterns = "/cart")
-public class CardServlet extends HttpServlet {
+public class CartServlet extends HttpServlet {
     private final CarService carService = new CarService();
     private final UserService userService = new UserService();
-    private static final Logger log = Logger.getLogger(CardServlet.class);
+    private static final Logger log = Logger.getLogger(CartServlet.class);
 
     /**
      * Cars basket for user: get list
@@ -38,28 +38,20 @@ public class CardServlet extends HttpServlet {
 
         String path;
 
-        if (session == null || session.getAttribute("user") == null) {
-            path = login;
-        } else {
+        if (session != null && session.getAttribute("user") != null) {
+
             User user = (User) session.getAttribute("user");
-
-            log.info(String.format("Get into session User %s bucket cars: %s",
-                    user.getName(), user.getCars().size()));
-
+            log.info(String.format("Get into session User %s bucket cars: %s", user.getName(), user.getCars().size()));
             request.setAttribute("cars", user.getCars());
             request.setAttribute("car", user.getCars().size());
-
-            path = index;
+            dispatch(request, response, index);
+        } else {
+            dispatch(request, response, login);
         }
-
-        response.setContentType("text/html;charset=UTF-8");
-        RequestDispatcher dispatcher =
-                request.getRequestDispatcher(path);
-        dispatcher.forward(request, response);
     }
 
     /**
-     * put + to bucket, post -> save user to db
+     * put + to Basket, post -> save user to db
      */
     @Override
     protected void doPost(
@@ -79,7 +71,7 @@ public class CardServlet extends HttpServlet {
         }
         user.setRole(role);
         log.info(user);
-        log.info(String.format("Main post car %d from session  %s: %s", id, role, user));
+        log.info(String.format("Main post car %d from session %s: %s", id, role, user));
 
         boolean driver = false;
 
@@ -93,10 +85,7 @@ public class CardServlet extends HttpServlet {
             orders.add(order);
             user.setOrders(orders);
         }
-
-        request.getRequestDispatcher(main)
-                .forward(request, response);
-
+        dispatch(request, response, main);
     }
 
     @Override
@@ -111,19 +100,19 @@ public class CardServlet extends HttpServlet {
 
             if (user != null) {
 
-                log.info(String.format("put session User: %s", user));
+                log.info(String.format("Session User Basket: %s", user));
 
                 try {
                     long id = Long.parseLong(request.getParameter("id"));
                     Car car = carService.getById(id);
                     if (car != null) {
-                        User newUser = userService.bookCar(car, user);
+                        userService.bookCar(car, user);
+                        user.setCar(car);
+                        request.setAttribute("auto", user.getCar());
+                        request.setAttribute("user", user);
+                        log.info(String.format("Car: %s", user.getCar()));
+                        log.info(String.format("Put new Car %s into the basket: %s", car.getBrand(), user.getCars().size()));
 
-                        log.info(String.format("Put new Car %s into the basket: %s", car.getBrand(), newUser.getCars().size()));
-
-                        request.setAttribute("user", newUser);
-                    } else {
-//                        request.setAttribute("cars", user.getCars());
                     }
                 } catch (NumberFormatException e) {
                     log.info("Car by id not found");
@@ -139,6 +128,19 @@ public class CardServlet extends HttpServlet {
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws
             ServletException, IOException {
         super.doDelete(request, response);
+    }
+
+    private void dispatch(
+            HttpServletRequest request,
+            HttpServletResponse response, String path)
+            throws IOException, ServletException {
+
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.setContentType("text/html;charset=utf-8");
+
+        RequestDispatcher dispatcher = getServletContext()
+                .getRequestDispatcher(path);
+        dispatcher.include(request, response);
     }
 }
 

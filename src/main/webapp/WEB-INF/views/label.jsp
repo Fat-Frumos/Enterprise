@@ -6,11 +6,11 @@
   Time: 7:47 PM
   To change this template use File | Settings | File Templates.
 --%>
-<%--https://raw.githubusercontent.com/Fat-Frumos/Cars/master/main.jpg--%>
 <div class="row">
     <div class="p-3">
         <figure>
             <img class="img-fluid"
+                 onclick="popUp(${auto.id})"
                  id="main"
                  src="${auto.path}"
                  alt="main">
@@ -18,16 +18,73 @@
             </figcaption>
         </figure>
     </div>
+
     <div class="col-md-4 col-3 ps-30 my-4">
-        <p class="text-muted">Mileage</p>
-        <p class="h5">25000<span class="ps-1">Km</span></p>
+        <p class="h4 m-0">
+            <span class="pe-1">${auto.brand}</span>
+            <span class="pe-1">${auto.name}</span>
     </div>
+
     <div class="col-md-4 col-3 ps-30 my-4">
-        <p class="text-muted">Autopilot</p>
-        <p class="h5 m-0">AI</p>
+        <p class="h5 m-0">Model</p>
+        <div class="d-flex align-items-end mt-4 mb-2">
+            <p class="fs-14 fw-bold">
+                <span class="fas fa-dollar-sign pe-1">
+                </span>${auto.model}</p>
+        </div>
     </div>
+
     <div class="col-md-4 col-3 ps-30 my-4">
-        <p class="text-muted">Color</p>
-        <p class="h5 m-0">Black</p>
+        <p class="h5 m-0">Self-Drive</p>
+        <div class="d-flex align-items-end mt-4 mb-2">
+            <p class="fs-14 fw-bold">
+                <span class="fas fa-dollar-sign pe-1"></span>AI</p>
+        </div>
     </div>
+
+    <div class="col-md-4 col-3 ps-30 my-4">
+        <p class="h5 m-0">Price</p>
+        <div class="d-flex align-items-end mt-4 mb-2">
+            <p class="fs-14 fw-bold">
+                <span class="fas fa-dollar-sign pe-1"></span>$${auto.cost}
+            </p>
+        </div>
+    </div>
+
+    <div class="col-md-4 col-3 ps-30 my-4">
+        <p class="h5 m-0">Cost</p>
+        <div class="d-flex align-items-end mt-4 mb-2">
+            <p class="fs-14 fw-bold">
+                <span class="fas fa-dollar-sign pe-1"></span>$${auto.price}
+            </p>
+        </div>
+    </div>
+
+    <div class="col-md-4 col-3 ps-30 my-4">
+        <p class="h5 m-0">Discount</p>
+        <div class="d-flex align-items-end mt-3 mb-2">
+            <p class="fs-14 fw-bold">
+                <span class="fas fa-dollar-sign pe-1"></span>$25
+            </p>
+            </p>
+        </div>
+    </div>
+
+<%--    <div class="col-md-4 col-3 ps-30 my-4">--%>
+<%--        <p class="h5 fw-bold">Total</p>--%>
+<%--        <div class="d-flex align-text-top ">--%>
+<%--            <p class="fs-14 fw-bold">--%>
+<%--                <span class="fas fa-dollar-sign mt-2 pe-1 fs-14 "></span>--%>
+<%--                <span class="h5">$${auto.price}</span>--%>
+<%--            </p>--%>
+<%--        </div>--%>
+<%--    </div>--%>
+
+<%--    <div class="col-md-2 col-3 ps-30 my-4">--%>
+<%--        <p class="fw-bold h5">Driver</p>--%>
+<%--        <div class="d-flex align-text-top toggle">--%>
+<%--            <input type="checkbox">--%>
+<%--            <label class="onButton"></label>--%>
+<%--        </div>--%>
+<%--    </div>--%>
 </div>

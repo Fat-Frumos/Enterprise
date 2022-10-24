@@ -4,18 +4,32 @@
     box-sizing: border-box;
 }
 
+nav {
+    top: 1vw;
+    left: 5vh;
+    position: absolute;
+}
+
+body {
+    padding: 15px;
+    caret-color: transparent;
+}
+
+.carousel {
+    overflow: visible;
+}
+
 img {
-    border-radius: 20px;
+    border-radius: 10px;
+    transition: transform .7s ease-out;
 }
 
 img:hover {
+    border-radius: 12px;
     transform: scale(1.2);
     cursor: pointer;
 }
 
-figure{
-
-}
 
 button {
     background-color: #5d5d5d;

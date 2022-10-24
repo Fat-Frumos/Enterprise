@@ -17,17 +17,19 @@ public class Constants {
 
     // Order sql
 
-    protected static final String ORDER_FIELD = " order_id, customer_id, car_id, day, payment,driver, rejected, closed, order_date, damage ";
-    protected static final String ORDER_FIELDS = "SELECT"+ ORDER_FIELD;
-    protected static final String FIND_ALL_ORDERS_SQL = ORDER_FIELDS + "FROM order;";
-    protected static final String FILTER_ORDER_BY_SQL = ORDER_FIELDS + "FROM order ";
-    protected static final String FILTER_ORDER_BY_ID_SQL = ORDER_FIELDS + "FROM order WHERE id=?";
+    protected static final String ORDER_FIELD = " order_id, customer_id, car_id, day, payment, driver, rejected, closed, order_date, ended, damage, passport ";
 
-    protected static final String INSERT_ORDER_SQL = "INSERT INTO order(" + ORDER_FIELD + ") VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? );";
+    protected static final String ORDER_INSERT_FIELD = " order_id, user_id, car_id, created, passport ";
+    protected static final String ORDER_FIELDS = "SELECT"+ ORDER_FIELD;
+    protected static final String FIND_ALL_ORDERS_SQL = ORDER_FIELDS + "FROM orders;";
+    protected static final String FILTER_ORDER_BY_SQL = ORDER_FIELDS + "FROM orders ";
+    protected static final String FILTER_ORDER_BY_ID_SQL = ORDER_FIELDS + "FROM orders WHERE id=?";
+    protected static final String INSERT_ORDER_SQL = "INSERT INTO orders(" + ORDER_INSERT_FIELD + ") VALUES ( ?, ?, ?, ?, ? );";
 
     // path urls
     public static final String main = "/WEB-INF/views/main.jsp";
     public static final String cars = "/WEB-INF/views/cars.jsp";
+    public static final String contact = "/WEB-INF/views/contact.jsp";
     public static final String users = "/WEB-INF/views/users.jsp";
     public static final String login = "/WEB-INF/views/login.jsp";
     public static final String index = "/WEB-INF/views/index.jsp";

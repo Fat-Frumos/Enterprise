@@ -5,7 +5,6 @@
 .popup {
     margin: 10px 10px;
     background: #fff;
-    border-radius: 5px;
     width: 90%;
     position: relative;
     transition: all 5s ease-in-out;

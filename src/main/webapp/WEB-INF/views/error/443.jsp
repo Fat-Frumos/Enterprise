@@ -11,6 +11,6 @@
     <title>Auth</title>
 </head>
 <body>
-access denied
+Access denied
 </body>
 </html>

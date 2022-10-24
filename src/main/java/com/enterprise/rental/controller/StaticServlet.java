@@ -1,5 +1,6 @@
 package com.enterprise.rental.controller;
 
+import com.enterprise.rental.dao.jdbc.Constants;
 import com.enterprise.rental.entity.Car;
 import com.enterprise.rental.entity.User;
 import com.enterprise.rental.service.CarService;
@@ -28,6 +29,7 @@ public class StaticServlet extends HttpServlet {
     private List<Car> cars = carService.getAll("id BETWEEN 219 AND 231");
     List<Car> auto = carService.getRandom(3);
 
+
     /**
      * Main view
      */
@@ -50,35 +52,30 @@ public class StaticServlet extends HttpServlet {
             HttpServletResponse response)
             throws IOException, ServletException {
 
-        HttpSession session = request.getSession();
-
         String name = request.getParameter("name");
         String password = request.getParameter("password");
 
-        if (name == null) {
+        if (name != null && password != null) {
+            User user = userService.findByName(name)
+                    .orElse(new User(0, "guest", "", "guest@i.ua", "en", false));
 
-        }
+            boolean isValid = Objects.equals(name, user.getName()) && password.equals(user.getPassword());
 
-        User user = userService.findByName(name)
-                .orElse(new User(0, "guest", "", "guest@i.ua", "en", false));
-
-        boolean isValid = Objects.equals(name, user.getName()) && password.equals(user.getPassword());
-
-        if (isValid) {
-
-            session.setAttribute("user", user);
-
-            request.setAttribute("cars", auto);
-
-            dispatch(request, response, "/WEB-INF/views/main.jsp");
-
-            log.info(String.format("Session customer: %s", session.getAttribute("user")));
-
+            if (isValid) {
+                HttpSession session = request.getSession();
+                session.setAttribute("user", user);
+                request.setAttribute("cars", auto);
+                request.setAttribute("auto", auto.get(0));
+                log.info(String.format("Main Car: %s", auto.get(0)));
+                dispatch(request, response, main);
+                log.info(String.format("Session customer: %s", session.getAttribute("user")));
+            } else {
+                request.setAttribute("errorMessage", "Your name/password is incorrect");
+                dispatch(request, response, login);
+            }
         } else {
-            request.setAttribute("errorMessage", "Invalid credentials");
             dispatch(request, response, login);
         }
-
     }
 
     /**

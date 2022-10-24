@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="ct" uri="/WEB-INF/dataTag" %>
 <%--
   Created by IntelliJ IDEA.
   User: Pasha
@@ -9,31 +10,41 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rental Car</title>
-    <link rel="shortcut icon" href="https://iconarchive.com/download/i18444/iconshock/global-warming/wheel.ico"
+    <link rel="shortcut icon" href="https://raw.githubusercontent.com/Fat-Frumos/Cars/master/wheel.ico"
           type="image/x-icon">
 </head>
 
 <style>
+    <%@include file="../classes/templates/css/modal.css"%>
     <%@include file="../classes/templates/css/car.css"%>
-
+    <%@include file="../classes/templates/css/form.css"%>
 </style>
 
 <body>
+<hr>
 <div class="container">
     <jsp:include page="nav.jsp"/>
+
     <div class="row m-0">
         <div class="col-lg-7 pb-5 pe-lg-5">
             <jsp:include page="label.jsp"/>
         </div>
         <jsp:include page="car.jsp"/>
-
-        <%--        <jsp:include page="slide.jsp"/>--%>
-
-        <jsp:include page="modal.jsp"/>
     </div>
+
     <jsp:include page="cart.jsp"/>
+    <jsp:include page="modal.jsp"/>
 </div>
+<div class="day">
+    <h6><ct:today format="MMMM dd yyyy"/></h6>
+    <a style="text-transform: capitalize" href="/user/${user}">(${user})</a>
+</div>
+<%--<jsp:include page="burger.jsp"/>--%>
+<%--    <a style="text-transform: capitalize" href="/login${user}">(${user})</a>--%>
 <script>
     //TODO modal dialog
     $(document).ready(function () {
@@ -41,8 +52,11 @@
             $('#Mymodal').modal('show')
         });
     });
+    window.addEventListener('contextmenu', (event) => {
+        event.preventDefault()
+        window.history.back();
+    })
 </script>
-
 </body>
 
 </html>

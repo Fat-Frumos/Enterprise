@@ -11,7 +11,7 @@
 <!DOCTYPE html>
 <head>
     <title>Cars</title>
-    <link rel="shortcut icon" href="https://iconarchive.com/download/i18444/iconshock/global-warming/wheel.ico"
+    <link rel="shortcut icon" href="https://raw.githubusercontent.com/Fat-Frumos/Cars/master/wheel.ico"
           type="image/x-icon">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
           integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
@@ -21,14 +21,17 @@
         <%@include file="../classes/templates/css/car.css"%>
 
         figure {
+            border-radius: 10px;
             overflow: hidden;
         }
 
         .modal-content:hover {
             cursor: pointer;
+            border-radius: 15px;
         }
 
         img {
+            border-radius: 10px;
             overflow: hidden;
         }
 
@@ -52,8 +55,6 @@
                                 <div class="modal-dialog wrap popup">
                                     <div class="modal-content">
                                         <img onclick="popUp(${cars.id})" src="${cars.path}" alt="${cars.name}">
-                                        <div class="modal-header">
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -92,10 +93,10 @@
     //     }
     // })
 
-    //     window.addEventListener('contextmenu', (event) => {
-    //     event.preventDefault()
-    //     window.history.back();
-    // })
+    window.addEventListener('contextmenu', (event) => {
+        event.preventDefault()
+        window.history.back();
+    })
 
     function popUp(id) {
         let url = '/cart' + '?id=' + id;

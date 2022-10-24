@@ -1,19 +1,15 @@
 package com.enterprise.rental.dao.jdbc;
 
 import com.enterprise.rental.dao.OrderDao;
+import com.enterprise.rental.dao.factory.DbManager;
 import com.enterprise.rental.dao.mapper.OrderMapper;
 import com.enterprise.rental.entity.Order;
 import com.enterprise.rental.entity.User;
 import com.enterprise.rental.exception.DataException;
 import org.apache.log4j.Logger;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.sql.*;
+import java.util.*;
 
 import static com.enterprise.rental.dao.factory.DbManager.getInstance;
 import static com.enterprise.rental.dao.jdbc.Constants.*;
@@ -85,8 +81,63 @@ public class JdbcOrderDao implements OrderDao {
         return new ArrayList<>();
     }
 
+    //TODO MAPPER
     private boolean setOrderQuery(Order order) {
-        return false;
+
+        Connection connection = null;
+        PreparedStatement statement = null;
+
+        connection = DbManager.getInstance().getConnection();
+
+
+        try {
+            connection.setAutoCommit(false);
+            statement = connection.prepareStatement(INSERT_ORDER_SQL);
+
+//            boolean driver = order.isDriver();
+//            boolean rejected = order.isRejected();
+//            boolean closed = order.isClosed();
+//            int day = order.getDay();
+//            double payment = order.getPayment();
+            Timestamp create = new Timestamp(System.currentTimeMillis());
+//            Timestamp end = order.getEnded();
+//            String damage = order.getDamage();
+            String passport = order.getPassport();
+
+            log.info(order);
+
+            statement.setLong(1, order.getOrderId());
+            statement.setLong(2, order.getUserId());
+            statement.setLong(3, order.getCarId());
+//            statement.setInt(4, day);
+//            statement.setDouble(5, payment);
+//            statement.setBoolean(6, driver);
+//            statement.setBoolean(7, rejected);
+//            statement.setBoolean(8, closed);
+            statement.setTimestamp(4, create);
+//            statement.setTimestamp(10, end);
+//            statement.setString(11, damage);
+            statement.setString(5, passport);
+            statement.execute();
+            connection.commit();
+
+            return true;
+        } catch (SQLException e) {
+            try {
+                Objects.requireNonNull(connection).rollback();
+            } catch (SQLException ex) {
+                log.info("rollback");
+                throw new DataException(ex.getMessage());
+            }
+            log.info(String.format("%s Order can`t be added, maybe order already exists", order.getOrderId()));
+            throw new DataException(e);
+        } finally {
+            try {
+                Objects.requireNonNull(connection).close();
+            } catch (SQLException e) {
+                log.info(String.format("Connection not closed: %s", e.getMessage()));
+            }
+        }
     }
 }
 

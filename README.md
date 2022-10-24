@@ -37,18 +37,10 @@ The system administrator has the rights:
 -- registration of managers in the system (role).
 
 ===============================
+
+web: java $JAVA_OPTS -jar target/webapp-runner.jar --port $PORT target/*.war
 ####INFO: FATAL: order
 ####INFO: FATAL: Basket/cart
-
-SEVERE: Servlet.service() for servlet [com.enterprise.rental.controller.CardServlet] in context with path [] threw exception
-java.lang.NullPointerException: Cannot invoke "javax.servlet.http.HttpSession.getAttribute(String)" because "session" is null
-at com.enterprise.rental.controller.CardServlet.doGet(CardServlet.java:42)
-
-
-SEVERE: Servlet.service() for servlet [com.enterprise.rental.controller.CarsServlet] in context with path [] threw exception
-java.lang.NullPointerException: Cannot invoke "com.enterprise.rental.entity.User.getParams()" because "user" is null
-at com.enterprise.rental.controller.CarsServlet.doGet(CarsServlet.java:72)
-
 
 //upload img
 
@@ -56,14 +48,9 @@ at com.enterprise.rental.controller.CarsServlet.doGet(CarsServlet.java:72)
 Enable debug logging for this logger for a complete list of JARs that were scanned but no TLDs were found in them. 
 Skipping unneeded JARs during scanning can improve startup time and JSP compilation time.
 
-
 #####TODO: @One to Many
 
 validate html w3c curl
-
-java.lang.NullPointerException: Cannot invoke "com.enterprise.rental.entity.User.addCar(com.enterprise.rental.entity.Car)" because "user" is null
-at com.enterprise.rental.controller.CardServlet.doPut(CardServlet.java:56)
-
 
 #####TODO: user save params
 ####INFO: check session
@@ -184,19 +171,10 @@ conf\server.xml
 //            response.sendRedirect("/WEB-INF/views/main.jsp");
 //            request.getRequestDispatcher("/WEB-INF/views/index.jsp").forward(request, response);
 
-//2022-10-18 12:24:28 INFO  JdbcCarTemplate:38 SELECT id, name, brand, model, path, price, cost, year FROM car LIMIT 100;
-
-//2022-10-18 12:24:29 INFO  JdbcUserDao:28 SELECT id, email, name, password, role FROM users WHERE name='admin'
-//        2022-10-18 12:24:31 INFO  UserMapper:19 id: 1, name: admin, pwd: admin, email: admin@i.ua, role: admin
-//        2022-10-18 12:24:31 INFO  LoginServlet:50 User: User{name='admin', password='admin', email='admin@i.ua', language='null', role='admin', active=false}, login: admin & admin
-
-at com.enterprise.rental.dao.jdbc.JdbcCarDao.findAll(JdbcCarDao.java:124)
-at com.enterprise.rental.service.CarService.getAll(CarService.java:56)
-at com.enterprise.rental.controller.CarsServlet.doGet(CarsServlet.java:65)
+2022-10-18 12:24:31 INFO  UserMapper:19 id: 1, name: admin, pwd: admin, email: admin@i.ua, role: admin
 2022-10-18 16:36:31 INFO  CarsServlet:56 Params: {limit=10, page=8}
 2022-10-18 16:36:31 INFO  JdbcCarTemplate:38 SELECT id, name, brand, model, path, price, cost, year FROM car WHERE price>0 ORDER BY price  LIMIT 10 OFFSET 70;
 2022-10-18 16:36:33 INFO  CarException:8 Vehicle not found
 at com.enterprise.rental.service.CarService.lambda$getById$0(CarService.java:43)
-at java.base/java.util.Optional.orElseThrow(Optional.java:403)
 at com.enterprise.rental.service.CarService.getById(CarService.java:42)
-at com.enterprise.rental.controller.CardServlet.doGet(CardServlet.java:49)
+at com.enterprise.rental.controller.CartServlet.doGet(CardServlet.java:49)

@@ -40,7 +40,7 @@
                  src="https://raw.githubusercontent.com/Fat-Frumos/Cars/master/ava.jpg">
             <div class="container">
                 <input type="text" placeholder="Enter Username" name="name" pattern="[a-zA-Z0-9]+" autocomplete="on" required>
-                <input type="email" placeholder="Enter Email" name="email" pattern="/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/" autocomplete="on" required>
+                <input type="email" placeholder="Enter Email" name="email" pattern="[^@\s]+@[^@\s]+\.[^@\s]+" autocomplete="on" required>
                 <input type="password" placeholder="Enter Password" name="password" pattern="[a-zA-Z0-9]+" autocomplete="on" required>
                 <button type="submit">Sign Up</button>
             </div>
@@ -51,7 +51,7 @@
         </form>
     </div>
 </div>
-<span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
+<a onclick="document.getElementById('id01').style.display='none'" style="text-decoration: none" class="close" title="Close Modal" href="/">&times;</a>
 <script>
 
     function toCard() {

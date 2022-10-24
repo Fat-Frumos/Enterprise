@@ -12,8 +12,9 @@ public class User implements Serializable {
     private String role;
     private boolean active;
     private Set<Order> orders;
-    private Set<Car> cars = new HashSet<>();
-    private Map<String, String> params = new HashMap<>();
+    private List<Car> cars = new ArrayList<>();
+    private final Map<String, String> params = new HashMap<>();
+    private Car car;
 
     public User() {
     }
@@ -22,11 +23,12 @@ public class User implements Serializable {
         cars.add(car);
     }
 
-    public Set<Car> getCars() {
+    public List<Car> getCars() {
+        Collections.reverse(cars);
         return cars;
     }
 
-    public void setCars(Set<Car> cars) {
+    public void setCars(List<Car> cars) {
         this.cars = cars;
     }
 
@@ -71,6 +73,14 @@ public class User implements Serializable {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public Car getCar() {
+        return car;
+    }
+
+    public void setCar(Car car) {
+        this.car = car;
     }
 
     @Override

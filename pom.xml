@@ -81,26 +81,31 @@
             <artifactId>slf4j-log4j12</artifactId>
             <version>2.0.3</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>com.itextpdf</groupId>-->
-<!--            <artifactId>kernel</artifactId>-->
-<!--            <version>7.2.3</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>com.itextpdf</groupId>-->
-<!--            <artifactId>layout</artifactId>-->
-<!--            <version>7.2.3</version>-->
-<!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>javax.mail</groupId>-->
-        <!--            <artifactId>mail</artifactId>-->
-        <!--            <version>1.5.0-b01</version>-->
-        <!--        </dependency>-->
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>application.properties</include>
+                    <include>logging.properties</include>
+                </includes>
+            </resource>
+        </resources>
         <pluginManagement>
             <plugins>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <version>3.3.1</version>
+                    <configuration>
+                        <failOnMissingWebXml>false</failOnMissingWebXml>
+                        <attachClasses>true</attachClasses>
+                    </configuration>
+                </plugin>
+
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
@@ -119,19 +124,10 @@
                     <version>2.2</version>
                     <configuration>
                         <server>TomcatServer</server>
-                        <url>http://localhost:8080/</url>
+                        <port>8080</port>
                         <contextReloadable>true</contextReloadable>
                         <path>/</path>
                         <mode>war</mode>
-                    </configuration>
-                </plugin>
-
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-war-plugin</artifactId>
-                    <version>3.3.1</version>
-                    <configuration>
-                        <attachClasses>true</attachClasses>
                     </configuration>
                 </plugin>
 
@@ -158,6 +154,52 @@
                         </schemas>
                     </configuration>
                 </plugin>
+                <!--                <plugin>-->
+                <!--                    <groupId>org.apache.maven.plugins</groupId>-->
+                <!--                    <artifactId>maven-surefire-plugin</artifactId>-->
+                <!--                    <version>3.0.0-M7</version>-->
+                <!--                </plugin>-->
+                <!--                <plugin>-->
+                <!--                    <groupId>org.codehaus.mojo</groupId>-->
+                <!--                    <artifactId>exec-maven-plugin</artifactId>-->
+                <!--                    <version>${exec-maven-plugin}</version>-->
+                <!--                    <executions>-->
+                <!--                        <execution>-->
+                <!--                            <goals>-->
+                <!--                                <goal>exec</goal>-->
+                <!--                            </goals>-->
+                <!--                        </execution>-->
+                <!--                    </executions>-->
+                <!--                    <configuration>-->
+                <!--                        <mainClass>com.enterprise.Starter</mainClass>-->
+                <!--                        <executable>java</executable>-->
+                <!--                        <includeProjectDependencies>true</includeProjectDependencies>-->
+                <!--                        <includePluginDependencies>true</includePluginDependencies>-->
+                <!--                        <classpathScope>compile</classpathScope>-->
+                <!--                    </configuration>-->
+                <!--                </plugin>-->
+                <!--                <plugin>-->
+                <!--                    <groupId>org.apache.maven.plugins</groupId>-->
+                <!--                    <artifactId>maven-dependency-plugin</artifactId>-->
+                <!--                    <executions>-->
+                <!--                        <execution>-->
+                <!--                            <phase>package</phase>-->
+                <!--                            <goals>-->
+                <!--                                <goal>copy</goal>-->
+                <!--                            </goals>-->
+                <!--                            <configuration>-->
+                <!--                                <artifactItems>-->
+                <!--                                    <artifactItem>-->
+                <!--                                        <groupId>com.github.jsimone</groupId>-->
+                <!--                                        <artifactId>webapp-runner</artifactId>-->
+                <!--                                        <version>9.0.13.0</version>-->
+                <!--                                        <destFileName>webapp-runner.jar</destFileName>-->
+                <!--                                    </artifactItem>-->
+                <!--                                </artifactItems>-->
+                <!--                            </configuration>-->
+                <!--                        </execution>-->
+                <!--                    </executions>-->
+                <!--                </plugin>-->
             </plugins>
         </pluginManagement>
     </build>

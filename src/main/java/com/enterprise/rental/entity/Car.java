@@ -6,7 +6,6 @@ import java.util.Objects;
 
 public class Car implements Serializable {
     private long id;
-    private long userId;
     private String name;
     private String brand;
     private String model;
@@ -14,23 +13,13 @@ public class Car implements Serializable {
     private Double price;
     private Double cost;
     private int year;
-
     private boolean rent;
-    private LocalDateTime created;
 
     public Car() {
     }
 
     public long getId() {
         return id;
-    }
-
-    public long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(long userId) {
-        this.userId = userId;
     }
 
     public String getName() {
@@ -61,13 +50,6 @@ public class Car implements Serializable {
         this.name = name;
     }
 
-    public LocalDateTime getCreated() {
-        return created;
-    }
-
-    public void setCreated(LocalDateTime created) {
-        this.created = created;
-    }
 
     public Double getCost() {
         return cost;
@@ -145,7 +127,6 @@ public class Car implements Serializable {
             car.price = this.price;
             car.cost = this.cost;
             car.year = this.year;
-            car.created = this.created;
             return car;
         }
     }
@@ -155,19 +136,18 @@ public class Car implements Serializable {
         if (this == o) return true;
         if (!(o instanceof Car)) return false;
         Car car = (Car) o;
-        return id == car.id && year == car.year && Objects.equals(name, car.name) && Objects.equals(brand, car.brand) && Objects.equals(model, car.model) && Objects.equals(price, car.price) && Objects.equals(cost, car.cost) && Objects.equals(path, car.path) && Objects.equals(created, car.created);
+        return id == car.id && year == car.year && Objects.equals(name, car.name) && Objects.equals(brand, car.brand) && Objects.equals(model, car.model) && Objects.equals(price, car.price) && Objects.equals(cost, car.cost) && Objects.equals(path, car.path);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, brand, model, year, price, cost, path, created);
+        return Objects.hash(id, name, brand, model, year, price, cost, path);
     }
 
     @Override
     public String toString() {
         return "Car{" +
                 "id=" + id +
-                ", userId=" + userId +
                 ", name='" + name + '\'' +
                 ", brand='" + brand + '\'' +
                 ", model='" + model + '\'' +
@@ -175,7 +155,6 @@ public class Car implements Serializable {
                 ", cost=" + cost +
                 ", year=" + year +
                 ", rent=" + rent +
-                ", created=" + created +
                 '}';
     }
 }

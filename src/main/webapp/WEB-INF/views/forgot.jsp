@@ -16,35 +16,48 @@
 </head>
 <body>
 <main>
-    <a class="button" href="/login">Login</a>
-    <br>
-    <br>
-    <br>
-    <br>
-    <div class="mastercart">
+    <div>
+        <a class="button" href="/login">Login</a>
         <br>
-        <div class="mastercart__part red"></div>
-        <div class="mastercart__part orange"></div>
-        <div class="mastercart__copy">
-            <span>Rental Car</span>
+        <br>
+        <br>
+        <br>
+        <div class="mastercart">
+            <br>
+            <div class="mastercart__part red"></div>
+            <div class="mastercart__part orange"></div>
+            <div class="mastercart__copy">
+                <span>Rental Car</span>
+            </div>
         </div>
+        <form>
+            <br>
+            <div class="inputBox">
+                <br>
+                <label for="username"></label>
+                <input id="username"
+                       type="text"
+                       name="username"
+                       placeholder="Username"
+                       pattern="[a-zA-Z0-9]+"
+                       autocomplete="on"
+                       required>
+                <br>
+                <br>
+                <label for="email"></label>
+                <input id="email" type="email"
+                       name="email"
+                       placeholder="Email"
+                       autocomplete="on"
+                       required>
+                <br>
+                <br>
+                <input onclick="sendEmail()" type="submit" name="sign" value="Submit">
+                <br>
+                <br>
+            </div>
+        </form>
     </div>
-
-    <form>
-        <br>
-        <div class="inputBox">
-            <br>
-            <label for="username"></label><input id="username" type="text" name="username" placeholder="Username" pattern="[a-zA-Z0-9]+" autocomplete="on" required>
-            <br>
-            <br>
-            <label for="email"></label><input id="email" type="email" name="email" placeholder="Email" autocomplete="on" required>
-            <br>
-            <br>
-            <input onclick="sendEmail()" type="submit" name="sign" value="Submit">
-            <br>
-            <br>
-        </div>
-    </form>
 </main>
 <br>
 <script>

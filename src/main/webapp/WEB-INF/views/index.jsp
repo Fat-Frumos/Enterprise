@@ -14,79 +14,76 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Main</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link rel="shortcut icon" href="https://raw.githubusercontent.com/Fat-Frumos/Cars/master/wheel.ico" type="image/x-icon">
     <style>
         <%@include file="../classes/templates/css/car.css"%>
         <%@include file="../classes/templates/css/slider.css"%>
-
-        .carousel {
-            overflow: visible;
-            caret-color: transparent;
-        }
     </style>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 </head>
 
 <body>
 <div class="carousel">
     <c:forEach items="${cars}" var="cars">
         <figure class="carousel-item">
-            <img class="fade" onclick="closeForm(${cars.id})" src="${cars.path}"
+            <img class="fade" oncontextmenu="openForm(${cars.id})" src="${cars.path}"
                  alt=${cars.id}>
-            <div class="mySlides fade form-popup" id="myForm">
-            </div>
         </figure>
     </c:forEach>
 </div>
 <%--onclick="openForm(`${cars.brand} | ${cars.name} | ${cars.model}`)"--%>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 <script>
 
-//    window.addEventListener('contextmenu', (event) => {
-//        event.preventDefault()
-//        window.history.back();
-//    })
+   window.addEventListener('contextmenu', (event) => {
+       event.preventDefault()
+   })
 
-    $(document).on('contextmenu', function (event){
-        if (!$(event.target).hasClass("carousel-item")){
-            event.preventDefault()
-            // alert("Car removed")
-            window.history.back();
-        }
-    })
-    let htmlElement = document.getElementsByClassName("carousel-item");
+   window.addEventListener('click', () => {
 
-    // // htmlElement.innerText = document.getElementsByTagName('img')[0].alt;
-    //
+       let url = '/order?id=' + document.getElementsByTagName('img')[0].alt;
+
+       fetch(url, {
+           method: 'GET',
+       }).then(response => {
+           console.log('Ok:', response);
+           window.location.href = url;
+       }).catch(err => {
+           console.error(err)
+       })
+   })
 
     $(document).ready(function () {
         $('.carousel').carousel();
 
+
+        // let htmlElement = document.getElementsByClassName("carousel-item");
+    $(document).on('contextmenu', function (event){
+        if (!$(event.target).hasClass("fade")){
+            event.preventDefault()
+            window.history.back();
+        }
+    })
         // let car = document.getElementsByTagName('img')[0].alt
         // let htmlElement = document.getElementById("myForm");
         // htmlElement.innerText = car;
         // htmlElement.style.display = "block";
+   <%--"openForm(${cars.brand})" oncontextmenu=--%>
 
 
     });
 
-    function openForm(car) {
+
+    function openForm() {
+        alert("Car has been removed")
         // window.location.href = "/cars";
-        console.log(car)
+        console.log()
         // htmlElement.innerText = car;
     }
 
     function closeForm(id) {
-        let url = '/order?id=' + id;
-        fetch(url, {
-            method: 'GET',
-        }).then(response => {
-            console.log('Ok:', response);
-            alert("Success")
-            window.location.href = url;
-        }).catch(err => {
-            console.error(err)
-        })
+        alert("Car has been")
+
             // window.location.href = "/cars";
          // saveCar(id);
         // let element = document.querySelector("body > div.carousel > figure.carousel-item.active");

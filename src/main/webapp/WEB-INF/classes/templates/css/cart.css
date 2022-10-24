@@ -10,15 +10,12 @@
     flex-direction: column;
     min-width: 0;
     word-wrap: break-word;
-    background-color: #fff;
+    /*background-color: #fff;*/
     background-clip: border-box;
     border: 1px solid rgba(0, 0, 0, 0.125);
-    border-radius: 0.25rem;
+    border-radius: 15px;
 }
 
-.cart-image {
-    border-radius: calc(0.25rem - 1px);
-}
 .car:after {
     content: "";
     flex: auto;
@@ -39,5 +36,6 @@
     max-width: 33.333333%;
 }
 .rounded {
-    border-radius: 0.25rem !important;
+    border-radius: 12px;
+    /*border-radius: 0.25rem !important;*/
 }

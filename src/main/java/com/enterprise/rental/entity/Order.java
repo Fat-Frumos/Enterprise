@@ -1,10 +1,12 @@
 package com.enterprise.rental.entity;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Objects;
+import java.util.UUID;
 
-public class Order {
-    private long orderId;
+public class Order implements Serializable {
+    private long orderId = UUID.randomUUID().getMostSignificantBits() & 0x7ffffffL;;
     private long userId;
     private long carId;
     private int day;
@@ -12,15 +14,38 @@ public class Order {
     private boolean driver;
     private boolean rejected;
     private boolean closed;
-    private Timestamp start;
-    private Timestamp end;
+    private Timestamp created;
+    private Timestamp ended;
     private String damage;
+    private String passport;
 
+    public String getPassport() {
+        return passport;
+    }
 
-    public Order(int carId, long userId, boolean driver) {
+    public void setPassport(String passport) {
+        this.passport = passport;
+    }
+
+    public Order(long carId, long userId, boolean driver) {
         this.carId = carId;
         this.userId = userId;
         this.driver = driver;
+    }
+
+    public Order(long orderId, long userId, long carId, int day, double payment, boolean driver, boolean rejected, boolean closed, Timestamp created, Timestamp ended, String damage, String passport) {
+        this.orderId = orderId;
+        this.userId = userId;
+        this.carId = carId;
+        this.day = day;
+        this.payment = payment;
+        this.driver = driver;
+        this.rejected = rejected;
+        this.closed = closed;
+        this.created = created;
+        this.ended = ended;
+        this.damage = damage;
+        this.passport = passport;
     }
 
     public Order() {
@@ -34,7 +59,7 @@ public class Order {
         return carId;
     }
 
-    public void setCarId(int carId) {
+    public void setCarId(long carId) {
         this.carId = carId;
     }
 
@@ -44,10 +69,6 @@ public class Order {
 
     public long getOrderId() {
         return orderId;
-    }
-
-    public void setOrderId(long orderId) {
-        this.orderId = orderId;
     }
 
     public long getUserId() {
@@ -74,20 +95,20 @@ public class Order {
         this.rejected = rejected;
     }
 
-    public Timestamp getStart() {
-        return start;
+    public Timestamp getCreated() {
+        return created;
     }
 
-    public void setStart(Timestamp start) {
-        this.start = start;
+    public void setCreated(Timestamp created) {
+        this.created = created;
     }
 
-    public Timestamp getEnd() {
-        return end;
+    public Timestamp getEnded() {
+        return ended;
     }
 
-    public void setEnd(Timestamp end) {
-        this.end = end;
+    public void setEnded(Timestamp ended) {
+        this.ended = ended;
     }
 
     public String getDamage() {
@@ -119,15 +140,44 @@ public class Order {
         if (this == o) return true;
         if (!(o instanceof Order)) return false;
         Order order = (Order) o;
-        return day == order.day && orderId == order.orderId && userId == order.userId && driver == order.driver && rejected == order.rejected && Double.compare(order.payment, payment) == 0 && closed == order.closed && Objects.equals(start, order.start) && Objects.equals(end, order.end) && Objects.equals(damage, order.damage);
+        return day == order.day && orderId == order.orderId && userId == order.userId && driver == order.driver && rejected == order.rejected && Double.compare(order.payment, payment) == 0 && closed == order.closed && Objects.equals(created, order.created) && Objects.equals(ended, order.ended) && Objects.equals(damage, order.damage);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(day, orderId, userId, driver, rejected, start, end, damage, payment, closed);
+        return Objects.hash(day, orderId, userId, driver, rejected, created, ended, damage, payment, closed);
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "orderId=" + orderId +
+                ", userId=" + userId +
+                ", carId=" + carId +
+                ", day=" + day +
+                ", payment=" + payment +
+                ", driver=" + driver +
+                ", rejected=" + rejected +
+                ", closed=" + closed +
+                ", start=" + created +
+                ", end=" + ended +
+                ", damage='" + damage + '\'' +
+                ", passport='" + passport + '\'' +
+                '}';
     }
 
     public static class Builder {
-
+        private long orderId;
+        private long userId;
+        private long carId;
+        private int day;
+        private double payment;
+        private boolean driver;
+        private boolean rejected;
+        private boolean closed;
+        private Timestamp start;
+        private Timestamp end;
+        private String damage;
+        private String passport;
     }
 }

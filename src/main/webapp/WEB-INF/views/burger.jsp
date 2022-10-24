@@ -12,11 +12,10 @@
     <style>
         <%@include file="../classes/templates/css/burger.css"%>
     </style>
-    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 </head>
 </head>
 <body>
+
 <div class="navigation">
         <span style="--i:0;--x:-1;--y:0">
             <a href="/login"><ion-icon name="camera-outline"></ion-icon></a>
@@ -50,9 +49,11 @@
             <ion-icon name="at-circle-outline"></ion-icon>
         </span>
 </div>
+<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 <script>
+
     let navigation = document.querySelector('.navigation');
-    console.log(navigation);
 
     navigation.onclick = function () {
         navigation.classList.toggle('active')

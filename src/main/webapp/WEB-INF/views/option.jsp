@@ -7,23 +7,14 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html>
-<head>
-    <title>Search</title>
-    <style>
-        <%@include file="../classes/templates/css/option.css"%>
-    </style>
 
-    <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css'>
-</head>
-<body>
 <div class="option">
     <form action="/cars?page=${page}">
         <div class="priceInput">
             <div onclick="brand()">
                 <label for="brand">Brand:</label>
                 <select id="brand" name="brand">
-                    <option value="" hidden></option>
+                    <option value="" selected disabled hidden>Choose brand</option>
                     <option value="BMW">BMW</option>
                     <option value="Bugatti">Bugatti</option>
                     <option value="Ford">Ford</option>
@@ -118,5 +109,3 @@
 <%--        console.log(": " + text);--%>
 <%--    }--%>
 <%--</script>--%>
-</body>
-</html>

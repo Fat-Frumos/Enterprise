@@ -73,7 +73,7 @@ public class UserServlet extends HttpServlet {
 
         if (optionalUser.isPresent()) {
             log.info(String.format("User: %s", optionalUser));
-            request.setAttribute("errorMessage", "User is exists");
+            request.setAttribute("errorMessage", "User is exists please try again");
             response.sendRedirect("/WEB-INF/views/login.jsp");
         } else {
 
@@ -103,7 +103,7 @@ public class UserServlet extends HttpServlet {
 
         String message = userService.sendEmail(request.getParameter("username"));
 
-        response.sendRedirect("/WEB-INF/views/login.jsp");
+        response.sendRedirect(login);
 
         log.info(String.format("%s check your email address", message));
 
