@@ -16,8 +16,7 @@
         <div style="background: white" class="row m-0">
             <div class="col-12 px-0">
                 <div class="row bg-light m-0">
-                    <div class="col-12 px-4">
-
+                    <div class="col-12 px-4 mb-5">
                         <div class="d-flex mb-4">
                         <span class="me-5">
                             <br>
@@ -37,6 +36,7 @@
                                        placeholder="MM/YYYY">
                             </div>
                         </div>
+
                         <div class="d-flex mb-4">
                         <span class="me-5">
                                     <span class="text-muted">Card</span>
@@ -53,30 +53,39 @@
                                        placeholder="MM/dd">
                             </div>
                         </div>
-                        <div class="d-flex mb-5">
-                                    <span class="me-5">
-                                        <span class="text-muted">Name</span>
-                                        <input class="form-control"
-                                               name="username" type="text"
-                                               value="Paul J.Smith" placeholder="Name"
-                                               autocomplete="on">
+                        <jsp:include page="picker.jsp"/>
+                        <div class="d-flex mb-4">
+                        <span class="me-5">
+                                    <span class="text-muted">Payment</span>
+                                    <input class="form-control" style="width: 100px"
+                                           name="card" type="number"
+                                           value="${auto.price}
+                                           placeholder="${auto.price}">
                                     </span>
-                            <div class="w-100 d-flex flex-column align-items-end">
-                                <span class="text-muted">CVC</span>
-                                <input class="form-control3"
-                                       name="cvc" type="text" type="text"
-                                       value="123" placeholder="XXX">
+                            <div class=" w-100 d-flex flex-column align-items-end">
+                                <p class="text-muted"></p>
                             </div>
                         </div>
+                        <%--                        <div class="d-flex mb-5">--%>
+                        <%--                                    <span class="me-5">--%>
+                        <%--                                        <span class="me-5">--%>
+                        <%--                                        <span class="text-muted">Payment</span>--%>
+                        <%--                                        <input class="form-control" style="width: 180px"--%>
+                        <%--                                               name="payment" type="number"--%>
+                        <%--                                               value="${auto.price}" placeholder="100"--%>
+                        <%--                                               autocomplete="on">--%>
+                        <%--                                    </span>--%>
+                        <%--                                        --%>
 
-
-                        <div class="w-100 d-flex flex-column align-items-end">
-                            <p class="h5 m-0">Driver</p>
-                            <div class="mt-2 mb-2">
+                        <%--                        </div>--%>
+                        <div class="d-flex mb-4">
+                            <span class="me-5">
+                                <span class="text-muted">Driver</span>
+                            <div class="w-100 d-flex flex-column align-items-end">
                                 <input name="driver" type="checkbox">
                                 <label class="onButton"></label>
-                                </p>
                             </div>
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -86,6 +95,8 @@
                         <span class="fas fa-arrow-right ps-2"></span>
                     </div>
                 </div>
+                <br>
+                <br>
             </div>
         </div>
     </form>

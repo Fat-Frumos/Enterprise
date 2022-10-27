@@ -14,7 +14,7 @@
             <div onclick="brand()">
                 <label for="brand">Brand:</label>
                 <select id="brand" name="brand">
-                    <option value="" selected disabled hidden>Choose brand</option>
+                    <option value="" selected disabled hidden>Choose car</option>
                     <option value="BMW">BMW</option>
                     <option value="Bugatti">Bugatti</option>
                     <option value="Ford">Ford</option>

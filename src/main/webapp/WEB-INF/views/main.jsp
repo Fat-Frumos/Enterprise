@@ -23,9 +23,7 @@
     <%@include file="../classes/templates/css/car.css"%>
     <%@include file="../classes/templates/css/form.css"%>
 </style>
-
 <body>
-<hr>
 <div class="container">
     <jsp:include page="nav.jsp"/>
 
@@ -39,19 +37,28 @@
     <jsp:include page="cart.jsp"/>
     <jsp:include page="modal.jsp"/>
 </div>
+<jsp:include page="burger.jsp"/>
 <div class="day">
     <h6><ct:today format="MMMM dd yyyy"/></h6>
     <a style="text-transform: capitalize" href="/user/${user}">(${user})</a>
 </div>
-<%--<jsp:include page="burger.jsp"/>--%>
+<div class="cf-hidden">
+    <input type="text" id="start-date">
+    <input type="text" id="end-date">
+</div>
+<div id="dp-island"></div>
+<button id="search">Search</button>
+<div id="output"></div>
+
 <%--    <a style="text-transform: capitalize" href="/login${user}">(${user})</a>--%>
 <script>
     //TODO modal dialog
-    $(document).ready(function () {
-        $('#main').click(function () {
-            $('#Mymodal').modal('show')
-        });
-    });
+    // $(document).ready(function () {
+    //     $('#main').click(function () {
+    //         $('#Mymodal').modal('show')
+    //     });
+    // });
+
     window.addEventListener('contextmenu', (event) => {
         event.preventDefault()
         window.history.back();

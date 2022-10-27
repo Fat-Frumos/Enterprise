@@ -10,7 +10,6 @@
     <div class="p-3">
         <figure>
             <img class="img-fluid"
-                 onclick="popUp(${auto.id})"
                  id="main"
                  src="${auto.path}"
                  alt="main">
@@ -18,7 +17,7 @@
             </figcaption>
         </figure>
     </div>
-
+<%--    onclick="popUp(${auto.id})"--%>
     <div class="col-md-4 col-3 ps-30 my-4">
         <p class="h4 m-0">
             <span class="pe-1">${auto.brand}</span>
@@ -64,27 +63,10 @@
         <p class="h5 m-0">Discount</p>
         <div class="d-flex align-items-end mt-3 mb-2">
             <p class="fs-14 fw-bold">
-                <span class="fas fa-dollar-sign pe-1"></span>$25
+                <span class="fas fa-dollar-sign pe-1"></span>$0
             </p>
             </p>
         </div>
     </div>
 
-<%--    <div class="col-md-4 col-3 ps-30 my-4">--%>
-<%--        <p class="h5 fw-bold">Total</p>--%>
-<%--        <div class="d-flex align-text-top ">--%>
-<%--            <p class="fs-14 fw-bold">--%>
-<%--                <span class="fas fa-dollar-sign mt-2 pe-1 fs-14 "></span>--%>
-<%--                <span class="h5">$${auto.price}</span>--%>
-<%--            </p>--%>
-<%--        </div>--%>
-<%--    </div>--%>
-
-<%--    <div class="col-md-2 col-3 ps-30 my-4">--%>
-<%--        <p class="fw-bold h5">Driver</p>--%>
-<%--        <div class="d-flex align-text-top toggle">--%>
-<%--            <input type="checkbox">--%>
-<%--            <label class="onButton"></label>--%>
-<%--        </div>--%>
-<%--    </div>--%>
 </div>

@@ -24,10 +24,9 @@
 .car {
     display: flex;
     flex-flow: row wrap;
-    justify-content: flex-start;
+    justify-content: flex-end;
     margin: 0 auto;
-    width: 60vw;
-    padding: 0;
+    width: 111vh;
 }
 
 .col-md-4 {
@@ -36,6 +35,5 @@
     max-width: 33.333333%;
 }
 .rounded {
-    border-radius: 12px;
-    /*border-radius: 0.25rem !important;*/
+    /*border-radius: 12px;*/
 }

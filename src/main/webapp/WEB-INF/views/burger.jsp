@@ -18,7 +18,7 @@
 
 <div class="navigation">
         <span style="--i:0;--x:-1;--y:0">
-            <a href="/login"><ion-icon name="camera-outline"></ion-icon></a>
+            <a href="/cars"><ion-icon name="camera-outline"></ion-icon></a>
         </span>
     <span style="--i:1;--x:1;--y:0">
 
@@ -26,7 +26,7 @@
         </span>
     <span style="--i:2;--x:0;--y:-1">
 
-        <a href="/main"><ion-icon name="chatbox-ellipses-outline"></ion-icon></a>
+        <a href="/"><ion-icon name="chatbox-ellipses-outline"></ion-icon></a>
         </span>
     <span style="--i:3;--x:0;--y:1">
 

@@ -30,8 +30,6 @@ public class CarsServlet extends HttpServlet {
     private List<Car> carList = carService.getAll("price>=100 ORDER BY cost LIMIT 10 OFFSET 0");
     private int size = carService.getAll().size();
     private final String[] fields = {"id", "name", "brand", "model", "path", "price", "cost", "year", "sort", "direction", "page"};
-
-    private final String[] userField = {"id", "name", "passport", "term", "card", "expires", "username", "cvc"};
     private static final Logger log = Logger.getLogger(CarsServlet.class);
 
 

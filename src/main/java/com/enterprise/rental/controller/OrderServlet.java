@@ -18,7 +18,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.enterprise.rental.dao.jdbc.Constants.*;
 
@@ -33,49 +35,23 @@ public class OrderServlet extends HttpServlet {
     protected void doGet(
             HttpServletRequest request,
             HttpServletResponse response) {
-
-        String path;
-
         HttpSession session = request.getSession(false);
-        if (session != null) {
-            if (session.getAttribute("user") != null) {
-                path = setSession(request);
-            } else {
-                path = login;
-            }
+
+        if (session != null && session.getAttribute("user") != null) {
+            User user = (User) session.getAttribute("user");
+            Car car = user.getCar();
+            log.info(String.format("Rental Car: %s", car));
+            log.info(String.format("User : %s", user));
+            List<Car> cars = new ArrayList<>();
+            List<Car> carList = user.getCars();
+            carList.stream().filter(auto -> cars.size() < 3).forEachOrdered(cars::add);
+            request.setAttribute("auto", car);
+            request.setAttribute("cars", cars);
+            request.setAttribute("car", user.getCars().size());
+            dispatch(request, response, main);
         } else {
-            path = login;
+            dispatch(request, response, login);
         }
-
-        response.setContentType("text/html");
-        response.setStatus(HttpServletResponse.SC_OK);
-        RequestDispatcher dispatcher = getServletContext()
-                .getRequestDispatcher(path);
-        try {
-            dispatcher.include(request, response);
-        } catch (ServletException | IOException e) {
-            throw new DataException(e.getMessage());
-        }
-    }
-
-    private String setSession(HttpServletRequest request) {
-        User user = getRequestUser(request);
-        List<Car> cars = new ArrayList<>();
-        List<Car> carList = user.getCars();
-        carList.stream().filter(auto -> cars.size() < 3).forEachOrdered(cars::add);
-        request.setAttribute("cars", cars);
-        request.setAttribute("car", user.getCars().size());
-        return main;
-    }
-
-    private User getRequestUser(HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        User user = (User) session.getAttribute("user");
-        Car car = user.getCar();
-        session.setAttribute("auto", car);
-        log.info(String.format("Rental Car: %s", car));
-        log.info(String.format("User : %s", user));
-        return user;
     }
 
     @Override
@@ -84,38 +60,51 @@ public class OrderServlet extends HttpServlet {
             HttpServletResponse response)
             throws ServletException, IOException {
 
-        String[] userField = {"id", "name", "passport", "payment", "term", "card", "expires", "username", "cvc", "driver"};
-        //TODO CHECK USER
-        //TODO CHECK CAR
 
-        User user = getRequestUser(request);
-        if (user != null) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            User user = (User) session.getAttribute("user");
+            if (user != null) {
+                log.info(String.format("user %s", user));
+                long userId = user.getUserId();
+                Car car = user.getCar();
+                log.info(String.format("Car %s", car));
 
-            Map<String, String> orderParams = new HashMap<>();
-            for (String field : userField) {
-                if (field != null) {
-                    log.info(String.format("Order params %s: %s",
-                            field, request.getParameter(field)));
-                    orderParams.put(field, request.getParameter(field));
+                String passport = request.getParameter("passport");
+                String username = request.getParameter("username");
+//                Double payment = Double.valueOf(request.getParameter("payment"));
+                Boolean driver = Boolean.valueOf(request.getParameter("driver"));
+                Boolean rejected = Boolean.valueOf(request.getParameter("rejected"));
+//                Boolean closed = Boolean.valueOf(request.getParameter("closed"));
+//                Timestamp start = Timestamp.valueOf(request.getParameter("start"));
+//                Timestamp end = Timestamp.valueOf(request.getParameter("end"));
+//                String damage = request.getParameter("damage");
+
+//                log.info(String.format("%s %s %s %s %s %s %s %s", passport, username, damage, rejected, driver));
+
+                if (car != null) {
+                    Order order = new Order();
+                    order.setCarId(car.getId());
+                    order.setUserId(userId);
+                    order.setDriver(driver);
+                    order.setPassport(passport);
+//                    order.setPayment(payment);
+                    log.info(String.format("order %s", order));
+                    boolean saved = orderService.createOrder(order);
+                    if (saved) {
+                        List<Car> userCars = user.getCars();
+//                        for (Car userCar : userCars) {
+//                            if (userCar.getId() == car.getId()) {
+//                                userCars.remove(userCar);
+//                            }
+//                        }
+                        user.setCars(userCars);
+                        user.setCar(new Car());
+                    }
                 }
+                request.setAttribute("cars", carService.getAll());
             }
-
-            log.info(String.format("Rental User order Params: %s", orderParams));
-            Car car = user.getCar();
-            log.info(String.format("Car %s", car));
-            Order order = new Order();
-            order.setCarId(car.getId());
-            order.setUserId(user.getUserId());
-            order.setPassport(orderParams.get("passport"));
-//            order.setPayment(Double.parseDouble(orderParams.get("payment")));
-
-            log.info(String.format("order %s", order));
-
-
-            boolean saved = orderService.createOrder(order);
-            request.setAttribute("cars", carService.getAll());
         }
-
         dispatch(request, response, cars);
     }
 
@@ -129,15 +118,16 @@ public class OrderServlet extends HttpServlet {
 
     void dispatch(
             HttpServletRequest request,
-            HttpServletResponse response, String path)
-            throws IOException, ServletException {
+            HttpServletResponse response, String path) {
 
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType("text/html;charset=utf-8");
-
-        RequestDispatcher dispatcher = getServletContext()
-                .getRequestDispatcher(path);
-        dispatcher.include(request, response);
+        try {
+            RequestDispatcher dispatcher = getServletContext()
+                    .getRequestDispatcher(path);
+            dispatcher.include(request, response);
+        } catch (Exception e) {
+            throw new DataException(e.getMessage());
+        }
     }
-
 }

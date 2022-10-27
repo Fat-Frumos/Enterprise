@@ -75,6 +75,10 @@
         })
         window.location.href = "/login";
     }
+    window.addEventListener('contextmenu', (event) => {
+        event.preventDefault()
+        window.history.back();
+    })
 </script>
 </body>
 </html>

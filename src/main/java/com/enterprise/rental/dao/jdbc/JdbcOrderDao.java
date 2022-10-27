@@ -109,18 +109,20 @@ public class JdbcOrderDao implements OrderDao {
             statement.setLong(1, order.getOrderId());
             statement.setLong(2, order.getUserId());
             statement.setLong(3, order.getCarId());
+            statement.setTimestamp(4, create);
+            statement.setString(5, passport);
+
 //            statement.setInt(4, day);
 //            statement.setDouble(5, payment);
 //            statement.setBoolean(6, driver);
 //            statement.setBoolean(7, rejected);
 //            statement.setBoolean(8, closed);
-            statement.setTimestamp(4, create);
+
 //            statement.setTimestamp(10, end);
 //            statement.setString(11, damage);
-            statement.setString(5, passport);
-            statement.execute();
-            connection.commit();
 
+            int i = statement.executeUpdate();
+            connection.commit();
             return true;
         } catch (SQLException e) {
             try {

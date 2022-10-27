@@ -63,6 +63,7 @@ public class JdbcCarTemplate extends DbManager {
             connection = getInstance().getConnection();
             connection.setAutoCommit(false);
         } catch (SQLException e) {
+            //TODO: connection to the database failed
             throw new DataException(e);
         }
 

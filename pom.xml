@@ -76,11 +76,29 @@
             <version>4.8.0</version>
             <scope>test</scope>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.hamcrest</groupId>-->
+<!--            <artifactId>hamcrest</artifactId>-->
+<!--            <version>2.2</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>com.h2database</groupId>-->
+<!--            <artifactId>h2</artifactId>-->
+<!--            <version>2.1.214</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
             <version>2.0.3</version>
         </dependency>
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+            <version>1.6.2</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -144,14 +162,14 @@
                 <plugin>
                     <groupId>org.flywaydb</groupId>
                     <artifactId>flyway-maven-plugin</artifactId>
-                    <version>8.5.0</version>
+                    <version>8.5.13</version>
                     <configuration>
                         <url>jdbc:postgresql://localhost:5432/postgres</url>
                         <user>admin</user>
                         <password>admin</password>
-                        <schemas>
-                            <schema>yaos</schema>
-                        </schemas>
+                    <schemas>
+                        <schema>testOrders</schema>
+                    </schemas>
                     </configuration>
                 </plugin>
                 <!--                <plugin>-->

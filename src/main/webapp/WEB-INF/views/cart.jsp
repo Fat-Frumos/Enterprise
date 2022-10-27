@@ -21,17 +21,17 @@
         <%@include file="../classes/templates/css/car.css"%>
 
         figure {
-            border-radius: 10px;
+            /*border-radius: 10px;*/
             overflow: hidden;
         }
 
         .modal-content:hover {
             cursor: pointer;
-            border-radius: 15px;
+            /*border-radius: 15px;*/
         }
 
         img {
-            border-radius: 10px;
+            /*border-radius: 10px;*/
             overflow: hidden;
         }
 
@@ -39,17 +39,21 @@
             top: 20%;
         }
 
+        li > div.cart-image.fw-900 {
+            padding: 0;
+
+        }
     </style>
 
 </head>
 <body>
-<main class="m-3">
+<main class="">
     <div>
         </form>
         <div class="cars">
             <div class="car" id="ads">
                 <c:forEach items="${cars}" var="cars">
-                    <ul class="col-md-4">
+                    <ul class="col-md-4" style="padding: 5px">
                         <li class="cart rounded">
                             <div class="modal fade" id="${cars.id}">
                                 <div class="modal-dialog wrap popup">
@@ -99,6 +103,7 @@
     })
 
     function popUp(id) {
+        // $("#" + id).modal('show');
         let url = '/cart' + '?id=' + id;
         fetch(url, {
             method: 'PUT',

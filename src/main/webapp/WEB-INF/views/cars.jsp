@@ -19,15 +19,20 @@
         <%@include file="../classes/templates/css/cart.css"%>
         <%@include file="../classes/templates/css/car.css"%>
         <%@include file="../classes/templates/css/option.css"%>
+
+        * {
+            user-select: none;
+        }
+
     </style>
     <link rel="shortcut icon" href="https://raw.githubusercontent.com/Fat-Frumos/Cars/master/wheel.ico" type="image/x-icon">
     <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css'>
 </head>
 
 <body>
-    <jsp:include page="option.jsp"/>
-    <jsp:include page="cart.jsp"/>
-    <jsp:include page="nav.jsp"/>
+<jsp:include page="option.jsp"/>
+<jsp:include page="cart.jsp"/>
+<jsp:include page="nav.jsp"/>
 
 <%--    <jsp:include page="burger.jsp"/>--%>
 <%--    <div class="day">--%>

@@ -3,6 +3,7 @@ package com.enterprise.rental.controller;
 import com.enterprise.rental.dao.jdbc.Constants;
 import com.enterprise.rental.entity.Car;
 import com.enterprise.rental.entity.User;
+import com.enterprise.rental.exception.DataException;
 import com.enterprise.rental.service.CarService;
 import com.enterprise.rental.service.UserService;
 import org.apache.log4j.Logger;
@@ -26,7 +27,7 @@ public class StaticServlet extends HttpServlet {
     private final CarService carService = new CarService();
     private final UserService userService = new UserService();
     private static final Logger log = Logger.getLogger(StaticServlet.class);
-    private List<Car> cars = carService.getAll("id BETWEEN 219 AND 231");
+    private List<Car> cars = carService.getAll("id BETWEEN 219 AND 237");
     List<Car> auto = carService.getRandom(3);
 
 
@@ -83,14 +84,17 @@ public class StaticServlet extends HttpServlet {
      */
     void dispatch(
             HttpServletRequest request,
-            HttpServletResponse response, String path)
-            throws IOException, ServletException {
+            HttpServletResponse response, String path) {
 
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType("text/html;charset=utf-8");
 
         RequestDispatcher dispatcher = getServletContext()
                 .getRequestDispatcher(path);
-        dispatcher.include(request, response);
+        try {
+            dispatcher.include(request, response);
+        } catch (ServletException | IOException e) {
+            throw new DataException(e.getMessage());
+        }
     }
 }

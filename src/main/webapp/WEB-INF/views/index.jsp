@@ -25,7 +25,7 @@
 <div class="carousel">
     <c:forEach items="${cars}" var="cars">
         <figure class="carousel-item">
-            <img class="fade" oncontextmenu="openForm(${cars.id})" src="${cars.path}"
+            <img class="fade" onclick="openForm(${cars.id})" src="${cars.path}"
                  alt=${cars.id}>
         </figure>
     </c:forEach>
@@ -39,19 +39,19 @@
        event.preventDefault()
    })
 
-   window.addEventListener('click', () => {
-
-       let url = '/order?id=' + document.getElementsByTagName('img')[0].alt;
-
-       fetch(url, {
-           method: 'GET',
-       }).then(response => {
-           console.log('Ok:', response);
-           window.location.href = url;
-       }).catch(err => {
-           console.error(err)
-       })
-   })
+   // window.addEventListener('click', () => {
+   //
+   //     let url = '/order?id=' + document.getElementsByTagName('img')[0].alt;
+   //
+   //     fetch(url, {
+   //         method: 'GET',
+   //     }).then(response => {
+   //         console.log('Ok:', response);
+   //         window.location.href = url;
+   //     }).catch(err => {
+   //         console.error(err)
+   //     })
+   // })
 
     $(document).ready(function () {
         $('.carousel').carousel();
@@ -75,9 +75,19 @@
 
 
     function openForm() {
-        alert("Car has been removed")
+
+        let url = '/order?id=' + document.getElementsByTagName('img')[0].alt;
+
+            fetch(url, {
+                method: 'GET',
+            }).then(response => {
+                console.log('Ok:', response);
+                window.location.href = url;
+            }).catch(err => {
+                console.error(err)
+            })
+        // alert("Car has been removed")
         // window.location.href = "/cars";
-        console.log()
         // htmlElement.innerText = car;
     }
 

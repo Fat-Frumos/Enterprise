@@ -46,7 +46,7 @@
         }
 
         img {
-            border-radius: 10px;
+            /*border-radius: 10px;*/
             width: 100%;
         }
 

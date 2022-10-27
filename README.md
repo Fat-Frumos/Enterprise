@@ -8,11 +8,11 @@
 ####The customer: 
 + registers user in the system, (validate User) 
 + chooses a car 
-- makes a rental order.
++/- makes a rental order.
 
 ####The order:
-- In the order data the client indicates passport data, 
-- option: with driver/without driver,  
++ In the order data the client indicates passport data, 
++ option: with driver/without driver,  
 - lease term (days).
 - submit the price
 
