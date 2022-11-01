@@ -16,6 +16,7 @@
 
     <title>Cars</title>
     <style>
+        @import url(https://fonts.googleapis.com/css?family=Raleway:100,600,400);
         <%@include file="../classes/templates/css/cart.css"%>
         <%@include file="../classes/templates/css/car.css"%>
         <%@include file="../classes/templates/css/option.css"%>
@@ -24,8 +25,10 @@
             user-select: none;
         }
 
+
     </style>
-    <link rel="shortcut icon" href="https://raw.githubusercontent.com/Fat-Frumos/Cars/master/wheel.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="https://raw.githubusercontent.com/Fat-Frumos/Cars/master/wheel.ico"
+          type="image/x-icon">
     <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css'>
 </head>
 

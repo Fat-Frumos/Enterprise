@@ -1,7 +1,6 @@
 package com.enterprise.rental.controller;
 
 import com.enterprise.rental.entity.User;
-import com.enterprise.rental.service.CarService;
 import com.enterprise.rental.service.UserService;
 import org.apache.log4j.Logger;
 
@@ -16,7 +15,7 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.enterprise.rental.dao.jdbc.Constants.login;
+import static com.enterprise.rental.dao.jdbc.Constants.LOGIN;
 
 @WebServlet(urlPatterns = "/login")
 public class LoginServlet extends HttpServlet {
@@ -38,7 +37,7 @@ public class LoginServlet extends HttpServlet {
         HttpSession session = request.getSession();
         session.invalidate();
 
-        dispatch(request, response, login);
+        dispatch(request, response, LOGIN);
     }
 
     @Override
@@ -66,7 +65,7 @@ public class LoginServlet extends HttpServlet {
             log.info(String.format("User: %s", optionalUser));
 
             request.setAttribute("errorMessage", String.format("User %s is exists", name));
-            request.getRequestDispatcher(login)
+            request.getRequestDispatcher(LOGIN)
                     .forward(request, response);
         } else {
             String password = request.getParameter("password");
@@ -81,7 +80,7 @@ public class LoginServlet extends HttpServlet {
             log.info(String.format("%s is created: %s", user, save));
             request.setAttribute("errorMessage", String.format("User %s is created", name));
 
-            dispatch(request, response, login);
+            dispatch(request, response, LOGIN);
         }
     }
 

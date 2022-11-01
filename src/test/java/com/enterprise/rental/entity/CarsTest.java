@@ -17,11 +17,10 @@ import static org.mockito.Mockito.when;
 
 
 class CarsTest {
-//    private static final Cars INSTANCE = Cars.getInstance();
     Logger logger = Logger.getLogger(CarsTest.class);
     private static final List<Car> cars = new ArrayList<>();
-    static final Car X7 = new Car.Builder().id(1l).name("X7").brand("BMW").model("G07").path("http//").price(25000.0).cost(10000.0).year(2022).build();
-    static final Car X5 = new Car.Builder().id(2l).name("X5").brand("BMW").model("GT-2").path("http//").price(22000.0).cost(10000.0).year(2020).build();
+    static final Car X7 = new Car.Builder().id(1L).name("X7").brand("BMW").model("G07").path("http//").price(25000.0).cost(10000.0).year(2022).build();
+    static final Car X5 = new Car.Builder().id(2L).name("X5").brand("BMW").model("GT-2").path("http//").price(22000.0).cost(10000.0).year(2020).build();
     JdbcCarDao mockCarDao = mock(JdbcCarDao.class);
     CarService service = new CarService(mockCarDao);
 
@@ -30,53 +29,8 @@ class CarsTest {
         cars.add(X5);
         cars.add(X7);
         service = new CarService(mockCarDao);
-        service.save(X5);
-        service.save(X7);
     }
 
-    @Test
-    @DisplayName(value = "Test-Mock Get Cars from db")
-    void testGetCars() {
-        List<Car> actual = service.getAll();
-        assertEquals(cars, actual);
-    }
-
-    @Test
-    @DisplayName(value = " Get Car")
-    void testGetEmptyCar() throws NoSuchFieldException, IllegalAccessException {
-        Car car = new Car();
-        Class<? extends Car> clazz = car.getClass();
-        Car carById = service.getById(1);
-        assertEquals(null, car.getName());
-        assertEquals(carById.getBrand(), "McLauren");
-        assertEquals(carById.getName(), "SuperCar\n");
-
-        Mockito.verify(service, Mockito.times(1)).getById(1);
-
-//        for (Field field : clazz.getDeclaredFields()) {
-//
-//            System.out.println(field.getName());
-//        }
-        Field field = car.getClass().getDeclaredField("id");
-        field.setAccessible(true);
-
-        Object value = field.get(car);
-        System.out.println(value);
-
-//        for (Method method : clazz.getDeclaredMethods()) {
-//            try {
-//                method.invoke(null);
-//            } catch (IllegalAccessException e) {
-//                throw new RuntimeException(e);
-//            } catch (InvocationTargetException e) {
-//                throw new RuntimeException(e);
-//            }
-//            System.out.println(method);
-//            System.out.println(car);
-//        }
-
-
-    }
 
     @Test
     @DisplayName(value = "Set Car name")
@@ -86,8 +40,6 @@ class CarsTest {
         car.setBrand(brand);
         assertEquals(brand, car.getName());
     }
-
-    String uri = "/cars";
 
     @Test
     public void testFindByBrand() {
@@ -99,7 +51,7 @@ class CarsTest {
         logger.info(String.format("%s", cars));
 
         assertEquals(2, car.getId());
-        assertEquals(100000.0, car.getPrice());
+        assertEquals(10000.0, car.getPrice());
         assertEquals("BMW", car.getBrand());
     }
 
@@ -119,17 +71,18 @@ class CarsTest {
     @Test
     @DisplayName(value = "Test Find All Cars")
     void testFindAllCars() throws Exception {
-
+        when(mockCarDao.findAll()).thenReturn(cars);
+        List<Car> auto = mockCarDao.findAll();
+        assertEquals(auto, cars);
     }
 
     @Test
     @DisplayName(value = "Test Find Cars By Brand Id Length")
     void testFindCarsByBrandIdSize() throws Exception {
         String brand = "BMW";
-//        List<Car> cars = mockCarDao.findAll(brand);
-
+        List<Car> cars = mockCarDao.findAll(brand);
         when(mockCarDao.findAll(brand)).thenReturn(List.of(X5, X7));
-        assertEquals(2, service.getAll().size());
+        assertEquals(cars.size(), service.getAll().size());
 
     }
 

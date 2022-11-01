@@ -4,12 +4,17 @@ import com.enterprise.rental.dao.OrderDao;
 import com.enterprise.rental.dao.factory.DbManager;
 import com.enterprise.rental.dao.mapper.OrderMapper;
 import com.enterprise.rental.entity.Order;
-import com.enterprise.rental.entity.User;
+import com.enterprise.rental.entity.Order;
+import com.enterprise.rental.exception.CarNotFoundException;
 import com.enterprise.rental.exception.DataException;
+import com.enterprise.rental.exception.OrderNotFoundException;
 import org.apache.log4j.Logger;
 
 import java.sql.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 import static com.enterprise.rental.dao.factory.DbManager.getInstance;
 import static com.enterprise.rental.dao.jdbc.Constants.*;
@@ -51,10 +56,6 @@ public class JdbcOrderDao implements OrderDao {
         }
     }
 
-    private Optional<User> getOrderByUserName(String name) {
-        return Optional.empty();
-    }
-
     @Override
     public boolean save(Order order) {
 
@@ -78,8 +79,41 @@ public class JdbcOrderDao implements OrderDao {
     }
 
     private List<Order> getOrderQuery(String sql) {
-        return new ArrayList<>();
+        Connection connection;
+
+        try {
+            connection = getInstance().getConnection();
+            connection.setAutoCommit(false);
+        } catch (SQLException e) {
+            throw new DataException(e);
+        }
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            try (ResultSet resultSet = statement.executeQuery()) {
+
+                connection.commit();
+                List<Order> orders = new ArrayList<>();
+
+                if (resultSet.next()) {
+                    while (resultSet.next()) {
+                        Order order = ORDER_ROW_MAPPER.mapRow(resultSet);
+                        orders.add(order);
+                    }
+                    return orders;
+                }
+                throw new OrderNotFoundException("Order not found");
+            }
+        } catch (SQLException ex) {
+            throw new OrderNotFoundException(ex.getMessage());
+        } finally {
+            try {
+                Objects.requireNonNull(connection).close();
+            } catch (SQLException e) {
+                log.info(String.format("Connection not closed: %s", e.getMessage()));
+            }
+        }
     }
+
 
     //TODO MAPPER
     private boolean setOrderQuery(Order order) {
@@ -94,36 +128,30 @@ public class JdbcOrderDao implements OrderDao {
             connection.setAutoCommit(false);
             statement = connection.prepareStatement(INSERT_ORDER_SQL);
 
-//            boolean driver = order.isDriver();
-//            boolean rejected = order.isRejected();
-//            boolean closed = order.isClosed();
-//            int day = order.getDay();
-//            double payment = order.getPayment();
+            boolean driver = order.isDriver();
+
             Timestamp create = new Timestamp(System.currentTimeMillis());
-//            Timestamp end = order.getEnded();
-//            String damage = order.getDamage();
+
             String passport = order.getPassport();
+            String card = order.getCard();
+            Double payment = order.getPayment();
+            Timestamp term = order.getTerm();
 
             log.info(order);
 
             statement.setLong(1, order.getOrderId());
-            statement.setLong(2, order.getUserId());
+            statement.setLong(2, order.getOrderId());
             statement.setLong(3, order.getCarId());
             statement.setTimestamp(4, create);
             statement.setString(5, passport);
+            statement.setString(6, card);
+            statement.setDouble(7, payment);
+            statement.setTimestamp(8, term);
+            statement.setBoolean(9, driver);
 
-//            statement.setInt(4, day);
-//            statement.setDouble(5, payment);
-//            statement.setBoolean(6, driver);
-//            statement.setBoolean(7, rejected);
-//            statement.setBoolean(8, closed);
-
-//            statement.setTimestamp(10, end);
-//            statement.setString(11, damage);
-
-            int i = statement.executeUpdate();
+            boolean execute = statement.execute();
             connection.commit();
-            return true;
+            return execute;
         } catch (SQLException e) {
             try {
                 Objects.requireNonNull(connection).rollback();
@@ -142,5 +170,3 @@ public class JdbcOrderDao implements OrderDao {
         }
     }
 }
-
-

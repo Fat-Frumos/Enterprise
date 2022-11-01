@@ -12,10 +12,6 @@ img {
     transition: transform .7s ease-out;
 }
 
-h5, .text-muted {
-    font-family: 'Roboto', 'Verdana', sans-serif;
-}
-
 
 #main:hover, div.cart-image.fw-900 > figure > img:hover {
     /*border-radius: 10px;*/

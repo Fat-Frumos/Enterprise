@@ -1,7 +1,5 @@
 package com.enterprise.rental.dao;
 
-import com.enterprise.rental.entity.Car;
-
 import java.util.List;
 import java.util.Optional;
 

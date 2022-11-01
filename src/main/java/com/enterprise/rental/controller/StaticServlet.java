@@ -1,6 +1,5 @@
 package com.enterprise.rental.controller;
 
-import com.enterprise.rental.dao.jdbc.Constants;
 import com.enterprise.rental.entity.Car;
 import com.enterprise.rental.entity.User;
 import com.enterprise.rental.exception.DataException;
@@ -27,7 +26,7 @@ public class StaticServlet extends HttpServlet {
     private final CarService carService = new CarService();
     private final UserService userService = new UserService();
     private static final Logger log = Logger.getLogger(StaticServlet.class);
-    private List<Car> cars = carService.getAll("id BETWEEN 219 AND 237");
+    private List<Car> cars = carService.getAll("id BETWEEN 219 AND 235");
     List<Car> auto = carService.getRandom(3);
 
 
@@ -41,7 +40,7 @@ public class StaticServlet extends HttpServlet {
             throws ServletException, IOException {
         Collections.shuffle(cars);
         request.setAttribute("cars", cars);
-        dispatch(request, response, index);
+        dispatch(request, response, INDEX);
     }
 
     /**
@@ -68,14 +67,14 @@ public class StaticServlet extends HttpServlet {
                 request.setAttribute("cars", auto);
                 request.setAttribute("auto", auto.get(0));
                 log.info(String.format("Main Car: %s", auto.get(0)));
-                dispatch(request, response, main);
+                dispatch(request, response, MAIN);
                 log.info(String.format("Session customer: %s", session.getAttribute("user")));
             } else {
                 request.setAttribute("errorMessage", "Your name/password is incorrect");
-                dispatch(request, response, login);
+                dispatch(request, response, LOGIN);
             }
         } else {
-            dispatch(request, response, login);
+            dispatch(request, response, LOGIN);
         }
     }
 

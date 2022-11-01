@@ -43,7 +43,7 @@ public class DbManager implements AutoCloseable {
         try (FileInputStream inputStream = new FileInputStream(FILE_PROPS)) {
             properties.load(inputStream);
         } catch (IOException exception) {
-            throw new DataException(exception.getMessage(), exception);
+            throw new DataException("Cannot read the file", exception);
         }
     }
 

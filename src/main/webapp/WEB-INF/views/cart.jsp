@@ -103,10 +103,10 @@
     })
 
     function popUp(id) {
-        // $("#" + id).modal('show');
+        $("#" + id).modal('show');
         let url = '/cart' + '?id=' + id;
         fetch(url, {
-            method: 'PUT',
+            method: 'put',
         }).then(response => {
             console.log('Ok:', response);
             window.location.href = url;

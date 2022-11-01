@@ -1,30 +1,41 @@
 package com.enterprise.rental.dao.mapper;
 
 import com.enterprise.rental.entity.Order;
+import com.enterprise.rental.exception.DataException;
+import com.enterprise.rental.exception.OrderNotFoundException;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class OrderMapper extends Mapper<Order> {
-        public Order mapRow(ResultSet resultSet) throws SQLException {
-//            long id = resultSet.getLong("id");
-//            String name = resultSet.getString("name");
-//            String brand = resultSet.getString("brand");
-//            String model = resultSet.getString("model");
-//            String path = resultSet.getString("path");
-//            Double price = resultSet.getDouble("price");
-//            Double cost = resultSet.getDouble("cost");
-//            int year = Integer.parseInt(resultSet.getString("year"));
-            return new Order();
-//            return new Order.Builder()
-//                    .id(id)
-//                    .name(name)
-//                    .brand(brand)
-//                    .model(model)
-//                    .path(path)
-//                    .price(price)
-//                    .cost(cost)
-//                    .year(year)
-//                    .build();
+    public Order mapRow(ResultSet resultSet) {
+        try {
+            long orderId = resultSet.getLong("order_id");
+            long userId = resultSet.getLong("user_id");
+            long carId = resultSet.getLong("car_id");
+            Double payment = resultSet.getDouble("payment");
+            String passport = resultSet.getString("passport");
+            String damage = resultSet.getString("damage");
+            String card = resultSet.getString("card");
+            boolean driver = Boolean.parseBoolean((resultSet.getString("driver")));
+
+            return new Order.Builder()
+                    .orderId(orderId)
+                    .userId(userId)
+                    .carId(carId)
+                    .payment(payment)
+                    .passport(passport)
+                    .card(card)
+                    .damage(damage)
+                    .driver(driver)
+                    .build();
+        } catch (SQLException exception) {
+            try {
+                resultSet.close();
+            } catch (SQLException e) {
+                throw new DataException(e);
+            }
+            throw new OrderNotFoundException(exception.getMessage());
         }
     }
+}

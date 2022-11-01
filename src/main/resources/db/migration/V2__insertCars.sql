@@ -8,6 +8,7 @@ create table car
     price double precision not null,
     year  integer          not null,
     path  text             not null,
+    rent boolean,
     date  timestamp,
     cost  double precision
 );

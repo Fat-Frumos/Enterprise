@@ -3,8 +3,7 @@ package com.enterprise.rental.service;
 import com.enterprise.rental.dao.CarDao;
 import com.enterprise.rental.dao.jdbc.JdbcCarDao;
 import com.enterprise.rental.entity.Car;
-import com.enterprise.rental.exception.CarException;
-import org.apache.log4j.Logger;
+import com.enterprise.rental.exception.CarNotFoundException;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -40,7 +39,7 @@ public class CarService implements Service<Car> {
     public Car getById(long id) {
         Optional<Car> car = carDao.findById(id);
         return car.orElseThrow(() ->
-                new CarException("Car not found"));
+                new CarNotFoundException("Car not found"));
     }
 
     @Override

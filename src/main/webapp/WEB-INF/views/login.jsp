@@ -39,7 +39,7 @@
             <img class="user" height="100px" width="100px"
                  src="https://raw.githubusercontent.com/Fat-Frumos/Cars/master/ava.jpg">
             <div class="container">
-                <input type="text" placeholder="Enter Username" name="name" pattern="[a-zA-Z0-9]+" autocomplete="on" autofocus required>
+                <input type="text" placeholder="Enter Username" name="name" pattern="[a-zA-Z0-9]+" autocomplete="on" required>
                 <input type="email" placeholder="Enter Email" name="email" pattern="[^@\s]+@[^@\s]+\.[^@\s]+" autocomplete="on" required>
                 <input type="password" placeholder="Enter Password" name="password" pattern="[a-zA-Z0-9]+" autocomplete="on" required>
                 <button type="submit">Sign Up</button>

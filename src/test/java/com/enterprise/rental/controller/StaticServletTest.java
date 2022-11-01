@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
+import static com.enterprise.rental.dao.jdbc.Constants.INDEX;
+
 class StaticServletTest {
 
     @Test
@@ -19,7 +21,7 @@ class StaticServletTest {
         RequestDispatcher dispatcher = Mockito.mock(RequestDispatcher.class);
         HttpSession session = Mockito.mock(HttpSession.class);
 
-        Mockito.when(request.getRequestDispatcher("/index.jsp")).thenReturn(dispatcher);
+        Mockito.when(request.getRequestDispatcher(INDEX)).thenReturn(dispatcher);
         Mockito.when(request.getSession()).thenReturn(session);
 
         StaticServlet servlet = new StaticServlet();
@@ -39,7 +41,7 @@ class StaticServletTest {
         Mockito.when(request.getSession()).thenReturn(session);
 
         StaticServlet servlet = new StaticServlet();
-        servlet.doPost(request, response);
+        servlet.doGet(request, response);
 
         Mockito.verify(dispatcher).forward(request, response);
     }

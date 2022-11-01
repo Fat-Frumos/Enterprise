@@ -76,18 +76,18 @@
             <version>4.8.0</version>
             <scope>test</scope>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.hamcrest</groupId>-->
-<!--            <artifactId>hamcrest</artifactId>-->
-<!--            <version>2.2</version>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>com.h2database</groupId>-->
-<!--            <artifactId>h2</artifactId>-->
-<!--            <version>2.1.214</version>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.hamcrest</groupId>-->
+        <!--            <artifactId>hamcrest</artifactId>-->
+        <!--            <version>2.2</version>-->
+        <!--            <scope>test</scope>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>com.h2database</groupId>-->
+        <!--            <artifactId>h2</artifactId>-->
+        <!--            <version>2.1.214</version>-->
+        <!--            <scope>test</scope>-->
+        <!--        </dependency>-->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
@@ -98,7 +98,11 @@
             <artifactId>javax.mail</artifactId>
             <version>1.6.2</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>itextpdf</artifactId>
+            <version>5.5.13.3</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -167,9 +171,9 @@
                         <url>jdbc:postgresql://localhost:5432/postgres</url>
                         <user>admin</user>
                         <password>admin</password>
-                    <schemas>
-                        <schema>testOrders</schema>
-                    </schemas>
+                        <schemas>
+                            <schema>testOrders</schema>
+                        </schemas>
                     </configuration>
                 </plugin>
                 <!--                <plugin>-->

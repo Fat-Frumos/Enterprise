@@ -19,19 +19,19 @@
     cursor: pointer;
     transition: 0.3s ease width;
     text-align: center;
-    font-family: Verdana, Roboto, sans-serif;
+    font-family: Raleway, Roboto, sans-serif;
     font-size: 14px;
     color: #ffffff;
     line-height: 19px;
 }
 
 body > div.option > form > div > a:hover {
-    text-decoration: none;
     color: #ffffff;
 }
 
 .button:hover {
     background: #cccccc;
+    text-decoration: none;
 }
 
 .button:last-child {

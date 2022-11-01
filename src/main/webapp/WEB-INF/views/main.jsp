@@ -33,7 +33,7 @@
         </div>
         <jsp:include page="car.jsp"/>
     </div>
-
+<hr>
     <jsp:include page="cart.jsp"/>
     <jsp:include page="modal.jsp"/>
 </div>
@@ -50,15 +50,7 @@
 <button id="search">Search</button>
 <div id="output"></div>
 
-<%--    <a style="text-transform: capitalize" href="/login${user}">(${user})</a>--%>
 <script>
-    //TODO modal dialog
-    // $(document).ready(function () {
-    //     $('#main').click(function () {
-    //         $('#Mymodal').modal('show')
-    //     });
-    // });
-
     window.addEventListener('contextmenu', (event) => {
         event.preventDefault()
         window.history.back();

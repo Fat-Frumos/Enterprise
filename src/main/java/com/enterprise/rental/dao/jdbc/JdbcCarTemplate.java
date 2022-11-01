@@ -3,7 +3,6 @@ package com.enterprise.rental.dao.jdbc;
 import com.enterprise.rental.dao.factory.DbManager;
 import com.enterprise.rental.dao.mapper.CarMapper;
 import com.enterprise.rental.entity.Car;
-import com.enterprise.rental.exception.CarException;
 import com.enterprise.rental.exception.CarNotFoundException;
 import com.enterprise.rental.exception.DataException;
 import org.apache.log4j.Logger;
@@ -84,7 +83,7 @@ public class JdbcCarTemplate extends DbManager {
                 throw new CarNotFoundException(("Vehicle not found"));
             }
         } catch (SQLException ex) {
-            throw new CarException(ex.getMessage());
+            throw new CarNotFoundException(ex.getMessage());
         }
     }
 

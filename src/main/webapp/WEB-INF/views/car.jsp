@@ -8,8 +8,14 @@
   Time: 6:36 PM
   To change this template use File | Settings | File Templates.
 --%>
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
 <style>
-    <%@include file="../classes/templates/css/users.css"%>
+
+    <%@include file="../classes/templates/css/form.css"%>
+    <%@include file="../classes/templates/css/check-box.css"%>
+    <%@include file="../classes/templates/css/rental.css"%>
+
 </style>
 <div class="col-lg-5 p-0 ps-lg-4">
     <form action="/order" method="post">
@@ -21,78 +27,77 @@
                         <span class="me-5">
                             <br>
                                     <span class="text-muted">Passport</span>
-                                    <input class="form-control" style="width: 180px"
+                                    <input class="form-control"
+                                           style="width: 180px"
                                            name="passport" type="text"
-                                           value="AA 123 456 789"
-                                           placeholder="AA 123 456 789">
+                                           value=""
+                                           placeholder="AA 123 456 789"
+                                           required
+                                    >
                                     </span>
                             <div class=" w-100 d-flex flex-column align-items-end">
                                 <br>
                                 <p class="text-muted">Term</p>
-                                <input class="form-control2" style="width: 120px"
-                                       name="term"
+                                <input id="e"
+                                       class="form-control2"
+                                       style="width: 110px"
                                        type="date"
-                                       value="24/02/2022"
-                                       placeholder="MM/YYYY">
+                                       name="term"
+                                       value="" min=""
+                                       max="2025-02-25">
                             </div>
                         </div>
 
                         <div class="d-flex mb-4">
                         <span class="me-5">
                                     <span class="text-muted">Card</span>
-                                    <input class="form-control" style="width: 180px"
+                                    <input class="form-control"
+                                           style="width: 180px"
                                            name="card" type="text"
-                                           value="4485 6888 2359 1498"
-                                           placeholder="1234 5678 9012 3456">
+                                           value=""
+                                           placeholder="1234 5678 9012 3456"
+                                           required
+                                    >
                                     </span>
                             <div class=" w-100 d-flex flex-column align-items-end">
-                                <p class="text-muted">Expires</p>
-                                <input class="form-control2" style="width: 80px"
-                                       name="expires"
-                                       type="text" value="22/02/2022"
-                                       placeholder="MM/dd">
+                                <span class="text-muted">Driver</span>
+                                <div class="w-100 d-flex flex-column align-items-end">
+                                    <div class="toggle">
+                                        <input id="checkbox" type="checkbox" name="driver">
+                                        <label class="onButton" value=""></label>
+                                    </div>
+                                </div>
+                                <span class="me-5">
+                                </span>
                             </div>
                         </div>
                         <jsp:include page="picker.jsp"/>
                         <div class="d-flex mb-4">
                         <span class="me-5">
                                     <span class="text-muted">Payment</span>
-                                    <input class="form-control" style="width: 100px"
-                                           name="card" type="number"
-                                           value="${auto.price}
-                                           placeholder="${auto.price}">
+                                    <input class="form-control"
+                                           style="width: 100px"
+                                           id="payment"
+                                           name="payment"
+                                           value="${auto.price}"
+
+                                    >
                                     </span>
                             <div class=" w-100 d-flex flex-column align-items-end">
                                 <p class="text-muted"></p>
                             </div>
                         </div>
-                        <%--                        <div class="d-flex mb-5">--%>
-                        <%--                                    <span class="me-5">--%>
-                        <%--                                        <span class="me-5">--%>
-                        <%--                                        <span class="text-muted">Payment</span>--%>
-                        <%--                                        <input class="form-control" style="width: 180px"--%>
-                        <%--                                               name="payment" type="number"--%>
-                        <%--                                               value="${auto.price}" placeholder="100"--%>
-                        <%--                                               autocomplete="on">--%>
-                        <%--                                    </span>--%>
-                        <%--                                        --%>
-
-                        <%--                        </div>--%>
                         <div class="d-flex mb-4">
                             <span class="me-5">
-                                <span class="text-muted">Driver</span>
-                            <div class="w-100 d-flex flex-column align-items-end">
-                                <input name="driver" type="checkbox">
-                                <label class="onButton"></label>
-                            </div>
                             </span>
                         </div>
                     </div>
                 </div>
                 <div class="row m-0">
                     <div class="col-12 mb-4 p-0">
-                        <input type="submit" id="purchase" name="submit" value="Purchase" class="btn btn-primary">
-                        <span class="fas fa-arrow-right ps-2"></span>
+                        <input type="submit" id="purchase" name="submit" value="Purchase" class="submit">
+                        <div class="fa fa-check done"></div>
+                        <div class="fa fa-close failed"></div>
                     </div>
                 </div>
                 <br>
@@ -100,4 +105,44 @@
             </div>
         </div>
     </form>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script>
+
+        $(document).ready(function () {
+            $(".submit").click(function () {
+                $(".submit").addClass("loading");
+                setTimeout(function () {
+                    $(".submit").addClass("hide-loading");
+                    $(".done").addClass("finish");
+                }, 1000);
+                setTimeout(function () {
+                    $(".submit").removeClass("loading").removeClass("hide-loading");
+                    $(".done").removeClass("finish");
+                    $(".failed").removeClass("finish");
+                }, 2000);
+            })
+        });
+
+        let payment = document.getElementById('payment');
+        let checkbox = document.getElementById('checkbox');
+        let datePicker = document.getElementById('e');
+        let day = 1;
+        datePicker.min = datePicker.value = new Date().toISOString().substring(0, 10);
+
+        checkbox.onchange = checkbox = (element) => {
+            console.log("with driver " + element.target.checked);
+            if (element.target.checked) {
+                payment.value = 25 * day + parseFloat(payment.value);
+            } else {
+                payment.value -= 25 * day;
+            }
+        }
+
+        datePicker.onchange = datePicker = (e) => {
+            let diff = new Date(e.target.value) - new Date();
+            day = Math.ceil(Math.abs(diff) / (1000 * 60 * 60 * 24));
+            payment.value *= day;
+        }
+
+    </script>
 </div>

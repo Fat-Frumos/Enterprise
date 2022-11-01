@@ -50,6 +50,9 @@ public class Car implements Serializable {
         this.name = name;
     }
 
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public Double getCost() {
         return cost;
@@ -68,8 +71,6 @@ public class Car implements Serializable {
         private Double price;
         private Double cost;
         private int year;
-
-        private int rent;
         private LocalDateTime created;
 
         public Builder id(long id) {

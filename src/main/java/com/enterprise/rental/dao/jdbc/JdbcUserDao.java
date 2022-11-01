@@ -1,10 +1,9 @@
 package com.enterprise.rental.dao.jdbc;
 
 import com.enterprise.rental.dao.UserDao;
-import com.enterprise.rental.dao.factory.DbManager;
 import com.enterprise.rental.dao.mapper.UserMapper;
 import com.enterprise.rental.entity.User;
-import com.enterprise.rental.exception.CarException;
+import com.enterprise.rental.exception.CarNotFoundException;
 import com.enterprise.rental.exception.DataException;
 import org.apache.log4j.Logger;
 
@@ -15,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
+import static com.enterprise.rental.dao.factory.DbManager.getInstance;
 import static com.enterprise.rental.dao.jdbc.Constants.*;
 
 public class JdbcUserDao implements UserDao {
@@ -58,7 +58,7 @@ public class JdbcUserDao implements UserDao {
         Connection connection;
 
         try {
-            connection = DbManager.getInstance().getConnection();
+            connection = getInstance().getConnection();
             connection.setAutoCommit(false);
         } catch (SQLException e) {
             throw new DataException(e);
@@ -77,10 +77,10 @@ public class JdbcUserDao implements UserDao {
                     }
                     return users;
                 }
-                throw new CarException("Customer not found");
+                throw new CarNotFoundException("Customer not found");
             }
         } catch (SQLException ex) {
-            throw new CarException(ex.getMessage());
+            throw new CarNotFoundException(ex.getMessage());
         } finally {
             try {
                 Objects.requireNonNull(connection).close();
@@ -92,8 +92,17 @@ public class JdbcUserDao implements UserDao {
 
     @Override
     public Optional<User> findById(Long id) {
-
-        return Optional.empty();
+        try (Connection connection = getInstance().getConnection();
+             PreparedStatement statement = connection.prepareStatement(FILTER_USER_BY_ID_SQL)) {
+            statement.setLong(1, id);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                return !resultSet.next()
+                        ? Optional.empty()
+                        : Optional.of(ROW_MAPPER.mapRow(resultSet));
+            }
+        } catch (SQLException e) {
+            throw new DataException(e);
+        }
     }
 
     private Optional<User> getUserSql(String sql) {
@@ -102,7 +111,7 @@ public class JdbcUserDao implements UserDao {
         ResultSet resultSet = null;
 
         try {
-            connection = DbManager.getInstance().getConnection();
+            connection = getInstance().getConnection();
             connection.setAutoCommit(false);
 
             statement = connection.prepareStatement(sql);
@@ -154,7 +163,7 @@ public class JdbcUserDao implements UserDao {
         Connection connection = null;
         PreparedStatement statement = null;
 
-        connection = DbManager.getInstance().getConnection();
+        connection = getInstance().getConnection();
         String userName = user.getName();
 
         try {

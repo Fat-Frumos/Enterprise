@@ -7,73 +7,57 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html>
+<!DOCTYPE html>
 <head>
     <title>Users</title>
     <style>
+        @import url('https://fonts.googleapis.com/css?family=Kaushan+Script|Saira&display=swap');
+
         <%@include file="../classes/templates/css/users.css"%>
+        <%@include file="../classes/templates/css/check-box.css"%>
     </style>
 </head>
-
-<%--<script--%>
-<%--        src="https://code.jquery.com/jquery-3.2.1.slim.min.js"--%>
-<%--        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"--%>
-<%--        crossorigin="anonymous"--%>
-<%--></script>--%>
-<%--<script--%>
-<%--        src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"--%>
-<%--        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"--%>
-<%--        crossorigin="anonymous"--%>
-<%--></script>--%>
-
 <title>Users</title>
 </head>
 <body>
 <div class="container">
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="row mt-5">
-                <div class="col-lg-12">
-                    <h5>List of Users</h5>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-12">
-                    <table id="tabs" class="table cell-border " style="width:100%">
-                        <thead class="TableHead">
-                        <tr>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Role</th>
-                            <th>Status</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <c:forEach items="${users}" var="user">
-                            <tr class="firstRow">
-                                <td>${user.name}</td>
-                                <td>${user.email}</td>
-                                <td>${user.role}</td>
-                                <td>
-                                    <div class="toggle">
-                                        <input type="checkbox">
-                                        <label class="onButton">${user.active}</label>
-                                        <label class="onButton">${user.active}</label>
-                                    </div>
-                                </td>
-                            </tr>
-                        </c:forEach>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+    <div class="col-lg-12">
+        <h5>List of Jobs</h5>
+    </div>
+
+    <div class="col-lg-12">
+        <table id="tabs" class="table cell-border" style="width:100%">
+            <thead class="TableHead">
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Confirm</th>
+            </tr>
+            </thead>
+            <tbody>
+            <c:forEach items="${users}" var="user">
+                <tr class="firstRow">
+                    <form>
+                        <td><input value="${user.name}" name="name"></td>
+                        <td><input value="${user.email}" name="email"></td>
+                        <td><input value="${user.role}" name="role"></td>
+                        <td>
+                            <div class="toggle">
+                                <input class="${user.active}" type="checkbox" name="active">
+                            </div>
+                        </td>
+                        <td>
+                            <button id="accept-button" class="btn btn-outline-success" type="submit">&#10003;</button>
+                        </td>
+                    </form>
+                </tr>
+            </c:forEach>
+            </tbody>
+        </table>
     </div>
 </div>
-<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-<%--<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>--%>
-<%--<script src="https://cdn.datatables.net/1.12.1/js/dataTables.bootstrap4.min.js"></script>--%>
 
 <link
         rel="stylesheet"
@@ -82,18 +66,9 @@
         crossorigin="anonymous"
 />
 <script>
+    document.querySelectorAll(".true").forEach(element => element.checked = true)
 
-    $(document).ready(function () {
-        $('#example').DataTable({
-            "bPaginate": false,
-            "bLengthChange": false,
-            "bFilter": false,
-            "bInfo": false,
-            "bAutoWidth": false
-        });
-    });
-
-    function addCar(id) {
+    function editCar(id) {
         let url = '/user' + '?id=' + id;
         console.log(url);
         fetch(url, {

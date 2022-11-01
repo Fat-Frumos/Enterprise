@@ -12,12 +12,11 @@
             <img class="img-fluid"
                  id="main"
                  src="${auto.path}"
-                 alt="main">
+                 alt="${auto.id}">
             <figcaption>
             </figcaption>
         </figure>
     </div>
-<%--    onclick="popUp(${auto.id})"--%>
     <div class="col-md-4 col-3 ps-30 my-4">
         <p class="h4 m-0">
             <span class="pe-1">${auto.brand}</span>
@@ -68,5 +67,5 @@
             </p>
         </div>
     </div>
-
 </div>
+

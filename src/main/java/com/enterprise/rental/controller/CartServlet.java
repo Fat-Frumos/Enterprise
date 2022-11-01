@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 
 import static com.enterprise.rental.dao.jdbc.Constants.*;
@@ -36,17 +37,15 @@ public class CartServlet extends HttpServlet {
 
         HttpSession session = request.getSession(false);
 
-        String path;
-
         if (session != null && session.getAttribute("user") != null) {
-
             User user = (User) session.getAttribute("user");
             log.info(String.format("Get into session User %s bucket cars: %s", user.getName(), user.getCars().size()));
-            request.setAttribute("cars", user.getCars());
+            List<Car> userCars = user.getCars();
+            request.setAttribute("cars", userCars);
             request.setAttribute("car", user.getCars().size());
-            dispatch(request, response, index);
+            dispatch(request, response, INDEX);
         } else {
-            dispatch(request, response, login);
+            dispatch(request, response, LOGIN);
         }
     }
 
@@ -85,7 +84,7 @@ public class CartServlet extends HttpServlet {
             orders.add(order);
             user.setOrders(orders);
         }
-        dispatch(request, response, main);
+        dispatch(request, response, MAIN);
     }
 
     @Override
@@ -124,12 +123,6 @@ public class CartServlet extends HttpServlet {
                 .forward(request, response);
     }
 
-    @Override
-    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws
-            ServletException, IOException {
-        super.doDelete(request, response);
-    }
-
     private void dispatch(
             HttpServletRequest request,
             HttpServletResponse response, String path)
@@ -143,43 +136,3 @@ public class CartServlet extends HttpServlet {
         dispatcher.include(request, response);
     }
 }
-
-//
-//            log.info(String.format("Put User into bucket session: %s", user));
-//
-//            long id = Long.parseLong(request.getParameter("id"));
-//
-//            if (id != 0) {
-//                Car car = carService.getById(id);
-//                car.setUserId(user.getUserId());
-//                user.addCar(car);
-//                log.info(String.format("Put cars into User session bucket: %s", car));
-
-//            request.setAttribute("cars", user.getCars());
-//            request.getRequestDispatcher("/cart")
-//                    .forward(request, response);
-//        } else {
-//            request.setAttribute("errorMessage",
-//                    String.format("User not found"));
-//            request.getRequestDispatcher(login)
-//                    .forward(request, response);
-//        }
-
-
-//TODO order
-// userService.sendEmail(user.getEmail());
-
-
-//        try {
-//            User user = (User) session.getAttribute("user");
-//            if (user != null) {
-//                log.info("session " + user);
-//                session.setAttribute("user", user);
-//                request.setAttribute("cars", user.getCars());
-//                request.getRequestDispatcher("/WEB-INF/views/index.jsp")
-//                        .forward(request, response);
-//            }
-//        } catch (UserNotFoundException e) {
-//            request.getRequestDispatcher("/WEB-INF/views/cars.jsp")
-//                    .forward(request, response);
-//        }

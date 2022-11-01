@@ -1,101 +1,88 @@
-<%--&lt;%&ndash;--%>
-<%--  Created by IntelliJ IDEA.--%>
-<%--  User: Pasha--%>
-<%--  Date: 10/24/2022--%>
-<%--  Time: 1:57 PM--%>
-<%--  To change this template use File | Settings | File Templates.--%>
-<%--&ndash;%&gt;--%>
-<%--<%@ page contentType="text/html;charset=UTF-8" language="java" %>--%>
-<%--<html>--%>
-<%--<head>--%>
-<%--    <title>Contact Form</title>--%>
-<%--    <style>--%>
-<%--        /* google fonts start*/--%>
-<%--        @import url('https://fonts.googleapis.com/css?family=Kaushan+Script|Saira&display=swap');--%>
-<%--        /* google fonts end*/--%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%--
+  Created by IntelliJ IDEA.
+  User: Pasha
+  Date: 10/24/2022
+  Time: 1:57 PM
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+<head>
+    <title>Orders Review</title>
+    <style>
 
-<%--        body {--%>
-<%--        }--%>
+        @import url('https://fonts.googleapis.com/css?family=Kaushan+Script|Saira&display=swap');
 
-<%--        .form-control {--%>
-<%--            border-radius: 0px;--%>
-<%--            border: 0px;--%>
-<%--        }--%>
+        <%@include file="../classes/templates/css/users.css"%>
+        <%@include file="../classes/templates/css/check-box.css"%>
 
-<%--        .font-primary {--%>
-<%--            font-family: 'Kaushan Script', cursive;--%>
-<%--        }--%>
+        body {
+            font-family: 'Saira', sans-serif;
+        }
+        input{
+            border: none;
+        }
+        th {
+            text-align: left;
+        }
 
-<%--        .font-secondary {--%>
-<%--            font-family: 'Saira', sans-serif;--%>
-<%--        }--%>
+    </style>
+</head>
+<body>
+<html>
+<heade>
+    <meta name="description" content="contact form using bootstrap,">
+    <meta name="keywords" content="HTML,CSS,XML,JavaScript,bootstrap">
+    <meta name="author" content="Pasha">
+    <title>Responsive Contact Form</title>
+</heade>
 
-<%--        .form-area {--%>
-<%--            border: 1px solid #fff;--%>
-<%--        }--%>
-<%--    </style>--%>
-<%--</head>--%>
-<%--<body>--%>
-<%--<html>--%>
-<%--<heade>--%>
-<%--    <meta name="description" content="contact form using bootstrap,">--%>
-<%--    <meta name="keywords" content="HTML,CSS,XML,JavaScript,bootstrap">--%>
-<%--    <meta name="author" content="Pasha">--%>
-<%--    <title>Responsive Contact Form</title>--%>
-<%--</heade>--%>
+<body>
+<div class="container">
+    <div class="col-lg-12">
+        <h5>List of Jobs</h5>
+    </div>
 
-<%--<body>--%>
-<%--<section id="contact-form">--%>
-<%--    <div class="container">--%>
-<%--        <div class="row">--%>
-<%--            <div class="col-sm-12 text-center">--%>
-<%--                <div class="title-area text-light">--%>
-<%--                    <h1 class="font-primary">Contact Form</h1>--%>
-<%--                </div>--%>
-<%--            </div>--%>
-<%--        </div>--%>
-<%--        <div class="row">--%>
-<%--            <div class="col-sm-12 col-md-12 col-lg-8 offset-lg-2">--%>
-<%--                <div class="form-area mt-5 p-lg-4 p-3">--%>
-<%--                    <!--               main form start -->--%>
-<%--                    <form>--%>
-<%--                        <div class="row">--%>
-<%--                            <div class="col-sm-12 text-center text-info mb-3 font-secondary">--%>
-<%--                                <h3>Support</h3>--%>
-<%--                            </div>--%>
-<%--                        </div>--%>
-<%--                        <dl class="row">--%>
-
-<%--                            <dd class="col-sm-4 text-info font-secondary"><input type="text" class="form-control" placeholder="Name"></dd>--%>
-
-<%--                            <dt class="col-sm-4 text-info font-secondary">Email*</dt>--%>
-<%--                            <dd class="col-sm-8">--%>
-<%--                                <input type="Email" class="form-control text-info" placeholder="Email">--%>
-<%--                            </dd>--%>
-
-<%--                            <dt class="col-sm-4 text-info font-secondary">Address(1)</dt>--%>
-<%--                            <dd class="col-sm-8"><input type="text" class="form-control" placeholder="Address"></dd>--%>
-
-<%--                            <dt class="col-sm-4 text-truncate text-info font-secondary">Address(2)</dt>--%>
-<%--                            <dd class="col-sm-8"><input type="text" class="form-control" placeholder="Address"></dd>--%>
-
-<%--                            <dt class="col-sm-4 text-truncate text-info font-secondary">Passport Number</dt>--%>
-<%--                            <dd class="col-sm-8"><input type="text" class="form-control" placeholder="Passport Number">--%>
-<%--                            </dd>--%>
-<%--                        </dl>--%>
-<%--                        <div class="row">--%>
-<%--                            <div class="col-sm-12">--%>
-<%--                                <input type="submit" class="form-control bg-info text-light font-secondary"--%>
-<%--                                       value="Submit">--%>
-<%--                            </div>--%>
-<%--                        </div>--%>
-<%--                    </form>--%>
-<%--                </div>--%>
-<%--            </div>--%>
-<%--        </div>--%>
-<%--    </div>--%>
-<%--</section>--%>
-<%--</body>--%>
-<%--</html>--%>
-<%--</body>--%>
-<%--</html>--%>
+    <div class="col-lg-12">
+        <table id="tabs" class="table" style="width:100%">
+            <thead class="TableHead">
+            <tr>
+                <th>payment</th>
+                <th>passport</th>
+                <th>damage</th>
+                <th>driver</th>
+                <th>closed</th>
+                <th>rejected</th>
+                <th>Accept</th>
+            </tr>
+            </thead>
+            <tbody>
+            <c:forEach items="${orders}" var="order">
+                <tr class="firstRow">
+                    <form>
+                        <td><input value="${order.payment}" name="payment"></td>
+                        <td><input value="${order.passport}" name="passport"></td>
+                        <td><input value="${order.damage}" name="damage"></td>
+                        <td><input value="${order.driver}" name="driver"></td>
+                        <td><input value="${order.closed}" name="closed"></td>
+                        <td>
+                            <div class="toggle">
+                                <input class="${order.rejected}" type="checkbox" name="rejected">
+                            </div>
+                        </td>
+                        <td>
+                            <button id="accept-button" class="btn btn-outline-success" type="submit">&#10003;</button>
+                        </td>
+                    </form>
+                </tr>
+            </c:forEach>
+            </tbody>
+        </table>
+    </div>
+</div>
+</section>
+</body>
+</html>
+</body>
+</html>

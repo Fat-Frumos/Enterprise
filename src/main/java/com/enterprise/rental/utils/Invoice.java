@@ -1,28 +1,33 @@
-//package com.enterprise.rental.utils;
-//
-//import com.enterprise.rental.exception.DataException;
-//import com.itextpdf.kernel.pdf.PdfDocument;
-//import com.itextpdf.kernel.pdf.PdfWriter;
-//import com.itextpdf.layout.Document;
-//import com.itextpdf.layout.element.Paragraph;
-//import org.apache.log4j.Logger;
-//
-//import java.io.FileNotFoundException;
-//
-//public class Invoice {
-//    private static final Logger log = Logger.getLogger(Invoice.class);
-//    public static final String DEST = "/letter.pdf";
-//
-//    public void createPdf() {
-//        try {
-//            PdfDocument pdf = new PdfDocument(new PdfWriter(DEST));
-//            Document document = new Document(pdf);
-//            String line = "Welcome to iTextPdf";
-//            document.add(new Paragraph(line));
-//            document.close();
-//            log.info("Awesome PDF just got created");
-//        } catch (FileNotFoundException e) {
-//            throw new DataException(DEST, e);
-//        }
-//    }
-//}
+package com.enterprise.rental.utils;
+
+import com.enterprise.rental.exception.DataException;
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfWriter;
+import org.apache.log4j.Logger;
+
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+
+import static com.enterprise.rental.utils.Mail.sendEmailWithAttachments;
+
+public class Invoice {
+    private static final Logger log = Logger.getLogger(Invoice.class);
+    public static final String DEST = "/letter.pdf";
+
+    public static void createPdf() {
+
+        try {
+            Document document = new Document();
+            PdfWriter.getInstance(document, new FileOutputStream(DEST));
+            document.open();
+            Font font = FontFactory.getFont(FontFactory.COURIER, 16, BaseColor.BLACK);
+            Chunk chunk = new Chunk("Pdf Writer", font);
+            document.add(chunk);
+            document.close();
+            log.info("Created PDF document");
+
+        } catch (DocumentException | FileNotFoundException e) {
+            throw new DataException(e.getMessage());
+        }
+    }
+}

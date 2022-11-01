@@ -14,26 +14,25 @@ public class Constants {
     protected static final String FILTER_BY_NAME_SQL = "SELECT id, email, name, password, role, active FROM users WHERE name=";
     protected static final String USER_FIELD = " id, name, email, password, role, active ";
     protected static final String INSERT_USER_SQL = "INSERT INTO users(" + USER_FIELD + ") VALUES ( ?, ?, ?, ?, ?, ?);";
-
+    protected static final String FILTER_USER_BY_ID_SQL = USER_FIELD + "FROM user WHERE id=?";
     // Order sql
 
-    protected static final String ORDER_FIELD = " order_id, customer_id, car_id, day, payment, driver, rejected, closed, order_date, ended, damage, passport ";
-
-    protected static final String ORDER_INSERT_FIELD = " order_id, user_id, car_id, created, passport ";
-    protected static final String ORDER_FIELDS = "SELECT"+ ORDER_FIELD;
+    protected static final String ORDER_FIELD = " order_id, user_id, car_id, term, payment, driver, rejected, closed, created, card, damage, passport ";
+    protected static final String ORDER_INSERT_FIELD = " order_id, user_id, car_id, created, passport, card, payment, term, driver ";
+    protected static final String ORDER_FIELDS = "SELECT" + ORDER_FIELD;
     protected static final String FIND_ALL_ORDERS_SQL = ORDER_FIELDS + "FROM orders;";
     protected static final String FILTER_ORDER_BY_SQL = ORDER_FIELDS + "FROM orders ";
     protected static final String FILTER_ORDER_BY_ID_SQL = ORDER_FIELDS + "FROM orders WHERE id=?";
-    protected static final String INSERT_ORDER_SQL = "INSERT INTO orders(" + ORDER_INSERT_FIELD + ") VALUES ( ?, ?, ?, ?, ? );";
+    protected static final String INSERT_ORDER_SQL = "INSERT INTO orders(" + ORDER_INSERT_FIELD + ") VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? );";
 
     // path urls
-    public static final String main = "/WEB-INF/views/main.jsp";
-    public static final String cars = "/WEB-INF/views/cars.jsp";
-    public static final String contact = "/WEB-INF/views/contact.jsp";
-    public static final String users = "/WEB-INF/views/users.jsp";
-    public static final String login = "/WEB-INF/views/login.jsp";
-    public static final String index = "/WEB-INF/views/index.jsp";
-    public static final String forgot = "/WEB-INF/views/forgot.jsp";
+    public static final String MAIN = "/WEB-INF/views/main.jsp";
+    public static final String CARS = "/WEB-INF/views/cars.jsp";
+    public static final String CONTACT = "/WEB-INF/views/contact.jsp";
+    public static final String USERS = "/WEB-INF/views/users.jsp";
+    public static final String LOGIN = "/WEB-INF/views/login.jsp";
+    public static final String INDEX = "/WEB-INF/views/index.jsp";
+    public static final String FORGOT = "/WEB-INF/views/forgot.jsp";
 
     private Constants() {
     }

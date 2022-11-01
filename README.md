@@ -8,17 +8,18 @@
 ####The customer: 
 + registers user in the system, (validate User) 
 + chooses a car 
-+/- makes a rental order.
++ makes a rental order.
 
 ####The order:
 + In the order data the client indicates passport data, 
 + option: with driver/without driver,  
-- lease term (days).
-- submit the price
++ lease term (days).
++ submit the price
+
 
 ####The system: 
-- generates an Invoice, which the client pays Invoice + (itextpdf) 
-- (send to email ) MimeMessage with the invoice pdf
++ generates an Invoice, which the client pays Invoice + (itextpdf) 
++/- (send to email ) MimeMessage with the invoice pdf
 
 ####The manager:
 - reviews the order 
@@ -34,20 +35,15 @@ The system administrator has the rights:
 - editing car information(upload);
 ====user====
 +- blocking / unblocking- the user;
--- registration of managers in the system (role).
+- registration of managers in the system (role).
 
 ===============================
+####INFO: FATAL: OrderServlet:80 Car null
+####INFO: FATAL: JdbcCarTemplate:58 SELECT id, name, brand, model, path, price, cost, year FROM car LIMIT 80;
 
 web: java $JAVA_OPTS -jar target/webapp-runner.jar --port $PORT target/*.war
-####INFO: FATAL: order
-####INFO: FATAL: Basket/cart
 
 //upload img
-
-####INFO: FATAL: O: At least one JAR was scanned for TLDs yet contained no TLDs. 
-Enable debug logging for this logger for a complete list of JARs that were scanned but no TLDs were found in them. 
-Skipping unneeded JARs during scanning can improve startup time and JSP compilation time.
-
 #####TODO: @One to Many
 
 validate html w3c curl
@@ -118,11 +114,6 @@ throw new CarException
 conf\server.xml
 - listener.xml
 
-- At least one JAR was scanned for TLDs yet contained no TLDs. 
-- Enable debug logging for this logger for a complete list of JARs that were scanned but no TLDs were found in them. 
-- Skipping unneeded JARs during scanning can improve startup time and JSP compilation time.
-- A child container failed during start
-
 
 * Client sends Http Request to Web Server
 * Code in Web Server => Input:HttpRequest, Output: HttpResponse JEE with Servlets
@@ -171,9 +162,14 @@ conf\server.xml
 //            response.sendRedirect("/WEB-INF/views/main.jsp");
 //            request.getRequestDispatcher("/WEB-INF/views/index.jsp").forward(request, response);
 
-2022-10-18 12:24:31 INFO  UserMapper:19 id: 1, name: admin, pwd: admin, email: admin@i.ua, role: admin
-2022-10-18 16:36:31 INFO  CarsServlet:56 Params: {limit=10, page=8}
-2022-10-18 16:36:31 INFO  JdbcCarTemplate:38 SELECT id, name, brand, model, path, price, cost, year FROM car WHERE price>0 ORDER BY price  LIMIT 10 OFFSET 70;
+//    public UserDto toDto(User user) {
+//        return new UserDto(
+//                user.getName(),
+//                user.getPassword(),
+//                user.getEmail(),
+//                Role.USER);
+//    }
+
 2022-10-18 16:36:33 INFO  CarException:8 Vehicle not found
 at com.enterprise.rental.service.CarService.lambda$getById$0(CarService.java:43)
 at com.enterprise.rental.service.CarService.getById(CarService.java:42)

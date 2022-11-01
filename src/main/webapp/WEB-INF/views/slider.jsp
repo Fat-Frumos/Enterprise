@@ -63,9 +63,9 @@
             margin: 10px 5px;
         }
 
-        .active {
-            background: black;
-        }
+        /*.active {*/
+        /*    background: black;*/
+        /*}*/
 
         @media (max-width: 567px) {
             #slider {
