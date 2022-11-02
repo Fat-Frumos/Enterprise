@@ -30,7 +30,7 @@
                  alt=${cars.id}>
         </figure>
     </c:forEach>
-    <jsp:include page="order.jsp"/>
+<%--    <jsp:include page="order.jsp"/>--%>
 </div>
 <%--onclick="openForm(`${cars.brand} | ${cars.name} | ${cars.model}`)"--%>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>

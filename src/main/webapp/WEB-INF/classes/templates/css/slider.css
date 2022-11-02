@@ -43,7 +43,8 @@ button {
     transition: 0.2s ease width;
     text-align: center;
     font-family: Raleway, Roboto, sans-serif;
-    font-size: 14px;
+    font-weight: 600;
+    /*font-size: 14px;*/
     color: #ffffff;
     line-height: 15px;
 }

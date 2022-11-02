@@ -1,6 +1,6 @@
 ###There is a list of Cars in the system, for which it is necessary to implement: 
-+ choice by brand, price;
-+ choice according to quality class ? (expensive -> cheap) sorting by cost();
++ choice by brand(selection), price;
++ choice according to quality class ? (expensive -> cheap price) sorting by cost(input asc/desc);
 + sort by rental price;
 
 + An unregistered customer cannot place an order.
@@ -39,6 +39,7 @@ The system administrator has the rights:
 
 ===============================
 ####INFO: FATAL: OrderServlet:80 Car null
+####INFO: FATAL: forgot
 ####INFO: FATAL: JdbcCarTemplate:58 SELECT id, name, brand, model, path, price, cost, year FROM car LIMIT 80;
 
 web: java $JAVA_OPTS -jar target/webapp-runner.jar --port $PORT target/*.war

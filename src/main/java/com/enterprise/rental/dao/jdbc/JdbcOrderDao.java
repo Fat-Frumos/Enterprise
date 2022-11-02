@@ -1,22 +1,21 @@
 package com.enterprise.rental.dao.jdbc;
 
+import com.enterprise.rental.dao.DbManager;
 import com.enterprise.rental.dao.OrderDao;
-import com.enterprise.rental.dao.factory.DbManager;
 import com.enterprise.rental.dao.mapper.OrderMapper;
 import com.enterprise.rental.entity.Order;
-import com.enterprise.rental.entity.Order;
-import com.enterprise.rental.exception.CarNotFoundException;
 import com.enterprise.rental.exception.DataException;
 import com.enterprise.rental.exception.OrderNotFoundException;
 import org.apache.log4j.Logger;
 
+import javax.validation.constraints.NotNull;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import static com.enterprise.rental.dao.factory.DbManager.getInstance;
+import static com.enterprise.rental.dao.DbManager.getInstance;
 import static com.enterprise.rental.dao.jdbc.Constants.*;
 
 public class JdbcOrderDao implements OrderDao {
@@ -73,9 +72,9 @@ public class JdbcOrderDao implements OrderDao {
     }
 
     @Override
-    public List<Order> findAll(String params) {
-        String sql = String.format("%sWHERE %s;", FILTER_ORDER_BY_SQL, params);
-        return getOrderQuery(sql);
+    public List<Order> findAll(String param) {
+        long userId = Long.parseLong(param);
+        return getOrderQuery(String.format("%s%d", FILTER_ORDER_BY_USER_ID_SQL, userId));
     }
 
     private List<Order> getOrderQuery(String sql) {
@@ -103,28 +102,20 @@ public class JdbcOrderDao implements OrderDao {
                 }
                 throw new OrderNotFoundException("Order not found");
             }
-        } catch (SQLException ex) {
-            throw new OrderNotFoundException(ex.getMessage());
+        } catch (SQLException sqlException) {
+            throw new OrderNotFoundException(sqlException);
         } finally {
-            try {
-                Objects.requireNonNull(connection).close();
-            } catch (SQLException e) {
-                log.info(String.format("Connection not closed: %s", e.getMessage()));
-            }
+            eventually(connection);
         }
     }
 
-
-    //TODO MAPPER
     private boolean setOrderQuery(Order order) {
-
+        //TODO: implement PreparedStatement gret + set
         Connection connection = null;
         PreparedStatement statement = null;
 
-        connection = DbManager.getInstance().getConnection();
-
-
         try {
+            connection = DbManager.getInstance().getConnection();
             connection.setAutoCommit(false);
             statement = connection.prepareStatement(INSERT_ORDER_SQL);
 
@@ -140,7 +131,7 @@ public class JdbcOrderDao implements OrderDao {
             log.info(order);
 
             statement.setLong(1, order.getOrderId());
-            statement.setLong(2, order.getOrderId());
+            statement.setLong(2, order.getUserId());
             statement.setLong(3, order.getCarId());
             statement.setTimestamp(4, create);
             statement.setString(5, passport);
@@ -152,21 +143,29 @@ public class JdbcOrderDao implements OrderDao {
             boolean execute = statement.execute();
             connection.commit();
             return execute;
-        } catch (SQLException e) {
-            try {
-                Objects.requireNonNull(connection).rollback();
-            } catch (SQLException ex) {
-                log.info("rollback");
-                throw new DataException(ex.getMessage());
-            }
-            log.info(String.format("%s Order can`t be added, maybe order already exists", order.getOrderId()));
-            throw new DataException(e);
+        } catch (SQLException sqlException) {
+            return caught(connection, sqlException);
         } finally {
-            try {
-                Objects.requireNonNull(connection).close();
-            } catch (SQLException e) {
-                log.info(String.format("Connection not closed: %s", e.getMessage()));
-            }
+            return eventually(connection);
+        }
+    }
+
+    private static boolean eventually(Connection connection) {
+        try {
+            Objects.requireNonNull(connection).close();
+            return false;
+        } catch (SQLException e) {
+            log.info(String.format("Connection not closed: %s", e.getMessage()));
+            throw new DataException(e);
+        }
+    }
+
+    private static boolean caught(Connection connection, SQLException sqlException) {
+        try {
+            Objects.requireNonNull(connection).rollback();
+            throw new DataException("Rollback", sqlException);
+        } catch (SQLException exception) {
+            throw new DataException("Can`t roll back", exception);
         }
     }
 }

@@ -24,11 +24,8 @@ import static com.enterprise.rental.dao.jdbc.Constants.*;
 @WebServlet(urlPatterns = "/")
 public class StaticServlet extends HttpServlet {
     private final CarService carService = new CarService();
-    private final UserService userService = new UserService();
+    private final List<Car> cars = carService.getAll("id BETWEEN 219 AND 235");
     private static final Logger log = Logger.getLogger(StaticServlet.class);
-    private List<Car> cars = carService.getAll("id BETWEEN 219 AND 235");
-    List<Car> auto = carService.getRandom(3);
-
 
     /**
      * Main view
@@ -38,6 +35,7 @@ public class StaticServlet extends HttpServlet {
             HttpServletRequest request,
             HttpServletResponse response)
             throws ServletException, IOException {
+
         Collections.shuffle(cars);
         request.setAttribute("cars", cars);
         dispatch(request, response, INDEX);
@@ -52,6 +50,9 @@ public class StaticServlet extends HttpServlet {
             HttpServletResponse response)
             throws IOException, ServletException {
 
+        UserService userService = new UserService();
+
+        List<Car> auto = carService.getRandom(3);
         String name = request.getParameter("name");
         String password = request.getParameter("password");
 

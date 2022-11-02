@@ -20,7 +20,8 @@
     transition: 0.3s ease width;
     text-align: center;
     font-family: Raleway, Roboto, sans-serif;
-    font-size: 14px;
+    font-weight: 600;
+    /*font-size: 14px;*/
     color: #ffffff;
     line-height: 19px;
 }

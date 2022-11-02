@@ -24,7 +24,10 @@
         * {
             user-select: none;
         }
-
+    a{
+        font-family: Raleway, Roboto, sans-serif;
+        font-weight: 600;
+    }
 
     </style>
     <link rel="shortcut icon" href="https://raw.githubusercontent.com/Fat-Frumos/Cars/master/wheel.ico"

@@ -80,7 +80,7 @@
                                            id="payment"
                                            name="payment"
                                            value="${auto.price}"
-
+                                           readonly="readonly"
                                     >
                                     </span>
                             <div class=" w-100 d-flex flex-column align-items-end">

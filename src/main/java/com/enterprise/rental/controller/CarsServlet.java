@@ -22,10 +22,6 @@ import static com.enterprise.rental.dao.jdbc.Constants.CARS;
 
 @WebServlet(urlPatterns = "/cars")
 public class CarsServlet extends HttpServlet {
-    private final CarService carService = new CarService();
-    private List<Car> carList = carService.getAll("price>=100 ORDER BY cost LIMIT 10 OFFSET 0");
-    private int size = carService.getAll().size();
-    private final String[] fields = {"id", "name", "brand", "model", "path", "price", "cost", "year", "sort", "direction", "page"};
     private static final Logger log = Logger.getLogger(CarsServlet.class);
 
     @Override
@@ -33,6 +29,16 @@ public class CarsServlet extends HttpServlet {
             HttpServletRequest request,
             HttpServletResponse response)
             throws IOException, ServletException {
+
+        String offset = "limit";
+
+        CarService carService = new CarService();
+
+        String[] fields = {"id", "name", "brand", "model", "path", "price", "cost", "year", "sort", "direction", "page"};
+
+        List<Car> carList = carService.getAll("price>=100 ORDER BY cost LIMIT 10 OFFSET 0");
+
+        int size = carService.getAll().size();
 
         Map<String, String> params = Arrays.stream(fields)
                 .filter(key -> !"".equals(request.getParameter(key))
@@ -56,17 +62,17 @@ public class CarsServlet extends HttpServlet {
         int limit;
 
         try {
-            limit = Integer.parseInt(params.get("limit"));
+            limit = Integer.parseInt(params.get(offset));
         } catch (NumberFormatException e) {
             limit = 10;
         }
 
-        params.put("limit", String.valueOf(limit));
+        params.put(offset, String.valueOf(limit));
         params.put("page", String.valueOf(page));
 
         log.info(String.format("Quest Params: %s, page %s", params, page));
 
-        if (Integer.parseInt(params.get("limit")) == 10
+        if (Integer.parseInt(params.get(offset)) == 10
                 && Integer.parseInt(params.get("page")) <= 1
                 && params.size() == 2) {
             request.setAttribute("cars", carList);
@@ -87,7 +93,7 @@ public class CarsServlet extends HttpServlet {
                 request.setAttribute("cars", auto);
             }
         }
-//        log.info(String.format("%d/%d/%d", page, limit, size));
+
         request.setAttribute("page", page);
 
         HttpSession session = request.getSession();
@@ -105,6 +111,7 @@ public class CarsServlet extends HttpServlet {
 
         RequestDispatcher dispatcher = getServletContext()
                 .getRequestDispatcher(CARS);
+
         dispatcher.include(request, response);
     }
 }

@@ -23,7 +23,6 @@ import static com.enterprise.rental.dao.jdbc.Constants.*;
 @WebServlet(urlPatterns = "/cart")
 public class CartServlet extends HttpServlet {
     private final CarService carService = new CarService();
-    private final UserService userService = new UserService();
     private static final Logger log = Logger.getLogger(CartServlet.class);
 
     /**
@@ -92,6 +91,8 @@ public class CartServlet extends HttpServlet {
             HttpServletRequest request,
             HttpServletResponse response) throws
             ServletException, IOException {
+
+        UserService userService = new UserService();
 
         HttpSession session = request.getSession(false);
         if (session != null) {

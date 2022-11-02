@@ -27,8 +27,6 @@ import static com.enterprise.rental.dao.jdbc.Constants.*;
 @WebServlet(urlPatterns = "/order")
 public class OrderServlet extends HttpServlet {
     private static final Log log = LogFactory.getLog(OrderServlet.class);
-    private final CarService carService = new CarService();
-    private final OrderService orderService = new OrderService();
 
     @Override
     protected void doGet(
@@ -38,21 +36,26 @@ public class OrderServlet extends HttpServlet {
 
         if (session != null && session.getAttribute("user") != null) {
             User user = (User) session.getAttribute("user");
-            long carId = Long.parseLong(request.getParameter("id"));
-            List<Car> userCars = user.getCars();
-            for (Car car : userCars) {
-                if (car.getId() == carId) {
-                    log.info(String.format("Rental Car: %s", car));
-                    log.info(String.format("User : %s", user));
-                    List<Car> cars = new ArrayList<>();
-                    List<Car> carList = user.getCars();
-                    carList.stream().filter(auto -> cars.size() < 3).forEachOrdered(cars::add);
-                    request.setAttribute("auto", car);
-                    request.setAttribute("cars", cars);
-                    request.setAttribute("car", user.getCars().size());
+            String id = request.getParameter("id");
+            if (id == null) {
+                dispatch(request, response, MAIN);
+            } else {
+                long carId = Long.parseLong(id);
+                List<Car> userCars = user.getCars();
+                for (Car car : userCars) {
+                    if (car.getId() == carId) {
+                        log.info(String.format("Rental Car: %s", car));
+                        log.info(String.format("User : %s", user));
+                        List<Car> cars = new ArrayList<>();
+                        List<Car> carList = user.getCars();
+                        carList.stream().filter(auto -> cars.size() < 3).forEachOrdered(cars::add);
+                        request.setAttribute("auto", car);
+                        request.setAttribute("cars", cars);
+                        request.setAttribute("car", user.getCars().size());
+                    }
                 }
+                dispatch(request, response, MAIN);
             }
-            dispatch(request, response, MAIN);
         } else {
             dispatch(request, response, LOGIN);
         }
@@ -66,6 +69,10 @@ public class OrderServlet extends HttpServlet {
             HttpServletRequest request,
             HttpServletResponse response)
             throws ServletException, IOException {
+
+        CarService carService = new CarService();
+
+        OrderService orderService = new OrderService();
 
         HttpSession session = request.getSession(false);
         if (session != null) {

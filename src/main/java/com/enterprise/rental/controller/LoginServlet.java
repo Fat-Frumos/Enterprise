@@ -21,8 +21,6 @@ import static com.enterprise.rental.dao.jdbc.Constants.LOGIN;
 public class LoginServlet extends HttpServlet {
 
     private static final long serialVersionUID = UUID.randomUUID().getMostSignificantBits() & 0x7ffffffL;
-
-    private final UserService userService = new UserService();
     private static final Logger log = Logger.getLogger(LoginServlet.class);
 
     /**
@@ -56,6 +54,8 @@ public class LoginServlet extends HttpServlet {
             HttpServletRequest request,
             HttpServletResponse response)
             throws IOException, ServletException {
+
+        UserService userService = new UserService();
 
         String name = request.getParameter("name");
 

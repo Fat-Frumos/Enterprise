@@ -14,7 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
-import static com.enterprise.rental.dao.factory.DbManager.getInstance;
+import static com.enterprise.rental.dao.DbManager.getInstance;
 import static com.enterprise.rental.dao.jdbc.Constants.*;
 
 public class JdbcUserDao implements UserDao {
@@ -85,7 +85,7 @@ public class JdbcUserDao implements UserDao {
             try {
                 Objects.requireNonNull(connection).close();
             } catch (SQLException e) {
-                log.info(String.format("Connection not closed: %s", e.getMessage()));
+                throw new DataException("Connection not closed", e);
             }
         }
     }
@@ -175,17 +175,17 @@ public class JdbcUserDao implements UserDao {
             String role = user.getRole();
 
             log.info(user);
-
-            statement.setLong(1, UUID.randomUUID().getMostSignificantBits() & 0x7fffL);
-            statement.setString(2, userName);
-            statement.setString(3, email);
-            statement.setString(4, password);
-            statement.setString(5, role);
-            statement.setBoolean(6, true);
-            statement.execute();
+            int i = 1;
+            statement.setLong(++i, UUID.randomUUID().getMostSignificantBits() & 0x7fffL);
+            statement.setString(++i, userName);
+            statement.setString(++i, email);
+            statement.setString(++i, password);
+            statement.setString(++i, role);
+            statement.setBoolean(++i, true);
+            statement.setString(++i, "en");
+            boolean execute = statement.execute();
             connection.commit();
-
-            return true;
+            return execute;
         } catch (SQLException e) {
             try {
                 Objects.requireNonNull(connection).rollback();
@@ -193,13 +193,14 @@ public class JdbcUserDao implements UserDao {
                 log.info("rollback");
                 throw new DataException(ex.getMessage());
             }
-            log.info(String.format("%s User can`t added, maybe account already exists", userName));
+            log.info(String.format("%s User can`t added", userName));
             throw new DataException(e);
         } finally {
             try {
                 Objects.requireNonNull(connection).close();
             } catch (SQLException e) {
-                log.info(String.format("Connection not closed: %s", e.getMessage()));
+                String message = (String.format("Connection not closed: %s", e.getMessage()));
+                throw new DataException(message);
             }
         }
     }

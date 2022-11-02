@@ -1,7 +1,7 @@
 *, body {
-    transition: all 0.3s ease;
-    font-family: 'Raleway', sans-serif;
-    font-weight: 700;
+    transition: all 0.5s ease;
+    font-family: Raleway, Roboto, sans-serif;
+    font-weight: 600;
 }
 
 .submit {

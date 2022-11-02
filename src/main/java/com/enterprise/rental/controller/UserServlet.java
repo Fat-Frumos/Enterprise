@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -24,7 +25,6 @@ import static com.enterprise.rental.dao.jdbc.Constants.*;
 @WebServlet(urlPatterns = "/user")
 public class UserServlet extends HttpServlet {
     private final UserService userService = new UserService();
-    OrderService orderService = new OrderService();
     private static final Logger log = Logger.getLogger(UserServlet.class);
 
     /**
@@ -38,22 +38,28 @@ public class UserServlet extends HttpServlet {
             HttpServletResponse response)
             throws ServletException, IOException {
 
+        OrderService orderService = new OrderService();
+
         HttpSession session = request.getSession(false);
         if (session != null) {
             User user = (User) session.getAttribute("user");
             String role = user != null ? user.getRole() : "guest";
-            if ("admin".equals(role)) {
-                session.setAttribute("user", user);
+            session.setAttribute("user", user);
+
+            if (Objects.equals(role, "admin")) {
                 List<User> users = userService.getAll();
                 log.info(String.format("There are %d users", users.size()));
                 request.setAttribute("users", users);
                 dispatch(request, response, USERS);
-            } else if ("manager".equals(role)) {
-                session.setAttribute("user", user);
+            } else if (Objects.equals(role, "manager")){
                 List<Order> orders = orderService.getAll();
-                log.info(orders.size());
                 request.setAttribute("orders", orders);
                 dispatch(request, response, CONTACT);
+            } else if (Objects.equals(role, "user")) {
+                List<Order> orders = orderService.getUserOrders(user);
+                log.info(orders);
+                request.setAttribute("orders", orders);
+                dispatch(request, response, ORDERS);
             } else {
                 dispatch(request, response, FORGOT);
             }
@@ -110,9 +116,7 @@ public class UserServlet extends HttpServlet {
         String message = userService.sendEmail(request.getParameter("username"));
 
         response.sendRedirect(LOGIN);
-
         log.info(String.format("%s check your email address", message));
-
     }
 
     void dispatch(

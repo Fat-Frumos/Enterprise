@@ -7,11 +7,17 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-
+<style>
+    a{
+        font-family: Raleway, Roboto, sans-serif;
+        font-weight: 600;
+        letter-spacing: normal;
+    }
+</style>
 <div class="bar">
     <a href="/cars">Cars</a> |
-    <a href="/user">User</a> |
-    <a href="/cart">Order
+    <a href="/user">Orders</a> |
+    <a href="/cart">Card
         <c:if test="${not empty car}">
             <span class="cart-basket">${car}</span>
         </c:if>

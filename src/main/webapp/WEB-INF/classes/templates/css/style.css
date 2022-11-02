@@ -105,7 +105,7 @@ h1, h2 {
 	}
 	.slide-heading-1{
 	font-size: 40px;
-    font-weight: bold;
+    font-weight: 600;
     color: #fff;
 	-webkit-animation-delay: 0.7s;
     animation-delay: 0.7s;
@@ -115,7 +115,7 @@ h1, h2 {
     color: #ffffff;
     font-size: 20px;
     line-height: 24px;
-    font-weight: 300;
+    font-weight: 600;
     margin-bottom: 40px;
     letter-spacing: 1px;
     -webkit-animation-delay: 1.1s;
@@ -123,8 +123,8 @@ h1, h2 {
 }
 .slide-text > a.btn-default, .slide-text > a.btn-warning, .slide-text > a.btn-danger {
     color: #000;
-    font-weight: 400;
-    font-size: 13px;
+    font-weight: 600;
+    font-size: 16px;
     line-height: 15px;
     margin-right: 10px;
     text-align: center;
@@ -142,8 +142,8 @@ h1, h2 {
 .slide-text > a.btn-primary {
     color: #ffffff;
     cursor: pointer;
-    font-weight: 400;
-    font-size: 13px;
+    font-weight: 600;
+    font-size: 16px;
     line-height: 15px;
     margin-left: 10px;
     text-align: center;

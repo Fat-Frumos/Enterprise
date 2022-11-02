@@ -1,6 +1,6 @@
 package com.enterprise.rental.dao.jdbc;
 
-import com.enterprise.rental.dao.factory.DbManager;
+import com.enterprise.rental.dao.DbManager;
 import com.enterprise.rental.dao.mapper.CarMapper;
 import com.enterprise.rental.entity.Car;
 import com.enterprise.rental.exception.CarNotFoundException;
@@ -126,7 +126,7 @@ public class JdbcCarTemplate extends DbManager {
             try {
                 Objects.requireNonNull(connection).rollback();
             } catch (SQLException ex) {
-                log.info("rollback");
+                log.info("catch SQLException rollback");
                 throw new DataException(ex);
             }
             log.info("Car can`t be created");

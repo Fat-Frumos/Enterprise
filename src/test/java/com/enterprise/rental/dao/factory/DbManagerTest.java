@@ -1,5 +1,6 @@
 package com.enterprise.rental.dao.factory;
 
+import com.enterprise.rental.dao.DbManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -8,7 +9,6 @@ import org.mockito.Mock;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
