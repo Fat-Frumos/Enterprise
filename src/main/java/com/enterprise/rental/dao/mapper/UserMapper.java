@@ -2,7 +2,7 @@ package com.enterprise.rental.dao.mapper;
 
 import com.enterprise.rental.entity.User;
 import com.enterprise.rental.exception.DataException;
-import com.enterprise.rental.exception.UserException;
+import com.enterprise.rental.exception.UserNotFoundException;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -24,7 +24,7 @@ public class UserMapper extends Mapper<User> {
             } catch (SQLException e) {
                 throw new DataException(e);
             }
-            throw new UserException("User not found",  exception);
+            throw new UserNotFoundException("User not found",  exception);
         }
     }
 }

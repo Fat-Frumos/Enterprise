@@ -20,9 +20,10 @@
 <title>Users</title>
 </head>
 <body>
+<jsp:include page="nav.jsp"/>
 <div class="container">
     <div class="col-lg-12">
-        <h5>List of Jobs</h5>
+        <h5 style="text-align: center">List of Jobs</h5>
     </div>
 
     <div class="col-lg-12">
@@ -39,7 +40,7 @@
             <tbody>
             <c:forEach items="${users}" var="user">
                 <tr class="firstRow">
-                    <form>
+                    <form action="${pageContext.request.contextPath}/register" method="get">
                         <td><input value="${user.name}" name="name"></td>
                         <td><input value="${user.email}" name="email"></td>
                         <td><input value="${user.role}" name="role"></td>
@@ -49,7 +50,9 @@
                             </div>
                         </td>
                         <td>
-                            <button id="accept-button" class="btn btn-outline-success" type="submit">&#10003;</button>
+                            <button
+                                    id="accept-button" class="btn btn-outline-success" type="submit">&#10003;
+                            </button>
                         </td>
                     </form>
                 </tr>
@@ -68,17 +71,20 @@
 <script>
     document.querySelectorAll(".true").forEach(element => element.checked = true)
 
-    function editCar(id) {
-        let url = '/user' + '?id=' + id;
-        console.log(url);
-        fetch(url, {
-            method: 'GET',
-        }).then(response => {
-            console.log('Ok:', response);
-        }).catch(err => {
-            console.error(err)
-        })
-    }
+    <%--onclick="editCar(${user.name}, ${user.email}, ${user.role}, ${user.active})"--%>
+    // // String[] fields = editCar("name", "email", "role", "active");
+    // function editCar(name, email, role, active) {
+    //     let url = '/register' + '?name=' + name + '?email=' + email + '?role=' + role + '?active=' + active;
+    //     console.log(url);
+    //     fetch(url, {
+    //         method: 'PUT',
+    //     }).then(response => {
+    //         console.log('Ok:', response);
+    //         window.location.href = url;
+    //     }).catch(err => {
+    //         console.error(err)
+    //     })
+    // }
 </script>
 </body>
 </html>

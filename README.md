@@ -22,20 +22,22 @@
 +/- (send to email ) MimeMessage with the invoice pdf
 
 ####The manager:
-- reviews the order 
-- may reject it, 
-- giving a reason.
++ reviews the order 
++ may reject it, 
++ giving a reason.
 - also registers the return of the car, 
-- in case of car damage he issues an invoice for repairs through the system.
++ in case of car damage he issues an invoice for repairs through the system.
 
 The system administrator has the rights:
 ====car====
 - adding, 
 - deleting cars, 
 - editing car information(upload);
-====user====
-+- blocking / unblocking- the user;
-- registration of managers in the system (role).
+[//]: # label.jsp (<form action="/cars" method="post">)
+
+- ====user====
++ blocking / unblocking- the user;
++ registration of managers in the system (role).
 
 ===============================
 ####INFO: FATAL: OrderServlet:80 Car null
@@ -132,6 +134,7 @@ conf\server.xml
 //3. doPost(HttpServletRequest request, HttpServletResponse response)
 //4. How is the response created?
 
+UPDATE users SET name = 'alice', role = user, active = false WHERE id =18974
 
 //        if (isValid) {
 //            HttpSession session = request.getSession();

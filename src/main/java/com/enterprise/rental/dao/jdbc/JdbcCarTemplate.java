@@ -97,27 +97,7 @@ public class JdbcCarTemplate extends DbManager {
 
             try (PreparedStatement statement = connection.prepareStatement(INSERT_CAR_SQL)) {
 
-                long id = UUID.randomUUID().getMostSignificantBits() & Integer.MAX_VALUE;
-                String name = car.getName();
-                String brand = car.getBrand();
-                String model = car.getModel();
-                String path = car.getPath();
-                Double price = car.getPrice();
-                Double cost = car.getCost();
-                int year = car.getYear();
-
-                LocalDateTime time = LocalDateTime.now();
-
-                statement.setLong(1, id);
-                statement.setString(2, name);
-                statement.setString(3, brand);
-                statement.setString(4, model);
-                statement.setString(5, path);
-                statement.setDouble(6, price);
-                statement.setDouble(7, cost);
-                statement.setInt(8, year);
-                statement.setTimestamp(9, Timestamp.valueOf(time));
-                statement.execute();
+                setPreparedStatement(car, statement);
 
                 connection.commit();
                 return true;
@@ -138,5 +118,28 @@ public class JdbcCarTemplate extends DbManager {
                 log.info("Connection not closed: " + e.getMessage());
             }
         }
+    }
+
+    private static void setPreparedStatement(Car car, PreparedStatement statement) throws SQLException {
+        long id = UUID.randomUUID().getMostSignificantBits() & Integer.MAX_VALUE;
+        String name = car.getName();
+        String brand = car.getBrand();
+        String model = car.getModel();
+        String path = car.getPath();
+        Double price = car.getPrice();
+        Double cost = car.getCost();
+        int year = car.getYear();
+        LocalDateTime time = LocalDateTime.now();
+
+        statement.setLong(1, id);
+        statement.setString(2, name);
+        statement.setString(3, brand);
+        statement.setString(4, model);
+        statement.setString(5, path);
+        statement.setDouble(6, price);
+        statement.setDouble(7, cost);
+        statement.setInt(8, year);
+        statement.setTimestamp(9, Timestamp.valueOf(time));
+        statement.execute();
     }
 }

@@ -6,66 +6,106 @@
   Time: 7:47 PM
   To change this template use File | Settings | File Templates.
 --%>
-<div class="row">
-    <div class="p-3">
-        <figure>
-            <img class="img-fluid"
-                 id="main"
-                 src="${auto.path}"
-                 alt="${auto.id}">
-            <figcaption>
-            </figcaption>
-        </figure>
-    </div>
-    <div class="col-md-4 col-3 ps-30 my-4">
-        <p class="h4 m-0">
-            <span class="pe-1">${auto.brand}</span>
-            <span class="pe-1">${auto.name}</span>
-    </div>
+<style>
+    textarea:focus, input:focus {
+        outline: none;
+    }
 
-    <div class="col-md-4 col-3 ps-30 my-4">
-        <p class="h5 m-0">Model</p>
-        <div class="d-flex align-items-end mt-4 mb-2">
-            <p class="fs-14 fw-bold">
-                <span class="fas fa-dollar-sign pe-1">
-                </span>${auto.model}</p>
+    button {
+        border: none;
+        border-radius: 10px;
+        padding: 0;
+        margin: 0;
+
+    }
+</style>
+<form action="/cars" method="post">
+    <div class="row">
+        <div class="p-3">
+            <figure>
+                <button type="submit" value="${auto.id}" name="id">
+                    <img class="img-fluid"
+                         id="main"
+                         src="${auto.path}"
+                         alt="${auto.id}">
+                </button>
+            </figure>
+        </div>
+        <div class="col-md-4 col-3 ps-30 my-4">
+            <p class="h4 m-0">
+                <input class="pe-1" style="border: none" value="${auto.brand}"></input>
+                <input class="pe-1" style="border: none" value="${auto.name}"></input>
+        </div>
+
+        <div class="col-md-4 col-3 ps-30 my-4">
+            <p class="h5 m-0">Model</p>
+            <div class="d-flex align-items-end mt-4 mb-2">
+                <p class="fs-14 fw-bold">
+                    <input style="width: 120px"
+                           type="text"
+                           class="fas fa-dollar-sign pe-1 form-control"
+                           value="${auto.model}"
+                           readonly="readonly"
+                    >
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-4 col-3 ps-30 my-4">
+            <p class="h5 m-0">Self-Drive</p>
+            <div class="d-flex align-items-end mt-4 mb-2">
+                <p class="fs-14 fw-bold">
+                    <input style="width: 120px"
+                           type="text"
+                           class="fas fa-dollar-sign pe-1 form-control"
+                           value="AI"
+                           readonly="readonly"
+                    >
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-4 col-3 ps-30 my-4">
+            <p class="h5 m-0">Cost</p>
+            <div class="d-flex align-items-end mt-4 mb-2">
+                <p class="fs-14 fw-bold">
+                    <input style="width: 120px"
+                           type="text"
+                           class="fas fa-dollar-sign pe-1 form-control"
+                           value="${auto.cost}"
+                           readonly="readonly"
+                    >
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-4 col-3 ps-30 my-4">
+            <p class="h5 m-0">Price</p>
+            <div class="d-flex align-items-end mt-4 mb-2">
+                <p class="fs-14 fw-bold">
+                    <input style="width: 120px"
+                           type="text"
+                           class="fas fa-dollar-sign pe-1 form-control"
+                           value="${auto.price}"
+                           readonly="readonly"
+                    >
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-4 col-3 ps-30 my-4">
+            <p class="h5 m-0">Driver</p>
+            <div class="d-flex align-items-end mt-3 mb-2">
+                <p class="fs-14 fw-bold">
+                    <input style="width: 120px"
+                           type="text"
+                           class="fas fa-dollar-sign pe-1 form-control"
+                           value="$50"
+                           readonly="readonly"
+                    >
+                </p>
+                </p>
+            </div>
         </div>
     </div>
-
-    <div class="col-md-4 col-3 ps-30 my-4">
-        <p class="h5 m-0">Self-Drive</p>
-        <div class="d-flex align-items-end mt-4 mb-2">
-            <p class="fs-14 fw-bold">
-                <span class="fas fa-dollar-sign pe-1"></span>AI</p>
-        </div>
-    </div>
-
-    <div class="col-md-4 col-3 ps-30 my-4">
-        <p class="h5 m-0">Price</p>
-        <div class="d-flex align-items-end mt-4 mb-2">
-            <p class="fs-14 fw-bold">
-                <span class="fas fa-dollar-sign pe-1"></span>$${auto.cost}
-            </p>
-        </div>
-    </div>
-
-    <div class="col-md-4 col-3 ps-30 my-4">
-        <p class="h5 m-0">Cost</p>
-        <div class="d-flex align-items-end mt-4 mb-2">
-            <p class="fs-14 fw-bold">
-                <span class="fas fa-dollar-sign pe-1"></span>$${auto.price}
-            </p>
-        </div>
-    </div>
-
-    <div class="col-md-4 col-3 ps-30 my-4">
-        <p class="h5 m-0">Discount</p>
-        <div class="d-flex align-items-end mt-3 mb-2">
-            <p class="fs-14 fw-bold">
-                <span class="fas fa-dollar-sign pe-1"></span>$0
-            </p>
-            </p>
-        </div>
-    </div>
-</div>
-
+</form>

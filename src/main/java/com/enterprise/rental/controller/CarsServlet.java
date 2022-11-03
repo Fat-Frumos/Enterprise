@@ -2,6 +2,7 @@ package com.enterprise.rental.controller;
 
 import com.enterprise.rental.entity.Car;
 import com.enterprise.rental.entity.User;
+import com.enterprise.rental.exception.DataException;
 import com.enterprise.rental.service.CarService;
 import org.apache.log4j.Logger;
 
@@ -19,6 +20,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.enterprise.rental.dao.jdbc.Constants.CARS;
+import static com.enterprise.rental.dao.jdbc.Constants.MAIN;
 
 @WebServlet(urlPatterns = "/cars")
 public class CarsServlet extends HttpServlet {
@@ -106,12 +108,36 @@ public class CarsServlet extends HttpServlet {
             log.info(String.format("Users Params: %s", user.getParams()));
         }
 
+        dispatch(request, response, CARS);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+        User user = (User) session.getAttribute("user");
+
+        String name = (request.getParameter("name"));
+        String brand = (request.getParameter("brand"));
+        String price = (request.getParameter("price"));
+        String cost = (request.getParameter("cost"));
+        String id = (request.getParameter("id"));
+        log.info(String.format("price: %s, cost:  %s, id: %s, %s:%s", price, cost, id, name, brand));
+        request.setAttribute("auto", user.getCars().get(0));
+        dispatch(request, response, MAIN);
+    }
+
+    void dispatch(
+            HttpServletRequest request,
+            HttpServletResponse response, String path) {
+
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType("text/html;charset=utf-8");
-
-        RequestDispatcher dispatcher = getServletContext()
-                .getRequestDispatcher(CARS);
-
-        dispatcher.include(request, response);
+        try {
+            RequestDispatcher dispatcher = getServletContext()
+                    .getRequestDispatcher(path);
+            dispatcher.include(request, response);
+        } catch (Exception e) {
+            throw new DataException(e.getMessage());
+        }
     }
 }

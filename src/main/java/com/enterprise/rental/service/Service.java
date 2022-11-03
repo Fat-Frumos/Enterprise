@@ -19,5 +19,7 @@ public interface Service<T> {
 
     boolean delete(long id);
 
+    T edit(T t);
+
     T getById(long id);
 }

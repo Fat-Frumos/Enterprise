@@ -77,6 +77,17 @@ public class UserService implements Service<User> {
                 new CarNotFoundException("Car not found"));
     }
 
+    public User bookCar(@NotNull Car car, @NotNull User user) {
+        if (!user.getCars().contains(car)) {
+            user.addCar(car);
+        }
+        return user;
+    }
+
+    public User edit(User user) {
+        return userDao.edit(user);
+    }
+
     public String sendEmail(String name) {
         Optional<User> optionalUser = userDao.findByName(name);
 
@@ -107,12 +118,5 @@ public class UserService implements Service<User> {
         }
 
         return optionalUser.isPresent() ? optionalUser.get().getName() : "User not found";
-    }
-
-    public User bookCar(@NotNull Car car, @NotNull User user) {
-        if (!user.getCars().contains(car)) {
-            user.addCar(car);
-        }
-        return user;
     }
 }

@@ -27,6 +27,7 @@ import static com.enterprise.rental.dao.jdbc.Constants.*;
 @WebServlet(urlPatterns = "/order")
 public class OrderServlet extends HttpServlet {
     private static final Log log = LogFactory.getLog(OrderServlet.class);
+    private static CarService carService = new CarService();
 
     @Override
     protected void doGet(
@@ -41,6 +42,7 @@ public class OrderServlet extends HttpServlet {
                 dispatch(request, response, MAIN);
             } else {
                 long carId = Long.parseLong(id);
+                request.setAttribute("auto", carService.getById(carId));
                 List<Car> userCars = user.getCars();
                 for (Car car : userCars) {
                     if (car.getId() == carId) {
@@ -54,6 +56,7 @@ public class OrderServlet extends HttpServlet {
                         request.setAttribute("car", user.getCars().size());
                     }
                 }
+                request.setAttribute("user", user);
                 dispatch(request, response, MAIN);
             }
         } else {
@@ -70,8 +73,6 @@ public class OrderServlet extends HttpServlet {
             HttpServletResponse response)
             throws ServletException, IOException {
 
-        CarService carService = new CarService();
-
         OrderService orderService = new OrderService();
 
         HttpSession session = request.getSession(false);
@@ -84,19 +85,18 @@ public class OrderServlet extends HttpServlet {
                 log.info(String.format("Car %s", car));
 
                 String passport = request.getParameter("passport");
-                String card = request.getParameter("card");
+                String card = request.getParameter("phone");
+                String payment = request.getParameter("payment");
+                String timestamp = request.getParameter("term");
+
+
                 boolean driver = request.getParameter("driver") != null;
-                Double payment = Double.valueOf(request.getParameter("payment"));
+                double pay = payment != null ? Double.parseDouble(payment) : 0;
 
-                log.info(driver);
+                Timestamp term = Timestamp.valueOf(
+                        LocalDate.parse(timestamp).atStartOfDay());
 
-                String timestampAsString = request.getParameter("term");
-
-                LocalDate localDate = LocalDate.parse(timestampAsString);
-
-                Timestamp term = Timestamp.valueOf(localDate.atStartOfDay());
-
-                log.info(term);
+                log.info(String.format("%s/%s/%s", driver, pay, term));
 
                 if (car != null) {
                     Order order = new Order();
@@ -104,8 +104,8 @@ public class OrderServlet extends HttpServlet {
                     order.setUserId(userId);
                     order.setDriver(driver);
                     order.setPassport(passport);
-                    order.setCard(card);
-                    order.setPayment(payment);
+                    order.setPhone(card);
+                    order.setPayment(pay);
                     order.setTerm(term);
 
                     boolean saved = orderService.createOrder(order);

@@ -1,6 +1,5 @@
 package com.enterprise.rental.dao.jdbc;
 
-import com.enterprise.rental.dao.DbManager;
 import com.enterprise.rental.dao.OrderDao;
 import com.enterprise.rental.dao.mapper.OrderMapper;
 import com.enterprise.rental.entity.Order;
@@ -8,7 +7,6 @@ import com.enterprise.rental.exception.DataException;
 import com.enterprise.rental.exception.OrderNotFoundException;
 import org.apache.log4j.Logger;
 
-import javax.validation.constraints.NotNull;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,67 +38,85 @@ public class JdbcOrderDao implements OrderDao {
     }
 
     private Optional<Order> getOrderById(Long id) {
-        try (Connection connection = getInstance().getConnection();
-             PreparedStatement statement = connection.prepareStatement(FILTER_ORDER_BY_ID_SQL)) {
+        Connection connection = getConnection();
+        try {
+            PreparedStatement statement =
+                    connection.prepareStatement(FILTER_ORDER_BY_ID_SQL);
             statement.setLong(1, id);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                return !resultSet.next()
-                        ? Optional.empty()
-                        : Optional.of(ORDER_ROW_MAPPER.mapRow(resultSet));
-            }
-        } catch (SQLException e) {
+            ResultSet resultSet = statement.executeQuery();
+            return !resultSet.next()
+                    ? Optional.empty()
+                    : Optional.of(ORDER_ROW_MAPPER.mapRow(resultSet));
+        } catch (
+                SQLException e) {
             throw new DataException(e);
         } finally {
-            //TODO
+            eventually(connection);
         }
+
     }
 
     @Override
     public boolean save(Order order) {
-
         return setOrderQuery(order);
     }
 
     @Override
     public Order edit(Order order) {
-        return new Order();
+        Connection connection = getConnection();
+
+        String damage = order.getDamage();
+        double payment = order.getPayment();
+        boolean rejected = order.isRejected();
+        boolean closed = order.isClosed();
+
+        String query = String.format(UPDATE_ORDER_SQL, damage, payment, rejected, closed, order.getOrderId());
+        log.info(order);
+        log.info(query);
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            boolean update = statement.executeUpdate() > 0;
+            log.info(update);
+            connection.commit();
+            return order;
+        } catch (SQLException sqlException) {
+            rollback(connection, sqlException);
+            return new Order();
+        } finally {
+            eventually(connection);
+        }
     }
 
     @Override
     public boolean delete(long id) {
+        //TODO delete
         return false;
     }
 
     @Override
     public List<Order> findAll(String param) {
         long userId = Long.parseLong(param);
-        return getOrderQuery(String.format("%s%d", FILTER_ORDER_BY_USER_ID_SQL, userId));
+        String query = String.format("%s%d",
+                FILTER_ORDER_BY_USER_ID_SQL, userId);
+        log.info(query);
+        return getOrderQuery(query);
     }
 
     private List<Order> getOrderQuery(String sql) {
-        Connection connection;
+        Connection connection = getConnection();
+        try {
+            PreparedStatement statement =
+                    connection.prepareStatement(sql);
 
-        try {
-            connection = getInstance().getConnection();
-            connection.setAutoCommit(false);
-        } catch (SQLException e) {
-            throw new DataException(e);
-        }
-        try {
-            PreparedStatement statement = connection.prepareStatement(sql);
             try (ResultSet resultSet = statement.executeQuery()) {
 
                 connection.commit();
                 List<Order> orders = new ArrayList<>();
 
                 if (resultSet.next()) {
-                    while (resultSet.next()) {
-                        Order order = ORDER_ROW_MAPPER.mapRow(resultSet);
-                        orders.add(order);
-                    }
-                    return orders;
+                    return getOrderList(resultSet, orders);
+                } else {
+                    throw new OrderNotFoundException("Order not found");
                 }
-                throw new OrderNotFoundException("Order not found");
             }
         } catch (SQLException sqlException) {
             throw new OrderNotFoundException(sqlException);
@@ -109,45 +125,65 @@ public class JdbcOrderDao implements OrderDao {
         }
     }
 
-    private boolean setOrderQuery(Order order) {
-        //TODO: implement PreparedStatement gret + set
-        Connection connection = null;
-        PreparedStatement statement = null;
+    private static List<Order> getOrderList(
+            ResultSet resultSet,
+            List<Order> orders)
+            throws SQLException {
+        while (resultSet.next()) {
+            Order order = ORDER_ROW_MAPPER.mapRow(resultSet);
+            orders.add(order);
+        }
+        return orders;
+    }
 
+    private static Connection getConnection() {
+        Connection connection;
         try {
-            connection = DbManager.getInstance().getConnection();
+            connection = getInstance().getConnection();
             connection.setAutoCommit(false);
-            statement = connection.prepareStatement(INSERT_ORDER_SQL);
+        } catch (SQLException e) {
+            throw new DataException(e);
+        }
+        return connection;
+    }
 
-            boolean driver = order.isDriver();
+    private boolean setOrderQuery(Order order) {
 
-            Timestamp create = new Timestamp(System.currentTimeMillis());
+        Connection connection = getConnection();
+        try {
+            PreparedStatement prepareStatement =
+                    connection.prepareStatement(INSERT_ORDER_SQL);
 
-            String passport = order.getPassport();
-            String card = order.getCard();
-            Double payment = order.getPayment();
-            Timestamp term = order.getTerm();
+            setOrders(order, prepareStatement);
 
-            log.info(order);
-
-            statement.setLong(1, order.getOrderId());
-            statement.setLong(2, order.getUserId());
-            statement.setLong(3, order.getCarId());
-            statement.setTimestamp(4, create);
-            statement.setString(5, passport);
-            statement.setString(6, card);
-            statement.setDouble(7, payment);
-            statement.setTimestamp(8, term);
-            statement.setBoolean(9, driver);
-
-            boolean execute = statement.execute();
+            boolean execute = prepareStatement.execute();
             connection.commit();
             return execute;
         } catch (SQLException sqlException) {
-            return caught(connection, sqlException);
+            return rollback(connection, sqlException);
         } finally {
-            return eventually(connection);
+            eventually(connection);
         }
+    }
+
+    private static void setOrders(Order order, PreparedStatement statement) throws SQLException {
+        boolean driver = order.isDriver();
+        Timestamp create = new Timestamp(System.currentTimeMillis());
+        String passport = order.getPassport();
+        String card = order.getPhone();
+        double payment = order.getPayment();
+        Timestamp term = order.getTerm();
+        log.info(order);
+
+        statement.setLong(1, order.getOrderId());
+        statement.setLong(2, order.getUserId());
+        statement.setLong(3, order.getCarId());
+        statement.setTimestamp(4, create);
+        statement.setString(5, passport);
+        statement.setString(6, card);
+        statement.setDouble(7, payment);
+        statement.setTimestamp(8, term);
+        statement.setBoolean(9, driver);
     }
 
     private static boolean eventually(Connection connection) {
@@ -160,7 +196,7 @@ public class JdbcOrderDao implements OrderDao {
         }
     }
 
-    private static boolean caught(Connection connection, SQLException sqlException) {
+    private static boolean rollback(Connection connection, SQLException sqlException) {
         try {
             Objects.requireNonNull(connection).rollback();
             throw new DataException("Rollback", sqlException);

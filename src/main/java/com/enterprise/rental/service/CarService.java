@@ -36,6 +36,12 @@ public class CarService implements Service<Car> {
     }
 
     @Override
+    public Car edit(Car car) {
+        Car edit = carDao.edit(car);
+        return edit;
+    }
+
+    @Override
     public Car getById(long id) {
         Optional<Car> car = carDao.findById(id);
         return car.orElseThrow(() ->

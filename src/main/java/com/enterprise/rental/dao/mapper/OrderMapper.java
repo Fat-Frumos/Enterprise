@@ -17,7 +17,7 @@ public class OrderMapper extends Mapper<Order> {
             Double payment = resultSet.getDouble("payment");
             String passport = resultSet.getString("passport");
             String damage = resultSet.getString("damage");
-            String card = resultSet.getString("card");
+            String phone = resultSet.getString("phone");
             Timestamp term = Timestamp.valueOf(resultSet.getString("term"));
             Timestamp created = Timestamp.valueOf(resultSet.getString("created"));
             boolean driver = Boolean.parseBoolean((resultSet.getString("driver")));
@@ -28,7 +28,7 @@ public class OrderMapper extends Mapper<Order> {
                     .carId(carId)
                     .payment(payment)
                     .passport(passport)
-                    .card(card)
+                    .card(phone)
                     .damage(damage)
                     .driver(driver)
                     .created(created)

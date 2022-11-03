@@ -3,8 +3,8 @@ package com.enterprise.rental.dao.jdbc;
 import com.enterprise.rental.dao.UserDao;
 import com.enterprise.rental.dao.mapper.UserMapper;
 import com.enterprise.rental.entity.User;
-import com.enterprise.rental.exception.CarNotFoundException;
 import com.enterprise.rental.exception.DataException;
+import com.enterprise.rental.exception.UserNotFoundException;
 import org.apache.log4j.Logger;
 
 import javax.validation.constraints.NotNull;
@@ -20,16 +20,22 @@ import static com.enterprise.rental.dao.jdbc.Constants.*;
 public class JdbcUserDao implements UserDao {
     private static final UserMapper ROW_MAPPER = new UserMapper();
 
-    private final Logger log = Logger.getLogger(JdbcUserDao.class);
+    private static final Logger log = Logger.getLogger(JdbcUserDao.class);
 
     @Override
     public Optional<User> findByName(@NotNull String name) {
 
         String sql = String.format("%s'%s'", FILTER_BY_NAME_SQL, name);
-
         log.info(sql);
+        Optional<User> user = getUserSql(sql);
+        log.info(user);
 
-        return getUserSql(sql);
+        if (user.isPresent()) {
+            return getUserSql(sql);
+        } else {
+            throw new UserNotFoundException("Customer not found");
+        }
+
     }
 
     @Override
@@ -39,34 +45,89 @@ public class JdbcUserDao implements UserDao {
 
     @Override
     public boolean save(User user) {
+
         return setUserQuery(user);
     }
 
     @Override
     public User edit(User user) {
-        return null;
+        String name = user.getName();
+        String role = user.getRole();
+        boolean active = user.isActive();
+        String query = String.format(UPDATE_USER_SQL, name, role, active, user.getUserId());
+        log.info(user);
+        log.info(query);
+
+        Connection connection = getInstance().getConnection();
+        PreparedStatement statement = null;
+
+        try {
+            connection.setAutoCommit(false);
+            statement = connection.prepareStatement(query);
+
+            boolean update = statement.executeUpdate() > 0;
+            log.info(update);
+            connection.commit();
+            return user;
+        } catch (SQLException sqlException) {
+            rollback(connection, sqlException);
+        } finally {
+            close(statement);
+            close(connection);
+        }
+        return new User();
+    }
+
+    private boolean close(PreparedStatement statement) {
+        try {
+            Objects.requireNonNull(statement).close();
+            return true;
+        } catch (SQLException e) {
+            throw new DataException(e);
+        }
+    }
+
+
+    private static boolean close(Connection connection) {
+        try {
+            Objects.requireNonNull(connection).close();
+            return true;
+        } catch (SQLException e) {
+            log.info(String.format("Connection not closed: %s", e.getMessage()));
+            throw new DataException(e);
+        }
+    }
+
+    private static boolean rollback(
+            Connection connection,
+            SQLException sqlException) {
+        try {
+            Objects.requireNonNull(connection).rollback();
+            throw new DataException("Rollback", sqlException);
+        } catch (SQLException exception) {
+            throw new DataException("Can`t rollback", exception);
+        }
     }
 
     @Override
     public boolean delete(long id) {
+        //TODO Auto-generated delete method
         return false;
     }
 
     @Override
     public List<User> findAll(String sql) {
 
-        Connection connection;
+        Connection connection = null;
+        PreparedStatement statement;
+        ResultSet resultSet;
 
         try {
             connection = getInstance().getConnection();
-            connection.setAutoCommit(false);
-        } catch (SQLException e) {
-            throw new DataException(e);
-        }
-        try {
-            PreparedStatement statement = connection.prepareStatement(sql);
-            try (ResultSet resultSet = statement.executeQuery()) {
-
+            statement = connection.prepareStatement(sql);
+            try {
+                resultSet = statement.executeQuery();
+                connection.setAutoCommit(false);
                 connection.commit();
                 List<User> users = new ArrayList<>();
 
@@ -77,10 +138,15 @@ public class JdbcUserDao implements UserDao {
                     }
                     return users;
                 }
-                throw new CarNotFoundException("Customer not found");
+                throw new UserNotFoundException("Customer not found");
+            } catch (SQLException sqlException) {
+                throw new UserNotFoundException("Customer not found", sqlException);
             }
-        } catch (SQLException ex) {
-            throw new CarNotFoundException(ex.getMessage());
+        } catch (SQLException sqlException) {
+            rollback(connection, sqlException);
+            close(connection);
+            throw new UserNotFoundException(
+                    sqlException.getMessage());
         } finally {
             try {
                 Objects.requireNonNull(connection).close();

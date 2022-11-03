@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%--
   Created by IntelliJ IDEA.
   User: Pasha
@@ -10,6 +11,11 @@
 <html>
 <head>
     <title>Orders Review</title>
+    <meta name="description" content="contact form using bootstrap,">
+    <meta name="keywords" content="HTML,CSS,XML,JavaScript,bootstrap">
+    <meta name="author" content="Pasha">
+    <title>Responsive Contact Form</title>
+
     <style>
 
         @import url('https://fonts.googleapis.com/css?family=Kaushan+Script|Saira&display=swap');
@@ -32,46 +38,38 @@
     </style>
 </head>
 <body>
-<html>
-<heade>
-    <meta name="description" content="contact form using bootstrap,">
-    <meta name="keywords" content="HTML,CSS,XML,JavaScript,bootstrap">
-    <meta name="author" content="Pasha">
-    <title>Responsive Contact Form</title>
-</heade>
-
-<body>
 <div class="container">
+    <jsp:include page="nav.jsp"/>
     <div class="col-lg-12">
-        <h5>List of Orders</h5>
+        <h3 style="text-align: center">List of Orders</h3>
     </div>
-
     <div class="col-lg-12">
         <table id="tabs" class="table" style="width:100%">
             <thead class="TableHead">
             <tr>
+                <th>#order</th>
+                <th>#car</th>
                 <th>payment</th>
                 <th>passport</th>
+                <th>term</th>
+                <th>created</th>
                 <th>damage</th>
-                <th>driver</th>
                 <th>closed</th>
                 <th>rejected</th>
-                <th>Accept</th>
             </tr>
             </thead>
             <tbody>
             <c:forEach items="${orders}" var="order">
                 <tr class="firstRow">
-
-                    <td><p>${order.payment}</p></td>
-                    <td><p>${order.passport}</p></td>
-                    <td><p>${order.damage}</p></td>
-                    <td><p>${order.driver}</p></td>
-                    <td><p>${order.rejected}</p></td>
-                    <td><p>${order.closed}</p></td>
-                    <td>
-                        <button id="accept-button" class="btn btn-outline-success" type="submit">&#10003;</button>
-                    </td>
+                    <td><input>${order.orderId}</input></td>
+                    <td><input>${order.carId}</input></td>
+                    <td><input>${order.payment}</input></td>
+                    <td><input>${order.passport}</input></td>
+                    <td><input>${order.term}<fmt:formatDate pattern="yyyy-MM-dd" value="${order.term}"/></input></td>
+                    <td><input>${order.created}<fmt:formatDate pattern="yyyy-MM-dd" value="${order.created}"/></input></td>
+                    <td><input>${order.damage}</input></td>
+                    <td><input type="checkbox" class="${user.closed}">${order.closed}</input></td>
+                    <td><input type="checkbox" class="${order.rejected}">${order.rejected}</input></td>
                 </tr>
             </c:forEach>
             </tbody>
@@ -79,7 +77,5 @@
     </div>
 </div>
 </section>
-</body>
-</html>
 </body>
 </html>

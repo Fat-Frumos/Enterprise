@@ -55,6 +55,14 @@ public class User implements Serializable {
         return active;
     }
 
+    public void setOrders(Set<Order> orders) {
+        this.orders = orders;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
     public String getName() {
         return name;
     }
@@ -125,11 +133,6 @@ public class User implements Serializable {
                 ", language='" + language + '\'' +
                 ", role='" + role + '\'' +
                 ", active=" + active +
-                ", orders=" + orders +
                 '}';
-    }
-
-    public void setOrders(Set<Order> orders) {
-        this.orders = orders;
     }
 }

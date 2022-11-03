@@ -103,11 +103,11 @@ public class Order implements Serializable {
         this.created = created;
     }
 
-    public String getCard() {
+    public String getPhone() {
         return card;
     }
 
-    public void setCard(String card) {
+    public void setPhone(String card) {
         this.card = card;
     }
 
@@ -160,10 +160,14 @@ public class Order implements Serializable {
                 ", rejected=" + rejected +
                 ", closed=" + closed +
                 ", start=" + created +
-                ", card=" + card +
+                ", phone=" + card +
                 ", damage='" + damage + '\'' +
                 ", passport='" + passport + '\'' +
                 '}';
+    }
+
+    public void setOrderId(long id) {
+        this.orderId = id;
     }
 
     public static class Builder {

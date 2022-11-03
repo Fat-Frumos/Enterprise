@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="ct" uri="/WEB-INF/dataTag" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%--
   Created by IntelliJ IDEA.
@@ -50,12 +51,14 @@
 
                         <div class="d-flex mb-4">
                         <span class="me-5">
-                                    <span class="text-muted">Card</span>
+                                    <span class="text-muted">Phone</span>
                                     <input class="form-control"
                                            style="width: 180px"
-                                           name="card" type="text"
+                                           type="tel"
+                                           name="phone"
                                            value=""
-                                           placeholder="1234 5678 9012 3456"
+                                           pattern="+[0-9]{2}[0-9]{3}-[0-9]{3}-[0-9]{4}"
+                                           placeholder="+__(___)___-__-__"
                                            required
                                     >
                                     </span>
@@ -75,13 +78,21 @@
                         <div class="d-flex mb-4">
                         <span class="me-5">
                                     <span class="text-muted">Payment</span>
+                                                    <td><fmt:formatDate pattern="yyyy-MM-dd"
+                                                                        value="${order.created}"/></td>
+
+
                                     <input class="form-control"
                                            style="width: 100px"
                                            id="payment"
                                            name="payment"
-                                           value="${auto.price}"
+                                           type="number"
+                                           min="0"
+                                           pattern="0.00"
+                                           step=".01"
                                            readonly="readonly"
-                                    >
+                                           value="${auto.price}"/>
+
                                     </span>
                             <div class=" w-100 d-flex flex-column align-items-end">
                                 <p class="text-muted"></p>
@@ -132,9 +143,9 @@
         checkbox.onchange = checkbox = (element) => {
             console.log("with driver " + element.target.checked);
             if (element.target.checked) {
-                payment.value = 25 * day + parseFloat(payment.value);
+                payment.value = 50 * day + parseFloat(payment.value);
             } else {
-                payment.value -= 25 * day;
+                payment.value -= 50 * day;
             }
         }
 

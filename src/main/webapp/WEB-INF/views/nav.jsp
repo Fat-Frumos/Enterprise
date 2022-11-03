@@ -15,13 +15,13 @@
     }
 </style>
 <div class="bar">
-    <a href="/cars">Cars</a> |
-    <a href="/user">Orders</a> |
-    <a href="/cart">Card
+    <a href="/cars">Cars</a> •
+    <a href="/user">Cabinet</a> •
+    <a href="/cart">Cards
         <c:if test="${not empty car}">
             <span class="cart-basket">${car}</span>
         </c:if>
-    </a> |
+    </a> •
     <c:if test="${not empty user.name}">
         <a style="text-transform: capitalize" href="/login">${user.name}(${user.role})</a>
     </c:if>

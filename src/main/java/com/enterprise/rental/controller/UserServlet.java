@@ -51,10 +51,10 @@ public class UserServlet extends HttpServlet {
                 log.info(String.format("There are %d users", users.size()));
                 request.setAttribute("users", users);
                 dispatch(request, response, USERS);
-            } else if (Objects.equals(role, "manager")){
+            } else if (Objects.equals(role, "manager")) {
                 List<Order> orders = orderService.getAll();
                 request.setAttribute("orders", orders);
-                dispatch(request, response, CONTACT);
+                dispatch(request, response, CONTRACT);
             } else if (Objects.equals(role, "user")) {
                 List<Order> orders = orderService.getUserOrders(user);
                 log.info(orders);
@@ -80,7 +80,7 @@ public class UserServlet extends HttpServlet {
         String name = request.getParameter("name");
         String password = request.getParameter("password");
         String email = request.getParameter("email");
-//        String role = request.getParameter("role");
+        String role = request.getParameter("role");
 
         Optional<User> optionalUser = userService.findByName(name);
 
@@ -91,13 +91,13 @@ public class UserServlet extends HttpServlet {
         } else {
             User user = new User(
                     UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE,
-                    name, password, email, "en", true);
+                    name, password, email, "en", role, true);
 
             boolean save = userService.save(user);
 
             log.info(String.format("%s is created: %s", user, save));
 
-            request.setAttribute("user", user.getName() + "role: ");
+            request.setAttribute("user", user.getName() + "role: "+user.getRole());
 
             request.getRequestDispatcher(MAIN)
                     .forward(request, response);

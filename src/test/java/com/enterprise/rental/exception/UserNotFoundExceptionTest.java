@@ -9,20 +9,20 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
-class UserExceptionTest {
+class UserNotFoundExceptionTest {
 
     @InjectMocks
     UserService service;
 
     @Test
     void whenDerivedExceptionThrown_thenAssertionSucceeds() {
-        Exception exception = assertThrows(UserException.class, () -> {
+        Exception exception = assertThrows(UserNotFoundException.class, () -> {
             service.findByName("456L");
         });
 
         String expectedMessage = "User not found";
         String actualMessage = exception.getMessage();
-        assertTrue(exception instanceof UserException);
+        assertTrue(exception instanceof UserNotFoundException);
         assertEquals(expectedMessage, actualMessage);
     }
 }

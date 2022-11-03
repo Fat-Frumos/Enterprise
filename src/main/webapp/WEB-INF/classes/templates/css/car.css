@@ -30,7 +30,7 @@ input {
 .wrap {
     margin: 10px 10px;
     max-width: 40vw;
-    top: 10vh;
+    top: 12vh;
     left: 25vw;
     transform: perspective(500px) translateY(-5px);
     position: relative;
@@ -54,12 +54,12 @@ div.bar > a:hover {
 }
 
 .cart-basket {
-    font-size: .5rem;
+    font-size: .6rem;
     position: absolute;
     top: 4px;
-    left: 147px;
-    width: 12px;
-    height: 12px;
+    left: 158px;
+    width: 15px;
+    height: 15px;
     color: #fff;
     background-color: #f44336;
     border-radius: 50%;
