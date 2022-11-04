@@ -12,8 +12,12 @@ public class OrderNotFoundException extends RuntimeException {
         log.error(message);
     }
 
+    public OrderNotFoundException(String message, SQLException sqlException) {
+        super(message);
+        log.error(sqlException.getMessage());
+    }
+
     public OrderNotFoundException(SQLException sqlException) {
-        super(sqlException);
         log.error(sqlException.getMessage());
     }
 }

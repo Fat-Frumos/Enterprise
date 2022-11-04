@@ -34,6 +34,7 @@
                 <th>Email</th>
                 <th>Role</th>
                 <th>Status</th>
+                <th>Closed</th>
                 <th>Confirm</th>
             </tr>
             </thead>
@@ -47,6 +48,11 @@
                         <td>
                             <div class="toggle">
                                 <input class="${user.active}" type="checkbox" name="active">
+                            </div>
+                        </td>
+                        <td>
+                            <div class="toggle">
+                                <input class="${user.closed}" type="checkbox" name="closed">
                             </div>
                         </td>
                         <td>

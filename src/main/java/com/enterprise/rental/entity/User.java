@@ -11,6 +11,7 @@ public class User implements Serializable {
     private String language;
     private String role;
     private boolean active;
+    private boolean closed;
     private Set<Order> orders;
     private List<Car> cars = new ArrayList<>();
     private final Map<String, String> params = new HashMap<>();
@@ -37,6 +38,14 @@ public class User implements Serializable {
                 .stream()
                 .filter(key -> params.get(key) != null)
                 .forEach(key -> this.params.put(key, params.get(key)));
+    }
+
+    public boolean isClosed() {
+        return closed;
+    }
+
+    public void setClosed(boolean closed) {
+        this.closed = closed;
     }
 
     public Map<String, String> getParams() {
@@ -123,16 +132,29 @@ public class User implements Serializable {
         this.active = active;
     }
 
+    public User(long userId, String name, String password, String email, String language, String role, boolean active, boolean closed) {
+        this.userId = userId;
+        this.name = name;
+        this.password = password;
+        this.email = email;
+        this.language = language;
+        this.role = role;
+        this.active = active;
+        this.closed = closed;
+    }
+
     @Override
     public String toString() {
         return "User{" +
                 "userId=" + userId +
                 ", name='" + name + '\'' +
-                ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
                 ", language='" + language + '\'' +
                 ", role='" + role + '\'' +
                 ", active=" + active +
+                ", closed=" + closed +
+                ", params=" + params +
+                ", car=" + car +
                 '}';
     }
 }

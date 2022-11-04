@@ -61,15 +61,15 @@
             <tbody>
             <c:forEach items="${orders}" var="order">
                 <tr class="firstRow">
-                    <td><input>${order.orderId}</input></td>
-                    <td><input>${order.carId}</input></td>
-                    <td><input>${order.payment}</input></td>
-                    <td><input>${order.passport}</input></td>
-                    <td><input>${order.term}<fmt:formatDate pattern="yyyy-MM-dd" value="${order.term}"/></input></td>
-                    <td><input>${order.created}<fmt:formatDate pattern="yyyy-MM-dd" value="${order.created}"/></input></td>
-                    <td><input>${order.damage}</input></td>
-                    <td><input type="checkbox" class="${user.closed}">${order.closed}</input></td>
-                    <td><input type="checkbox" class="${order.rejected}">${order.rejected}</input></td>
+                    <td><p>${order.orderId}</p></td>
+                    <td><p>${order.carId}</p></td>
+                    <td><p>${order.payment}</p></td>
+                    <td><p>${order.passport}</p></td>
+                    <td><p>${order.term}<fmt:formatDate pattern="yyyy-MM-dd" value="${order.term}"/></p></td>
+                    <td><p>${order.created}<fmt:formatDate pattern="yyyy-MM-dd" value="${order.created}"/></p></td>
+                    <td><p>${order.damage}</p></td>
+                    <td><p type="checkbox" class="${user.closed}">${order.closed}</p></td>
+                    <td><p type="checkbox" class="${order.rejected}">${order.rejected}</p></td>
                 </tr>
             </c:forEach>
             </tbody>

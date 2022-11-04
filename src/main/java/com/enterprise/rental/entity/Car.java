@@ -71,6 +71,7 @@ public class Car implements Serializable {
         private Double price;
         private Double cost;
         private int year;
+        private boolean rent;
         private LocalDateTime created;
 
         public Builder id(long id) {
@@ -117,6 +118,10 @@ public class Car implements Serializable {
             this.created = time;
             return this;
         }
+        public Builder rent(boolean rent) {
+            this.rent = rent;
+            return this;
+        }
 
         public Car build() {
             Car car = new Car();
@@ -154,7 +159,6 @@ public class Car implements Serializable {
                 ", model='" + model + '\'' +
                 ", price=" + price +
                 ", cost=" + cost +
-                ", year=" + year +
                 ", rent=" + rent +
                 '}';
     }

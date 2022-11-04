@@ -10,10 +10,12 @@ import org.apache.log4j.Logger;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+
 import java.util.Optional;
 
 import static com.enterprise.rental.dao.DbManager.getInstance;
+import static com.enterprise.rental.dao.jdbc.Connections.close;
+import static com.enterprise.rental.dao.jdbc.Connections.rollback;
 import static com.enterprise.rental.dao.jdbc.Constants.*;
 
 public class JdbcOrderDao implements OrderDao {
@@ -24,7 +26,7 @@ public class JdbcOrderDao implements OrderDao {
 
     @Override
     public List<Order> findAll() {
-        return getOrderQuery(FIND_ALL_ORDERS_SQL);
+        return getOrdersQuery(FIND_ALL_ORDERS_SQL);
     }
 
     @Override
@@ -38,10 +40,11 @@ public class JdbcOrderDao implements OrderDao {
     }
 
     private Optional<Order> getOrderById(Long id) {
-        Connection connection = getConnection();
+        Connection connection = null;
+        PreparedStatement statement = null;
         try {
-            PreparedStatement statement =
-                    connection.prepareStatement(FILTER_ORDER_BY_ID_SQL);
+            connection = getConnectionWithoutAutoCommit();
+            statement = connection.prepareStatement(FILTER_ORDER_BY_ID_SQL);
             statement.setLong(1, id);
             ResultSet resultSet = statement.executeQuery();
             return !resultSet.next()
@@ -51,9 +54,9 @@ public class JdbcOrderDao implements OrderDao {
                 SQLException e) {
             throw new DataException(e);
         } finally {
-            eventually(connection);
+            close(statement);
+            close(connection);
         }
-
     }
 
     @Override
@@ -63,26 +66,31 @@ public class JdbcOrderDao implements OrderDao {
 
     @Override
     public Order edit(Order order) {
-        Connection connection = getConnection();
-
         String damage = order.getDamage();
         double payment = order.getPayment();
         boolean rejected = order.isRejected();
         boolean closed = order.isClosed();
 
         String query = String.format(UPDATE_ORDER_SQL, damage, payment, rejected, closed, order.getOrderId());
-        log.info(order);
-        log.info(query);
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
+
+        log.info(String.format("%s%n%s", order, query));
+
+        Connection connection = null;
+        PreparedStatement statement = null;
+
+        try {
+            connection = getConnectionWithoutAutoCommit();
+            statement = connection.prepareStatement(query);
             boolean update = statement.executeUpdate() > 0;
             log.info(update);
             connection.commit();
             return order;
         } catch (SQLException sqlException) {
             rollback(connection, sqlException);
-            return new Order();
+            throw new OrderNotFoundException(sqlException);
         } finally {
-            eventually(connection);
+            close(statement);
+            close(connection);
         }
     }
 
@@ -93,36 +101,37 @@ public class JdbcOrderDao implements OrderDao {
     }
 
     @Override
-    public List<Order> findAll(String param) {
-        long userId = Long.parseLong(param);
+    public List<Order> findAll(String id) {
+        long userId = Long.parseLong(id);
         String query = String.format("%s%d",
                 FILTER_ORDER_BY_USER_ID_SQL, userId);
         log.info(query);
-        return getOrderQuery(query);
+        return getOrdersQuery(query);
     }
 
-    private List<Order> getOrderQuery(String sql) {
-        Connection connection = getConnection();
+    private List<Order> getOrdersQuery(String sql) {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        List<Order> orders = new ArrayList<>();
+
         try {
-            PreparedStatement statement =
-                    connection.prepareStatement(sql);
+            connection = getConnectionWithoutAutoCommit();
+            statement = connection.prepareStatement(sql);
+            resultSet = statement.executeQuery();
+            connection.commit();
 
-            try (ResultSet resultSet = statement.executeQuery()) {
-
-                connection.commit();
-                List<Order> orders = new ArrayList<>();
-
-                if (resultSet.next()) {
-                    return getOrderList(resultSet, orders);
-                } else {
-                    throw new OrderNotFoundException("Order not found");
-                }
+            if (resultSet.next()) {
+                return getOrderList(resultSet, orders);
             }
         } catch (SQLException sqlException) {
-            throw new OrderNotFoundException(sqlException);
+            rollback(connection, sqlException);
         } finally {
-            eventually(connection);
+            close(resultSet);
+            close(statement);
+            close(connection);
         }
+        return orders;
     }
 
     private static List<Order> getOrderList(
@@ -136,33 +145,32 @@ public class JdbcOrderDao implements OrderDao {
         return orders;
     }
 
-    private static Connection getConnection() {
+    private static Connection getConnectionWithoutAutoCommit() {
         Connection connection;
         try {
             connection = getInstance().getConnection();
             connection.setAutoCommit(false);
         } catch (SQLException e) {
-            throw new DataException(e);
+            throw new DataException(e.getMessage(), e);
         }
         return connection;
     }
 
     private boolean setOrderQuery(Order order) {
-
-        Connection connection = getConnection();
+        Connection connection = null;
+        PreparedStatement statement = null;
         try {
-            PreparedStatement prepareStatement =
-                    connection.prepareStatement(INSERT_ORDER_SQL);
-
-            setOrders(order, prepareStatement);
-
-            boolean execute = prepareStatement.execute();
+            connection = getConnectionWithoutAutoCommit();
+            statement = connection.prepareStatement(INSERT_ORDER_SQL);
+            setOrders(order, statement);
+            boolean execute = statement.execute();
             connection.commit();
             return execute;
         } catch (SQLException sqlException) {
             return rollback(connection, sqlException);
         } finally {
-            eventually(connection);
+            close(statement);
+            close(connection);
         }
     }
 
@@ -184,24 +192,5 @@ public class JdbcOrderDao implements OrderDao {
         statement.setDouble(7, payment);
         statement.setTimestamp(8, term);
         statement.setBoolean(9, driver);
-    }
-
-    private static boolean eventually(Connection connection) {
-        try {
-            Objects.requireNonNull(connection).close();
-            return false;
-        } catch (SQLException e) {
-            log.info(String.format("Connection not closed: %s", e.getMessage()));
-            throw new DataException(e);
-        }
-    }
-
-    private static boolean rollback(Connection connection, SQLException sqlException) {
-        try {
-            Objects.requireNonNull(connection).rollback();
-            throw new DataException("Rollback", sqlException);
-        } catch (SQLException exception) {
-            throw new DataException("Can`t roll back", exception);
-        }
     }
 }

@@ -3,10 +3,10 @@ package com.enterprise.rental.service;
 import com.enterprise.rental.dao.jdbc.JdbcOrderDao;
 import com.enterprise.rental.entity.Order;
 import com.enterprise.rental.entity.User;
-import com.enterprise.rental.exception.OrderNotFoundException;
+import com.enterprise.rental.exception.UserIsBlockedException;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class OrderService {
 
@@ -24,7 +24,7 @@ public class OrderService {
         if (user.isActive()) {
             return jdbcOrderDao.findAll(String.valueOf(user.getUserId()));
         } else {
-            throw new OrderNotFoundException("Orders " + user.getOrders());
+            throw new UserIsBlockedException("Blocked %s" + user);
         }
         //TODO: 443 manager
     }

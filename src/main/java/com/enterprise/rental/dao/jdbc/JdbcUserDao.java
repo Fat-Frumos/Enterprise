@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.util.*;
 
 import static com.enterprise.rental.dao.DbManager.getInstance;
+import static com.enterprise.rental.dao.jdbc.Connections.*;
 import static com.enterprise.rental.dao.jdbc.Constants.*;
 
 public class JdbcUserDao implements UserDao {
@@ -25,17 +26,11 @@ public class JdbcUserDao implements UserDao {
     @Override
     public Optional<User> findByName(@NotNull String name) {
 
-        String sql = String.format("%s'%s'", FILTER_BY_NAME_SQL, name);
-        log.info(sql);
+        String sql = String.format("%s'%s'",
+                FILTER_BY_NAME_SQL, name);
         Optional<User> user = getUserSql(sql);
-        log.info(user);
-
-        if (user.isPresent()) {
-            return getUserSql(sql);
-        } else {
-            throw new UserNotFoundException("Customer not found");
-        }
-
+        log.info(sql + " " + user);
+        return user;
     }
 
     @Override
@@ -45,7 +40,6 @@ public class JdbcUserDao implements UserDao {
 
     @Override
     public boolean save(User user) {
-
         return setUserQuery(user);
     }
 
@@ -54,14 +48,16 @@ public class JdbcUserDao implements UserDao {
         String name = user.getName();
         String role = user.getRole();
         boolean active = user.isActive();
-        String query = String.format(UPDATE_USER_SQL, name, role, active, user.getUserId());
+        boolean closed = user.isClosed();
+        String query = String.format(UPDATE_USER_SQL, name, role, active, closed, user.getUserId());
         log.info(user);
         log.info(query);
 
-        Connection connection = getInstance().getConnection();
+        Connection connection = null;
         PreparedStatement statement = null;
 
         try {
+            connection = getInstance().getConnection();
             connection.setAutoCommit(false);
             statement = connection.prepareStatement(query);
 
@@ -69,6 +65,7 @@ public class JdbcUserDao implements UserDao {
             log.info(update);
             connection.commit();
             return user;
+
         } catch (SQLException sqlException) {
             rollback(connection, sqlException);
         } finally {
@@ -78,36 +75,35 @@ public class JdbcUserDao implements UserDao {
         return new User();
     }
 
-    private boolean close(PreparedStatement statement) {
-        try {
-            Objects.requireNonNull(statement).close();
-            return true;
-        } catch (SQLException e) {
-            throw new DataException(e);
-        }
-    }
-
-
-    private static boolean close(Connection connection) {
-        try {
-            Objects.requireNonNull(connection).close();
-            return true;
-        } catch (SQLException e) {
-            log.info(String.format("Connection not closed: %s", e.getMessage()));
-            throw new DataException(e);
-        }
-    }
-
-    private static boolean rollback(
-            Connection connection,
-            SQLException sqlException) {
-        try {
-            Objects.requireNonNull(connection).rollback();
-            throw new DataException("Rollback", sqlException);
-        } catch (SQLException exception) {
-            throw new DataException("Can`t rollback", exception);
-        }
-    }
+//    private boolean close(PreparedStatement statement) {
+//        try {
+//            Objects.requireNonNull(statement).close();
+//            return true;
+//        } catch (SQLException e) {
+//            throw new DataException(e);
+//        }
+//    }
+//
+//    private static boolean close(Connection connection) {
+//        try {
+//            Objects.requireNonNull(connection).close();
+//            return true;
+//        } catch (SQLException e) {
+//            log.info(String.format("Connection not closed: %s", e.getMessage()));
+//            throw new DataException(e);
+//        }
+//    }
+//
+//    private static boolean rollback(
+//            Connection connection,
+//            SQLException sqlException) {
+//        try {
+//            Objects.requireNonNull(connection).rollback();
+//            throw new DataException("Rollback", sqlException);
+//        } catch (SQLException exception) {
+//            throw new DataException("Can`t rollback", exception);
+//        }
+//    }
 
     @Override
     public boolean delete(long id) {
@@ -200,27 +196,7 @@ public class JdbcUserDao implements UserDao {
             throw new DataException(sqlException.getMessage());
 
         } finally {
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException e) {
-                    log.info("resultSet closed");
-                }
-            }
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    log.info("Prepared Statement closed");
-                }
-            }
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    log.info("Connection closed");
-                }
-            }
+            eventually(connection, statement, resultSet);
         }
     }
 
@@ -239,16 +215,15 @@ public class JdbcUserDao implements UserDao {
             String password = user.getPassword();
             String email = user.getEmail();
             String role = user.getRole();
-
             log.info(user);
-            int i = 1;
-            statement.setLong(++i, UUID.randomUUID().getMostSignificantBits() & 0x7fffL);
-            statement.setString(++i, userName);
-            statement.setString(++i, email);
-            statement.setString(++i, password);
-            statement.setString(++i, role);
-            statement.setBoolean(++i, true);
-            statement.setString(++i, "en");
+            statement.setLong(1, UUID.randomUUID().getMostSignificantBits() & 0x7fffL);
+            statement.setString(2, userName);
+            statement.setString(3, email);
+            statement.setString(4, password);
+            statement.setString(5, role);
+            statement.setBoolean(6, true);
+            statement.setBoolean(7, false);
+            statement.setString(8, "en");
             boolean execute = statement.execute();
             connection.commit();
             return execute;

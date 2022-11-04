@@ -111,7 +111,8 @@ public class CartServlet extends HttpServlet {
                         request.setAttribute("auto", user.getCar());
                         request.setAttribute("user", user);
                         log.info(String.format("Car: %s", user.getCar()));
-                        log.info(String.format("Put new Car %s into the basket: %s", car.getBrand(), user.getCars().size()));
+                        log.info(String.format("Put new Car %s into the basket: %s",
+                                car.getBrand(), user.getCars().size()));
 
                     }
                 } catch (NumberFormatException e) {

@@ -6,8 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -24,6 +23,7 @@ class UserMapperTest {
         when(resultSet.getString("password")).thenReturn("password");
         when(resultSet.getString("email")).thenReturn("email@i.ua");
         when(resultSet.getBoolean("active")).thenReturn(true);
+        when(resultSet.getBoolean("closed")).thenReturn(false);
 
         User user = mapper.mapRow(resultSet);
 
@@ -32,5 +32,6 @@ class UserMapperTest {
         assertEquals("password", user.getPassword());
         assertEquals("email@i.ua", user.getEmail());
         assertTrue(user.isActive());
+        assertFalse(user.isClosed());
     }
 }

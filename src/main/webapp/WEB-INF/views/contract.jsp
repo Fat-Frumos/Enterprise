@@ -106,7 +106,8 @@
                             <%--                                       name="closed">--%>
                             <%--                            </div>--%>
                         </td>
-
+<%--                        <td><input type="checkbox" class="${user.closed}">${order.closed}</input></td>--%>
+<%--                        <td><input type="checkbox" class="${order.rejected}">${order.rejected}</input></td>--%>
                         <td>
                             <div class="toggle">
                                 <input class="${order.rejected}" value="${order.rejected}" id="rejected" type="checkbox"

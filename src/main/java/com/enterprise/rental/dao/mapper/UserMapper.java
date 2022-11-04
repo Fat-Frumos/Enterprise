@@ -16,15 +16,16 @@ public class UserMapper extends Mapper<User> {
             String password = resultSet.getString("password");
             String email = resultSet.getString("email");
             boolean status = resultSet.getBoolean("active");
+            boolean closed = resultSet.getBoolean("closed");
             String role = resultSet.getString("role") != null ? resultSet.getString("role") : "guest";
-            return new User(id, name, password, email, "en", role, status);
+            return new User(id, name, password, email, "en", role, status, closed);
         } catch (SQLException exception) {
             try {
                 resultSet.close();
             } catch (SQLException e) {
-                throw new DataException(e);
+                throw new DataException(e.getMessage(), exception);
             }
-            throw new UserNotFoundException("User not found",  exception);
+            throw new UserNotFoundException("User not found", exception);
         }
     }
 }

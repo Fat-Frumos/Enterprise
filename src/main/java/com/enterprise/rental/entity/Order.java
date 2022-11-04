@@ -239,7 +239,7 @@ public class Order implements Serializable {
             return this;
         }
 
-        public Builder card(String card) {
+        public Builder phone(String card) {
             this.card = card;
             return this;
         }

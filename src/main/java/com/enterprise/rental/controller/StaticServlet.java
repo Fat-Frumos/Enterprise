@@ -58,7 +58,7 @@ public class StaticServlet extends HttpServlet {
 
         if (name != null && password != null) {
             User user = userService.findByName(name)
-                    .orElse(new User(0, "guest", "", "guest@i.ua", "en", false));
+                    .orElse(new User(0, "guest", "", "guest@i.ua", "en", "guest", false));
 
             boolean isValid = Objects.equals(name, user.getName()) && password.equals(user.getPassword());
 
@@ -71,7 +71,7 @@ public class StaticServlet extends HttpServlet {
                 dispatch(request, response, MAIN);
                 log.info(String.format("Session customer: %s", session.getAttribute("user")));
             } else {
-                request.setAttribute("errorMessage", "Your name/password is incorrect");
+                request.setAttribute("errorMessage", "Your name | password is incorrect");
                 dispatch(request, response, LOGIN);
             }
         } else {

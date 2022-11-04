@@ -1,5 +1,7 @@
 package com.enterprise.rental.controller;
 
+import com.enterprise.rental.dao.mapper.CarMapper;
+import com.enterprise.rental.dao.mapper.UserMapper;
 import com.enterprise.rental.entity.Car;
 import com.enterprise.rental.entity.User;
 import com.enterprise.rental.exception.DataException;
@@ -15,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -25,24 +28,20 @@ import static com.enterprise.rental.dao.jdbc.Constants.MAIN;
 @WebServlet(urlPatterns = "/cars")
 public class CarsServlet extends HttpServlet {
     private static final Logger log = Logger.getLogger(CarsServlet.class);
-
+    private static final CarMapper CAR_MAPPER = new CarMapper();
     @Override
     protected void doGet(
             HttpServletRequest request,
             HttpServletResponse response)
             throws IOException, ServletException {
 
-        String offset = "limit";
-
         CarService carService = new CarService();
-
-        String[] fields = {"id", "name", "brand", "model", "path", "price", "cost", "year", "sort", "direction", "page"};
 
         List<Car> carList = carService.getAll("price>=100 ORDER BY cost LIMIT 10 OFFSET 0");
 
         int size = carService.getAll().size();
-
-        Map<String, String> params = Arrays.stream(fields)
+        String[] carFields = {"id", "name", "brand", "model", "path", "price", "cost", "year", "sort", "direction", "page"};
+        Map<String, String> params = Arrays.stream(carFields)
                 .filter(key -> !"".equals(request.getParameter(key))
                         && request.getParameter(key) != null)
                 .collect(Collectors.toMap(
@@ -63,6 +62,7 @@ public class CarsServlet extends HttpServlet {
 
         int limit;
 
+        String offset = "limit";
         try {
             limit = Integer.parseInt(params.get(offset));
         } catch (NumberFormatException e) {
@@ -97,7 +97,6 @@ public class CarsServlet extends HttpServlet {
         }
 
         request.setAttribute("page", page);
-
         HttpSession session = request.getSession();
 
         if (session != null && session.getAttribute("user") != null) {
@@ -107,22 +106,43 @@ public class CarsServlet extends HttpServlet {
             request.setAttribute("car", user.getCars().size());
             log.info(String.format("Users Params: %s", user.getParams()));
         }
-
         dispatch(request, response, CARS);
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(
+            HttpServletRequest request,
+            HttpServletResponse response)
+            throws ServletException, IOException {
+
+        Car mapRow = CAR_MAPPER.carMapper(request);
+
+        CarService carService = new CarService();
+
         HttpSession session = request.getSession(false);
+
         User user = (User) session.getAttribute("user");
 
-        String name = (request.getParameter("name"));
-        String brand = (request.getParameter("brand"));
-        String price = (request.getParameter("price"));
-        String cost = (request.getParameter("cost"));
         String id = (request.getParameter("id"));
-        log.info(String.format("price: %s, cost:  %s, id: %s, %s:%s", price, cost, id, name, brand));
-        request.setAttribute("auto", user.getCars().get(0));
+        Car car = null;
+        if (id != null) {
+            car = carService.getById(Long.parseLong(id));
+        }
+
+
+        log.info(String.format("Car#%s%n mapRow: %s%n car: %s", id, mapRow, car));
+
+        //        Map<String, String> params = Arrays.stream(carFields)
+//                .filter(key -> !"".equals(request.getParameter(key))
+//                        && request.getParameter(key) != null)
+//                .collect(Collectors.toMap(
+//                        key -> key,
+//                        request::getParameter,
+//                        (a, b) -> b));
+
+
+//        request.setAttribute("auto", user.getCars().get(0));
+        request.setAttribute("auto", car);
         dispatch(request, response, MAIN);
     }
 

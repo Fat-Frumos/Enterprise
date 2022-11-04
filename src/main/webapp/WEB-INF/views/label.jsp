@@ -33,8 +33,8 @@
         </div>
         <div class="col-md-4 col-3 ps-30 my-4">
             <p class="h4 m-0">
-                <input class="pe-1" style="border: none" value="${auto.brand}"></input>
-                <input class="pe-1" style="border: none" value="${auto.name}"></input>
+                <input class="pe-1" style="border: none" value="${auto.brand}" name="brand"></input>
+                <input class="pe-1" style="border: none" value="${auto.name}" name="name"></input>
         </div>
 
         <div class="col-md-4 col-3 ps-30 my-4">
@@ -45,6 +45,7 @@
                            type="text"
                            class="fas fa-dollar-sign pe-1 form-control"
                            value="${auto.model}"
+                           name="model"
                            readonly="readonly"
                     >
                 </p>
@@ -59,6 +60,7 @@
                            type="text"
                            class="fas fa-dollar-sign pe-1 form-control"
                            value="AI"
+                           name="self"
                            readonly="readonly"
                     >
                 </p>
@@ -73,6 +75,7 @@
                            type="text"
                            class="fas fa-dollar-sign pe-1 form-control"
                            value="${auto.cost}"
+                           name="cost"
                            readonly="readonly"
                     >
                 </p>
@@ -87,6 +90,7 @@
                            type="text"
                            class="fas fa-dollar-sign pe-1 form-control"
                            value="${auto.price}"
+                           name="price"
                            readonly="readonly"
                     >
                 </p>
@@ -100,7 +104,8 @@
                     <input style="width: 120px"
                            type="text"
                            class="fas fa-dollar-sign pe-1 form-control"
-                           value="$50"
+                           value="50"
+                           name="driver"
                            readonly="readonly"
                     >
                 </p>
