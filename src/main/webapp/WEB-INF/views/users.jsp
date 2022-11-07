@@ -21,6 +21,7 @@
 </head>
 <body>
 <jsp:include page="nav.jsp"/>
+
 <div class="container">
     <div class="col-lg-12">
         <h5 style="text-align: center">List of Jobs</h5>
@@ -67,7 +68,7 @@
         </table>
     </div>
 </div>
-
+<h5 style="left: 90vw; top: 0; position: absolute"><ct:today format="MMMM dd yyyy"/></h5>
 <link
         rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"

@@ -20,17 +20,17 @@ public class OrderService {
         return jdbcOrderDao.findAll();
     }
 
-    public List<Order> getUserOrders(User user) {
-        if (user.isActive()) {
-            return jdbcOrderDao.findAll(String.valueOf(user.getUserId()));
-        } else {
-            throw new UserIsBlockedException("Blocked %s" + user);
-        }
-        //TODO: 443 manager
+    public List<Order> getAll(User user) {
+//        if (user.isActive()) {
+        List<Order> orderList = jdbcOrderDao.findAll(user.getUserId());
+        return orderList;
+//        } else {
+//            throw new UserIsBlockedException("Blocked %s" + user);
+//        }
+//        //TODO: 443 manager
     }
 
     public Order updateOrder(Order order) {
-        Order edit = jdbcOrderDao.edit(order);
-        return edit;
+        return jdbcOrderDao.edit(order);
     }
 }

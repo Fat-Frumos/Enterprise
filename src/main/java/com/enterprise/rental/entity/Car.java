@@ -62,6 +62,10 @@ public class Car implements Serializable {
         this.cost = cost;
     }
 
+    public void setPath(String path) {
+        this.path = path;
+    }
+
     public static class Builder {
         private long id;
         private String name;

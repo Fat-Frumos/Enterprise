@@ -15,7 +15,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import static com.enterprise.rental.dao.jdbc.Constants.*;
@@ -23,6 +25,7 @@ import static com.enterprise.rental.dao.jdbc.Constants.*;
 @WebServlet(urlPatterns = "/cart")
 public class CartServlet extends HttpServlet {
     private final CarService carService = new CarService();
+    private final UserService userService = new UserService();
     private static final Logger log = Logger.getLogger(CartServlet.class);
 
     /**
@@ -36,17 +39,40 @@ public class CartServlet extends HttpServlet {
 
         HttpSession session = request.getSession(false);
 
+        String path;
+
         if (session != null && session.getAttribute("user") != null) {
             User user = (User) session.getAttribute("user");
-            log.info(String.format("Get into session User %s bucket cars: %s", user.getName(), user.getCars().size()));
+            log.info(String.format("Get into session User %s bucket cars: %s",
+                    user.getName(), user.getCars().size()));
+
             List<Car> userCars = user.getCars();
+            int size = userCars.size();
+
+            path = getPath(userCars);
+
+            request.setAttribute("car", size);
+            Collections.reverse(userCars);
             request.setAttribute("cars", userCars);
-            request.setAttribute("car", user.getCars().size());
-            dispatch(request, response, INDEX);
         } else {
-            dispatch(request, response, LOGIN);
+            path = LOGIN;
         }
+        dispatch(request, response, path);
     }
+
+    private static String getPath(List<Car> userCars) {
+        return userCars.isEmpty() ? CARS : checkCard(userCars);
+    }
+
+    private static String checkCard(List<Car> userCars) {
+        return userCars.size() > 12 ? remove(userCars, 0) : INDEX;
+    }
+
+    private static String remove(List<Car> userCars, int index) {
+        userCars.remove(index);
+        return "/user";
+    }
+
 
     /**
      * put + to Basket, post -> save user to db
@@ -59,31 +85,37 @@ public class CartServlet extends HttpServlet {
 
         HttpSession session = request.getSession(false);
         User user = (User) session.getAttribute("user");
-        log.info(String.format("Post from session %s", user));
-        String role = user != null ? user.getRole() : "guest";
-        int id = 0;
-        if (role.equals("")) {
-            id = Integer.parseInt(request.getParameter("id"));
-            Car car = carService.getById(id);
-            log.info(car);
+        if (user != null) {
+            log.info(String.format("Post from session %s", user));
+            String role = user != null ? user.getRole() : "guest";
+            user.setRole(role);
+
+            log.info(user);
+
+            int id = 0;
+
+            if (Objects.equals(role, "user")) {
+                id = Integer.parseInt(request.getParameter("id"));
+                Car car = carService.getById(id);
+                log.info(car);
+                log.info(String.format("Main post car %d from session %s: %s", id, role, user));
+            }
+
+            boolean driver = false;
+
+            Order order = new Order(id, user.getUserId(), driver);
+
+            log.info(String.format("saved %s", order));
+
+            Set<Order> orders = user.getOrders();
+
+            if (orders != null) {
+                orders.add(order);
+                user.setOrders(orders);
+            }
+            response.sendRedirect(MAIN);
         }
-        user.setRole(role);
-        log.info(user);
-        log.info(String.format("Main post car %d from session %s: %s", id, role, user));
-
-        boolean driver = false;
-
-        Order order = new Order(id, user.getUserId(), driver);
-
-        log.info(String.format("saved %s", order));
-
-        Set<Order> orders = user.getOrders();
-
-        if (orders != null) {
-            orders.add(order);
-            user.setOrders(orders);
-        }
-        dispatch(request, response, MAIN);
+        response.sendRedirect(LOGIN);
     }
 
     @Override
@@ -92,28 +124,27 @@ public class CartServlet extends HttpServlet {
             HttpServletResponse response) throws
             ServletException, IOException {
 
-        UserService userService = new UserService();
-
         HttpSession session = request.getSession(false);
+
         if (session != null) {
             User user = (User) session.getAttribute("user");
 
             if (user != null) {
-
                 log.info(String.format("Session User Basket: %s", user));
 
                 try {
                     long id = Long.parseLong(request.getParameter("id"));
                     Car car = carService.getById(id);
+
                     if (car != null) {
                         userService.bookCar(car, user);
                         user.setCar(car);
                         request.setAttribute("auto", user.getCar());
                         request.setAttribute("user", user);
+
                         log.info(String.format("Car: %s", user.getCar()));
                         log.info(String.format("Put new Car %s into the basket: %s",
                                 car.getBrand(), user.getCars().size()));
-
                     }
                 } catch (NumberFormatException e) {
                     log.info("Car by id not found");
@@ -121,8 +152,8 @@ public class CartServlet extends HttpServlet {
                 }
             }
         }
-        request.getRequestDispatcher("/order")
-                .forward(request, response);
+        response.sendRedirect(ORDERS);
+//        dispatch(request, response, ORDERS);
     }
 
     private void dispatch(

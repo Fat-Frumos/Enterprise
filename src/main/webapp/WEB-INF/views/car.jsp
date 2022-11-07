@@ -12,14 +12,12 @@
 <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 
 <style>
-
     <%@include file="../classes/templates/css/form.css"%>
     <%@include file="../classes/templates/css/check-box.css"%>
     <%@include file="../classes/templates/css/rental.css"%>
-
 </style>
 <div class="col-lg-5 p-0 ps-lg-4">
-    <form action="/order" method="post">
+    <form action="${pageContext.request.contextPath}/order" method="post">
         <div style="background: white" class="row m-0">
             <div class="col-12 px-0">
                 <div class="row bg-light m-0">
@@ -33,13 +31,14 @@
                                            name="passport" type="text"
                                            value=""
                                            placeholder="AA 123 456 789"
+                                           pattern="[a-zA-Z]{2}?[- ][0-9]{3}?[- ][0-9]{3}?[- ][0-9]{3}"
                                            required
                                     >
                                     </span>
                             <div class=" w-100 d-flex flex-column align-items-end">
                                 <br>
                                 <p class="text-muted">Term</p>
-                                <input id="e"
+                                <input id="term"
                                        class="form-control2"
                                        style="width: 110px"
                                        type="date"
@@ -57,8 +56,8 @@
                                            type="tel"
                                            name="phone"
                                            value=""
-                                           pattern="+[0-9]{2}[0-9]{3}-[0-9]{3}-[0-9]{4}"
-                                           placeholder="+__(___)___-__-__"
+                                           pattern="\+\d{12}"
+                                           placeholder="+380987654321"
                                            required
                                     >
                                     </span>
@@ -78,9 +77,7 @@
                         <div class="d-flex mb-4">
                         <span class="me-5">
                                     <span class="text-muted">Payment</span>
-                                                    <td><fmt:formatDate pattern="yyyy-MM-dd"
-                                                                        value="${order.created}"/></td>
-
+                            <input id="price" name="price" value="${auto.price}" style="width: 100px" hidden>
 
                                     <input class="form-control"
                                            style="width: 100px"
@@ -118,42 +115,51 @@
     </form>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script>
-
         $(document).ready(function () {
             $(".submit").click(function () {
                 $(".submit").addClass("loading");
                 setTimeout(function () {
                     $(".submit").addClass("hide-loading");
-                    $(".done").addClass("finish");
+                    // $(".done").addClass("finish");
                 }, 1000);
                 setTimeout(function () {
                     $(".submit").removeClass("loading").removeClass("hide-loading");
                     $(".done").removeClass("finish");
                     $(".failed").removeClass("finish");
                 }, 2000);
+                // $(".done").addClass("failed");
+                // setTimeout(() => {
+                //     $(".submit").submit();
+                //     $(".done").addClass("finish");
+                // }, 1000);
             })
         });
 
-        let payment = document.getElementById('payment');
-        let checkbox = document.getElementById('checkbox');
-        let datePicker = document.getElementById('e');
         let day = 1;
+        let datePicker = document.getElementById('term');
         datePicker.min = datePicker.value = new Date().toISOString().substring(0, 10);
+        let payment = document.getElementById('payment');
+        let price = document.getElementById('price');
+        let checkbox = document.getElementById('checkbox');
 
         checkbox.onchange = checkbox = (element) => {
-            console.log("with driver " + element.target.checked);
             if (element.target.checked) {
-                payment.value = 50 * day + parseFloat(payment.value);
+                payment.value = (50 + parseFloat(price.value)) * day;
             } else {
-                payment.value -= 50 * day;
+                payment.value = (parseFloat(price.value)) * day;
+            }
+            console.log("with driver " + element.target.checked + ", payment: " + payment.value);
+        }
+
+        datePicker.onchange = datePicker = (el) => {
+            let checkbox = document.getElementById('checkbox');
+            let diff = new Date(el.target.value) - new Date();
+            day = Math.ceil(Math.abs(diff) / (1000 * 60 * 60 * 24));
+            if (checkbox.checked) {
+                payment.value = (50 + parseFloat(price.value)) * day;
+            } else {
+                payment.value = (parseFloat(price.value)) * day;
             }
         }
-
-        datePicker.onchange = datePicker = (e) => {
-            let diff = new Date(e.target.value) - new Date();
-            day = Math.ceil(Math.abs(diff) / (1000 * 60 * 60 * 24));
-            payment.value *= day;
-        }
-
     </script>
 </div>

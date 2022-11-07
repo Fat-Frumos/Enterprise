@@ -62,6 +62,7 @@ public class CarService implements Service<Car> {
 
     @Override
     public List<Car> getAll(Map<String, String> params, int offset) {
+
         return carDao.findAll(params, offset);
     }
 

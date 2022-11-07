@@ -25,7 +25,7 @@ class UserServletTest extends Mockito  {
     public void correctUsernameInRequest() throws ServletException, IOException {
 
 
-        when(request.getParameter("name")).thenReturn("me");
+        when(request.getParameter("name")).thenReturn("test");
         when(request.getParameter("password")).thenReturn("secret");
 
         servlet.doPost(request, response);
@@ -56,7 +56,7 @@ class UserServletTest extends Mockito  {
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
 
-        when(request.getParameter("username")).thenReturn("me");
+        when(request.getParameter("username")).thenReturn("test");
         when(request.getParameter("password")).thenReturn("secret");
 
         StringWriter stringWriter = new StringWriter();

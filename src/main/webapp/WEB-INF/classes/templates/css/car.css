@@ -1,3 +1,27 @@
+figure {
+    /*border-radius: 10px;*/
+    overflow: hidden;
+}
+
+.modal-content:hover {
+    cursor: pointer;
+    /*border-radius: 15px;*/
+}
+
+img {
+    /*border-radius: 10px;*/
+    overflow: hidden;
+}
+
+.row.m-0 > main {
+    top: 20%;
+}
+
+li > div.cart-image.fw-900 {
+    padding: 0;
+
+}
+
 .container {
     background-color: white;
     caret-color: transparent;

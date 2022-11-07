@@ -20,29 +20,6 @@
         <%@include file="../classes/templates/css/cart.css"%>
         <%@include file="../classes/templates/css/car.css"%>
 
-        figure {
-            /*border-radius: 10px;*/
-            overflow: hidden;
-        }
-
-        .modal-content:hover {
-            cursor: pointer;
-            /*border-radius: 15px;*/
-        }
-
-        img {
-            /*border-radius: 10px;*/
-            overflow: hidden;
-        }
-
-        .row.m-0 > main {
-            top: 20%;
-        }
-
-        li > div.cart-image.fw-900 {
-            padding: 0;
-
-        }
     </style>
 
 </head>
@@ -89,13 +66,6 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
 <script>
-    // $(document).on('contextmenu', function (event){
-    //     if (!$(event.target).hasClass("carousel-item")){
-    //         event.preventDefault()
-    //         alert("Car removed")
-    //         // window.history.back();
-    //     }
-    // })
 
     window.addEventListener('contextmenu', (event) => {
         event.preventDefault()
@@ -104,6 +74,7 @@
 
     function popUp(id) {
         $("#" + id).modal('show');
+        // let url = '/order' + '?id=' + id;
         let url = '/cart' + '?id=' + id;
         fetch(url, {
             method: 'put',
@@ -117,8 +88,9 @@
         // document.location.reload(true);
     }
 
+
     function showCar(id, path, brand, name, price) {
-        console.log(path);
+        console.log(id);
         console.log(brand);
         console.log(name);
         console.log(price);
@@ -126,6 +98,13 @@
         // window.location.href = "/";
     }
 
+    // $(document).on('contextmenu', function (event){
+    //     if (!$(event.target).hasClass("carousel-item")){
+    //         event.preventDefault()
+    //         alert("Car removed")
+    //         // window.history.back();
+    //     }
+    // })
 
     // console.log(document.querySelectorAll("selected"));
 

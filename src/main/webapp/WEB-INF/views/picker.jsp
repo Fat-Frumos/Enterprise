@@ -158,7 +158,7 @@
         data: Array.apply(null, {length: 11}).map(Number.call, function (n) {
             return (n || 0) + 2022
         }),
-        current: 2016,
+        current: 2022,
         visible: 6
     });
 </script>

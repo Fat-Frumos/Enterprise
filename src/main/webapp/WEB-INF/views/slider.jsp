@@ -85,19 +85,30 @@
         <figure class="carousel-item">
             <div id="slider">
                 <div class="slides">
-                    <img class="" onclick="openForm(`${cars.brand} | ${cars.name} | ${cars.model}`)" src="${cars.path}"
+                    <img class="" onclick="openForm(`${cars.brand}, ${cars.name}, ${cars.model}`)" src="${cars.path}"
                          alt="${cars.brand} | ${cars.name} | ${cars.model}">
                 </div>
             </div>
         </figure>
-
     </c:forEach>
     <%--    <button onclick="history.back()">•</button>--%>
 </div>
 
 <script type="text/javascript">
-    var index = 0;
-    var slides = document.querySelectorAll(".slides");
+    // function openForm(brand, name, model, price, cost) {
+    //     $("#" + id).modal('show');
+    //     let url = '/cart' + '?id=' + id;
+    //     fetch(url, {
+    //         method: 'PUT',
+    //     }).then(response => {
+    //         console.log('Ok:', response);
+    //         window.location.href = url;
+    //     }).catch(err => {
+    //         console.error(err)
+    //     })
+
+    let index = 0;
+    let slides = document.querySelectorAll(".slides");
     // var dot = document.querySelectorAll(".dot");
 
     function changeSlide() {

@@ -17,6 +17,7 @@
     <title>Cars</title>
     <style>
         @import url(https://fonts.googleapis.com/css?family=Raleway:100,600,400);
+
         <%@include file="../classes/templates/css/cart.css"%>
         <%@include file="../classes/templates/css/car.css"%>
         <%@include file="../classes/templates/css/option.css"%>
@@ -24,10 +25,11 @@
         * {
             user-select: none;
         }
-    a{
-        font-family: Raleway, Roboto, sans-serif;
-        font-weight: 600;
-    }
+
+        a {
+            font-family: Raleway, Roboto, sans-serif;
+            font-weight: 600;
+        }
 
     </style>
     <link rel="shortcut icon" href="https://raw.githubusercontent.com/Fat-Frumos/Cars/master/wheel.ico"
@@ -36,19 +38,69 @@
 </head>
 
 <body>
+
+<%--<script>--%>
+<%--    function brand() {--%>
+<%--        const $select = document.querySelector('#brand');--%>
+<%--        let text = $select.options[$select.selectedIndex].value;--%>
+<%--        const $options = Array.from($select.options);--%>
+<%--        const optionToSelect = $options.find(item => item.text === text);--%>
+<%--        optionToSelect.selected = true;--%>
+<%--        console.log(": " + text);--%>
+<%--    }--%>
+<%--</script>--%>
 <jsp:include page="option.jsp"/>
 <jsp:include page="cart.jsp"/>
 <jsp:include page="nav.jsp"/>
-
+<%--<jsp:include page="burger.jsp"/>--%>
 <%--    <jsp:include page="burger.jsp"/>--%>
 <%--    <div class="day">--%>
-<%--        <h6><ct:today format="MMMM dd yyyy"/></h6>--%>
+
 <%--        <a style="text-transform: capitalize" href="/user/${user}">(${user})</a>--%>
 <%--    </div>--%>
-<script>
-</script>
-<%--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>--%>
-<%--<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>--%>
 
+
+<script>
+    $("input").on("keydown", function search(e) {
+        if (e.keyCode == 13) {
+            $('#submit').click();
+        }
+    });
+    (function (fn) {
+        'use strict';
+        fn(window.jQuery, window, document);
+    }(function ($) {
+        'use strict';
+
+        $(function () {
+            $('.sort-btn').on('click', '[data]', function (event) {
+                event.preventDefault();
+                let direction = document.querySelector("#direction");
+                let $this = $(this), param = 'cost';
+
+                if ($this.data('direction') !== 'price') {
+                    param = 'price';
+                    direction.innerHTML = "Price<input name=\"direction\" value=\"price\">";
+                } else {
+                    direction.innerHTML = "Cost<input name=\"direction\" value=\"cost\">";
+                }
+                $this.data('direction', param).find('.fa').attr('value', '' + param);
+            });
+        });
+
+        $(function () {
+            $('.sort-btn').on('click', '[data-sort]', function (event) {
+                event.preventDefault();
+                let $this = $(this), dir = 'asc';
+                if ($this.data('sort') !== 'desc') {
+                    dir = 'desc';
+                }
+
+                $this.data('sort', dir).find('.fa').attr('class', 'fa fa-sort-' + dir);
+                $this.data('sort', dir).find('.fa').attr('value', '' + dir);
+            });
+        });
+    }));
+</script>
 </body>
 </html>

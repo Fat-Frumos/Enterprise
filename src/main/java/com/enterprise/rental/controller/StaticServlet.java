@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static com.enterprise.rental.dao.jdbc.Constants.*;
 
@@ -55,28 +56,36 @@ public class StaticServlet extends HttpServlet {
         List<Car> auto = carService.getRandom(3);
         String name = request.getParameter("name");
         String password = request.getParameter("password");
-
+        String path;
         if (name != null && password != null) {
-            User user = userService.findByName(name)
-                    .orElse(new User(0, "guest", "", "guest@i.ua", "en", "guest", false));
-
-            boolean isValid = Objects.equals(name, user.getName()) && password.equals(user.getPassword());
-
-            if (isValid) {
-                HttpSession session = request.getSession();
-                session.setAttribute("user", user);
-                request.setAttribute("cars", auto);
-                request.setAttribute("auto", auto.get(0));
-                log.info(String.format("Main Car: %s", auto.get(0)));
-                dispatch(request, response, MAIN);
-                log.info(String.format("Session customer: %s", session.getAttribute("user")));
+            Optional<User> optionalUser = userService.findByName(name);
+            if (optionalUser.isPresent()) {
+                User user = optionalUser.get();
+                boolean isValid = Objects.equals(name, user.getName()) && password.equals(user.getPassword());
+                path = getPath(request, auto, user, isValid);
             } else {
-                request.setAttribute("errorMessage", "Your name | password is incorrect");
-                dispatch(request, response, LOGIN);
+                request.setAttribute("errorMessage", "User not found");
+                path = LOGIN;
             }
-        } else {
-            dispatch(request, response, LOGIN);
+            dispatch(request, response, path);
         }
+    }
+
+    private static String getPath(HttpServletRequest request, List<Car> auto, User user, boolean isValid) {
+        String path;
+        if (isValid) {
+            HttpSession session = request.getSession();
+            session.setAttribute("user", user);
+            request.setAttribute("cars", auto);
+            request.setAttribute("auto", auto.get(0));
+            log.info(String.format("Main Car: %s", auto.get(0)));
+            log.info(String.format("Session customer: %s", session.getAttribute("user")));
+            path = MAIN;
+        } else {
+            request.setAttribute("errorMessage", "Your name/password is incorrect");
+            path = LOGIN;
+        }
+        return path;
     }
 
     /**

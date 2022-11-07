@@ -1,7 +1,37 @@
+#apple,
+#twitter,
+#github,
+#facebook {
+    color: #fff;
+
+    animation: animate 3s ease-in-out infinite;
+}
+
+#twitter {
+    animation-delay: 0.3s;
+}
+
+#facebook {
+    animation-delay: 0.7s;
+}
+
+#github {
+    animation-delay: 0.1s;
+}
+
+@keyframes animate {
+    from {
+        filter: hue-rotate(0deg);
+    }
+    to {
+        filter: hue-rotate(360deg);
+    }
+}
+
 .navigation {
     position: absolute;
-    top: 12px;
-    left: 81vw;
+    top: 10px;
+    left: 82vw;
     width: 50px;
     height: 50px;
     background-color: #212532;
@@ -13,6 +43,10 @@
     justify-content: center;
     transition: .5s;
     transition-delay: .8s;
+    box-shadow: 2px 2px 2px #00000080, 5px 1px 5px #00000080,
+    2px 2px 5px #00000080, 2px 2px 3px #00000080, inset 2px 2px 5px #00000080,
+    inset 2px 2px 5px #00000080, inset 2px 2px 5px #00000080,
+    inset 2px 2px 5px #00000080;
 }
 
 .navigation.active {
@@ -40,9 +74,8 @@ ion-icon {
     opacity: 0;
 }
 
-/*span {*/
-/*    background-color: #212532;*/
-/*}*/
+span {
+}
 
 .navigation.active span {
     width: 45px;

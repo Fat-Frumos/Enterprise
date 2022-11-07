@@ -2,15 +2,22 @@ package com.enterprise.rental.dao.jdbc;
 
 import com.enterprise.rental.dao.CarDao;
 import com.enterprise.rental.entity.Car;
+import com.enterprise.rental.exception.OrderNotFoundException;
+import org.apache.log4j.Logger;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.enterprise.rental.dao.jdbc.Connections.*;
 import static com.enterprise.rental.dao.jdbc.Constants.*;
 import static com.enterprise.rental.dao.jdbc.JdbcCarTemplate.*;
 
 public class JdbcCarDao implements CarDao {
+    private static final Logger log = Logger.getLogger(JdbcCarDao.class);
 
     @Override
     public List<Car> findAll() {
@@ -24,13 +31,13 @@ public class JdbcCarDao implements CarDao {
 
     @Override
     public Optional<Car> findByName(String name) {
-        return getCarQuery(FILTER_BY_CAR_NAME_SQL, name);
+        return getCarQuery(name);
     }
 
     @Override
-    public List<Car> findAll(String params) {
+    public List<Car> findAll(String query) {
         String sql = String.format("%sWHERE %s;",
-                FILTER_CAR_BY_SQL, params);
+                FILTER_CAR_BY_SQL, query);
         return getCarsQuery(sql);
     }
 
@@ -41,7 +48,40 @@ public class JdbcCarDao implements CarDao {
 
     @Override
     public Car edit(Car car) {
-        return null;
+        long id = car.getId();
+        String brand = car.getBrand();
+        String model = car.getModel();
+        String name = car.getName();
+        Double price = car.getPrice();
+        Double cost = car.getCost();
+
+        String query = String.format(
+                UPDATE_CAR_SQL,
+                brand, model, name, price, cost, id);
+
+        log.info(String.format("%s", query));
+
+        return getCar(car, query);
+    }
+
+    private static Car getCar(Car car, String sql) {
+
+        Connection connection = null;
+        PreparedStatement statement = null;
+        try {
+            connection = getInstance().getConnection();
+            connection.setAutoCommit(false);
+            statement = connection.prepareStatement(sql);
+            boolean update = statement.executeUpdate() > 0;
+            log.info(String.format("update car %s", update));
+            connection.commit();
+            return car;
+        } catch (SQLException sqlException) {
+            rollback(connection, sqlException);
+            throw new OrderNotFoundException(sqlException);
+        } finally {
+            eventually(connection, statement);
+        }
     }
 
     @Override
@@ -50,7 +90,26 @@ public class JdbcCarDao implements CarDao {
     }
 
     @Override
-    public List<Car> findAll(Map<String, String> params, int offset) {
+    public List<Car> findAll(
+            Map<String, String> params,
+            int offset) {
+
+        String query = getQuery(params);
+
+        return getCarsQuery(query);
+    }
+
+
+    @Override
+    public List<Car> findAll(
+            Map<String, String> params) {
+        return params == null
+                ? findAll()
+                : findAll(params, 0);
+    }
+
+    private static String getQuery(
+            Map<String, String> params) {
 
         String sort = params.get("sort");
         sort = sort == null ? "" : sort;
@@ -62,8 +121,9 @@ public class JdbcCarDao implements CarDao {
         brand = brand == null ? "" : String.format(" brand='%s' AND", brand);
 
         int price = getPrice(params);
-        String records = params.get("limit");
-        int limit = getLimit(records);
+
+        int limit = getLimit(params.get("limit"));
+
         int page = getPage(params);
         int start = page * limit - limit;
 
@@ -71,11 +131,8 @@ public class JdbcCarDao implements CarDao {
             start = 0;
         }
 
-        String sql = String.format("%sWHERE%s price>=%d ORDER BY %s %s LIMIT %d OFFSET %d;",
+        return String.format("%sWHERE%s price>=%d ORDER BY %s %s LIMIT %d OFFSET %d;",
                 FILTER_CAR_BY_SQL, brand, price, direction, sort, limit, start);
-
-        return getCarsQuery(sql);
-
     }
 
     private static int getPage(Map<String, String> params) {
@@ -103,12 +160,5 @@ public class JdbcCarDao implements CarDao {
             price = 1;
         }
         return price;
-    }
-
-    @Override
-    public List<Car> findAll(Map<String, String> params) {
-        return params == null
-                ? findAll()
-                : findAll(params, 0);
     }
 }

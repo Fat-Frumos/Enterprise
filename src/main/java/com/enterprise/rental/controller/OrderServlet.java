@@ -27,7 +27,7 @@ import static com.enterprise.rental.dao.jdbc.Constants.*;
 @WebServlet(urlPatterns = "/order")
 public class OrderServlet extends HttpServlet {
     private static final Log log = LogFactory.getLog(OrderServlet.class);
-    private static CarService carService = new CarService();
+    private static final CarService carService = new CarService();
 
     @Override
     protected void doGet(
@@ -39,7 +39,7 @@ public class OrderServlet extends HttpServlet {
             User user = (User) session.getAttribute("user");
             String id = request.getParameter("id");
             if (id == null) {
-                dispatch(request, response, MAIN);
+                dispatch(request, response, CARS);
             } else {
                 long carId = Long.parseLong(id);
                 request.setAttribute("auto", carService.getById(carId));
@@ -79,16 +79,16 @@ public class OrderServlet extends HttpServlet {
         if (session != null) {
             User user = (User) session.getAttribute("user");
             if (user != null) {
+
                 log.info(String.format("user %s", user));
-                long userId = user.getUserId();
                 Car car = user.getCar();
                 log.info(String.format("Car %s", car));
 
                 String passport = request.getParameter("passport");
-                String card = request.getParameter("phone");
+                String reason = request.getParameter("reason");
+                String phone = request.getParameter("phone");
                 String payment = request.getParameter("payment");
                 String timestamp = request.getParameter("term");
-
 
                 boolean driver = request.getParameter("driver") != null;
                 double pay = payment != null ? Double.parseDouble(payment) : 0;
@@ -99,31 +99,39 @@ public class OrderServlet extends HttpServlet {
                 log.info(String.format("%s/%s/%s", driver, pay, term));
 
                 if (car != null) {
-                    Order order = new Order();
-                    order.setCarId(car.getId());
-                    order.setUserId(userId);
-                    order.setDriver(driver);
-                    order.setPassport(passport);
-                    order.setPhone(card);
-                    order.setPayment(pay);
-                    order.setTerm(term);
-
-                    boolean saved = orderService.createOrder(order);
-                    if (saved) {
-                        List<Car> userCars = user.getCars();
-//                        for (Car userCar : userCars) {
-//                            if (userCar.getId() == car.getId()) {
-//                                userCars.remove(userCar);
-//                            }
-//                        }
-                        user.setCars(userCars);
-                        user.setCar(new Car());
-                    }
+                    Order order = new Order.Builder()
+                            .carId(car.getId())
+                            .userId(user.getUserId())
+                            .passport(passport)
+                            .reason(reason)
+                            .phone(phone)
+                            .driver(driver)
+                            .payment(pay)
+                            .term(term)
+                            .build();
+                    List<Car> userCars = getCars(orderService, user, order, car);
+                    request.setAttribute("cars", userCars);
                 }
-                request.setAttribute("cars", carService.getAll());
             }
         }
-        dispatch(request, response, CARS);
+        response.sendRedirect("/user");
+    }
+
+    private static List<Car> getCars(
+            OrderService orderService,
+            User user, Order order, Car car) {
+
+        boolean saved = orderService.createOrder(order);
+
+        List<Car> userCars = new ArrayList<>();
+
+        if (saved) {
+            userCars = user.getCars();
+            userCars.removeIf(userCar -> userCar.getId() == car.getId());
+            user.setCars(userCars);
+            user.setCar(new Car());
+        }
+        return userCars;
     }
 
     void dispatch(

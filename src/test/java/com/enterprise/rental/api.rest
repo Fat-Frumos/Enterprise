@@ -1,0 +1,115 @@
+
+### Create order for the user
+GET http://localhost:8080/user?user_id=1
+
+### Put some money to the order
+GET http://localhost:8080/1?sum=1000
+
+### Spend some money
+GET http://localhost:8080/checkout/1?sum=100
+
+### Post info about the order
+POST http://localhost:8080/?name=alice&password=alice
+
+
+
+### Generate card number
+GET http://localhost:8080/create
+### Create user
+GET http://localhost:8080/create?name=Test
+
+### Get user info
+GET http://localhost:8080/cars
+
+### Update user name
+GET http://localhost:8080/update/1?name=TestUpdate
+
+### Get info about user with id 1
+GET http://localhost:8080/cars/1
+
+### Delete user with id 1
+GET http://localhost:8080/delete/1
+
+#####################################################################
+# Preparation: we need to create order and put some money
+#####################################################################
+
+### Create order for the user
+GET http://localhost:8080/user?user_id=7
+
+### Retrieve id of the order
+GET http://localhost:8080/cart?id=227
+
+
+### Put some money to the order
+GET http://localhost:8080/{{orderId}}?sum=1000
+
+#####################################################################
+### Now we use Processing Service for order operations
+
+### Spend some money
+GET http://localhost:8080/checkout/{{cardNumber}}?sum=100
+
+
+### Retrieve card number for the order
+GET http://localhost:8080/cars?order_id={{orderId}}
+
+# Doing all the same but with Zuul
+
+
+### Create order for the user
+GET http://localhost:8080/order/create?user_id=1
+
+### Put some money to the order
+GET http://localhost:8080/order/1?sum=1000
+
+### Spend some money
+GET http://localhost:8080/order/checkout/1?sum=100
+
+### Get info about the order
+GET http://localhost:8080/order/cars/1
+
+### Create user
+GET http://localhost:8080/user/create?name=Test
+
+### Get user info
+GET http://localhost:8080/user/cars
+
+### Update user name
+GET http://localhost:8080/user/update/1?name=TestUpdate
+
+### Get info about user with id 1
+GET http://localhost:8080/user/cars/1
+
+### Delete user with id 1
+GET http://localhost:8080/user/delete/1
+
+#####################################################################
+# Preparation: we need to create order and put some money
+#####################################################################
+
+#### Create order for the user
+#GET http://localhost:8080/order/create?user_id=7
+#Accept: application/json
+
+### Retrieve id of the order
+GET http://localhost:8080/user?userId=2
+Accept: application/json
+
+> {%
+  user.global.set("orderId", response.body[0].id);
+%}
+
+### Put some money to the order
+GET http://localhost:8080/order/?sum=1000
+
+#####################################################################
+# Now we use Processing Service for order operations
+#####################################################################
+
+### Spend some money
+GET http://localhost:8080/processing/checkout/{{cardNumber}}?sum=100
+
+### Retrieve card number for the order
+GET http://localhost:8080/processing/cars?order_id={{orderId}}
+

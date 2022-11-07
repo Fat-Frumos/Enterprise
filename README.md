@@ -25,14 +25,14 @@
 + reviews the order 
 + may reject it, 
 + giving a reason.
-- also registers the return of the car, 
++ also registers the return of the car, 
 + in case of car damage he issues an invoice for repairs through the system.
 
 The system administrator has the rights:
 ====car====
-- adding, 
+- adding (upload), 
 - deleting cars, 
-- editing car information(upload);
++ editing car information;
 [//]: # label.jsp (<form action="/cars" method="post">)
 
 - ====user====
@@ -40,9 +40,18 @@ The system administrator has the rights:
 + registration of managers in the system (role).
 
 ===============================
+####INFO: FATAL: add car
+####INFO: FATAL: add car to image upload
+#####TODO FATAL: userDto-enum
+#####TODO FATAL: validate submit order failed
+#####TODO: Auto-generated delete method
+#####TODO: FATAL: Car edit delete
+####INFO: FATAL: auth order/user authentication
+####INFO: FATAL: cars update and delete
 ####INFO: FATAL: OrderServlet:80 Car null
-####INFO: FATAL: forgot
+####INFO: FATAL: forgot email html(pdf)
 ####INFO: FATAL: JdbcCarTemplate:58 SELECT id, name, brand, model, path, price, cost, year FROM car LIMIT 80;
+####INFO: TEST SERVLET: http://localhost:8080/register?orderId=48384729&userId=16492&carId=87&passport=AA+123+456+789&term=2022-11-10+00%3A00%3A00.0&damage=Act+of+Nature&rejected=on&closed=on
 
 web: java $JAVA_OPTS -jar target/webapp-runner.jar --port $PORT target/*.war
 
@@ -59,8 +68,6 @@ context xml screen
 
 // TODO admin option  - > user.setRole()
 
-####INFO: FATAL: add car to db
-
 service: log. err(msg, cause)
 connection rollback
 throw new CarException
@@ -74,10 +81,10 @@ throw new CarException
 #####TODO: select customer, http://localhost:8080/cart?id=132121
 
 ####INFO: FATAL: new field cost price
-
 ####INFO: FATAL: date
 ####INFO: FATAL: UI -role
 #####TODO FATAL:: Test 40%
+
 ####INFO: FATAL: post send redirect to customer
 #####!http://localhost:8080/views/ to http://localhost:8080/ 
 
@@ -122,7 +129,6 @@ conf\server.xml
 * Code in Web Server => Input:HttpRequest, Output: HttpResponse JEE with Servlets
 * Web Server responds with Http Response
 
-
 //Java Platform, Enterprise Edition (Java EE) JEE6
 //Servlet is a Java programming language class
 //used to extend the capabilities of servers
@@ -135,46 +141,3 @@ conf\server.xml
 //4. How is the response created?
 
 UPDATE users SET name = 'alice', role = user, active = false WHERE id =18974
-
-//        if (isValid) {
-//            HttpSession session = request.getSession();
-//            session.setAttribute("user", user.getName());
-//            session.setMaxInactiveInterval(30*60);
-//            Cookie userName = new Cookie("user", user.getName());
-//            userName.setMaxAge(30*60);
-//            response.addCookie(userName);
-//            List<Car> cars = carService.getRandom();
-//            response.sendRedirect("/WEB-INF/views/main.jsp");
-//        request.setAttribute("cars", userService.getRandom());
-//        } else {
-//            RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/WEB-INF/views/login.jsp");
-//            PrintWriter out = response.getWriter();
-//            out.println("<font color=red>Either user name or password is wrong.</font>");
-//            request.setAttribute("errorMessage", "Invalid Credentials");
-//            dispatcher.include(request, response);
-//            request.getRequestDispatcher("/WEB-INF/views/index.jsp").forward(request, response);
-//        }
-
-//            HttpSession session = request.getSession();
-//            session.setAttribute("user", user.getName());
-//            session.setMaxInactiveInterval(30*60);
-//
-//            Cookie userName = new Cookie("user", user.getName());
-//            userName.setMaxAge(30*60);
-//            response.addCookie(userName);
-//            List<Car> cars = carService.getRandom();
-//            response.sendRedirect("/WEB-INF/views/main.jsp");
-//            request.getRequestDispatcher("/WEB-INF/views/index.jsp").forward(request, response);
-
-//    public UserDto toDto(User user) {
-//        return new UserDto(
-//                user.getName(),
-//                user.getPassword(),
-//                user.getEmail(),
-//                Role.USER);
-//    }
-
-2022-10-18 16:36:33 INFO  CarException:8 Vehicle not found
-at com.enterprise.rental.service.CarService.lambda$getById$0(CarService.java:43)
-at com.enterprise.rental.service.CarService.getById(CarService.java:42)
-at com.enterprise.rental.controller.CartServlet.doGet(CardServlet.java:49)

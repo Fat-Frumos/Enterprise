@@ -8,10 +8,9 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <style>
-    a{
+    a {
         font-family: Raleway, Roboto, sans-serif;
         font-weight: 600;
-        letter-spacing: normal;
     }
 </style>
 <div class="bar">

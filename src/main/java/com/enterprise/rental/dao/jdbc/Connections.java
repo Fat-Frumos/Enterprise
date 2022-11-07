@@ -9,67 +9,87 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Objects;
 
+import static com.enterprise.rental.dao.DbManager.getInstance;
+
 public class Connections {
     private static final Logger log = Logger.getLogger(Connections.class);
 
-    protected static boolean rollback(Connection connection, SQLException sqlException) {
+    protected static Connection getWithoutAutoCommit() {
+
+        Connection connection;
         try {
-            log.info(sqlException.getMessage(), sqlException);
-            Objects.requireNonNull(connection).rollback();
-            return true;
+            connection = getInstance().getConnection();
+            connection.setAutoCommit(false);
+
         } catch (SQLException e) {
-            throw new DataException("Can`t rollback", e);
+            throw new DataException(e.getMessage(), e);
+        }
+        return connection;
+    }
+
+    protected static void eventually(
+            Connection connection,
+            PreparedStatement statement) {
+        close(statement);
+        close(connection);
+    }
+
+    protected static void eventually(
+            Connection connection,
+            PreparedStatement statement,
+            ResultSet resultSet) {
+        close(resultSet);
+        close(statement);
+        close(connection);
+    }
+
+    protected static boolean rollback(
+            Connection connection,
+            SQLException sqlException) {
+        log.info(String.format("Rollback: %s",
+                sqlException.getMessage()));
+        return rollback(connection);
+    }
+
+    private static boolean rollback(Connection connection) {
+        try {
+            Objects.requireNonNull(connection).rollback();
+            log.info("Rollback");
+            return true;
+        } catch (SQLException exception) {
+            throw new DataException(
+                    String.format("Can`t rollback: %s",
+                            exception.getMessage()));
         }
     }
 
-    protected static boolean close(Connection connection) {
+    private static void close(Connection connection) {
         try {
             Objects.requireNonNull(connection).close();
-            return true;
+            log.info("Connection closed");
         } catch (SQLException e) {
             throw new DataException("Connection not closed: %s", e);
         }
     }
 
-    protected static boolean close(PreparedStatement statement) {
+    private static void close(PreparedStatement statement) {
         try {
             Objects.requireNonNull(statement).close();
-            return true;
+            log.info("Prepared Statement closed");
         } catch (SQLException e) {
             throw new DataException(e.getMessage(), e);
         }
     }
 
-    protected static boolean close(ResultSet resultSet) {
+    private static boolean close(ResultSet resultSet) {
         try {
             Objects.requireNonNull(resultSet).close();
+            log.info("resultSet closed");
             return true;
-        } catch (SQLException e) {
-            log.info(String.format("resultSet not closed: %s", e.getMessage()));
-            throw new DataException(e);
-        }
-    }
-    protected static void eventually(Connection connection, PreparedStatement statement, ResultSet resultSet) {
-        if (resultSet != null) {
-            try {
-                resultSet.close();
-            } catch (SQLException e) {
-                log.info("resultSet closed");
-            }
-        }
-        if (statement != null) {
-            try {
-                statement.close();
-            } catch (SQLException e) {
-                log.info("Prepared Statement closed");
-            }
-        }
-        if (connection != null) {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                log.info("Connection closed");
-            }
+        } catch (SQLException sqlException) {
+            log.info(String.format("resultSet not closed: %s",
+                    sqlException.getMessage()));
+            throw new DataException(sqlException);
         }
     }
 }

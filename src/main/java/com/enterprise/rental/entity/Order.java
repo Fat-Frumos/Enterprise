@@ -18,6 +18,15 @@ public class Order implements Serializable {
     private String card;
     private String damage;
     private String passport;
+    private String reason;
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
 
     public String getPassport() {
         return passport;
@@ -33,7 +42,7 @@ public class Order implements Serializable {
         this.driver = driver;
     }
 
-    public Order(long orderId, long userId, long carId, Timestamp term, double payment, boolean driver, boolean rejected, boolean closed, Timestamp created, String card, String damage, String passport) {
+    public Order(long orderId, long userId, long carId, Timestamp term, double payment, boolean driver, boolean rejected, boolean closed, Timestamp created, String card, String damage, String passport, String reason) {
         this.orderId = orderId;
         this.userId = userId;
         this.carId = carId;
@@ -46,6 +55,7 @@ public class Order implements Serializable {
         this.card = card;
         this.damage = damage;
         this.passport = passport;
+        this.reason = reason;
     }
 
     public Order() {
@@ -159,10 +169,11 @@ public class Order implements Serializable {
                 ", driver=" + driver +
                 ", rejected=" + rejected +
                 ", closed=" + closed +
-                ", start=" + created +
-                ", phone=" + card +
+                ", created=" + created +
+                ", card='" + card + '\'' +
                 ", damage='" + damage + '\'' +
                 ", passport='" + passport + '\'' +
+                ", reason='" + reason + '\'' +
                 '}';
     }
 
@@ -183,6 +194,7 @@ public class Order implements Serializable {
         private String card;
         private String damage;
         private String passport;
+        private String reason;
 
         public Builder orderId(long orderId) {
             this.orderId = orderId;
@@ -233,6 +245,10 @@ public class Order implements Serializable {
             this.passport = passport;
             return this;
         }
+        public Builder reason(String reason) {
+            this.reason = reason;
+            return this;
+        }
 
         public Builder damage(String damage) {
             this.damage = damage;
@@ -258,6 +274,7 @@ public class Order implements Serializable {
             order.card = this.card;
             order.damage = this.damage;
             order.passport = this.passport;
+            order.reason = this.reason;
             return order;
         }
     }

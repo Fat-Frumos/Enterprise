@@ -9,7 +9,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <div class="option">
-    <form action="/cars?page=${page}">
+    <form action="${pageContext.request.contextPath}/cars?page=${page}">
         <div class="priceInput">
             <div onclick="brand()">
                 <label for="brand">Brand:</label>

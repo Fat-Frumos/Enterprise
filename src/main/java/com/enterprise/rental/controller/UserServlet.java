@@ -15,10 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.enterprise.rental.dao.jdbc.Constants.*;
 
@@ -39,34 +37,37 @@ public class UserServlet extends HttpServlet {
             throws ServletException, IOException {
 
         OrderService orderService = new OrderService();
-
         HttpSession session = request.getSession(false);
+        String path = "/";
         if (session != null) {
             User user = (User) session.getAttribute("user");
             String role = user != null ? user.getRole() : "guest";
             session.setAttribute("user", user);
-
             if (Objects.equals(role, "admin")) {
                 List<User> users = userService.getAll();
                 log.info(String.format("There are %d users", users.size()));
                 request.setAttribute("users", users);
-                dispatch(request, response, USERS);
+                path = USERS;
             } else if (Objects.equals(role, "manager")) {
                 List<Order> orders = orderService.getAll();
                 request.setAttribute("orders", orders);
-                dispatch(request, response, CONTRACT);
+                log.info(orders.size());
+                path = CONTRACT;
             } else if (Objects.equals(role, "user")) {
-                List<Order> orders = orderService.getUserOrders(user);
-                log.info(orders);
-                request.setAttribute("orders", orders);
-                dispatch(request, response, ORDERS);
+                List<Order> userOrders = orderService.getAll()
+                        .stream()
+                        .filter(order -> order.getUserId() == (user.getUserId()))
+                        .collect(Collectors.toList());
+                log.info(userOrders);
+                request.setAttribute("orders", userOrders);
+                path = ORDERS;
             } else {
-                dispatch(request, response, FORGOT);
+                path = FORGOT;
             }
-        } else {
-            dispatch(request, response, LOGIN);
         }
+        dispatch(request, response, path);
     }
+
 
     /**
      * Authentication and authorization User
@@ -97,7 +98,7 @@ public class UserServlet extends HttpServlet {
 
             log.info(String.format("%s is created: %s", user, save));
 
-            request.setAttribute("user", user.getName() + "role: "+user.getRole());
+            request.setAttribute("user", user.getName() + "role: " + user.getRole());
 
             request.getRequestDispatcher(MAIN)
                     .forward(request, response);

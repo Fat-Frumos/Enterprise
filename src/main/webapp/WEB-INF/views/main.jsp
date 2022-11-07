@@ -35,7 +35,7 @@
     </div>
     <hr>
     <jsp:include page="cart.jsp"/>
-    <jsp:include page="modal.jsp"/>
+<%--        <jsp:include page="modal.jsp"/>--%>
 </div>
 <jsp:include page="burger.jsp"/>
 <div class="day">
@@ -55,7 +55,11 @@
         event.preventDefault()
         window.history.back();
     })
+    $(document).ready(function () {
+        $('#main').click(function () {
+            $('#Mymodal').modal('show')
+        });
+    });
 </script>
 </body>
-
 </html>

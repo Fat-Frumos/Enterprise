@@ -3,143 +3,153 @@ package com.enterprise.rental.dao.jdbc;
 import com.enterprise.rental.dao.DbManager;
 import com.enterprise.rental.dao.mapper.CarMapper;
 import com.enterprise.rental.entity.Car;
-import com.enterprise.rental.exception.CarNotFoundException;
 import com.enterprise.rental.exception.DataException;
 import org.apache.log4j.Logger;
 
 import javax.validation.constraints.NotNull;
 import java.sql.*;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
-import static com.enterprise.rental.dao.jdbc.Constants.FILTER_BY_ID_SQL;
-import static com.enterprise.rental.dao.jdbc.Constants.INSERT_CAR_SQL;
+import static com.enterprise.rental.dao.jdbc.Connections.*;
+import static com.enterprise.rental.dao.jdbc.Constants.*;
 
 public class JdbcCarTemplate extends DbManager {
     private static final CarMapper CAR_ROW_MAPPER = new CarMapper();
     private static final Logger log = Logger.getLogger(JdbcCarTemplate.class);
 
     protected static Optional<Car> getCarById(long id) {
-        try (Connection connection = getInstance().getConnection();
-             PreparedStatement statement = connection.prepareStatement(FILTER_BY_ID_SQL)) {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+
+        try {
+            connection = getWithoutAutoCommit();
+            statement = connection.prepareStatement(FILTER_BY_ID_SQL);
             statement.setLong(1, id);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                return !resultSet.next()
-                        ? Optional.empty()
-                        : Optional.of(CAR_ROW_MAPPER.mapRow(resultSet));
-            }
-        } catch (SQLException e) {
-            throw new DataException(e);
+
+            resultSet = statement.executeQuery();
+            connection.commit();
+
+            return !resultSet.next()
+                    ? Optional.empty()
+                    : Optional.of(CAR_ROW_MAPPER.mapRow(resultSet));
+
+        } catch (SQLException sqlException) {
+            log.info("Car by id not found");
+            rollback(connection, sqlException);
         } finally {
-            //TODO close
+            eventually(connection, statement, resultSet);
         }
+        return Optional.empty();
     }
 
-    protected static Optional<Car> getCarQuery(String sql, String name) {
+    protected static Optional<Car> getCarQuery(String name) {
+
         List<Car> cars = new ArrayList<>();
-        try (Connection connection = getInstance().getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+        log.info(FILTER_BY_CAR_NAME_SQL + " " + name);
+
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+
+        try {
+            connection = getWithoutAutoCommit();
+            statement = connection.prepareStatement(FILTER_BY_CAR_NAME_SQL);
             statement.setString(1, name);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                while (resultSet.next()) {
-                    cars.add(CAR_ROW_MAPPER.mapRow(resultSet));
-                }
+            resultSet = statement.executeQuery();
+            connection.commit();
+
+            while (resultSet.next()) {
+                cars.add(CAR_ROW_MAPPER.mapRow(resultSet));
             }
-        } catch (Exception e) {
-            throw new DataException(e.getMessage());
+        } catch (SQLException sqlException) {
+            log.info("Cars not found");
+            rollback(connection, sqlException);
+        } finally {
+            eventually(connection, statement, resultSet);
         }
-        //TODO unique user
         return Optional.of(cars.get(0));
     }
 
     protected static List<Car> getCarsQuery(String sql) {
-
         log.info(sql);
-
-        Connection connection;
-
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
         try {
-            connection = getInstance().getConnection();
-            connection.setAutoCommit(false);
-        } catch (SQLException e) {
-            //TODO: connection to the database failed
-            throw new DataException(e);
-        }
+            connection = getWithoutAutoCommit();
+            statement = connection.prepareStatement(sql);
+            resultSet = statement.executeQuery();
+            connection.commit();
 
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-
-            try (ResultSet resultSet = statement.executeQuery()) {
-
-                connection.commit();
-
-                if (resultSet.next()) {
-                    List<Car> cars = new ArrayList<>();
-                    while (resultSet.next()) {
-                        Car car = CAR_ROW_MAPPER.mapRow(resultSet);
-                        cars.add(car);
-                    }
-                    return cars;
-                }
-                throw new CarNotFoundException(("Vehicle not found"));
+            if (resultSet.next()) {
+                return getCars(resultSet);
+            } else {
+                log.info("Vehicle not found");
             }
-        } catch (SQLException ex) {
-            throw new CarNotFoundException(ex.getMessage());
+        } catch (SQLException sqlException) {
+            rollback(connection, sqlException);
+            log.info("Vehicle not found");
+
+        } finally {
+            eventually(connection, statement, resultSet);
         }
+        return new ArrayList<>();
+    }
+
+    private static List<Car> getCars(ResultSet resultSet) throws SQLException {
+        List<Car> cars = new ArrayList<>();
+        while (resultSet.next()) {
+            cars.add(CAR_ROW_MAPPER.mapRow(resultSet));
+        }
+        return cars;
     }
 
     protected static boolean setCarQuery(@NotNull Car car) throws DataException {
 
         Connection connection = null;
+        PreparedStatement statement = null;
 
         try {
-            connection = getInstance().getConnection();
-            connection.setAutoCommit(false);
+            connection = getWithoutAutoCommit();
+            statement = connection.prepareStatement(INSERT_CAR_SQL);
+            boolean preparedStatement = setPreparedStatement(car, statement);
 
-            try (PreparedStatement statement = connection.prepareStatement(INSERT_CAR_SQL)) {
+            connection.commit();
 
-                setPreparedStatement(car, statement);
+            return preparedStatement;
 
-                connection.commit();
-                return true;
-            }
-        } catch (SQLException e) {
-            try {
-                Objects.requireNonNull(connection).rollback();
-            } catch (SQLException ex) {
-                log.info("catch SQLException rollback");
-                throw new DataException(ex);
-            }
+        } catch (SQLException sqlException) {
+            rollback(connection, sqlException);
             log.info("Car can`t be created");
-            throw new DataException(e);
+
         } finally {
-            try {
-                Objects.requireNonNull(connection).close();
-            } catch (SQLException e) {
-                log.info("Connection not closed: " + e.getMessage());
-            }
+            eventually(connection, statement);
         }
+        return false;
     }
 
-    private static void setPreparedStatement(Car car, PreparedStatement statement) throws SQLException {
-        long id = UUID.randomUUID().getMostSignificantBits() & Integer.MAX_VALUE;
-        String name = car.getName();
-        String brand = car.getBrand();
-        String model = car.getModel();
-        String path = car.getPath();
-        Double price = car.getPrice();
-        Double cost = car.getCost();
-        int year = car.getYear();
-        LocalDateTime time = LocalDateTime.now();
+    private static boolean setPreparedStatement(
+            Car car,
+            PreparedStatement statement)
+            throws SQLException {
 
-        statement.setLong(1, id);
-        statement.setString(2, name);
-        statement.setString(3, brand);
-        statement.setString(4, model);
-        statement.setString(5, path);
-        statement.setDouble(6, price);
-        statement.setDouble(7, cost);
-        statement.setInt(8, year);
-        statement.setTimestamp(9, Timestamp.valueOf(time));
-        statement.execute();
+        statement.setLong(1,
+                UUID.randomUUID().getMostSignificantBits() & 0x7fffff);
+        statement.setString(2, car.getName());
+        statement.setString(3, car.getBrand());
+        statement.setString(4, car.getModel());
+        statement.setString(5, car.getPath());
+        statement.setDouble(6, car.getPrice());
+        statement.setDouble(7, car.getCost());
+        statement.setInt(8, car.getYear());
+        statement.setTimestamp(9,
+                Timestamp.valueOf(LocalDateTime.now()));
+        return statement.execute();
     }
 }

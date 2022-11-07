@@ -1,7 +1,6 @@
 package com.enterprise.rental.controller;
 
 import com.enterprise.rental.dao.mapper.CarMapper;
-import com.enterprise.rental.dao.mapper.UserMapper;
 import com.enterprise.rental.entity.Car;
 import com.enterprise.rental.entity.User;
 import com.enterprise.rental.exception.DataException;
@@ -10,6 +9,7 @@ import org.apache.log4j.Logger;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -17,30 +17,35 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static com.enterprise.rental.dao.jdbc.Constants.CARS;
-import static com.enterprise.rental.dao.jdbc.Constants.MAIN;
+import static com.enterprise.rental.dao.jdbc.Constants.*;
 
+@MultipartConfig(
+        fileSizeThreshold = 1024 * 1024 * 1, // 1 MB
+        maxFileSize = 1024 * 1024 * 10,      // 10 MB
+        maxRequestSize = 1024 * 1024 * 100   // 100 MB
+)
 @WebServlet(urlPatterns = "/cars")
 public class CarsServlet extends HttpServlet {
     private static final Logger log = Logger.getLogger(CarsServlet.class);
     private static final CarMapper CAR_MAPPER = new CarMapper();
+    private static final CarService carService = new CarService();
+
     @Override
     protected void doGet(
             HttpServletRequest request,
             HttpServletResponse response)
             throws IOException, ServletException {
 
-        CarService carService = new CarService();
-
         List<Car> carList = carService.getAll("price>=100 ORDER BY cost LIMIT 10 OFFSET 0");
 
         int size = carService.getAll().size();
         String[] carFields = {"id", "name", "brand", "model", "path", "price", "cost", "year", "sort", "direction", "page"};
+
         Map<String, String> params = Arrays.stream(carFields)
                 .filter(key -> !"".equals(request.getParameter(key))
                         && request.getParameter(key) != null)
@@ -115,36 +120,95 @@ public class CarsServlet extends HttpServlet {
             HttpServletResponse response)
             throws ServletException, IOException {
 
-        Car mapRow = CAR_MAPPER.carMapper(request);
-
-        CarService carService = new CarService();
-
         HttpSession session = request.getSession(false);
 
-        User user = (User) session.getAttribute("user");
-
-        String id = (request.getParameter("id"));
-        Car car = null;
-        if (id != null) {
-            car = carService.getById(Long.parseLong(id));
+        if (session != null) {
+            User user = (User) session.getAttribute("user");
+            if (Objects.equals(user.getRole(), "admin")) {
+                Car carRow = CAR_MAPPER.carMapper(request);
+                String id = (request.getParameter("id"));
+                Car car = id != null ? carService.getById(Long.parseLong(id)) : new Car();
+                if (car.getId() == carRow.getId()) {
+                    Car update = carService.edit(carRow);
+                    log.info(String.format("Updated: %s", update));
+                    update.setPath(car.getPath());
+                    request.setAttribute("auto", update);
+                }
+                log.info(String.format("Car#%s mapRow: %s%n %s", id, carRow, car));
+            }
+            session.setAttribute("user", user);
         }
 
-
-        log.info(String.format("Car#%s%n mapRow: %s%n car: %s", id, mapRow, car));
-
-        //        Map<String, String> params = Arrays.stream(carFields)
-//                .filter(key -> !"".equals(request.getParameter(key))
-//                        && request.getParameter(key) != null)
-//                .collect(Collectors.toMap(
-//                        key -> key,
-//                        request::getParameter,
-//                        (a, b) -> b));
-
-
-//        request.setAttribute("auto", user.getCars().get(0));
-        request.setAttribute("auto", car);
-        dispatch(request, response, MAIN);
+         dispatch(request, response, MAIN);
     }
+
+    /***
+     * Save new car in DB
+     */
+    @Override
+    protected void doPut(
+            HttpServletRequest request,
+            HttpServletResponse response)
+            throws ServletException, IOException {
+
+        String path;
+        User user = getUser(request.getSession(false));
+
+        if (user == null || !Objects.equals(user.getRole(), "admin")) {
+            path = LOGIN;
+        } else {
+            Car carRow = CAR_MAPPER.carMapper(request);
+            boolean save = carService.save(carRow);
+
+            log.info(String.format("%s%s%nCreated: %s", user.getRole(), carRow, save));
+
+            request.setAttribute("auto", carRow);
+            request.setAttribute("cars", user.getCars());
+            path = INDEX;
+        }
+        response.sendRedirect(path);
+    }
+
+    private User getUser(HttpSession session) {
+        return session
+                != null && session.getAttribute("user")
+                != null ? (User) session.getAttribute("user")
+                : null;
+    }
+
+
+//                request.setAttribute("user", user);
+//
+//        String[] carFields = {"id", "name", "brand", "model", "path", "price", "cost", "year", "rent"};
+
+//            Map<String, String> params = Arrays.stream(carFields)
+//                    .filter(key -> !"".equals(request.getParameter(key))
+//                            && request.getParameter(key) != null)
+//                    .collect(Collectors.toMap(
+//                            key -> key,
+//                            request::getParameter,
+//                            (a, b) -> b));
+
+
+//        Part file = request.getPart("file");
+//        String filename = getFilename(file);
+//        InputStream filecontent = file.getInputStream();
+//        // ... Do your file saving job here.
+//
+//        response.setContentType("text/plain");
+//        response.setCharacterEncoding("UTF-8");
+//        response.getWriter().write("File " + filename + " successfully uploaded");
+//    }
+
+//    private static String getFilename(Part part) {
+//        for (String cd : part.getHeader("content-disposition").split(";")) {
+//            if (cd.trim().startsWith("filename")) {
+//                String filename = cd.substring(cd.indexOf('=') + 1).trim().replace("\"", "");
+//                return filename.substring(filename.lastIndexOf('/') + 1).substring(filename.lastIndexOf('\\') + 1); // MSIE fix.
+//            }
+//        }
+//        return null;
+
 
     void dispatch(
             HttpServletRequest request,

@@ -45,8 +45,8 @@ public class UserService implements Service<User> {
     }
 
     @Override
-    public List<User> getAll(String sql) {
-        return userDao.findAll(sql);
+    public List<User> getAll(String query) {
+        return userDao.findAll(query);
     }
 
     @Override
