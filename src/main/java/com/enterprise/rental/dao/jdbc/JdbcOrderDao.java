@@ -54,7 +54,7 @@ public class JdbcOrderDao implements OrderDao {
 
     @Override
     public boolean save(Order order) {
-        return setOrderQuery(order);
+        return setOrderQuery(order, INSERT_ORDER_SQL);
     }
 
     @Override
@@ -80,12 +80,12 @@ public class JdbcOrderDao implements OrderDao {
             connection = getWithoutAutoCommit();
             statement = connection.prepareStatement(query);
             boolean update = statement.executeUpdate() > 0;
-            log.info(update);
+            log.info(String.format("%s%s", update, query));
             connection.commit();
             return order;
 
         } catch (SQLException sqlException) {
-            rollback(connection, sqlException);
+            rollback(connection, sqlException, query);
             throw new OrderNotFoundException(sqlException);
         } finally {
             eventually(connection, statement);
@@ -94,12 +94,29 @@ public class JdbcOrderDao implements OrderDao {
 
     @Override
     public boolean delete(long id) {
+
+        Connection connection = null;
+        PreparedStatement statement = null;
+        String query = String.format("%s%d", DELETE_ORDER_SQL, id);
+        log.info(query);
+
+        try {
+            connection = getWithoutAutoCommit();
+            statement = connection.prepareStatement(query);
+            statement.execute();
+            connection.commit();
+            return true;
+
+        } catch (SQLException sqlException) {
+            rollback(connection, sqlException, query);
+        } finally {
+            eventually(connection, statement);
+        }
         return false;
     }
 
     private static Optional<Order> getOrder(
             ResultSet resultSet) throws SQLException {
-
         return !resultSet.next()
                 ? Optional.empty()
                 : Optional.of(ORDER_ROW_MAPPER.mapRow(resultSet));
@@ -109,14 +126,17 @@ public class JdbcOrderDao implements OrderDao {
 
         Connection connection = null;
         PreparedStatement statement = null;
+        String query = String.format("%s%d", FILTER_ORDER_BY_ID_SQL, id);
         try {
             connection = getWithoutAutoCommit();
             statement = connection.prepareStatement(FILTER_ORDER_BY_ID_SQL);
+
             statement.setLong(1, id);
+            log.info(query);
             return getOrder(statement.executeQuery());
 
         } catch (SQLException sqlException) {
-            rollback(connection, sqlException);
+            rollback(connection, sqlException, query);
             throw new DataException(sqlException);
         } finally {
             eventually(connection, statement);
@@ -128,7 +148,7 @@ public class JdbcOrderDao implements OrderDao {
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         List<Order> orders = new ArrayList<>();
-
+        log.info(String.format("%s", query));
         try {
             connection = getWithoutAutoCommit();
             statement = connection.prepareStatement(query);
@@ -139,13 +159,13 @@ public class JdbcOrderDao implements OrderDao {
                 while (resultSet.next()) {
                     Order order = ORDER_ROW_MAPPER.mapRow(resultSet);
                     orders.add(order);
-                    log.info(order);
                 }
+                log.info(String.format("%d order(s)", orders.size()));
                 return orders;
             }
 
         } catch (SQLException sqlException) {
-            rollback(connection, sqlException);
+            rollback(connection, sqlException, query);
         } finally {
             eventually(connection, statement, resultSet);
         }
@@ -153,16 +173,13 @@ public class JdbcOrderDao implements OrderDao {
     }
 
 
-
-
-    private boolean setOrderQuery(Order order) {
-
+    private boolean setOrderQuery(Order order, String query) {
+        log.info(String.format(" sql: %s", query));
         Connection connection = null;
         PreparedStatement statement = null;
-
         try {
             connection = getWithoutAutoCommit();
-            statement = connection.prepareStatement(INSERT_ORDER_SQL);
+            statement = connection.prepareStatement(query);
             setOrders(order, statement);
             boolean execute = statement.execute();
 
@@ -170,7 +187,7 @@ public class JdbcOrderDao implements OrderDao {
             return execute;
 
         } catch (SQLException sqlException) {
-            rollback(connection, sqlException);
+            rollback(connection, sqlException, query);
         } finally {
             eventually(connection, statement);
         }
@@ -186,7 +203,6 @@ public class JdbcOrderDao implements OrderDao {
         Timestamp create = new Timestamp(System.currentTimeMillis());
         String passport = order.getPassport();
         String reason = order.getReason();
-        String card = order.getPhone();
         double payment = order.getPayment();
         Timestamp term = order.getTerm();
         log.info(order);
@@ -194,12 +210,15 @@ public class JdbcOrderDao implements OrderDao {
         statement.setLong(1, UUID.randomUUID().getMostSignificantBits() & 0x7ffffffL);
         statement.setLong(2, order.getUserId());
         statement.setLong(3, order.getCarId());
-        statement.setTimestamp(4, create);
-        statement.setString(5, passport);
-        statement.setString(6, reason);
-        statement.setString(7, card);
-        statement.setDouble(8, payment);
-        statement.setTimestamp(9, term);
-        statement.setBoolean(10, driver);
+        statement.setDouble(4, payment);
+        statement.setBoolean(5, driver);
+        statement.setBoolean(6, order.isRejected());
+        statement.setBoolean(7, order.isClosed());
+        statement.setTimestamp(8, create);
+        statement.setString(9, order.getDamage());
+        statement.setString(10, passport);
+        statement.setString(11, order.getPhone());
+        statement.setTimestamp(12, term);
+        statement.setString(13, reason);
     }
 }

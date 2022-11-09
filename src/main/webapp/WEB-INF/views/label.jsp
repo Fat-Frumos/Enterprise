@@ -23,7 +23,7 @@
     <div class="row">
         <div class="p-3">
             <figure>
-                <input type="submit" value="${auto.id}" name="id" hidden>
+                <input type="submit" value="${auto.id}" name="id" hidden readonly="readonly">
                 <img class="img-fluid"
                      onclick="put(${auto.id})"
                      id="main"
@@ -117,6 +117,28 @@
 <script>
 
     if ("${user.role}" === "admin") {
+        <%--<a href="/car?id=<c:out value='${car.carId}' />">Delete</a>--%>
+        let main = document.getElementById("main");
+        main.addEventListener('contextmenu', (event) => {
+                event.preventDefault()
+
+                if (confirm("Do you want to remove the car?")) {
+                    let url = '/cars' + '?id=' + ${auto.id};
+                    console.log(url);
+                    fetch(url, {
+                        method: 'DELETE',
+                    }).then(response => {
+                        console.log('Ok:', response);
+                        window.location.href = url;
+                    }).catch(err => {
+                        console.error(err)
+                    })
+                // } else {
+                //     window.history.back();
+                }
+            }
+        )
+
         for (let i = 3; i < 8; i++) {
             let brand = document.querySelector("body > div.container > div.row.m-0 > div.col-lg-7.pb-5.pe-lg-5 > form > div > div:nth-child(2) > p > input:nth-child(1)")
             let model = document.querySelector("body > div.container > div.row.m-0 > div.col-lg-7.pb-5.pe-lg-5 > form > div > div:nth-child(2) > p > input:nth-child(2)")
@@ -141,4 +163,5 @@
             console.error(err)
         })
     }
+
 </script>

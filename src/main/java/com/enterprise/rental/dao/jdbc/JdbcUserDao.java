@@ -27,13 +27,15 @@ public class JdbcUserDao implements UserDao {
             Logger.getLogger(JdbcUserDao.class);
 
     @Override
-    public Optional<User> findByName(
-            @NotNull String name) {
-        String sql = String.format("%s'%s'",
-                FILTER_BY_NAME_SQL, name);
-        Optional<User> user = getUserSql(sql);
-        log.info(sql + " " + user);
-        return user;
+    public Optional<User> findByName(String name) {
+        if (name != null) {
+            String sql = String.format("%s'%s'",
+                    FILTER_BY_NAME_SQL, name);
+            Optional<User> user = getUserSql(sql);
+            log.info(sql + " " + user);
+            return user;
+        }
+        return Optional.empty();
     }
 
     @Override
@@ -68,7 +70,7 @@ public class JdbcUserDao implements UserDao {
 
         } catch (SQLException sqlException) {
             log.error(sqlException.getMessage());
-            rollback(connection, sqlException);
+            rollback(connection, sqlException, query);
 
         } finally {
             eventually(connection, statement);
@@ -82,19 +84,19 @@ public class JdbcUserDao implements UserDao {
     }
 
     @Override
-    public List<User> findAll(String sql) {
+    public List<User> findAll(String query) {
 
         Connection connection = null;
         PreparedStatement statement = null;
 
         try {
             connection = getInstance().getConnection();
-            statement = connection.prepareStatement(sql);
+            statement = connection.prepareStatement(query);
             return getUsers(connection, statement, new ArrayList<>());
 
         } catch (SQLException sqlException) {
             log.error(sqlException.getMessage());
-            rollback(connection, sqlException);
+            rollback(connection, sqlException, query);
 
         } finally {
             eventually(connection, statement);
@@ -128,7 +130,7 @@ public class JdbcUserDao implements UserDao {
             return getUser(users, resultSet);
 
         } catch (SQLException sqlException) {
-            rollback(connection, sqlException);
+            rollback(connection, sqlException, USERS_SQL);
             log.info(String.format("Customer not found %s",
                     sqlException.getMessage()));
         } finally {
@@ -164,7 +166,7 @@ public class JdbcUserDao implements UserDao {
         }
     }
 
-    private Optional<User> getUserSql(String sql) {
+    private Optional<User> getUserSql(String query) {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -173,7 +175,7 @@ public class JdbcUserDao implements UserDao {
             connection = getInstance().getConnection();
             connection.setAutoCommit(false);
 
-            statement = connection.prepareStatement(sql);
+            statement = connection.prepareStatement(query);
             resultSet = statement.executeQuery();
             connection.commit();
 
@@ -182,8 +184,7 @@ public class JdbcUserDao implements UserDao {
                     : Optional.of(ROW_MAPPER.mapRow(resultSet));
 
         } catch (SQLException sqlException) {
-
-            rollback(connection, sqlException);
+            rollback(connection, sqlException, query);
             log.info("rollback (connection)");
 
         } finally {
@@ -201,14 +202,14 @@ public class JdbcUserDao implements UserDao {
         try {
             connection = getWithoutAutoCommit();
             statement = connection.prepareStatement(INSERT_USER_SQL);
+            log.info(String.format("%s", INSERT_USER_SQL));
             connection.commit();
-
             setUsers(user, statement);
             boolean execute = statement.execute();
             connection.commit();
             return execute;
         } catch (SQLException sqlException) {
-            rollback(connection, sqlException);
+            rollback(connection, sqlException, INSERT_USER_SQL);
             log.info(String.format("%s User can`t added", user.getName()));
         } finally {
             eventually(connection, statement);
@@ -222,7 +223,7 @@ public class JdbcUserDao implements UserDao {
         String password = user.getPassword();
         String email = user.getEmail();
         String role = user.getRole();
-        log.info(user);
+        log.info(INSERT_USER_SQL + "\n" + user);
         statement.setLong(1, UUID.randomUUID().getMostSignificantBits() & 0x7fffL);
         statement.setString(2, user.getName());
         statement.setString(3, email);

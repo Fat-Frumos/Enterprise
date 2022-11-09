@@ -1,5 +1,6 @@
 package com.enterprise.rental.controller;
 
+import com.enterprise.rental.dao.mapper.OrderMapper;
 import com.enterprise.rental.entity.Car;
 import com.enterprise.rental.entity.Order;
 import com.enterprise.rental.entity.User;
@@ -17,8 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,39 +27,52 @@ import static com.enterprise.rental.dao.jdbc.Constants.*;
 public class OrderServlet extends HttpServlet {
     private static final Log log = LogFactory.getLog(OrderServlet.class);
     private static final CarService carService = new CarService();
+    private static final OrderService orderService = new OrderService();
+    private static final OrderMapper ORDER_MAPPER = new OrderMapper();
 
     @Override
     protected void doGet(
             HttpServletRequest request,
             HttpServletResponse response) {
+
+        String path = LOGIN;
         HttpSession session = request.getSession(false);
 
         if (session != null && session.getAttribute("user") != null) {
             User user = (User) session.getAttribute("user");
             String id = request.getParameter("id");
-            if (id == null) {
-                dispatch(request, response, CARS);
-            } else {
+            if (id != null) {
                 long carId = Long.parseLong(id);
+
                 request.setAttribute("auto", carService.getById(carId));
+
                 List<Car> userCars = user.getCars();
-                for (Car car : userCars) {
-                    if (car.getId() == carId) {
-                        log.info(String.format("Rental Car: %s", car));
-                        log.info(String.format("User : %s", user));
-                        List<Car> cars = new ArrayList<>();
-                        List<Car> carList = user.getCars();
-                        carList.stream().filter(auto -> cars.size() < 3).forEachOrdered(cars::add);
-                        request.setAttribute("auto", car);
-                        request.setAttribute("cars", cars);
-                        request.setAttribute("car", user.getCars().size());
-                    }
-                }
-                request.setAttribute("user", user);
-                dispatch(request, response, MAIN);
+
+                setUserAttribute(request, user, carId, userCars);
+
+                path = MAIN;
+            } else {
+                path = CARS;
             }
-        } else {
-            dispatch(request, response, LOGIN);
+        }
+        dispatch(request, response, path);
+    }
+
+    private static void setUserAttribute(HttpServletRequest request, User user, long carId, List<Car> userCars) {
+        for (Car car : userCars) {
+            if (car.getId() == carId) {
+                log.info(String.format("Rental Car: %s", car));
+                log.info(String.format("User : %s", user));
+
+                List<Car> cars = new ArrayList<>();
+                List<Car> carList = user.getCars();
+                carList.stream().filter(auto -> cars.size() < 3).forEachOrdered(cars::add);
+                user.setCar(car);
+                request.setAttribute("auto", car);
+                request.setAttribute("cars", cars);
+                request.setAttribute("car", user.getCars().size());
+                request.setAttribute("user", user);
+            }
         }
     }
 
@@ -73,65 +85,64 @@ public class OrderServlet extends HttpServlet {
             HttpServletResponse response)
             throws ServletException, IOException {
 
-        OrderService orderService = new OrderService();
-
         HttpSession session = request.getSession(false);
         if (session != null) {
             User user = (User) session.getAttribute("user");
             if (user != null) {
-
                 log.info(String.format("user %s", user));
                 Car car = user.getCar();
                 log.info(String.format("Car %s", car));
-
-                String passport = request.getParameter("passport");
-                String reason = request.getParameter("reason");
-                String phone = request.getParameter("phone");
-                String payment = request.getParameter("payment");
-                String timestamp = request.getParameter("term");
-
-                boolean driver = request.getParameter("driver") != null;
-                double pay = payment != null ? Double.parseDouble(payment) : 0;
-
-                Timestamp term = Timestamp.valueOf(
-                        LocalDate.parse(timestamp).atStartOfDay());
-
-                log.info(String.format("%s/%s/%s", driver, pay, term));
-
                 if (car != null) {
-                    Order order = new Order.Builder()
-                            .carId(car.getId())
-                            .userId(user.getUserId())
-                            .passport(passport)
-                            .reason(reason)
-                            .phone(phone)
-                            .driver(driver)
-                            .payment(pay)
-                            .term(term)
-                            .build();
-                    List<Car> userCars = getCars(orderService, user, order, car);
-                    request.setAttribute("cars", userCars);
+                    Order orderMapper = ORDER_MAPPER.orderMapper(request);
+                    boolean saved = orderService.createOrder(orderMapper);
+                    if (saved) {
+                        List<Car> userCars = user.getCars();
+                        for (Car userCar : userCars) {
+                            if (userCar.getId() == car.getId()) {
+                                userCars.remove(userCar);
+                                user.setCars(userCars);
+                            }
+                        }
+                        List<Order> orderList = orderService.getAll(user);
+                        request.setAttribute("order", orderList);
+                        user.setCar(new Car());
+                    }
                 }
+//                request.setAttribute("cars", carService.getAll());
             }
         }
         response.sendRedirect("/user");
     }
 
-    private static List<Car> getCars(
-            OrderService orderService,
-            User user, Order order, Car car) {
 
-        boolean saved = orderService.createOrder(order);
+    @Override
+    protected void doDelete(
+            HttpServletRequest request,
+            HttpServletResponse response)
+            throws ServletException, IOException {
 
-        List<Car> userCars = new ArrayList<>();
+        String id = (request.getParameter("orderId"));
+        log.info(String.format("%s", id));
+        String path = LOGIN;
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            User user = (User) session.getAttribute("user");
+            if (user.getRole().equals("manager")) {
+                boolean delete = orderService.delete(id);
+                log.info(String.format("%s %b", id, delete));
+//                List<Order> userOrders = orderService.getAll();
+//                request.setAttribute("orders", userOrders);
+                request.setAttribute("user", user);
+                request.setAttribute("cars", user.getCars());
+                log.info(String.format("%s", user.getCars()));
+                log.info(String.format("%s", user));
+                path = "/user";
 
-        if (saved) {
-            userCars = user.getCars();
-            userCars.removeIf(userCar -> userCar.getId() == car.getId());
-            user.setCars(userCars);
-            user.setCar(new Car());
+            }
+            response.sendRedirect(path);
+//            dispatch(request, response, path);
         }
-        return userCars;
+
     }
 
     void dispatch(

@@ -61,23 +61,23 @@ public class JdbcCarDao implements CarDao {
 
         log.info(String.format("%s", query));
 
-        return getCar(car, query);
+        return updateCar(car, query);
     }
 
-    private static Car getCar(Car car, String sql) {
+    private static Car updateCar(Car car, String query) {
 
         Connection connection = null;
         PreparedStatement statement = null;
         try {
             connection = getInstance().getConnection();
             connection.setAutoCommit(false);
-            statement = connection.prepareStatement(sql);
+            statement = connection.prepareStatement(query);
             boolean update = statement.executeUpdate() > 0;
             log.info(String.format("update car %s", update));
             connection.commit();
             return car;
         } catch (SQLException sqlException) {
-            rollback(connection, sqlException);
+            rollback(connection, sqlException, query);
             throw new OrderNotFoundException(sqlException);
         } finally {
             eventually(connection, statement);
@@ -86,6 +86,17 @@ public class JdbcCarDao implements CarDao {
 
     @Override
     public boolean delete(long id) {
+
+        Optional<Car> optionalCar = getCarById(id);
+        if (optionalCar.isPresent()) {
+            Car car = optionalCar.get();
+            String query = String.format("DELETE FROM car where id = %d", id);
+            String sql = String.format("UPDATE car SET rent = true WHERE id = %d", id);
+            Car updatedCar = updateCar(car, query);
+            log.info(String.format("Deleted: %s", updatedCar));
+            log.info(String.format(sql));
+            return true;
+        }
         return false;
     }
 

@@ -24,6 +24,8 @@
                     <div class="col-12 px-4 mb-5">
                         <div class="d-flex mb-4">
                         <span class="me-5">
+                            <input id="carId" name="carId" value="${auto.id}" hidden>
+                            <input id="userId" name="userId" value="${user.userId}" hidden>
                             <br>
                                     <span class="text-muted">Passport</span>
                                     <input class="form-control"
@@ -127,13 +129,30 @@
                     $(".done").removeClass("finish");
                     $(".failed").removeClass("finish");
                 }, 2000);
-                // $(".done").addClass("failed");
-                // setTimeout(() => {
-                //     $(".submit").submit();
-                //     $(".done").addClass("finish");
-                // }, 1000);
             })
         });
+
+
+        // $(document).ready(function () {
+        //     $(".submit").click(function () {
+        //         $(".submit").addClass("loading");
+        //         setTimeout(function () {
+        //             $(".submit").addClass("hide-loading");
+        //             // $(".done").addClass("finish");
+        //         }, 1000);
+        //         setTimeout(function () {
+        //             $(".submit").removeClass("loading").removeClass("hide-loading");
+        //             $(".done").removeClass("finish");
+        //             $(".failed").removeClass("finish");
+        //         }, 2000);
+        //         window.location.href = "/user";
+        //         $(".done").addClass("failed");
+        //         setTimeout(() => {
+        //             $(".submit").submit();
+        //             // $(".done").addClass("finish");
+        //         }, 1000);
+        //     })
+        // });
 
         let day = 1;
         let datePicker = document.getElementById('term');

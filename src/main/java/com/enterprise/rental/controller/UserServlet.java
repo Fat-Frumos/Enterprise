@@ -39,14 +39,14 @@ public class UserServlet extends HttpServlet {
         OrderService orderService = new OrderService();
         HttpSession session = request.getSession(false);
         String path = "/";
+        User user;
         if (session != null) {
-            User user = (User) session.getAttribute("user");
+            user = (User) session.getAttribute("user");
             String role = user != null ? user.getRole() : "guest";
             session.setAttribute("user", user);
             if (Objects.equals(role, "admin")) {
                 List<User> users = userService.getAll();
                 log.info(String.format("There are %d users", users.size()));
-                request.setAttribute("users", users);
                 path = USERS;
             } else if (Objects.equals(role, "manager")) {
                 List<Order> orders = orderService.getAll();
@@ -58,11 +58,12 @@ public class UserServlet extends HttpServlet {
                         .stream()
                         .filter(order -> order.getUserId() == (user.getUserId()))
                         .collect(Collectors.toList());
-                log.info(userOrders);
+                log.info(userOrders.size());
                 request.setAttribute("orders", userOrders);
                 path = ORDERS;
             } else {
                 path = FORGOT;
+
             }
         }
         dispatch(request, response, path);

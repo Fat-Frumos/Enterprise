@@ -16,10 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.enterprise.rental.dao.jdbc.Constants.*;
@@ -127,19 +124,22 @@ public class CarsServlet extends HttpServlet {
             if (Objects.equals(user.getRole(), "admin")) {
                 Car carRow = CAR_MAPPER.carMapper(request);
                 String id = (request.getParameter("id"));
-                Car car = id != null ? carService.getById(Long.parseLong(id)) : new Car();
-                if (car.getId() == carRow.getId()) {
-                    Car update = carService.edit(carRow);
-                    log.info(String.format("Updated: %s", update));
-                    update.setPath(car.getPath());
-                    request.setAttribute("auto", update);
+
+                Optional<Car> optionalCar = carService.getById(Long.parseLong(id));
+                if (optionalCar.isPresent()) {
+                    Car car = optionalCar.get();
+                    if (car.getId() == carRow.getId()) {
+                        Car update = carService.edit(carRow);
+                        log.info(String.format("Updated: %s", update));
+                        update.setPath(car.getPath());
+                        request.setAttribute("auto", update);
+                    }
+                    log.info(String.format("Car#%s mapRow: %s%n %s", id, carRow, optionalCar));
                 }
-                log.info(String.format("Car#%s mapRow: %s%n %s", id, carRow, car));
             }
             session.setAttribute("user", user);
         }
-
-         dispatch(request, response, MAIN);
+        dispatch(request, response, MAIN);
     }
 
     /***
@@ -176,39 +176,33 @@ public class CarsServlet extends HttpServlet {
                 : null;
     }
 
+    @Override
+    protected void doDelete(
+            HttpServletRequest request,
+            HttpServletResponse response) throws ServletException, IOException {
+        String id = (request.getParameter("id"));
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            User user = (User) session.getAttribute("user");
+            if (user.getRole().equals("admin")) {
+                long carId = Long.parseLong(id);
+                Optional<Car> optionalCar = carService.getById(carId);
+                if (optionalCar.isPresent()) {
+                    boolean delete = carService.delete(carId);
+                    log.info(String.format("%s %b", id, delete));
+                    List<Car> userCars = user.getCars();
+                    userCars.remove(optionalCar.get());
+                    user.setCars(userCars);
+                    log.info(String.format("%s", user));
+                    request.setAttribute("user", user);
+                    request.setAttribute("cars", user.getCars());
+                    log.info(String.format("%s", user.getCars()));
+                }
 
-//                request.setAttribute("user", user);
-//
-//        String[] carFields = {"id", "name", "brand", "model", "path", "price", "cost", "year", "rent"};
-
-//            Map<String, String> params = Arrays.stream(carFields)
-//                    .filter(key -> !"".equals(request.getParameter(key))
-//                            && request.getParameter(key) != null)
-//                    .collect(Collectors.toMap(
-//                            key -> key,
-//                            request::getParameter,
-//                            (a, b) -> b));
-
-
-//        Part file = request.getPart("file");
-//        String filename = getFilename(file);
-//        InputStream filecontent = file.getInputStream();
-//        // ... Do your file saving job here.
-//
-//        response.setContentType("text/plain");
-//        response.setCharacterEncoding("UTF-8");
-//        response.getWriter().write("File " + filename + " successfully uploaded");
-//    }
-
-//    private static String getFilename(Part part) {
-//        for (String cd : part.getHeader("content-disposition").split(";")) {
-//            if (cd.trim().startsWith("filename")) {
-//                String filename = cd.substring(cd.indexOf('=') + 1).trim().replace("\"", "");
-//                return filename.substring(filename.lastIndexOf('/') + 1).substring(filename.lastIndexOf('\\') + 1); // MSIE fix.
-//            }
-//        }
-//        return null;
-
+            }
+        }
+        response.sendRedirect("/cars");
+    }
 
     void dispatch(
             HttpServletRequest request,

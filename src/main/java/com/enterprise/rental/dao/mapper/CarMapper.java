@@ -22,8 +22,9 @@ public class CarMapper extends Mapper<Car> {
             Double price = resultSet.getDouble("price");
             Double cost = resultSet.getDouble("cost");
             int year = Integer.parseInt(resultSet.getString("year"));
-//            String rent = resultSet.getString("rent") == null
-//                    ? "off" : resultSet.getString("rent");
+            String rent = resultSet.getString("rent");
+            boolean closed = Boolean.parseBoolean(rent);
+
             return new Car.Builder()
                     .id(id)
                     .name(name)
@@ -33,7 +34,7 @@ public class CarMapper extends Mapper<Car> {
                     .price(price)
                     .cost(cost)
                     .year(year)
-//                    .rent(rent.equals("on"))
+                    .rent(closed)
                     .build();
         } catch (SQLException exception) {
             try {

@@ -21,7 +21,7 @@
             width: 100%;
         }
     </style>
-<%--    document.querySelector("body > div.wrapper > div:nth-child(4)")--%>
+
 </head>
 <title>Users</title>
 </head>
@@ -48,6 +48,7 @@
                 <th>Rejected</th>
                 <th>Closed</th>
                 <th>Confirm</th>
+                <th>Remove</th>
             </tr>
             </thead>
             <tbody>
@@ -95,6 +96,11 @@
                                     id="accept-button" class="btn btn-outline-success" type="submit">&#10003;
                             </button>
                         </td>
+                        <td>
+                            <a
+                                    id="rm-button" onclick="remove(${order.orderId})" class="btn btn-outline-danger">&#10003;
+                            </a>
+                        </td>
                     </form>
                 </tr>
             </c:forEach>
@@ -102,7 +108,6 @@
         </table>
     </div>
 </div>
-<h5 style="left: 90vw; top: 0; position: absolute"><ct:today format="MMMM dd yyyy"/></h5>
 <link
         rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
@@ -110,6 +115,20 @@
         crossorigin="anonymous"
 />
 <script>
+    function remove(id){
+        let url = '/order' + '?orderId=' + id;
+        // let url = '/cars' + '?id=' + id;
+        console.log(url);
+        fetch(url, {
+            method: 'DELETE',
+        }).then(response => {
+            console.log('Ok:', response);
+            window.location.href = url;
+        }).catch(err => {
+            console.error(err)
+        })
+    }
+
     document.querySelectorAll(".true").forEach(element => element.checked = true)
 </script>
 </body>

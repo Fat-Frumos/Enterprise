@@ -17,7 +17,7 @@ create table orders
 );
 
 alter table orders
-    owner to xhhiprtyikbzhv;
+    owner to Pasha;
 
 INSERT INTO public.orders (order_id, user_id, car_id, payment, driver, rejected, closed, created, damage, passport, phone, term, reason) VALUES (70863071, 3965, 227, 600, true, true, true, '2022-11-02 23:09:39.789000', 'Skratch', 'AA 123 456 789', '+38 (050) 5714549', '2022-11-04 00:00:00.000000', 'Driving without a License');
 INSERT INTO public.orders (order_id, user_id, car_id, payment, driver, rejected, closed, created, damage, passport, phone, term, reason) VALUES (4604773, 3965, 6458932, 12250, false, true, false, '2022-11-04 23:50:33.325000', 'T-Bone Accidents', 'AA 123 456 789', '+38 (050) 5714549', '2022-11-11 00:00:00.000000', 'Driving a modified car without intimation');

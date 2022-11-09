@@ -98,14 +98,3 @@
         });
     }));
 </script>
-
-<%--<script>--%>
-<%--    function brand() {--%>
-<%--        const $select = document.querySelector('#brand');--%>
-<%--        let text = $select.options[$select.selectedIndex].value;--%>
-<%--        const $options = Array.from($select.options);--%>
-<%--        const optionToSelect = $options.find(item => item.text === text);--%>
-<%--        optionToSelect.selected = true;--%>
-<%--        console.log(": " + text);--%>
-<%--    }--%>
-<%--</script>--%>

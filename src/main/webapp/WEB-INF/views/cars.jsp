@@ -38,24 +38,12 @@
 </head>
 
 <body>
-
-<%--<script>--%>
-<%--    function brand() {--%>
-<%--        const $select = document.querySelector('#brand');--%>
-<%--        let text = $select.options[$select.selectedIndex].value;--%>
-<%--        const $options = Array.from($select.options);--%>
-<%--        const optionToSelect = $options.find(item => item.text === text);--%>
-<%--        optionToSelect.selected = true;--%>
-<%--        console.log(": " + text);--%>
-<%--    }--%>
-<%--</script>--%>
 <jsp:include page="option.jsp"/>
 <jsp:include page="cart.jsp"/>
 <jsp:include page="nav.jsp"/>
-<%--<jsp:include page="burger.jsp"/>--%>
+
 <%--    <jsp:include page="burger.jsp"/>--%>
 <%--    <div class="day">--%>
-
 <%--        <a style="text-transform: capitalize" href="/user/${user}">(${user})</a>--%>
 <%--    </div>--%>
 

@@ -3,7 +3,6 @@ package com.enterprise.rental.service;
 import com.enterprise.rental.dao.CarDao;
 import com.enterprise.rental.dao.jdbc.JdbcCarDao;
 import com.enterprise.rental.entity.Car;
-import com.enterprise.rental.exception.CarNotFoundException;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -37,15 +36,12 @@ public class CarService implements Service<Car> {
 
     @Override
     public Car edit(Car car) {
-        Car edit = carDao.edit(car);
-        return edit;
+        return carDao.edit(car);
     }
 
     @Override
-    public Car getById(long id) {
-        Optional<Car> car = carDao.findById(id);
-        return car.orElseThrow(() ->
-                new CarNotFoundException("Car not found"));
+    public Optional<Car> getById(long id) {
+        return carDao.findById(id);
     }
 
     @Override

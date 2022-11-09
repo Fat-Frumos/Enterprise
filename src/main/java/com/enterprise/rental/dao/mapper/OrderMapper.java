@@ -1,6 +1,5 @@
 package com.enterprise.rental.dao.mapper;
 
-import com.enterprise.rental.dao.jdbc.JdbcOrderDao;
 import com.enterprise.rental.entity.Order;
 import com.enterprise.rental.exception.DataException;
 import com.enterprise.rental.exception.OrderNotFoundException;
@@ -10,11 +9,14 @@ import javax.servlet.http.HttpServletRequest;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class OrderMapper extends Mapper<Order> {
     private static final Logger log = Logger.getLogger(OrderMapper.class);
+
     public Order mapRow(ResultSet resultSet) {
 
         try {
@@ -27,12 +29,7 @@ public class OrderMapper extends Mapper<Order> {
             String passport = resultSet.getString("passport");
             String damage = resultSet.getString("damage");
             String phone = resultSet.getString("phone");
-            String reason = resultSet.getString("reason")
-                    == null
-                    ? ""
-                    : resultSet.getString("reason");
-
-
+            String reason = resultSet.getString("reason");
             String create = resultSet.getString("created");
             Timestamp created = create
                     != null
@@ -51,13 +48,7 @@ public class OrderMapper extends Mapper<Order> {
                     ? "off"
                     : resultSet.getString("driver");
 
-//            String rejected = resultSet.getString("rejected") == null
-//                    ? "off" : resultSet.getString("rejected");
-
-//            String closed = resultSet.getString("driver") == null
-//                    ? "off" : resultSet.getString("driver");
-
-            Order order = new Order.Builder()
+            return new Order.Builder()
                     .orderId(orderId)
                     .userId(userId)
                     .carId(carId)
@@ -72,8 +63,7 @@ public class OrderMapper extends Mapper<Order> {
                     .rejected(rejected)
                     .closed(closed)
                     .build();
-//            log.info("Order" + order);
-            return order;
+
         } catch (SQLException exception) {
             try {
                 resultSet.close();
@@ -86,7 +76,8 @@ public class OrderMapper extends Mapper<Order> {
 
     public Order orderMapper(HttpServletRequest request) {
 
-        String[] fields = {"orderId", "carId", "userId", "passport", "reason", "phone", "damage", "driver", "rejected", "closed"};
+        String[] fields = {"orderId", "carId", "userId", "passport", "reason", "phone", "damage", "payment", "created", "term"};
+
         Map<String, String> params = new HashMap<>();
         for (String key : fields) {
             if (!"".equals(request.getParameter(key))
@@ -95,30 +86,42 @@ public class OrderMapper extends Mapper<Order> {
             }
         }
 
-        String orderId = params.get("orderId");
-        String carId = params.get("carId");
-        String userId = params.get("userId");
+        long orderId = params.get("orderId") != null
+                ? Long.parseLong(params.get("orderId"))
+                : UUID.randomUUID().getMostSignificantBits() & 0x7ffffffL;
+
+        long carId = Long.parseLong(params.get("carId"));
+        long userId = Long.parseLong(params.get("userId"));
+
         String passport = params.get("passport");
         String reason = params.get("reason");
         String phone = params.get("phone");
         String damage = params.get("damage");
+        String payment = params.get("payment");
+        String createTimestamp = params.get("created");
+        String timestamp = params.get("term");
 
-        String rejected = request.getParameter("rejected") == null
-                ? "off" : request.getParameter("rejected");
-        String closed = request.getParameter("closed") == null
-                ? "off" : request.getParameter("closed");
-//        String driver = request.getParameter("driver") == null
-//                ? "off" : request.getParameter("driver");
-        boolean driver = Boolean.parseBoolean(request.getParameter("driver"));
-        Double payment = Double.valueOf(request.getParameter("payment"));
-        Timestamp term = Timestamp.valueOf(request.getParameter("term"));
-        Timestamp created = Timestamp.valueOf(request.getParameter("created"));
+        boolean closed = request.getParameter("closed") != null;
+        boolean rejected = request.getParameter("rejected") != null;
+        boolean driver = request.getParameter("driver") != null;
+
+        double pay = payment != null
+                ? Double.parseDouble(payment)
+                : 0;
+
+        Timestamp created = createTimestamp == null
+                ? new Timestamp(System.currentTimeMillis())
+                : Timestamp.valueOf(createTimestamp);
+
+        Timestamp term = createTimestamp == null
+                ? new Timestamp(System.currentTimeMillis())
+                : Timestamp.valueOf(timestamp);
 
         return new Order.Builder()
-                .orderId(Long.parseLong(orderId))
-                .userId(Long.parseLong(userId))
-                .carId(Long.parseLong(carId))
-                .payment(payment)
+                .orderId(orderId)
+                .userId(userId)
+                .carId(carId)
+                .payment(pay)
                 .passport(passport)
                 .reason(reason)
                 .phone(phone)
@@ -126,8 +129,8 @@ public class OrderMapper extends Mapper<Order> {
                 .created(created)
                 .term(term)
                 .driver(driver)
-                .rejected(rejected.equals("on"))
-                .closed(closed.equals("on"))
+                .rejected(rejected)
+                .closed(closed)
                 .build();
     }
 }

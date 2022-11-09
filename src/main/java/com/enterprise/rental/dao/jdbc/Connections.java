@@ -45,16 +45,15 @@ public class Connections {
 
     protected static boolean rollback(
             Connection connection,
-            SQLException sqlException) {
-        log.info(String.format("Rollback: %s",
-                sqlException.getMessage()));
+            SQLException sqlException, String query) {
+        log.info(String.format("Rollback: %s%n%s%n",sqlException.getMessage(), query));
         return rollback(connection);
     }
 
     private static boolean rollback(Connection connection) {
         try {
             Objects.requireNonNull(connection).rollback();
-            log.info("Rollback");
+//            log.info("Rollback");
             return true;
         } catch (SQLException exception) {
             throw new DataException(
@@ -66,7 +65,7 @@ public class Connections {
     private static void close(Connection connection) {
         try {
             Objects.requireNonNull(connection).close();
-            log.info("Connection closed");
+//            log.info("Connection closed");
         } catch (SQLException e) {
             throw new DataException("Connection not closed: %s", e);
         }
@@ -75,7 +74,7 @@ public class Connections {
     private static void close(PreparedStatement statement) {
         try {
             Objects.requireNonNull(statement).close();
-            log.info("Prepared Statement closed");
+//            log.info("Prepared Statement closed");
         } catch (SQLException e) {
             throw new DataException(e.getMessage(), e);
         }
@@ -84,7 +83,7 @@ public class Connections {
     private static boolean close(ResultSet resultSet) {
         try {
             Objects.requireNonNull(resultSet).close();
-            log.info("resultSet closed");
+//            log.info("resultSet closed");
             return true;
         } catch (SQLException sqlException) {
             log.info(String.format("resultSet not closed: %s",

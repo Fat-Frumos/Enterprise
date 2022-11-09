@@ -7,6 +7,7 @@ import com.enterprise.rental.service.CarService;
 import com.enterprise.rental.service.UserService;
 import org.apache.log4j.Logger;
 
+import javax.faces.component.UIComponentBase;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,10 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 import static com.enterprise.rental.dao.jdbc.Constants.*;
 
@@ -29,7 +27,7 @@ public class CartServlet extends HttpServlet {
     private static final Logger log = Logger.getLogger(CartServlet.class);
 
     /**
-     * Cars basket for user: get list
+     * Cars bucket for user: get list
      */
     @Override
     protected void doGet(
@@ -85,6 +83,7 @@ public class CartServlet extends HttpServlet {
 
         HttpSession session = request.getSession(false);
         User user = (User) session.getAttribute("user");
+        String path = LOGIN;
         if (user != null) {
             log.info(String.format("Post from session %s", user));
             String role = user != null ? user.getRole() : "guest";
@@ -96,11 +95,13 @@ public class CartServlet extends HttpServlet {
 
             if (Objects.equals(role, "user")) {
                 id = Integer.parseInt(request.getParameter("id"));
-                Car car = carService.getById(id);
-                log.info(car);
-                log.info(String.format("Main post car %d from session %s: %s", id, role, user));
+                Optional<Car> optional = carService.getById(id);
+                if (optional.isPresent()) {
+                    Car car = optional.get();
+                    log.info(car);
+                    log.info(String.format("Main post car %d from session %s: %s", id, role, user));
+                }
             }
-
             boolean driver = false;
 
             Order order = new Order(id, user.getUserId(), driver);
@@ -112,10 +113,11 @@ public class CartServlet extends HttpServlet {
             if (orders != null) {
                 orders.add(order);
                 user.setOrders(orders);
+                path = MAIN;
             }
-            response.sendRedirect(MAIN);
+            path = "/user";
         }
-        response.sendRedirect(LOGIN);
+        response.sendRedirect(path);
     }
 
     @Override
@@ -134,15 +136,14 @@ public class CartServlet extends HttpServlet {
 
                 try {
                     long id = Long.parseLong(request.getParameter("id"));
-                    Car car = carService.getById(id);
-
-                    if (car != null) {
-                        userService.bookCar(car, user);
-                        user.setCar(car);
+                    Optional<Car> optionalCar = carService.getById(id);
+                    if (optionalCar.isPresent()) {
+                        Car car = optionalCar.get();
+                        log.info(String.format("Car: %s", user.getCar()));
+                        user = userService.bookCar(car, user);
                         request.setAttribute("auto", user.getCar());
                         request.setAttribute("user", user);
 
-                        log.info(String.format("Car: %s", user.getCar()));
                         log.info(String.format("Put new Car %s into the basket: %s",
                                 car.getBrand(), user.getCars().size()));
                     }

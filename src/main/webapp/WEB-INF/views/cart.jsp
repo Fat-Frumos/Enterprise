@@ -98,43 +98,6 @@
         // window.location.href = "/";
     }
 
-    // $(document).on('contextmenu', function (event){
-    //     if (!$(event.target).hasClass("carousel-item")){
-    //         event.preventDefault()
-    //         alert("Car removed")
-    //         // window.history.back();
-    //     }
-    // })
-
-    // console.log(document.querySelectorAll("selected"));
-
-    <%--function update() {--%>
-    <%--    let auto = document.getElementById('brand');--%>
-    <%--    let text = document.getElementById('text');--%>
-    <%--    let button = document.getElementsByClassName('button');--%>
-    <%--    let price = document.getElementById('price');--%>
-    <%--    let value = document.getElementById('value');--%>
-
-    <%--    let url = `?${value}=` + value;--%>
-
-    <%--    //     $('#ads').click(function () {--%>
-    <%--    //         $('#myPopup').modal('show')--%>
-    <%--    //     });--%>
-
-    <%--    let ads = document.getElementById('myPopup');--%>
-    <%--    console.log(ads);--%>
-    <%--    $('#myPopup').modal('show');--%>
-
-
-    // $(document).ready(function () {
-    //     $('.img-fluid').click(function () {
-    //         $('#myPopup').modal('show')
-    //     });
-    // });
-
-    // $("#myPopup").load("b.html");
-
-
 </script>
 </body>
 </html>

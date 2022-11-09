@@ -122,7 +122,7 @@ class CarsTest {
     @Test
     void findById() {
         when(mockCarDao.findById(X7.getId())).thenReturn(Optional.of(X7));
-        assertEquals("X7", service.getById(X7.getId()).getName());
+        assertEquals("X7", service.getById(X7.getId()).get().getName());
     }
 
     @Test

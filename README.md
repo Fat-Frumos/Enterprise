@@ -40,7 +40,8 @@ The system administrator has the rights:
 + registration of managers in the system (role).
 
 ===============================
-####INFO: FATAL: add car
+####INFO: FATAL: upload img
+####INFO: FATAL: add car http://localhost:8080/order
 ####INFO: FATAL: add car to image upload
 #####TODO FATAL: userDto-enum
 #####TODO FATAL: validate submit order failed
@@ -67,7 +68,7 @@ validate html w3c curl
 context xml screen
 
 // TODO admin option  - > user.setRole()
-
+// String sql = String.format("DELETE FROM car where car_id = ?", id);
 service: log. err(msg, cause)
 connection rollback
 throw new CarException

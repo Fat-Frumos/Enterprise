@@ -41,20 +41,6 @@
         event.preventDefault()
     })
 
-    // window.addEventListener('click', () => {
-    //
-    //     let url = '/order?id=' + document.getElementsByTagName('img')[0].alt;
-    //
-    //     fetch(url, {
-    //         method: 'GET',
-    //     }).then(response => {
-    //         console.log('Ok:', response);
-    //         window.location.href = url;
-    //     }).catch(err => {
-    //         console.error(err)
-    //     })
-    // })
-
     $(document).ready(function () {
         $('.carousel').carousel();
 
@@ -66,26 +52,7 @@
                 window.history.back();
             }
         })
-        // let car = document.getElementsByTagName('img')[0].alt
-        // let htmlElement = document.getElementById("myForm");
-        // htmlElement.innerText = car;
-        // htmlElement.style.display = "block";
-        <%--"openForm(${cars.brand})" oncontextmenu=--%>
-
-
     });
-
-    // function popUp(id) {
-    //     $("#" + id).modal('show');
-    //     let url = '/cart' + '?id=' + id;
-    //     fetch(url, {
-    //         method: 'PUT',
-    //     }).then(response => {
-    //         console.log('Ok:', response);
-    //         window.location.href = url;
-    //     }).catch(err => {
-    //         console.error(err)
-    //     })
 
     function openForm(id) {
         let url = '/order?id=' + id;
@@ -97,18 +64,12 @@
         }).catch(err => {
             console.error(err)
         })
-        // alert("Car has been removed")
-        // window.location.href = "/cars";
-        // htmlElement.innerText = car;
+
     }
 
     function closeForm(id) {
         alert("Car has been")
 
-        // window.location.href = "/cars";
-        // saveCar(id);
-        // let element = document.querySelector("body > div.carousel > figure.carousel-item.active");
-        // htmlElement.style.display = "none";
     }
 </script>
 

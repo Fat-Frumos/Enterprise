@@ -22,6 +22,9 @@
     <%@include file="../classes/templates/css/modal.css"%>
     <%@include file="../classes/templates/css/car.css"%>
     <%@include file="../classes/templates/css/form.css"%>
+    body{
+        background: #FFFFFF;
+    }
 
 </style>
 <body>

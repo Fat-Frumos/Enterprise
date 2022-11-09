@@ -77,21 +77,6 @@
 />
 <script>
     document.querySelectorAll(".true").forEach(element => element.checked = true)
-
-    <%--onclick="editCar(${user.name}, ${user.email}, ${user.role}, ${user.active})"--%>
-    // // String[] fields = editCar("name", "email", "role", "active");
-    // function editCar(name, email, role, active) {
-    //     let url = '/register' + '?name=' + name + '?email=' + email + '?role=' + role + '?active=' + active;
-    //     console.log(url);
-    //     fetch(url, {
-    //         method: 'PUT',
-    //     }).then(response => {
-    //         console.log('Ok:', response);
-    //         window.location.href = url;
-    //     }).catch(err => {
-    //         console.error(err)
-    //     })
-    // }
 </script>
 </body>
 </html>

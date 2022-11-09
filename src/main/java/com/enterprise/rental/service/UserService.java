@@ -4,7 +4,6 @@ import com.enterprise.rental.dao.UserDao;
 import com.enterprise.rental.dao.jdbc.JdbcUserDao;
 import com.enterprise.rental.entity.Car;
 import com.enterprise.rental.entity.User;
-import com.enterprise.rental.exception.CarNotFoundException;
 import com.enterprise.rental.exception.DataException;
 import org.apache.log4j.Logger;
 
@@ -70,11 +69,8 @@ public class UserService implements Service<User> {
     }
 
     @Override
-    public User getById(long id) {
-
-        Optional<User> user = userDao.findById(id);
-        return user.orElseThrow(() ->
-                new CarNotFoundException("Car not found"));
+    public Optional<User> getById(long id) {
+        return userDao.findById(id);
     }
 
     public User bookCar(@NotNull Car car, @NotNull User user) {

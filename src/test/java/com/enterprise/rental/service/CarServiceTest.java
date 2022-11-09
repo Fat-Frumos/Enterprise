@@ -93,7 +93,7 @@ class CarServiceTest {
     @DisplayName(value = "Test find Car by Id invokes and return true")
     void findCar() {
         when(mockDao.findById(1L)).thenReturn(Optional.ofNullable(car));
-        Car actual = carService.getById(1L);
+        Optional<Car> actual = carService.getById(1L);
         verify(mockDao).findById(1L);
         assertEquals(car, actual);
     }

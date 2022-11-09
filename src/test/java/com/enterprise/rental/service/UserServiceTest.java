@@ -37,7 +37,7 @@ class UserServiceTest {
     @DisplayName(value = "Test find User by Id invokes and return true")
     void findUser() {
         when(mockDao.findById(12L)).thenReturn(Optional.ofNullable(jack));
-        User actual = userService.getById(12L);
+        Optional<User> actual = userService.getById(12L);
         assertEquals(jack, actual);
         verify(mockDao).findById(12L);
     }

@@ -76,8 +76,7 @@ public class RegisterServlet extends HttpServlet {
             log.info("Could not find user");
         }
         response.sendRedirect("/user");
-//        request.getRequestDispatcher("/user")
-//                .forward(request, response);
+
     }
 
     /***
@@ -95,8 +94,6 @@ public class RegisterServlet extends HttpServlet {
         OrderMapper mapper = new OrderMapper();
 
         Order order = mapper.orderMapper(request);
-
-        log.info(order);
 
         Order update = orderService.updateOrder(order);
 

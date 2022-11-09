@@ -2,7 +2,7 @@ package com.enterprise.rental.dao.jdbc;
 
 public class Constants {
     // Car sql
-    protected static final String CAR_FIELDS = "SELECT id, name, brand, model, path, price, cost, year ";
+    protected static final String CAR_FIELDS = "SELECT id, name, brand, model, path, price, cost, year, rent ";
     protected static final String FIND_ALL_SQL = CAR_FIELDS + "FROM car LIMIT 80;";
     protected static final String FILTER_CAR_BY_SQL = CAR_FIELDS + "FROM car ";
     protected static final String FILTER_BY_ID_SQL = CAR_FIELDS + "FROM car WHERE id=?";
@@ -19,14 +19,15 @@ public class Constants {
     protected static final String UPDATE_USER_SQL = "UPDATE users SET name = '%s', role = '%s', active = '%b', closed = '%b' WHERE id = %d";
 
     // Order sql
+    //    protected static final String ORDER_INSERT_FIELD = " order_id, user_id, car_id, created, passport, reason, phone, payment, term, driver ";
+    protected static final String DELETE_ORDER_SQL = "DELETE FROM orders WHERE order_id=";
     protected static final String UPDATE_ORDER_SQL = "UPDATE orders SET damage ='%s', reason ='%s', payment = %s, rejected = %b, closed = %b WHERE order_id = %d";
-    protected static final String ORDER_FIELD = " order_id, user_id, car_id, term, payment, driver, rejected, closed, created, phone, damage, passport, reason ";
-    protected static final String ORDER_INSERT_FIELD = " order_id, user_id, car_id, created, passport, reason, phone, payment, term, driver ";
+    protected static final String ORDER_FIELD = " order_id, user_id, car_id, payment, driver, rejected, closed, created, damage, passport, phone, term, reason ";
     protected static final String ORDER_FIELDS = "SELECT" + ORDER_FIELD;
     protected static final String FIND_ALL_ORDERS_SQL = ORDER_FIELDS + "FROM orders;";
     protected static final String FILTER_ORDER_BY_USER_ID_SQL = ORDER_FIELDS + "FROM orders WHERE user_id=";
-    protected static final String FILTER_ORDER_BY_ID_SQL = ORDER_FIELDS + "FROM orders WHERE id=?";
-    protected static final String INSERT_ORDER_SQL = String.format("INSERT INTO orders(%s) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? );", ORDER_INSERT_FIELD);
+    protected static final String FILTER_ORDER_BY_ID_SQL = ORDER_FIELDS + "FROM orders WHERE order_id=?";
+    protected static final String INSERT_ORDER_SQL = String.format("INSERT INTO orders(%s) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? );", ORDER_FIELD);
 
     // path urls
     public static final String MAIN = "/WEB-INF/views/main.jsp";

@@ -40,7 +40,7 @@ public class JdbcCarTemplate extends DbManager {
 
         } catch (SQLException sqlException) {
             log.info("Car by id not found");
-            rollback(connection, sqlException);
+            rollback(connection, sqlException, String.valueOf(id));
         } finally {
             eventually(connection, statement, resultSet);
         }
@@ -50,8 +50,8 @@ public class JdbcCarTemplate extends DbManager {
     protected static Optional<Car> getCarQuery(String name) {
 
         List<Car> cars = new ArrayList<>();
-
-        log.info(FILTER_BY_CAR_NAME_SQL + " " + name);
+        String query = FILTER_BY_CAR_NAME_SQL + " " + name;
+        log.info(query);
 
         Connection connection = null;
         PreparedStatement statement = null;
@@ -69,21 +69,21 @@ public class JdbcCarTemplate extends DbManager {
             }
         } catch (SQLException sqlException) {
             log.info("Cars not found");
-            rollback(connection, sqlException);
+            rollback(connection, sqlException, query);
         } finally {
             eventually(connection, statement, resultSet);
         }
         return Optional.of(cars.get(0));
     }
 
-    protected static List<Car> getCarsQuery(String sql) {
-        log.info(sql);
+    protected static List<Car> getCarsQuery(String query) {
+        log.info(query);
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try {
             connection = getWithoutAutoCommit();
-            statement = connection.prepareStatement(sql);
+            statement = connection.prepareStatement(query);
             resultSet = statement.executeQuery();
             connection.commit();
 
@@ -93,7 +93,7 @@ public class JdbcCarTemplate extends DbManager {
                 log.info("Vehicle not found");
             }
         } catch (SQLException sqlException) {
-            rollback(connection, sqlException);
+            rollback(connection, sqlException, query);
             log.info("Vehicle not found");
 
         } finally {
@@ -125,7 +125,7 @@ public class JdbcCarTemplate extends DbManager {
             return preparedStatement;
 
         } catch (SQLException sqlException) {
-            rollback(connection, sqlException);
+            rollback(connection, sqlException, INSERT_CAR_SQL);
             log.info("Car can`t be created");
 
         } finally {

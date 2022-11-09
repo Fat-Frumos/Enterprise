@@ -3,10 +3,11 @@ package com.enterprise.rental.service;
 import com.enterprise.rental.dao.jdbc.JdbcOrderDao;
 import com.enterprise.rental.entity.Order;
 import com.enterprise.rental.entity.User;
-import com.enterprise.rental.exception.UserIsBlockedException;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 public class OrderService {
 
@@ -21,16 +22,31 @@ public class OrderService {
     }
 
     public List<Order> getAll(User user) {
-//        if (user.isActive()) {
-        List<Order> orderList = jdbcOrderDao.findAll(user.getUserId());
+        List<Order> orderList = new ArrayList<>();
+        if (user.isActive() && Objects.equals(user.getRole(), "user")) {
+            orderList = jdbcOrderDao.findAll(user.getUserId());
+        }
         return orderList;
-//        } else {
-//            throw new UserIsBlockedException("Blocked %s" + user);
-//        }
-//        //TODO: 443 manager
     }
 
     public Order updateOrder(Order order) {
         return jdbcOrderDao.edit(order);
+    }
+
+    public boolean delete(String id) {
+        if (id != null && getById(id).isPresent()) {
+            return jdbcOrderDao.delete(Long.parseLong(id));
+        }
+        return false;
+    }
+
+    public Optional<Order> getById(String id) {
+        if (id != null) {
+            long parseLong = Long.parseLong(id);
+            if (parseLong != 0) {
+                return jdbcOrderDao.findById(parseLong);
+            }
+        }
+        return Optional.empty();
     }
 }

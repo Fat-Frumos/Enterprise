@@ -10,7 +10,9 @@ import java.util.Properties;
 
 public class Mail {
 
-    // Assuming you are sending email through rental.enterprise.com
+    /**
+     * Assuming you are sending email through rental.enterprise.com
+     */
     public static void sendEmailWithAttachments(
             String host, String port,
             final String userName,

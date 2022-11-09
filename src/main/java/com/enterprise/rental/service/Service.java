@@ -2,14 +2,14 @@ package com.enterprise.rental.service;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.Optional;
 
 public interface Service<T> {
     boolean save(T t);
 
     List<T> getAll();
 
-    List<T> getAll(String sql);
+    List<T> getAll(String query);
 
     List<T> getAll(Map<String, String> params);
 
@@ -21,5 +21,5 @@ public interface Service<T> {
 
     T edit(T t);
 
-    T getById(long id);
+    Optional<T> getById(long id);
 }

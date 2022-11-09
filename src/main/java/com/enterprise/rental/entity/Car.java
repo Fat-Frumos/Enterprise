@@ -13,6 +13,15 @@ public class Car implements Serializable {
     private Double price;
     private Double cost;
     private int year;
+
+    public boolean isRent() {
+        return rent;
+    }
+
+    public void setRent(boolean rent) {
+        this.rent = rent;
+    }
+
     private boolean rent;
 
     public Car() {

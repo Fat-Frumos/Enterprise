@@ -12,7 +12,7 @@ create table users
 );
 
 alter table users
-    owner to xhhiprtyikbzhv;
+    owner to Pasha;
 
 INSERT INTO public.users (id, email, name, password, active, language, role, closed) VALUES (16492, 'alice@i.ua', 'alice', 'alice', true, null, 'user', false);
 INSERT INTO public.users (id, email, name, password, active, language, role, closed) VALUES (3964, 'amelia@example.com', 'kennedy', 'amelia', true, 'en', 'guest', true);
