@@ -55,16 +55,7 @@
     });
 
     function openForm(id) {
-        let url = '/order?id=' + id;
-        fetch(url, {
-            method: 'GET',
-        }).then(response => {
-            console.log('Ok:', response);
-            window.location.href = url;
-        }).catch(err => {
-            console.error(err)
-        })
-
+        window.location.href = '/order?id=' + id;
     }
 
     function closeForm(id) {

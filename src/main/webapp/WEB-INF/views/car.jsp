@@ -45,7 +45,8 @@
                                        style="width: 110px"
                                        type="date"
                                        name="term"
-                                       value="" min=""
+                                       pattern="yyyy-mm-dd"
+                                       value="${order.term}" min=""
                                        max="2025-02-25">
                             </div>
                         </div>
@@ -105,7 +106,7 @@
                 </div>
                 <div class="row m-0">
                     <div class="col-12 mb-4 p-0">
-                        <input type="submit" id="purchase" name="submit" value="Purchase" class="submit">
+                        <input type="submit" id="purchase" name="submit" value="Purchase" class="submit"/>
                         <div class="fa fa-check done"></div>
                         <div class="fa fa-close failed"></div>
                     </div>
@@ -114,45 +115,26 @@
                 <br>
             </div>
         </div>
+
     </form>
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
     <script>
         $(document).ready(function () {
             $(".submit").click(function () {
-                $(".submit").addClass("loading");
+                $(".submit").addClass("purchase");
                 setTimeout(function () {
                     $(".submit").addClass("hide-loading");
                     // $(".done").addClass("finish");
                 }, 1000);
                 setTimeout(function () {
-                    $(".submit").removeClass("loading").removeClass("hide-loading");
-                    $(".done").removeClass("finish");
-                    $(".failed").removeClass("finish");
+                    $(".submit").removeClass("purchase").removeClass("hide-loading");
+                    // $(".done").removeClass("finish");
+                    // $(".failed").removeClass("finish");
                 }, 2000);
             })
         });
-
-
-        // $(document).ready(function () {
-        //     $(".submit").click(function () {
-        //         $(".submit").addClass("loading");
-        //         setTimeout(function () {
-        //             $(".submit").addClass("hide-loading");
-        //             // $(".done").addClass("finish");
-        //         }, 1000);
-        //         setTimeout(function () {
-        //             $(".submit").removeClass("loading").removeClass("hide-loading");
-        //             $(".done").removeClass("finish");
-        //             $(".failed").removeClass("finish");
-        //         }, 2000);
-        //         window.location.href = "/user";
-        //         $(".done").addClass("failed");
-        //         setTimeout(() => {
-        //             $(".submit").submit();
-        //             // $(".done").addClass("finish");
-        //         }, 1000);
-        //     })
-        // });
 
         let day = 1;
         let datePicker = document.getElementById('term');

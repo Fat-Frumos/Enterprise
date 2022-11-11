@@ -76,10 +76,10 @@
             method: 'GET',
         }).then(response => {
             console.log('Ok:', response);
-            window.location.href = url;
         }).catch(err => {
             console.error(err)
         })
+            // window.location.href = url;
     }
 
     let modal = document.getElementById('id01');

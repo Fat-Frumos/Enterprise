@@ -11,19 +11,34 @@
 <!DOCTYPE html>
 <head>
     <title>Users</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+            integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+            crossorigin="anonymous"
+    />
     <style>
         @import url('https://fonts.googleapis.com/css?family=Kaushan+Script|Saira&display=swap');
 
         <%@include file="../classes/templates/css/users.css"%>
         <%@include file="../classes/templates/css/check-box.css"%>
+        <%@include file="../classes/templates/css/dice.css"%>
+
         .wrapper {
             margin: 5px;
             width: 100%;
         }
-    </style>
 
-</head>
-<title>Users</title>
+        th {
+            text-align: center;
+        }
+
+
+
+    </style>
 </head>
 <body>
 <div class="wrapper">
@@ -39,9 +54,8 @@
                 <th>User#</th>
                 <th>Order#</th>
                 <th>Car#</th>
-<%--                <th>passport</th>--%>
+                <%--                <th>passport</th>--%>
                 <th>Created/Term</th>
-<%--                <th>Created</th>--%>
                 <th>Damage</th>
                 <th>Reason</th>
                 <th>Payment</th>
@@ -58,12 +72,14 @@
                         <td><input style="width: 60px" value="${order.userId}" name="userId"></td>
                         <td><input style="width: 90px" value="${order.orderId}" name="orderId"></td>
                         <td><input style="width: 80px" value="${order.carId}" name="carId"></td>
-<%--                        <td><input style="width: 120px" value="${order.passport}" name="passport"></td>--%>
-                        <td style="width: 225px"><input name="term" value="${order.term}" style="width: 150px" hidden>
-                            <fmt:formatDate pattern="yyyy-MM-dd" value="${order.term}"/></input>
-                            /
+                            <%--                        <td><input style="width: 120px" value="${order.passport}" name="passport"></td>--%>
+                        <td style="width: 225px">
                             <input name="created" value="${order.created}" style="width: 150px" hidden>
-                            <fmt:formatDate pattern="yyyy-MM-dd" value="${order.created}"/></td>
+                            <fmt:formatDate pattern=" yyyy-mm-dd hh:mm:ss" value="${order.created}"/>
+                            /
+                            <input name="term" value="${order.term}" style="width: 150px" hidden>
+                                <fmt:formatDate pattern=" yyyy-mm-dd hh:mm:ss" value="${order.term}"/></input>
+                        </td>
                         <td><input value="${order.damage}" name="damage"></td>
 
                         <c:if test="${empty order.reason}">
@@ -72,64 +88,134 @@
                         <c:if test="${not empty order.reason}">
                             <td><input style="width: 300px" value="${order.reason}" name="reason"></td>
                         </c:if>
-                        <td><input
-                                style="width: 100px"
-                                value="${order.payment}"
-                                type="number"
-                                min="0"
-                                pattern="0.00"
-                                name="payment"
+                        <td>
+                            <input
+                                    style="width: 100px"
+                                    value="${order.payment}"
+                                    type="number"
+                                    min="0"
+                                    pattern="0.00"
+                                    name="payment"
                             >
                         </td>
-                        <td>
+
+                        <td style="text-align: center">
                             <div class="toggle">
-                                <input class="${order.rejected}" type="checkbox" name="rejected">
+                                <input class="${order.rejected}" type="checkbox"
+                                       name="rejected">
                             </div>
                         </td>
-                        <td>
+                        <td style="text-align: center">
                             <div class="toggle">
-                                <input class="${order.closed}" type="checkbox" name="closed">
+                                <input
+                                        name="closed"
+                                        class="${order.closed}"
+                                        type="checkbox"
+                                >
                             </div>
                         </td>
-                        <td>
+                        <td style="text-align: center">
                             <button
-                                    id="accept-button" class="btn btn-outline-success" type="submit">&#10003;
+                                    id="accept-button"
+                                    onclick="spinner()"
+                                    class="btn btn-outline-success"
+                                    type="submit"
+                            >
+                                <i class="fa fa-check"></i>
                             </button>
                         </td>
-                        <td>
-                            <a
-                                    id="rm-button" onclick="remove(${order.orderId})" class="btn btn-outline-danger">&#10003;
-                            </a>
-                        </td>
                     </form>
+                    <td style="text-align: center">
+                        <button
+                                name="remove"
+                                onclick="remove(${order.orderId})" value=""
+                                class="btn btn-outline-danger">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </td>
                 </tr>
             </c:forEach>
             </tbody>
         </table>
     </div>
+
+    <div id="ui" hidden>
+        <div class="dice">
+            <ol class="dice_list">
+                <li class="dice_list_item"></li>
+                <li class="dice_list_item"></li>
+                <li class="dice_list_item"></li>
+                <li class="dice_list_item"></li>
+                <li class="dice_list_item"></li>
+                <li class="dice_list_item"></li>
+            </ol>
+        </div>
+        <div class="dice">
+            <ol class="dice_list">
+                <li class="dice_list_item"></li>
+                <li class="dice_list_item"></li>
+                <li class="dice_list_item"></li>
+                <li class="dice_list_item"></li>
+                <li class="dice_list_item"></li>
+                <li class="dice_list_item"></li>
+            </ol>
+        </div>
+        <div class="dice">
+            <ol class="dice_list">
+                <li class="dice_list_item"></li>
+                <li class="dice_list_item"></li>
+                <li class="dice_list_item"></li>
+                <li class="dice_list_item"></li>
+                <li class="dice_list_item"></li>
+                <li class="dice_list_item"></li>
+            </ol>
+        </div>
+    </div>
+    <!-- partial:index.partial.html -->
+    <span class="content">
+  <!-- <h1 contenteditable data-text="Grow">Grow</h1> -->
+</span>
+
+    <script src="https://cdn.jsdelivr.net/npm/TagCloud@2.2.0/dist/TagCloud.min.js"> </script>
 </div>
-<link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
-        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-        crossorigin="anonymous"
-/>
 <script>
-    function remove(id){
+    document.querySelectorAll(".true").forEach(element => element.checked = true)
+
+    function spinner() {
+        let dice = document.getElementById("ui");
+        dice.hidden = false;
+
+        setTimeout(function () {
+            dice.hidden = true;
+        }, 2500);
+    }
+
+    function remove(id) {
+        let dice = document.getElementById("ui");
+        dice.hidden = false;
+
+        // setTimeout(function () {
+        //     dice.hidden = false;
+        // }, 1000);
+
         let url = '/order' + '?orderId=' + id;
         // let url = '/cars' + '?id=' + id;
         console.log(url);
-        fetch(url, {
-            method: 'DELETE',
-        }).then(response => {
-            console.log('Ok:', response);
-            window.location.href = url;
-        }).catch(err => {
-            console.error(err)
-        })
+        if (confirm("Do you want to remove the order?")) {
+            fetch(url, {
+                method: 'DELETE',
+            }).then(response => {
+                console.log('Ok:', response);
+                window.location.href = "/user";
+            }).catch(err => {
+                console.error(err)
+            })
+        }
+        setTimeout(function () {
+            dice.hidden = true;
+        }, 5000);
     }
 
-    document.querySelectorAll(".true").forEach(element => element.checked = true)
 </script>
 </body>
 </html>

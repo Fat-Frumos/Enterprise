@@ -12,10 +12,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.Optional;
 import java.util.UUID;
 
 import static com.enterprise.rental.dao.jdbc.Constants.LOGIN;
+import static com.enterprise.rental.dao.jdbc.Constants.NOT_FOUND;
 
 @WebServlet(urlPatterns = "/login")
 public class LoginServlet extends HttpServlet {
@@ -63,22 +65,32 @@ public class LoginServlet extends HttpServlet {
 
         if (optionalUser.isPresent()) {
             log.info(String.format("User: %s", optionalUser));
-
             request.setAttribute("errorMessage", String.format("User %s is exists", name));
-            request.getRequestDispatcher(LOGIN)
-                    .forward(request, response);
+            request.getRequestDispatcher(LOGIN).forward(request, response);
         } else {
+            long id = UUID.randomUUID().getMostSignificantBits() & 0x7ffffffL;
             String password = request.getParameter("password");
             String email = request.getParameter("email");
+            Timestamp created = new Timestamp(System.currentTimeMillis());
 
-            User user = new User(
-                    UUID.randomUUID().getMostSignificantBits() & 0x7ffffffffL,
-                    name, password, email, "ua", "user", true);
+            User user = new User.Builder()
+                    .userId(id)
+                    .name(name)
+                    .password(password)
+//                    .language("en")
+                    .email(email)
+                    .created(created)
+                    .active(true)
+                    .closed(false)
+                    .role("user")
+                    .build();
 
             boolean save = userService.save(user);
 
             log.info(String.format("%s is created: %s", user, save));
-            request.setAttribute("errorMessage", String.format("User %s is created", name));
+
+            request.setAttribute("errorMessage",
+                    String.format("User %s is created", name));
 
             dispatch(request, response, LOGIN);
         }

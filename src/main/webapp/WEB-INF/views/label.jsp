@@ -7,6 +7,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <style>
+    <%@include file="../classes/templates/css/tag.css"%>
     textarea:focus, input:focus {
         outline: none;
     }
@@ -114,40 +115,70 @@
         </div>
     </div>
 </form>
-<script>
+<div class="drop-area" id="MyModal" hidden>
+    <form method="post" action="/upload" enctype="multipart/form-data">
+        <input type="file" name="file"/>
+        <input type="submit" value="Upload"/>
+    </form>
+</div>
 
+<div style="position: absolute; top: 10vh; left: -17vw;">
+    <span id="tags" class="content" hidden></span>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/TagCloud@2.2.0/dist/TagCloud.min.js"></script>
+<script>
     if ("${user.role}" === "admin") {
-        <%--<a href="/car?id=<c:out value='${car.carId}' />">Delete</a>--%>
+
         let main = document.getElementById("main");
+        let tags = document.getElementById("tags");
+
+        tags.hidden = false;
+
+        tags.addEventListener("click", (event) => {
+            shows(event.target);
+        })
+
         main.addEventListener('contextmenu', (event) => {
                 event.preventDefault()
 
                 if (confirm("Do you want to remove the car?")) {
                     let url = '/cars' + '?id=' + ${auto.id};
                     console.log(url);
+
                     fetch(url, {
                         method: 'DELETE',
                     }).then(response => {
                         console.log('Ok:', response);
-                        window.location.href = url;
+
                     }).catch(err => {
                         console.error(err)
                     })
-                // } else {
-                //     window.history.back();
+                    window.location.href = url;
+                    // } else {
+                    //     window.history.back();
                 }
             }
         )
 
+        let brand = document.querySelector("body > div.container > div.row.m-0 > div.col-lg-7.pb-5.pe-lg-5 > form > div > div:nth-child(2) > p > input:nth-child(1)")
+        let model = document.querySelector("body > div.container > div.row.m-0 > div.col-lg-7.pb-5.pe-lg-5 > form > div > div:nth-child(2) > p > input:nth-child(2)")
+        brand.readOnly = false;
+        model.readOnly = false;
+
+
         for (let i = 3; i < 8; i++) {
-            let brand = document.querySelector("body > div.container > div.row.m-0 > div.col-lg-7.pb-5.pe-lg-5 > form > div > div:nth-child(2) > p > input:nth-child(1)")
-            let model = document.querySelector("body > div.container > div.row.m-0 > div.col-lg-7.pb-5.pe-lg-5 > form > div > div:nth-child(2) > p > input:nth-child(2)")
-            brand.readOnly = false;
-            model.readOnly = false;
             let query = "body > div.container > div.row.m-0 > div.col-lg-7.pb-5.pe-lg-5 > form > div > div:nth-child(" + i + ") > div > p > input";
             let input = document.querySelector(query);
             input.readOnly = false;
         }
+    }
+
+    function shows(tags) {
+        
+
+        let modal = document.getElementById("MyModal");
+        console.log(modal);
+        modal.hidden = modal.hidden ? false : true;
     }
 
     function put(id) {
@@ -158,10 +189,30 @@
             method: 'PUT',
         }).then(response => {
             console.log('Ok:', response);
-            window.location.href = url;
+            // window.location.href = url;
         }).catch(err => {
             console.error(err)
         })
     }
+
+    const myTags = [
+        'Bugatti', 'BMW', 'Ford',
+        'Ferrari', 'Koenigsegg', 'Xpeng',
+        'Lamborghini', 'Maserati', 'Porsche'
+    ];
+
+    const tagCloud = TagCloud('.content', myTags, {
+        radius: 150,
+        maxSpeed: 'fast',
+        initSpeed: 'fast',
+        direction: 0,
+        keep: true
+
+    });
+
+    //To change the color of text randomly
+    let colors = ['#505550', '#005c00', '#5d38df', '#000', '#C20100'];
+    let random_color = colors[Math.floor(Math.random() * colors.length)];
+    document.querySelector('.content').style.color = random_color;
 
 </script>

@@ -47,18 +47,18 @@ public class UserServlet extends HttpServlet {
             if (Objects.equals(role, "admin")) {
                 List<User> users = userService.getAll();
                 log.info(String.format("There are %d users", users.size()));
+                request.setAttribute("users", users);
                 path = USERS;
             } else if (Objects.equals(role, "manager")) {
                 List<Order> orders = orderService.getAll();
                 request.setAttribute("orders", orders);
-                log.info(orders.size());
                 path = CONTRACT;
             } else if (Objects.equals(role, "user")) {
                 List<Order> userOrders = orderService.getAll()
                         .stream()
                         .filter(order -> order.getUserId() == (user.getUserId()))
                         .collect(Collectors.toList());
-                log.info(userOrders.size());
+                log.info("Get userOrders: " + userOrders.size());
                 request.setAttribute("orders", userOrders);
                 path = ORDERS;
             } else {
@@ -91,10 +91,17 @@ public class UserServlet extends HttpServlet {
             request.setAttribute("errorMessage", "User is exists please try again");
             response.sendRedirect(LOGIN);
         } else {
-            User user = new User(
-                    UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE,
-                    name, password, email, "en", role, true);
+            long id = UUID.randomUUID().getMostSignificantBits() & 0x7ffffffffffL;
 
+            User user = new User.Builder()
+                    .userId(id)
+                    .name(name)
+                    .password(password)
+//                    .language("en")
+                    .email(email)
+                    .active(true)
+                    .role(role)
+                    .build();
             boolean save = userService.save(user);
 
             log.info(String.format("%s is created: %s", user, save));
@@ -116,9 +123,9 @@ public class UserServlet extends HttpServlet {
             throws ServletException, IOException {
 
         String message = userService.sendEmail(request.getParameter("username"));
-
-        response.sendRedirect(LOGIN);
         log.info(String.format("%s check your email address", message));
+//        response.sendRedirect(NOT_FOUND);
+        response.sendRedirect(LOGIN);
     }
 
     void dispatch(

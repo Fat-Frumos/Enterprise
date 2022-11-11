@@ -13,13 +13,16 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    <link rel="shortcut icon" href="https://raw.githubusercontent.com/Fat-Frumos/Cars/master/wheel.ico"
+          type="image/x-icon">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+<%--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"--%>
+<%--          integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">--%>
     <title>Cars</title>
     <style>
         @import url(https://fonts.googleapis.com/css?family=Raleway:100,600,400);
 
-        <%@include file="../classes/templates/css/cart.css"%>
-        <%@include file="../classes/templates/css/car.css"%>
+
         <%@include file="../classes/templates/css/option.css"%>
 
         * {
@@ -30,25 +33,17 @@
             font-family: Raleway, Roboto, sans-serif;
             font-weight: 600;
         }
-
     </style>
-    <link rel="shortcut icon" href="https://raw.githubusercontent.com/Fat-Frumos/Cars/master/wheel.ico"
-          type="image/x-icon">
-    <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css'>
 </head>
 
 <body>
 <jsp:include page="option.jsp"/>
 <jsp:include page="cart.jsp"/>
 <jsp:include page="nav.jsp"/>
-
-<%--    <jsp:include page="burger.jsp"/>--%>
-<%--    <div class="day">--%>
-<%--        <a style="text-transform: capitalize" href="/user/${user}">(${user})</a>--%>
-<%--    </div>--%>
-
+<jsp:include page="burger.jsp"/>
 
 <script>
+
     $("input").on("keydown", function search(e) {
         if (e.keyCode == 13) {
             $('#submit').click();

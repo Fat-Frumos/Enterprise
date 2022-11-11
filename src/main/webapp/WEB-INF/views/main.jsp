@@ -20,9 +20,9 @@
 
 <style>
     <%@include file="../classes/templates/css/modal.css"%>
-    <%@include file="../classes/templates/css/car.css"%>
     <%@include file="../classes/templates/css/form.css"%>
-    body{
+
+    body {
         background: #FFFFFF;
     }
 
@@ -38,7 +38,7 @@
     </div>
     <hr>
     <jsp:include page="cart.jsp"/>
-<%--        <jsp:include page="modal.jsp"/>--%>
+
 </div>
 <jsp:include page="burger.jsp"/>
 <div class="day">
@@ -52,17 +52,19 @@
 <div id="dp-island"></div>
 <button id="search">Search</button>
 <div id="output"></div>
-
 <script>
+
     window.addEventListener('contextmenu', (event) => {
         event.preventDefault()
         window.history.back();
     })
-    $(document).ready(function () {
-        $('#main').click(function () {
-            $('#Mymodal').modal('show')
-        });
-    });
+    // $(document).ready(function () {
+    //     $('#main').click(function () {
+    //         $('#Mymodal').modal('show')
+    //     });
+    // });
 </script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
 </body>
 </html>

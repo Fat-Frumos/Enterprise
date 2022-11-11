@@ -11,9 +11,9 @@ public class Constants {
     protected static final String INSERT_CAR_SQL = "INSERT INTO car(" + FIELD + ") VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ? );";
     protected static final String UPDATE_CAR_SQL = "UPDATE car SET brand = '%s', model = '%s', name = '%s', price = %s, cost = %s WHERE id =%d";
     // User sql
-    protected static final String USERS_SQL = "SELECT id, email, name, password, role, active, closed FROM users";
-    protected static final String FILTER_BY_NAME_SQL = "SELECT id, email, name, password, role, active, closed FROM users WHERE name=";
     protected static final String USER_FIELD = " id, name, email, password, role, active, closed, language ";
+    protected static final String USERS_SQL = "SELECT "+ USER_FIELD +" FROM users";
+    protected static final String FILTER_BY_NAME_SQL = "SELECT id, email, name, password, role, active, closed FROM users WHERE name=";
     protected static final String INSERT_USER_SQL = "INSERT INTO users(" + USER_FIELD + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
     protected static final String FILTER_USER_BY_ID_SQL = USER_FIELD + "FROM user WHERE id=?";
     protected static final String UPDATE_USER_SQL = "UPDATE users SET name = '%s', role = '%s', active = '%b', closed = '%b' WHERE id = %d";
@@ -39,6 +39,8 @@ public class Constants {
     public static final String LOGIN = "/WEB-INF/views/login.jsp";
     public static final String INDEX = "/WEB-INF/views/index.jsp";
     public static final String FORGOT = "/WEB-INF/views/forgot.jsp";
+    public static final String NOT_FOUND = "/WEB-INF/views/error/404.jsp";
+    public static final String FORBIDDEN = "/WEB-INF/views/error/443.jsp";
 
     private Constants() {
     }

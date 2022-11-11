@@ -1,7 +1,6 @@
 package com.enterprise.rental.service;
 
 import com.enterprise.rental.dao.UserDao;
-import com.enterprise.rental.dao.jdbc.JdbcUserDao;
 import com.enterprise.rental.entity.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,9 +22,27 @@ class UserServiceTest {
     private static final UserService userService = new UserService(mockDao);
 
     List<User> users = new ArrayList<>();
-    static final User john = new User(11L, "John", "password", "email@i.ua", "ua", true);
-    static final User jack = new User(12L, "Jack", "111", "jack@i.ua", "en", true);
+    User john = new User.Builder()
+            .userId(11L)
+            .name("John")
+            .password("password")
+            .passport("passport")
+            .language("ua")
+            .email("email@i.ua")
+            .active(true)
+            .role("user")
+            .build();
 
+    User jack = new User.Builder()
+            .userId(12L)
+            .name("Jack")
+            .password("111")
+            .passport("passport")
+            .language("en")
+            .email("jack@i.ua")
+            .active(true)
+            .role("user")
+            .build();
 
     @BeforeEach
     void init() {

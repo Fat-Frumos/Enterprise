@@ -69,7 +69,7 @@
             method: 'PUT',
         }).then(response => {
             console.log('Ok:', response);
-            window.location.href = "/login";
+            // window.location.href = "/login";
         }).catch(err => {
             console.error(err)
         })

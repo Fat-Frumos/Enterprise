@@ -41,16 +41,15 @@ public class CartServlet extends HttpServlet {
 
         if (session != null && session.getAttribute("user") != null) {
             User user = (User) session.getAttribute("user");
-            log.info(String.format("Get into session User %s bucket cars: %s",
-                    user.getName(), user.getCars().size()));
-
             List<Car> userCars = user.getCars();
             int size = userCars.size();
+//            log.info(String.format("Get into session User %s bucket cars: %s", user.getName(), size));
 
-            path = getPath(userCars);
+
+            path = INDEX;
+            //getPath(userCars);
 
             request.setAttribute("car", size);
-            Collections.reverse(userCars);
             request.setAttribute("cars", userCars);
         } else {
             path = LOGIN;
@@ -58,18 +57,18 @@ public class CartServlet extends HttpServlet {
         dispatch(request, response, path);
     }
 
-    private static String getPath(List<Car> userCars) {
-        return userCars.isEmpty() ? CARS : checkCard(userCars);
-    }
+//    private static String getPath(List<Car> userCars) {
+//        return userCars.isEmpty() ? CARS : checkCard(userCars);
+//    }
 
-    private static String checkCard(List<Car> userCars) {
-        return userCars.size() > 12 ? remove(userCars, 0) : INDEX;
-    }
+//    private static String checkCard(List<Car> userCars) {
+//        return userCars.size() > 12 ? remove(userCars, 0) : INDEX;
+//    }
 
-    private static String remove(List<Car> userCars, int index) {
-        userCars.remove(index);
-        return "/user";
-    }
+//    private static String remove(List<Car> userCars, int index) {
+//        userCars.remove(index);
+//        return "/user";
+//    }
 
 
     /**
@@ -114,8 +113,9 @@ public class CartServlet extends HttpServlet {
                 orders.add(order);
                 user.setOrders(orders);
                 path = MAIN;
+            } else {
+                path = "/user";
             }
-            path = "/user";
         }
         response.sendRedirect(path);
     }
@@ -132,19 +132,18 @@ public class CartServlet extends HttpServlet {
             User user = (User) session.getAttribute("user");
 
             if (user != null) {
-                log.info(String.format("Session User Basket: %s", user));
+                log.info(String.format("Session User Bucket: %s", user));
 
                 try {
                     long id = Long.parseLong(request.getParameter("id"));
                     Optional<Car> optionalCar = carService.getById(id);
                     if (optionalCar.isPresent()) {
                         Car car = optionalCar.get();
-                        log.info(String.format("Car: %s", user.getCar()));
                         user = userService.bookCar(car, user);
                         request.setAttribute("auto", user.getCar());
                         request.setAttribute("user", user);
 
-                        log.info(String.format("Put new Car %s into the basket: %s",
+                        log.info(String.format("Put new Car %s into the Cart: %s",
                                 car.getBrand(), user.getCars().size()));
                     }
                 } catch (NumberFormatException e) {

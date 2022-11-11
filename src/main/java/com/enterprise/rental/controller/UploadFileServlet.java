@@ -19,6 +19,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
+import static com.enterprise.rental.dao.jdbc.Constants.MAIN;
+
 @WebServlet("/upload")
 public class UploadFileServlet extends HttpServlet {
     private static final Logger log = Logger.getLogger(UploadFileServlet.class);
@@ -94,5 +96,6 @@ public class UploadFileServlet extends HttpServlet {
             out.write("Exception in uploading file.");
         }
         out.write("</body></html>");
+        response.sendRedirect(MAIN);
     }
 }

@@ -51,7 +51,7 @@
         <table id="tabs" class="table" style="width:100%">
             <thead class="TableHead">
             <tr>
-                <th>#user</th>
+                <th>#order</th>
                 <th>#car</th>
                 <th>created</th>
                 <th>term</th>
@@ -65,7 +65,7 @@
             <tbody>
             <c:forEach items="${orders}" var="order">
                 <tr class="firstRow">
-                    <td><p>${order.userId}</p></td>
+                    <td><p>${order.orderId}</p></td>
                     <td><p>${order.carId}</p></td>
                     <td><p style="width: 90px"><fmt:formatDate pattern="yyyy-MM-dd" value="${order.created}"/></p></td>
                     <td><p style="width: 90px"><fmt:formatDate pattern="yyyy-MM-dd" value="${order.term}"/></p></td>

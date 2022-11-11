@@ -40,7 +40,7 @@ The system administrator has the rights:
 + registration of managers in the system (role).
 
 ===============================
-####INFO: FATAL: upload img
+####INFO: FATAL: upload img d:\car\rent-a-car\null\
 ####INFO: FATAL: add car http://localhost:8080/order
 ####INFO: FATAL: add car to image upload
 #####TODO FATAL: userDto-enum

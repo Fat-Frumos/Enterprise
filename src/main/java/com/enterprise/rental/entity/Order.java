@@ -15,7 +15,7 @@ public class Order implements Serializable {
     private boolean rejected;
     private boolean closed;
     private Timestamp created;
-    private String card;
+    private String phone;
     private String damage;
     private String passport;
     private String reason;
@@ -42,7 +42,7 @@ public class Order implements Serializable {
         this.driver = driver;
     }
 
-    public Order(long orderId, long userId, long carId, Timestamp term, double payment, boolean driver, boolean rejected, boolean closed, Timestamp created, String card, String damage, String passport, String reason) {
+    public Order(long orderId, long userId, long carId, Timestamp term, double payment, boolean driver, boolean rejected, boolean closed, Timestamp created, String phone, String damage, String passport, String reason) {
         this.orderId = orderId;
         this.userId = userId;
         this.carId = carId;
@@ -52,7 +52,7 @@ public class Order implements Serializable {
         this.rejected = rejected;
         this.closed = closed;
         this.created = created;
-        this.card = card;
+        this.phone = phone;
         this.damage = damage;
         this.passport = passport;
         this.reason = reason;
@@ -114,12 +114,9 @@ public class Order implements Serializable {
     }
 
     public String getPhone() {
-        return card;
+        return phone;
     }
 
-    public void setPhone(String card) {
-        this.card = card;
-    }
 
     public String getDamage() {
         return damage;
@@ -150,12 +147,12 @@ public class Order implements Serializable {
         if (this == o) return true;
         if (!(o instanceof Order)) return false;
         Order order = (Order) o;
-        return term == order.term && orderId == order.orderId && userId == order.userId && driver == order.driver && rejected == order.rejected && Double.compare(order.payment, payment) == 0 && closed == order.closed && Objects.equals(created, order.created) && Objects.equals(card, order.card) && Objects.equals(damage, order.damage);
+        return term == order.term && orderId == order.orderId && userId == order.userId && driver == order.driver && rejected == order.rejected && Double.compare(order.payment, payment) == 0 && closed == order.closed && Objects.equals(created, order.created) && Objects.equals(phone, order.phone) && Objects.equals(damage, order.damage);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(term, orderId, userId, driver, rejected, created, card, damage, payment, closed);
+        return Objects.hash(term, orderId, userId, driver, rejected, created, phone, damage, payment, closed);
     }
 
     @Override
@@ -169,10 +166,7 @@ public class Order implements Serializable {
                 ", driver=" + driver +
                 ", rejected=" + rejected +
                 ", closed=" + closed +
-                ", created=" + created +
-                ", card='" + card + '\'' +
                 ", damage='" + damage + '\'' +
-                ", passport='" + passport + '\'' +
                 ", reason='" + reason + '\'' +
                 '}';
     }
@@ -271,7 +265,7 @@ public class Order implements Serializable {
             order.rejected = this.rejected;
             order.closed = this.closed;
             order.created = this.created;
-            order.card = this.card;
+            order.phone = this.card;
             order.damage = this.damage;
             order.passport = this.passport;
             order.reason = this.reason;

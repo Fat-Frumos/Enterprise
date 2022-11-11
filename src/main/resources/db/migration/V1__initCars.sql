@@ -9,5 +9,9 @@ create table car
     year  integer          not null,
     path  text             not null,
     date  timestamp,
-    cost  double precision
+    cost  double precision,
+    rent  boolean
 );
+
+alter table car
+    owner to lnycichw;

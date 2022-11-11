@@ -19,9 +19,11 @@ import static com.enterprise.rental.dao.jdbc.JdbcCarTemplate.*;
 public class JdbcCarDao implements CarDao {
     private static final Logger log = Logger.getLogger(JdbcCarDao.class);
 
+    private static final List<Car> carList = getCarsQuery(FIND_ALL_SQL);
+
     @Override
     public List<Car> findAll() {
-        return getCarsQuery(FIND_ALL_SQL);
+        return carList;
     }
 
     @Override

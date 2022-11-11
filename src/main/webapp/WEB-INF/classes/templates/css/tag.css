@@ -1,0 +1,148 @@
+@font-face {
+    font-family: "IBM Plex Sans Roman";
+    src: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/85648/IBMPlexSansVar-Roman.ttf");
+}
+
+* {
+    box-sizing: border-box;
+}
+
+h1 {
+    font-family: "IBM Plex Sans Roman", Times, serif;
+    font-weight: 100;
+    font-size: 10vw;
+    line-height: 10vw;
+    font-variation-settings: 'wght' 100, 'wdth' 85;
+}
+
+h1 .char {
+    /*--delay: calc((var(--char-index) + 1) * 400ms);  animation-delay: var(--delay);*/
+    animation: breathe 4000ms infinite ease-in-out;
+    animation-delay: 2000ms;
+}
+
+h1:hover span {
+    animation-play-state: paused;
+}
+
+@keyframes breathe {
+    0% {
+        font-variation-settings: 'wght' 100, 'wdth' 85;
+        font-size: 10vw;
+    }
+    60% {
+        font-variation-settings: 'wght' 700, 'wdth' 100;
+        font-size: 11vw;
+    }
+
+    100% {
+        font-variation-settings: 'wght' 100, 'wdth' 85;
+        font-size: 10vw;
+    }
+}
+.tagcloud {
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    margin: auto;
+    width: 50%;
+}
+.tagcloud--item:hover {
+    cursor: pointer;
+    color: #dd4814;  }
+
+.loading {
+    position: relative;
+    transform: rotate(-60deg);
+}
+.loading span {
+    position: absolute;
+    border: solid 10px transparent;
+    border-top-width: 6px;
+    border-bottom-width: 6px;
+    display: block;
+    transform: translate(-50%, -50%);
+}
+.loading .outer span {
+    width: 50px;
+    height: 26px;
+    animation: destiny2-loading 3000ms infinite;
+}
+.loading .outer span:nth-child(1) {
+    animation-delay: 0s;
+}
+.loading .outer span:nth-child(2) {
+    transform: translate(-50%, -50%) rotate(60deg);
+    animation-delay: 500ms;
+}
+.loading .outer span:nth-child(3) {
+    transform: translate(-50%, -50%) rotate(120deg);
+    animation-delay: 1000ms;
+}
+.loading .inner span {
+    width: 24px;
+    height: 11px;
+    animation: destiny2-loading 1500ms infinite;
+}
+.loading .inner span:nth-child(1) {
+    animation-delay: 500ms;
+}
+.loading .inner span:nth-child(2) {
+    transform: translate(-50%, -50%) rotate(60deg);
+    animation-delay: 250ms;
+}
+.loading .inner span:nth-child(3) {
+    transform: translate(-50%, -50%) rotate(120deg);
+    animation-delay: 0s;
+}
+@keyframes destiny2-loading {
+    0% {
+        border-left-color: transparent;
+        border-right-color: white;
+    }
+    30% {
+        border-left-color: transparent;
+        border-right-color: transparent;
+    }
+    50% {
+        border-left-color: transparent;
+        border-right-color: transparent;
+    }
+    50.00001% {
+        border-left-color: white;
+        border-right-color: transparent;
+    }
+    80% {
+        border-left-color: transparent;
+        border-right-color: transparent;
+    }
+    100% {
+        border-left-color: transparent;
+        border-right-color: transparent;
+    }
+}
+/*.undeadlogo {*/
+/*    position: fixed;*/
+/*    bottom: 50px;*/
+/*    color: white;*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*    align-items: center;*/
+/*    transform: translateX(-50%);*/
+/*}*/
+/*@media (max-width: 500px) {*/
+/*    .undeadlogo {*/
+/*        transform: translateX(-50%) scale(0.5);*/
+/*    }*/
+/*}*/
+/*.undeadlogo svg {*/
+/*    width: 32px;*/
+/*    margin-bottom: 8px;*/
+/*}*/
+/*.undeadlogo p {*/
+/*    font-family: Arial;*/
+/*    text-align: center;*/
+/*    line-height: 0.73;*/
+/*    font-size: 18px;*/
+/*    text-transform: uppercase;*/
+/*    font-weight: 700;*/
+/*}*/

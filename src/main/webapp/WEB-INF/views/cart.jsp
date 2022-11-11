@@ -8,9 +8,6 @@
   To change this template use File | Settings | File Templates.
 --%>
 
-<!DOCTYPE html>
-<head>
-    <title>Cars</title>
     <link rel="shortcut icon" href="https://raw.githubusercontent.com/Fat-Frumos/Cars/master/wheel.ico"
           type="image/x-icon">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
@@ -19,11 +16,8 @@
     <style>
         <%@include file="../classes/templates/css/cart.css"%>
         <%@include file="../classes/templates/css/car.css"%>
-
     </style>
 
-</head>
-<body>
 <main class="">
     <div>
         </form>
@@ -99,5 +93,3 @@
     }
 
 </script>
-</body>
-</html>

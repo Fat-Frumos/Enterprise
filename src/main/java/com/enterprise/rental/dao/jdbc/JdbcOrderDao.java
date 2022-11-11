@@ -8,6 +8,7 @@ import com.enterprise.rental.exception.OrderNotFoundException;
 import org.apache.log4j.Logger;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -80,7 +81,7 @@ public class JdbcOrderDao implements OrderDao {
             connection = getWithoutAutoCommit();
             statement = connection.prepareStatement(query);
             boolean update = statement.executeUpdate() > 0;
-            log.info(String.format("%s%s", update, query));
+            log.info(String.format("%s %s", update, query));
             connection.commit();
             return order;
 
@@ -200,7 +201,7 @@ public class JdbcOrderDao implements OrderDao {
             throws SQLException {
 
         boolean driver = order.isDriver();
-        Timestamp create = new Timestamp(System.currentTimeMillis());
+        Timestamp create = Timestamp.valueOf(LocalDateTime.now());
         String passport = order.getPassport();
         String reason = order.getReason();
         double payment = order.getPayment();

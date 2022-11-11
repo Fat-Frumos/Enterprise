@@ -27,31 +27,24 @@
     --color: #5d38df;
 }
 
-/*body {*/
-/*    background: var(--color);*/
-/*    min-height: 100vh;*/
-/*    display: flex;*/
-/*    align-items: center;*/
-/*    justify-content: center;*/
-/*}*/
-
-
 .container {
     padding: 28px;
     border-radius: 20px;
     background: #fff;
 }
 .drop-area {
+    position: absolute;
+    left: -18vw;
+    top: 3vh;
     background: #eee;
-    max-width: 300px;
+    max-width: 250px;
     width: 100%;
-    padding: 20px;
+    padding: 10px;
     border-radius: 10px;
-    text-align: center;
+    text-align: right;
     color: #999;
     cursor: pointer;
     border: 2px dashed #ccc;
-    position: relative;
     overflow: hidden;
 }
 .icon {

@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -18,30 +17,28 @@ public class OrderMapper extends Mapper<Order> {
     private static final Logger log = Logger.getLogger(OrderMapper.class);
 
     public Order mapRow(ResultSet resultSet) {
-
+//        String[] mapRow = {"orderId", "carId", "userId", "payment", "passport", "reason", "phone", "damage", "created", "term", "driver"};
         try {
             long orderId = resultSet.getLong("order_id");
-            long userId = resultSet.getLong("user_id");
             long carId = resultSet.getLong("car_id");
+            long userId = resultSet.getLong("user_id");
             boolean rejected = resultSet.getBoolean("rejected");
             boolean closed = resultSet.getBoolean("closed");
             Double payment = resultSet.getDouble("payment");
+
             String passport = resultSet.getString("passport");
-            String damage = resultSet.getString("damage");
-            String phone = resultSet.getString("phone");
             String reason = resultSet.getString("reason");
+            String phone = resultSet.getString("phone");
+            String damage = resultSet.getString("damage");
             String create = resultSet.getString("created");
+            String term = resultSet.getString("term");
+
             Timestamp created = create
                     != null
                     ? Timestamp.valueOf(create)
                     : new Timestamp(System.currentTimeMillis());
 
-
-            String term = resultSet.getString("term");
-            Timestamp timestamp = term
-                    != null
-                    ? Timestamp.valueOf(term)
-                    : new Timestamp(System.currentTimeMillis());
+            Timestamp timestamp = term != null ? Timestamp.valueOf(term) : null;
 
             String driver = resultSet.getString("driver")
                     == null
@@ -76,7 +73,7 @@ public class OrderMapper extends Mapper<Order> {
 
     public Order orderMapper(HttpServletRequest request) {
 
-        String[] fields = {"orderId", "carId", "userId", "passport", "reason", "phone", "damage", "payment", "created", "term"};
+        String[] fields = {"orderId", "carId", "userId", "passport", "reason", "phone", "damage", "payment", "created"};
 
         Map<String, String> params = new HashMap<>();
         for (String key : fields) {
@@ -86,20 +83,26 @@ public class OrderMapper extends Mapper<Order> {
             }
         }
 
-        long orderId = params.get("orderId") != null
-                ? Long.parseLong(params.get("orderId"))
+        long orderId = params.get(fields[0]) != null
+                ? Long.parseLong(params.get(fields[0]))
                 : UUID.randomUUID().getMostSignificantBits() & 0x7ffffffL;
 
-        long carId = Long.parseLong(params.get("carId"));
-        long userId = Long.parseLong(params.get("userId"));
+        long carId = Long.parseLong(params.get(fields[1]));
+        long userId = Long.parseLong(params.get(fields[2]));
 
-        String passport = params.get("passport");
-        String reason = params.get("reason");
-        String phone = params.get("phone");
-        String damage = params.get("damage");
-        String payment = params.get("payment");
-        String createTimestamp = params.get("created");
-        String timestamp = params.get("term");
+        String passport = params.get(fields[3]);
+        String reason = params.get(fields[4]);
+        String phone = params.get(fields[5]);
+        String damage = params.get(fields[6]);
+        String payment = params.get(fields[7]);
+        String createTimestamp = params.get(fields[8]);
+        String timestamp = request.getParameter("term");
+
+        if (timestamp.length() == 10) {
+            timestamp += " 00:00:00.0";
+        }
+
+        Timestamp term = Timestamp.valueOf(timestamp);
 
         boolean closed = request.getParameter("closed") != null;
         boolean rejected = request.getParameter("rejected") != null;
@@ -112,10 +115,6 @@ public class OrderMapper extends Mapper<Order> {
         Timestamp created = createTimestamp == null
                 ? new Timestamp(System.currentTimeMillis())
                 : Timestamp.valueOf(createTimestamp);
-
-        Timestamp term = createTimestamp == null
-                ? new Timestamp(System.currentTimeMillis())
-                : Timestamp.valueOf(timestamp);
 
         return new Order.Builder()
                 .orderId(orderId)

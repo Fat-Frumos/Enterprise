@@ -20,6 +20,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static com.enterprise.rental.dao.jdbc.Constants.*;
 
@@ -35,21 +36,24 @@ public class OrderServlet extends HttpServlet {
             HttpServletRequest request,
             HttpServletResponse response) {
 
-        String path = LOGIN;
+        String path;
         HttpSession session = request.getSession(false);
 
-        if (session != null && session.getAttribute("user") != null) {
+        if (session == null || session.getAttribute("user") == null) {
+            path = LOGIN;
+        } else {
             User user = (User) session.getAttribute("user");
             String id = request.getParameter("id");
             if (id != null) {
                 long carId = Long.parseLong(id);
 
-                request.setAttribute("auto", carService.getById(carId));
-
-                List<Car> userCars = user.getCars();
-
-                setUserAttribute(request, user, carId, userCars);
-
+                Optional<Car> optionalCar = carService.getById(carId);
+                if (optionalCar.isPresent()) {
+                    Car car = optionalCar.get();
+                    log.info(String.format("Get order Rental Car: %s, User : %s", car.getBrand(), user.getName()));
+                    request.setAttribute("auto", car);
+                }
+                setUserAttribute(request, user, carId);
                 path = MAIN;
             } else {
                 path = CARS;
@@ -58,22 +62,25 @@ public class OrderServlet extends HttpServlet {
         dispatch(request, response, path);
     }
 
-    private static void setUserAttribute(HttpServletRequest request, User user, long carId, List<Car> userCars) {
+    private static void setUserAttribute(
+            HttpServletRequest request,
+            User user, long carId) {
+
+        List<Car> userCars = user.getCars();
+
         for (Car car : userCars) {
             if (car.getId() == carId) {
-                log.info(String.format("Rental Car: %s", car));
-                log.info(String.format("User : %s", user));
-
                 List<Car> cars = new ArrayList<>();
-                List<Car> carList = user.getCars();
-                carList.stream().filter(auto -> cars.size() < 3).forEachOrdered(cars::add);
+                userCars.stream()
+                        .filter(auto -> cars.size() < 3)
+                        .forEachOrdered(cars::add);
                 user.setCar(car);
-                request.setAttribute("auto", car);
-                request.setAttribute("cars", cars);
-                request.setAttribute("car", user.getCars().size());
-                request.setAttribute("user", user);
+                break;
             }
         }
+        request.setAttribute("cars", userCars);
+        request.setAttribute("car", userCars.size());
+        request.setAttribute("user", user);
     }
 
     /***
@@ -89,23 +96,25 @@ public class OrderServlet extends HttpServlet {
         if (session != null) {
             User user = (User) session.getAttribute("user");
             if (user != null) {
-                log.info(String.format("user %s", user));
+                log.info(String.format("user %s ", user.getName()));
                 Car car = user.getCar();
-                log.info(String.format("Car %s", car));
                 if (car != null) {
+                    log.info(String.format("Car %s ", car.getBrand()));
                     Order orderMapper = ORDER_MAPPER.orderMapper(request);
-                    boolean saved = orderService.createOrder(orderMapper);
-                    if (saved) {
-                        List<Car> userCars = user.getCars();
-                        for (Car userCar : userCars) {
-                            if (userCar.getId() == car.getId()) {
-                                userCars.remove(userCar);
-                                user.setCars(userCars);
+                    if (orderMapper != null) {
+                        boolean saved = orderService.createOrder(orderMapper);
+                        if (saved) {
+                            List<Car> userCars = user.getCars();
+                            for (Car userCar : userCars) {
+                                if (userCar.getId() == car.getId()) {
+                                    userCars.remove(userCar);
+                                    user.setCars(userCars);
+                                }
                             }
+                            List<Order> orderList = orderService.getAll(user);
+                            request.setAttribute("order", orderList);
+                            user.setCar(new Car());
                         }
-                        List<Order> orderList = orderService.getAll(user);
-                        request.setAttribute("order", orderList);
-                        user.setCar(new Car());
                     }
                 }
 //                request.setAttribute("cars", carService.getAll());
@@ -122,25 +131,22 @@ public class OrderServlet extends HttpServlet {
             throws ServletException, IOException {
 
         String id = (request.getParameter("orderId"));
-        log.info(String.format("%s", id));
+        log.info(String.format("Delete order %s", id));
         String path = LOGIN;
         HttpSession session = request.getSession(false);
         if (session != null) {
             User user = (User) session.getAttribute("user");
             if (user.getRole().equals("manager")) {
                 boolean delete = orderService.delete(id);
-                log.info(String.format("%s %b", id, delete));
-//                List<Order> userOrders = orderService.getAll();
-//                request.setAttribute("orders", userOrders);
+                log.info(String.format("Order# %s, deleted %b", id, delete));
+                List<Order> userOrders = orderService.getAll();
+                request.setAttribute("orders", userOrders);
                 request.setAttribute("user", user);
-                request.setAttribute("cars", user.getCars());
-                log.info(String.format("%s", user.getCars()));
                 log.info(String.format("%s", user));
                 path = "/user";
 
             }
             response.sendRedirect(path);
-//            dispatch(request, response, path);
         }
 
     }

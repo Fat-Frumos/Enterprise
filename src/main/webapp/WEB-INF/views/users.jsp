@@ -24,7 +24,7 @@
 
 <div class="container">
     <div class="col-lg-12">
-        <h5 style="text-align: center">List of Jobs</h5>
+        <h5 style="text-align: center">List of Users</h5>
     </div>
 
     <div class="col-lg-12">
@@ -34,7 +34,7 @@
                 <th>Name</th>
                 <th>Email</th>
                 <th>Role</th>
-                <th>Status</th>
+                <th>Enable</th>
                 <th>Closed</th>
                 <th>Confirm</th>
             </tr>
@@ -68,6 +68,18 @@
         </table>
     </div>
 </div>
+<%--<div class="loading">--%>
+<%--    <div class="outer">--%>
+<%--        <span></span>--%>
+<%--        <span></span>--%>
+<%--        <span></span>--%>
+<%--    </div>--%>
+<%--    <div class="inner">--%>
+<%--        <span></span>--%>
+<%--        <span></span>--%>
+<%--        <span></span>--%>
+<%--    </div>--%>
+<%--</div>--%>
 <h5 style="left: 90vw; top: 0; position: absolute"><ct:today format="MMMM dd yyyy"/></h5>
 <link
         rel="stylesheet"

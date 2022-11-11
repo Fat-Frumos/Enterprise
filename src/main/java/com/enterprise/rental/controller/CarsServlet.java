@@ -31,6 +31,9 @@ public class CarsServlet extends HttpServlet {
     private static final Logger log = Logger.getLogger(CarsServlet.class);
     private static final CarMapper CAR_MAPPER = new CarMapper();
     private static final CarService carService = new CarService();
+    private static final List<Car> carList = carService.getAll("price>=100 ORDER BY cost LIMIT 10 OFFSET 0");
+    private static final int size = carService.getAll().size();
+
 
     @Override
     protected void doGet(
@@ -38,9 +41,7 @@ public class CarsServlet extends HttpServlet {
             HttpServletResponse response)
             throws IOException, ServletException {
 
-        List<Car> carList = carService.getAll("price>=100 ORDER BY cost LIMIT 10 OFFSET 0");
 
-        int size = carService.getAll().size();
         String[] carFields = {"id", "name", "brand", "model", "path", "price", "cost", "year", "sort", "direction", "page"};
 
         Map<String, String> params = Arrays.stream(carFields)
@@ -53,6 +54,8 @@ public class CarsServlet extends HttpServlet {
 
         int page;
 
+        int limit;
+
         try {
             page = Integer.parseInt(params.get("page"));
             if (page <= 1) {
@@ -62,9 +65,9 @@ public class CarsServlet extends HttpServlet {
             page = 1;
         }
 
-        int limit;
 
         String offset = "limit";
+
         try {
             limit = Integer.parseInt(params.get(offset));
         } catch (NumberFormatException e) {
@@ -74,28 +77,27 @@ public class CarsServlet extends HttpServlet {
         params.put(offset, String.valueOf(limit));
         params.put("page", String.valueOf(page));
 
-        log.info(String.format("Quest Params: %s, page %s", params, page));
-
         if (Integer.parseInt(params.get(offset)) == 10
                 && Integer.parseInt(params.get("page")) <= 1
                 && params.size() == 2) {
             request.setAttribute("cars", carList);
         } else {
+
             if (page * limit > size) {
                 page--;
             }
-            List<Car> auto = params.keySet()
-                    .stream()
-                    .map(key -> String.format("&%s=%s", key, params.get(key)))
-                    .collect(Collectors.joining())
-                    .equals("")
-                    ? carService.getAll(params)
-                    : carService.getAll(params, page);
+
+            List<Car> auto = getAuto(params, page);
+
             if (auto.isEmpty()) {
                 page--;
             } else {
                 request.setAttribute("cars", auto);
             }
+        }
+
+        if (page > size / (limit + 1) - 1) {
+            page = size / (limit);
         }
 
         request.setAttribute("page", page);
@@ -104,11 +106,20 @@ public class CarsServlet extends HttpServlet {
         if (session != null && session.getAttribute("user") != null) {
             User user = (User) session.getAttribute("user");
             user.addParams(params);
-            log.info(String.format("Users Cars: %s", user.getCars()));
             request.setAttribute("car", user.getCars().size());
             log.info(String.format("Users Params: %s", user.getParams()));
         }
         dispatch(request, response, CARS);
+    }
+
+    private static List<Car> getAuto(Map<String, String> params, int page) {
+        return params.keySet()
+                .stream()
+                .map(key -> String.format("&%s=%s", key, params.get(key)))
+                .collect(Collectors.joining())
+                .equals("")
+                ? carService.getAll(params)
+                : carService.getAll(params, page);
     }
 
     @Override
@@ -191,6 +202,7 @@ public class CarsServlet extends HttpServlet {
                     boolean delete = carService.delete(carId);
                     log.info(String.format("%s %b", id, delete));
                     List<Car> userCars = user.getCars();
+                    //TODO DELETE vs UPDATE
                     userCars.remove(optionalCar.get());
                     user.setCars(userCars);
                     log.info(String.format("%s", user));
@@ -198,7 +210,6 @@ public class CarsServlet extends HttpServlet {
                     request.setAttribute("cars", user.getCars());
                     log.info(String.format("%s", user.getCars()));
                 }
-
             }
         }
         response.sendRedirect("/cars");

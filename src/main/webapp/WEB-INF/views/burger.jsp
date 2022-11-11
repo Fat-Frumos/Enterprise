@@ -7,9 +7,9 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-    <style>
-        <%@include file="../classes/templates/css/burger.css"%>
-    </style>
+<style>
+    <%@include file="../classes/templates/css/burger.css"%>
+</style>
 
 <div class="navigation">
         <span style="--i:0;--x:-1;--y:0">
@@ -33,20 +33,20 @@
         </span>
 
     <span style="--i:4;--x:1;--y:1">
-        <a href="<c:url value="/login"/>">
+        <a href="<c:url value="/order"/>">
             <ion-icon name="game-controller-outline"></ion-icon></a>
         </span>
     <span id="facebook" style="--i:5;--x:-1;--y:-1">
-        <a id="" href="<c:url value="/user"/>">
+        <a id="" href="<c:url value="/"/>">
             <ion-icon name="videocam-outline"></ion-icon></a>
         </span>
     <span style="--i:6;--x:0;--y:0">
-        <a href="<c:url value="/order"/>">
+        <a href="<c:url value="/register"/>">
             <ion-icon name="alarm-outline"></ion-icon>
         </a>
         </span>
     <span style="--i:7;--x:-1;--y:1">
-        <a href="<c:url value="/cars"/>">
+        <a href="<c:url value="/upload"/>">
             <ion-icon name="paper-plane-outline"></ion-icon>
         </a>
         </span>
