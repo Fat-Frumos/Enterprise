@@ -5,24 +5,54 @@
       http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
          id="WebApp_ID" version="3.0">
 
-        <filter>
-            <filter-name>UserFilter</filter-name>
-            <filter-class>com.enterprise.rental.filter.SecurityFilter</filter-class>
-        </filter>
-
-        <filter-mapping>
-            <filter-name>UserFilter</filter-name>
-            <url-pattern>/login</url-pattern>
-        </filter-mapping>
-
-<!--    <display-name>ServletFileUploadDownload</display-name>-->
-<!--    <welcome-file-list>-->
-<!--        <welcome-file>/WEB-INF/views/index.jsp</welcome-file>-->
-<!--    </welcome-file-list>-->
-
     <welcome-file-list>
-        <welcome-file>login.jsp</welcome-file>
+        <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
+
+    <servlet>
+        <servlet-name>AdminServlet</servlet-name>
+        <servlet-class>com.enterprise.rental.controller.RegisterServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AdminServlet</servlet-name>
+        <url-pattern>/register</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>LoginServlet</servlet-name>
+        <servlet-class>com.enterprise.rental.controller.LoginServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>LoginServlet</servlet-name>
+        <url-pattern>/login</url-pattern>
+    </servlet-mapping>
+
+    <filter>
+        <filter-name>UserFilter</filter-name>
+        <filter-class>com.enterprise.rental.filter.UserFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>UserFilter</filter-name>
+        <url-pattern>/order</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>UserFilter</filter-name>
+        <url-pattern>/cart</url-pattern>
+    </filter-mapping>
+
+
+    <filter>
+        <filter-name>Filter</filter-name>
+        <filter-class>com.enterprise.rental.filter.SecurityFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>Filter</filter-name>
+        <url-pattern>/register</url-pattern>
+    </filter-mapping>
+
     <filter>
         <filter-name>CharsetFilter</filter-name>
         <filter-class>com.enterprise.rental.filter.CharsetFilter</filter-class>

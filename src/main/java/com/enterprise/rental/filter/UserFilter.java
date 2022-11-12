@@ -11,32 +11,31 @@ import java.io.IOException;
 
 import static com.enterprise.rental.dao.jdbc.Constants.FORBIDDEN;
 
-public class SecurityFilter implements Filter {
-
-    private static final Logger log = Logger.getLogger(SecurityFilter.class);
+public class UserFilter implements Filter {
+    private static final Logger log = Logger.getLogger(UserFilter.class);
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
 
-        String filterName = filterConfig.getFilterName();
-        log.info(String.format("filterName: %s", filterName));
-//        ServletContext servletContext = filterConfig.getServletContext();
     }
 
+    @Override
     public void doFilter(
             ServletRequest request,
             ServletResponse response,
             FilterChain chain)
-            throws IOException, ServletException {
+            throws IOException,
+            ServletException {
 
         HttpServletRequest servletRequest = (HttpServletRequest) request;
         HttpServletResponse servletResponse = (HttpServletResponse) response;
 
         HttpSession session = servletRequest.getSession(false);
+
         User user = (User) session.getAttribute("user");
 
         if (user != null) {
-            if (user.getRole().equals("manager") || user.getRole().equals("admin")) {
+            if (user.getRole().equals("manager") || user.getRole().equals("admin") || user.getRole().equals("user")) {
                 log.info(String.format("Access is granted for %s", user));
                 request.setAttribute("user", user);
                 chain.doFilter(request, response);
@@ -49,6 +48,8 @@ public class SecurityFilter implements Filter {
         }
     }
 
+    @Override
     public void destroy() {
+
     }
 }

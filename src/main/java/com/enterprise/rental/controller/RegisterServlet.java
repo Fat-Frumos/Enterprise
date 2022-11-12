@@ -9,7 +9,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,9 +20,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.enterprise.rental.dao.jdbc.Constants.CONTRACT;
-import static com.enterprise.rental.dao.jdbc.Constants.USERS;
 
-@WebServlet(urlPatterns = "/register")
 public class RegisterServlet extends HttpServlet {
     private static final Log log = LogFactory.getLog(RegisterServlet.class);
 
@@ -42,6 +39,7 @@ public class RegisterServlet extends HttpServlet {
         String name = request.getParameter("name");
 
         Optional<User> optionalUser = userService.findByName(name);
+
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
             String role = request.getParameter("role");

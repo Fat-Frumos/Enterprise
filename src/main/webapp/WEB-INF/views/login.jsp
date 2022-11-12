@@ -8,7 +8,10 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="shortcut icon" href="https://raw.githubusercontent.com/Fat-Frumos/Cars/master/wheel.ico" type="image/x-icon">
 <head>
     <title>Login</title>
 </head>
@@ -59,7 +62,7 @@
                    onclick="document.getElementById('id01').style.display='none'">
                     Cancel</a>
                 <br>
-                <a class="sign glowing-txt" onclick="toCard()">Forgot password?</a>
+                <a href="/user" class="sign glowing-txt" onclick="toCard()">Forgot password?</a>
                 <br>
             </div>
         </form>
@@ -70,17 +73,17 @@
    title="Close Modal" href="<c:url value="/"/>">&times;</a>
 <script>
 
-    function toCard() {
-        let url = '/user';
-        fetch(url, {
-            method: 'GET',
-        }).then(response => {
-            console.log('Ok:', response);
-        }).catch(err => {
-            console.error(err)
-        })
-            // window.location.href = url;
-    }
+    // function toCard() {
+    //     let url = '/user';
+    //     fetch(url, {
+    //         method: 'GET',
+    //     }).then(response => {
+    //         console.log('Ok:', response);
+    //     }).catch(err => {
+    //         console.error(err)
+    //     })
+    //         // window.location.href = url;
+    // }
 
     let modal = document.getElementById('id01');
 

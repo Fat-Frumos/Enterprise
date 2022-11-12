@@ -19,7 +19,7 @@ import java.util.UUID;
 import static com.enterprise.rental.dao.jdbc.Constants.LOGIN;
 import static com.enterprise.rental.dao.jdbc.Constants.NOT_FOUND;
 
-@WebServlet(urlPatterns = "/login")
+//@WebServlet(urlPatterns = "/login")
 public class LoginServlet extends HttpServlet {
 
     private static final long serialVersionUID = UUID.randomUUID().getMostSignificantBits() & 0x7ffffffL;

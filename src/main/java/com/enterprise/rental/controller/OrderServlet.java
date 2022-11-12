@@ -75,10 +75,10 @@ public class OrderServlet extends HttpServlet {
                         .filter(auto -> cars.size() < 3)
                         .forEachOrdered(cars::add);
                 user.setCar(car);
+                request.setAttribute("cars", cars);
                 break;
             }
         }
-        request.setAttribute("cars", userCars);
         request.setAttribute("car", userCars.size());
         request.setAttribute("user", user);
     }
@@ -92,32 +92,30 @@ public class OrderServlet extends HttpServlet {
             HttpServletResponse response)
             throws ServletException, IOException {
 
-        HttpSession session = request.getSession(false);
-        if (session != null) {
-            User user = (User) session.getAttribute("user");
-            if (user != null) {
-                log.info(String.format("user %s ", user.getName()));
-                Car car = user.getCar();
-                if (car != null) {
-                    log.info(String.format("Car %s ", car.getBrand()));
-                    Order orderMapper = ORDER_MAPPER.orderMapper(request);
-                    if (orderMapper != null) {
-                        boolean saved = orderService.createOrder(orderMapper);
-                        if (saved) {
-                            List<Car> userCars = user.getCars();
-                            for (Car userCar : userCars) {
-                                if (userCar.getId() == car.getId()) {
-                                    userCars.remove(userCar);
-                                    user.setCars(userCars);
-                                }
+        Optional<User> optional = getUser(request.getSession());
+
+        if (optional.isPresent()) {
+            User user = optional.get();
+            log.info(String.format("user %s ", user.getName()));
+            Car car = user.getCar();
+            if (car != null) {
+                log.info(String.format("Car %s ", car.getBrand()));
+                Order orderMapper = ORDER_MAPPER.orderMapper(request);
+                if (orderMapper != null) {
+                    boolean saved = orderService.createOrder(orderMapper);
+                    if (saved) {
+                        List<Car> userCars = user.getCars();
+                        for (Car userCar : userCars) {
+                            if (userCar.getId() == car.getId()) {
+                                userCars.remove(userCar);
+                                user.setCars(userCars);
                             }
-                            List<Order> orderList = orderService.getAll(user);
-                            request.setAttribute("order", orderList);
-                            user.setCar(new Car());
                         }
+                        List<Order> orderList = orderService.getAll(user);
+                        request.setAttribute("order", orderList);
+                        user.setCar(new Car());
                     }
                 }
-//                request.setAttribute("cars", carService.getAll());
             }
         }
         response.sendRedirect("/user");
@@ -132,23 +130,28 @@ public class OrderServlet extends HttpServlet {
 
         String id = (request.getParameter("orderId"));
         log.info(String.format("Delete order %s", id));
-        String path = LOGIN;
-        HttpSession session = request.getSession(false);
-        if (session != null) {
-            User user = (User) session.getAttribute("user");
-            if (user.getRole().equals("manager")) {
-                boolean delete = orderService.delete(id);
-                log.info(String.format("Order# %s, deleted %b", id, delete));
-                List<Order> userOrders = orderService.getAll();
-                request.setAttribute("orders", userOrders);
-                request.setAttribute("user", user);
-                log.info(String.format("%s", user));
-                path = "/user";
 
-            }
-            response.sendRedirect(path);
+        Optional<User> user = getUser(request.getSession(false));
+        if (user.isPresent() && user.get().getRole().equals("manager")) {
+            boolean delete = orderService.delete(id);
+            log.info(String.format("Order# %s, deleted %b", id, delete));
+            List<Order> userOrders = orderService.getAll();
+            request.setAttribute("orders", userOrders);
+            request.setAttribute("user", user);
+            log.info(String.format("%s", user));
         }
+        response.sendRedirect("/user");
+    }
 
+    private static Optional<User> getUser(HttpSession session) {
+
+        if (session.getAttribute("user") != null) {
+            User user = (User) session.getAttribute("user");
+            log.info(String.format("%s %s From Request session",
+                    user.getRole(), user.getName()));
+            return Optional.of(user);
+        }
+        return Optional.empty();
     }
 
     void dispatch(

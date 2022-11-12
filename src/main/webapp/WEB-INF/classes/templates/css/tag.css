@@ -1,14 +1,4 @@
-@font-face {
-    font-family: "IBM Plex Sans Roman";
-    src: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/85648/IBMPlexSansVar-Roman.ttf");
-}
-
-* {
-    box-sizing: border-box;
-}
-
 h1 {
-    font-family: "IBM Plex Sans Roman", Times, serif;
     font-weight: 100;
     font-size: 10vw;
     line-height: 10vw;
@@ -16,9 +6,10 @@ h1 {
 }
 
 h1 .char {
-    /*--delay: calc((var(--char-index) + 1) * 400ms);  animation-delay: var(--delay);*/
+    /*--delay: calc((var(--char-index) + 1) * 400ms);*/
+    /*animation-delay: var(--delay);*/
     animation: breathe 4000ms infinite ease-in-out;
-    animation-delay: 2000ms;
+    animation-delay: 1500ms;
 }
 
 h1:hover span {
@@ -40,8 +31,8 @@ h1:hover span {
         font-size: 10vw;
     }
 }
+
 .tagcloud {
-    font-family: 'Poppins', sans-serif;
     font-size: 20px;
     margin: auto;
     width: 50%;
@@ -50,76 +41,86 @@ h1:hover span {
     cursor: pointer;
     color: #dd4814;  }
 
-.loading {
-    position: relative;
-    transform: rotate(-60deg);
+
+
+/* @font-face {
+  font-family:'Decovar Regular24';
+  src:url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/209981/Decovar-VF.ttf');
 }
-.loading span {
+
+h1 {
+  margin: 0;
+  font-size: 20vw;
+  position: relative;
+  font-weight: 400;
+  font-family: "Decovar Regular24";
+  font-variation-settings: 'INLN' 400, 'SWRM' 1000;
+
+    -webkit-text-fill-color: transparent;
+  background-image: url(https://raw.githubusercontent.com/Fat-Frumos/Cars/master/images/screen.jpg);
+background-size: 30%;
+  background-repeat: repeat;
+
+  text-shadow: 2px 2px 5px rgba(#2a4308, 0.4);
+  animation: grow 3s linear infinite alternate;
+}
+  h1:before {
+    text-shadow:
+      1px 1px 2px rgba(#2a4308, 0.5),
+      -1px 1px 2px rgba(#2a4308, 0.5),
+      -1px -1px 2px rgba(#2a4308, 0.5),
+      1px -1px 2px rgba(#2a4308, 0.5),
+      3px 3px 20px rgba(#000, 0.5);
+  }
+
+  h1:after {
+    color: #421F00;
+    font-variation-settings: 'INLN' 0;
+  }
+
+@keyframes grow {
+  0% {
+    font-variation-settings: 'INLN' 400, 'SWRM' 1000;
+  }
+
+  100% {
+    font-variation-settings: 'INLN' 400, 'SWRM' 0;
+  }
+}
+
+
+html {
+  height: 100%;
+}
+
+body {
+  background: radial-gradient(ellipse at center, #adbf41 20%,#328a26 80%);
+  height: 100%;
+}
+
+h1 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  letter-spacing: 0.6rem;
+}
+  h1:after, h1:before {
+    content: attr(data-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
     position: absolute;
-    border: solid 10px transparent;
-    border-top-width: 6px;
-    border-bottom-width: 6px;
-    display: block;
-    transform: translate(-50%, -50%);
-}
-.loading .outer span {
-    width: 50px;
-    height: 26px;
-    animation: destiny2-loading 3000ms infinite;
-}
-.loading .outer span:nth-child(1) {
-    animation-delay: 0s;
-}
-.loading .outer span:nth-child(2) {
-    transform: translate(-50%, -50%) rotate(60deg);
-    animation-delay: 500ms;
-}
-.loading .outer span:nth-child(3) {
-    transform: translate(-50%, -50%) rotate(120deg);
-    animation-delay: 1000ms;
-}
-.loading .inner span {
-    width: 24px;
-    height: 11px;
-    animation: destiny2-loading 1500ms infinite;
-}
-.loading .inner span:nth-child(1) {
-    animation-delay: 500ms;
-}
-.loading .inner span:nth-child(2) {
-    transform: translate(-50%, -50%) rotate(60deg);
-    animation-delay: 250ms;
-}
-.loading .inner span:nth-child(3) {
-    transform: translate(-50%, -50%) rotate(120deg);
-    animation-delay: 0s;
-}
-@keyframes destiny2-loading {
-    0% {
-        border-left-color: transparent;
-        border-right-color: white;
-    }
-    30% {
-        border-left-color: transparent;
-        border-right-color: transparent;
-    }
-    50% {
-        border-left-color: transparent;
-        border-right-color: transparent;
-    }
-    50.00001% {
-        border-left-color: white;
-        border-right-color: transparent;
-    }
-    80% {
-        border-left-color: transparent;
-        border-right-color: transparent;
-    }
-    100% {
-        border-left-color: transparent;
-        border-right-color: transparent;
-    }
-}
+    left: 0;
+    top: 0;
+
+} */
+
 /*.undeadlogo {*/
 /*    position: fixed;*/
 /*    bottom: 50px;*/

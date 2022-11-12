@@ -27,10 +27,9 @@
     <c:forEach items="${cars}" var="cars">
         <figure class="carousel-item">
             <img class="fade" onclick="openForm(${cars.id})" src="${cars.path}"
-                 alt=${cars.id}>
+                 alt="${cars.id}">
         </figure>
     </c:forEach>
-<%--    <jsp:include page="order.jsp"/>--%>
 </div>
 <%--onclick="openForm(`${cars.brand} | ${cars.name} | ${cars.model}`)"--%>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
@@ -39,26 +38,27 @@
 
     window.addEventListener('contextmenu', (event) => {
         event.preventDefault()
+        window.history.back();
     })
 
     $(document).ready(function () {
         $('.carousel').carousel();
-
-
-        // let htmlElement = document.getElementsByClassName("carousel-item");
-        $(document).on('contextmenu', function (event) {
-            if (!$(event.target).hasClass("fade")) {
-                event.preventDefault()
-                window.history.back();
-            }
-        })
     });
 
     function openForm(id) {
-        window.location.href = '/order?id=' + id;
+        let url = '/order?id=' + id;
+
+        window.location.href = url;
     }
 
     function closeForm(id) {
+        // // let htmlElement = document.getElementsByClassName("carousel-item");
+        // $(document).on('contextmenu', function (event) {
+        //     if (!$(event.target).hasClass("fade")) {
+        //         event.preventDefault()
+        //         window.history.back();
+        //     }
+        // })
         alert("Car has been")
 
     }

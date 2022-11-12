@@ -21,13 +21,27 @@
 <style>
     <%@include file="../classes/templates/css/modal.css"%>
     <%@include file="../classes/templates/css/form.css"%>
+    <%@include file="../classes/templates/css/tag.css"%>
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
     body {
+            /*background-color: #2C001e;*/
         background: #FFFFFF;
     }
 
 </style>
 <body>
+<nav>
+    <div style="position: absolute;top:7vh; left: 3vw;">
+        <jsp:include page="tag.jsp"/>
+    </div>
+</nav>
+
 <div class="container">
     <jsp:include page="nav.jsp"/>
     <div class="row m-0">
@@ -41,6 +55,7 @@
 
 </div>
 <jsp:include page="burger.jsp"/>
+
 <div class="day">
     <h6><ct:today format="MMMM dd yyyy"/></h6>
     <a style="text-transform: capitalize" href="/user/${user}">(${user})</a>
@@ -49,20 +64,18 @@
     <input type="text" id="start-date">
     <input type="text" id="end-date">
 </div>
+
 <div id="dp-island"></div>
 <button id="search">Search</button>
 <div id="output"></div>
+
 <script>
 
     window.addEventListener('contextmenu', (event) => {
         event.preventDefault()
         window.history.back();
     })
-    // $(document).ready(function () {
-    //     $('#main').click(function () {
-    //         $('#Mymodal').modal('show')
-    //     });
-    // });
+
 </script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
