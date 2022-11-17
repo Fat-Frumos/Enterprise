@@ -12,6 +12,8 @@
 <head>
     <title>Users</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="https://raw.githubusercontent.com/Fat-Frumos/Cars/master/wheel.ico"
+          type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <link
@@ -26,17 +28,7 @@
         <%@include file="../classes/templates/css/users.css"%>
         <%@include file="../classes/templates/css/check-box.css"%>
         <%@include file="../classes/templates/css/dice.css"%>
-
-        .wrapper {
-            margin: 5px;
-            width: 100%;
-        }
-
-        th {
-            text-align: center;
-        }
-
-
+        <%@include file="../classes/templates/css/loader.css"%>
 
     </style>
 </head>
@@ -54,7 +46,7 @@
                 <th>User#</th>
                 <th>Order#</th>
                 <th>Car#</th>
-                <%--                <th>passport</th>--%>
+                <%--<th>passport</th>--%>
                 <th>Created/Term</th>
                 <th>Damage</th>
                 <th>Reason</th>
@@ -75,10 +67,10 @@
                             <%--                        <td><input style="width: 120px" value="${order.passport}" name="passport"></td>--%>
                         <td style="width: 225px">
                             <input name="created" value="${order.created}" style="width: 150px" hidden>
-                            <fmt:formatDate pattern=" yyyy-mm-dd hh:mm:ss" value="${order.created}"/>
-                            /
+                            <fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" value="${order.created}"/>
+                            <br>
                             <input name="term" value="${order.term}" style="width: 150px" hidden>
-                                <fmt:formatDate pattern=" yyyy-mm-dd hh:mm:ss" value="${order.term}"/></input>
+                                <fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" value="${order.term}"/></input>
                         </td>
                         <td><input value="${order.damage}" name="damage"></td>
 

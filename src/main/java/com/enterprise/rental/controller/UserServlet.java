@@ -69,7 +69,6 @@ public class UserServlet extends HttpServlet {
         dispatch(request, response, path);
     }
 
-
     /**
      * Authentication and authorization User
      */
@@ -105,8 +104,7 @@ public class UserServlet extends HttpServlet {
             boolean save = userService.save(user);
 
             log.info(String.format("%s is created: %s", user, save));
-
-            request.setAttribute("user", user.getName() + "role: " + user.getRole());
+            request.setAttribute("user", user);
 
             request.getRequestDispatcher(MAIN)
                     .forward(request, response);

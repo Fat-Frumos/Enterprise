@@ -16,8 +16,8 @@
         border-radius: 10px;
         padding: 0;
         margin: 0;
-
     }
+
 </style>
 <section>
     <form action="${pageContext.request.contextPath}/cars" method="post">
@@ -182,18 +182,15 @@
     }
 
     function put(id) {
+        // let url = '/order' + '?id=' + id;
         let url = '/cart' + '?id=' + id;
-        // let url = '/cars' + '?id=' + id;
-        window.location.href = url;
-        // console.log(url);
-        // fetch(url, {
-        //     method: 'PUT',
-        // }).then(response => {
-        //     console.log('Ok:', response);
-        // }).catch(err => {
-        //     console.error(err)
-        //
-        // })
+        fetch(url, {
+            method: 'put',
+        }).then(response => {
+            console.log('Ok:', response);
+            window.location.href = url;
+        }).catch(err => {
+            console.error(err)
+        })
     }
-
 </script>

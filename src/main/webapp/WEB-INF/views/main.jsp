@@ -29,11 +29,6 @@
         box-sizing: border-box;
     }
 
-    body {
-            /*background-color: #2C001e;*/
-        background: #FFFFFF;
-    }
-
 </style>
 <body>
 <nav>

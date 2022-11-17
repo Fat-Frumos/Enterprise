@@ -16,6 +16,8 @@
 *.war
 *.nar
 *.ear
+*.png
+*.psd
 *.zip
 *.tar.gz
 *.rar
@@ -47,6 +49,7 @@ target/
 *.ipr
 .idea
 target
+null
 .mvn
 
 

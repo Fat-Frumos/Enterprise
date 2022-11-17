@@ -9,17 +9,17 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-import static com.enterprise.rental.dao.jdbc.Constants.FORBIDDEN;
+import static com.enterprise.rental.dao.jdbc.Constants.LOGIN;
 
 public class SecurityFilter implements Filter {
-
+    FilterConfig config;
     private static final Logger log = Logger.getLogger(SecurityFilter.class);
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-
+        this.config = filterConfig;
         String filterName = filterConfig.getFilterName();
-        log.info(String.format("filterName: %s", filterName));
+        log.info(String.format("SecurityFilter: %s", filterName));
 //        ServletContext servletContext = filterConfig.getServletContext();
     }
 
@@ -33,19 +33,19 @@ public class SecurityFilter implements Filter {
         HttpServletResponse servletResponse = (HttpServletResponse) response;
 
         HttpSession session = servletRequest.getSession(false);
-        User user = (User) session.getAttribute("user");
-
-        if (user != null) {
-            if (user.getRole().equals("manager") || user.getRole().equals("admin")) {
+        if (session != null) {
+            User user = (User) session.getAttribute("user");
+            if (user != null) {
                 log.info(String.format("Access is granted for %s", user));
-                request.setAttribute("user", user);
-                chain.doFilter(request, response);
-            } else {
-                log.info("Access is FORBIDDEN");
-                servletResponse.sendRedirect(FORBIDDEN);
+                if (user.getRole().equals("admin") || user.getRole().equals("manager")) {
+                    request.setAttribute("user", user);
+                    chain.doFilter(servletRequest, servletResponse);
+                }
             }
         } else {
-            servletResponse.sendRedirect("/login");
+            log.info("Access is FORBIDDEN");
+            request.getRequestDispatcher(LOGIN)
+                    .forward(servletRequest, servletResponse);
         }
     }
 

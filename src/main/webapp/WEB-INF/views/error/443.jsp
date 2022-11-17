@@ -27,8 +27,8 @@
         <div class="box__face front">4</div>
         <div class="box__face back">4</div>
         <div class="box__face right">3</div>
-        <div class="box__face left">4</div>
         <div class="box__face top">4</div>
+        <div class="box__face left">4</div>
         <div class="box__face bottom">3</div>
     </div>
     <div class="shadow"></div>

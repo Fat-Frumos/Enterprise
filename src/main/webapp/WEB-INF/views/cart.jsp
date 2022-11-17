@@ -67,6 +67,7 @@
     })
 
     function popUp(id) {
+        if ("${user.role}" === "admin" || "${user.role}" === "manager" || "${user.role}" === "user") {
         $("#" + id).modal('show');
         // let url = '/order' + '?id=' + id;
         let url = '/cart' + '?id=' + id;
@@ -78,6 +79,9 @@
         }).catch(err => {
             console.error(err)
         })
+        } else {
+            window.location.href = "/login";
+        }
         // document.location.reload(true);
     }
 

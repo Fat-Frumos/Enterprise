@@ -73,7 +73,8 @@ public class RegisterServlet extends HttpServlet {
         } else {
             log.info("Could not find user");
         }
-        response.sendRedirect("/user");
+        request.getRequestDispatcher("/user")
+                .forward(request, response);
 
     }
 

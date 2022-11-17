@@ -8,7 +8,7 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <div class="option">
-    <form action="${pageContext.request.contextPath}/cars?page=${page}">
+    <form action="${pageContext.request.contextPath}/?page=${page}">
         <div class="priceInput">
             <div onclick="brand()">
                 <label for="brand">Brand:</label>
@@ -28,22 +28,39 @@
             <label for="price">Price:</label>
             <input type="number" id="price" name="price" min="100" max="1500">
 
-            <div class="buttons">
-                <br>
-                <a class="button" href="?page=${page-1}"><</a>
-                <a class="button" href="?page=${page+1}">${page+1}</a>
-                <a class="button" href="?page=${page+2}">${page+2}</a>
-                <a class="button" href="?page=${page+3}">${page+3}</a>
-                <a class="button" href="?page=${page+4}">${page+4}</a>
-                <a class="button" href="?page=${page+1}">></a>
-            </div>
+            <ul class="pagination">
+                <c:if test="${page != 1}">
+                    <li class="page-item"><a class="page-link"
+                                             onclick="send(${page-1})"><</a>
+                    </li>
+                </c:if>
+                <c:forEach begin="${begin}" end="${noOfPages}" var="i">
+                    <c:choose>
+                        <c:when test="${page eq i}">
+                            <li class="page-item active"><a class="page-link">
+                                    ${i} <span class="sr-only">(current)</span></a>
+                            </li>
+                        </c:when>
+                        <c:otherwise>
+                            <li class="page-item"><a class="page-link" onclick="send(${i})">${i}</a>
+                            </li>
+                        </c:otherwise>
+                    </c:choose>
+                </c:forEach>
+
+                <c:if test="${page lt noOfPages}">
+                    <li class="page-item"><a class="page-link" onclick="send(${page+1})">></a>
+                    </li>
+                </c:if>
+            </ul>
+
             <br>
             <div class="btn-group sort-btn">
                 <button id="direction" class="btn btn-secondary" data="none">Cost
                     <input name="direction" value="cost" data="none" class="fa fa-sort">
                 </button>
                 <button id="search" class="btn btn-secondary" data-sort="none">
-                    <input name="sort" value="" class="fa fa-sort"><i class="fa fa-sort"></i>
+                    <input id="sort" name="sort" value="" class="fa fa-sort"><i class="fa fa-sort"></i>
                 </button>
                 <button id="submit" class="btn btn-primary" type="submit">
                     Search
@@ -56,6 +73,19 @@
 
 <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js'></script>
 <script>
+    <%--let ps = document.getElementsByClassName("page-item");--%>
+    <%--if (${page+5 < noOfPages}) {--%>
+    <%--ps[1].remove();--%>
+    // }
+
+    function send(page) {
+        let brand = document.getElementById("brand").value;
+        let price = document.getElementById("price").value;
+        let direction = document.getElementById("direction").value;
+        let sort = document.getElementById("sort").value;
+        window.location.href = "?page=" + page + "&direction=" + direction + "&sort=" + sort + "&price=" + price + "&brand=" + brand;
+    }
+
     $("input").on("keydown", function search(e) {
         if (e.keyCode == 13) {
             $('#submit').click();
@@ -90,7 +120,6 @@
                 if ($this.data('sort') !== 'desc') {
                     dir = 'desc';
                 }
-
                 $this.data('sort', dir).find('.fa').attr('class', 'fa fa-sort-' + dir);
                 $this.data('sort', dir).find('.fa').attr('value', '' + dir);
             });

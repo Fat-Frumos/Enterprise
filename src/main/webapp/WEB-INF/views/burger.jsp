@@ -46,12 +46,14 @@
         </a>
         </span>
     <span style="--i:7;--x:-1;--y:1">
-        <a href="<c:url value="/upload"/>">
+        <a href="<c:url value="/login"/>">
             <ion-icon name="paper-plane-outline"></ion-icon>
         </a>
         </span>
     <span style="--i:8;--x:1;--y:-1">
+        <a href="<c:url value="/cart"/>">
             <ion-icon name="at-circle-outline"></ion-icon>
+        </a>
         </span>
 </div>
 <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>

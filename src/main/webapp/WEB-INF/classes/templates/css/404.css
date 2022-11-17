@@ -23,9 +23,7 @@ body {
     transform-style: preserve-3d;
     transform: translateZ(-100px);
     transition: 0.3s;
-    animation-name: rotateAnimation;
-    animation-duration: 4s;
-    animation-iteration-count: infinite;
+    animation: rotateAnimation 6s infinite cubic-bezier(.5,0,.5,1);
 }
 .box__face {
     position: absolute;
@@ -62,17 +60,23 @@ body {
     background: #000;
 }
 @keyframes rotateAnimation {
-    25% {
+    10% {
         transform: translateZ(-100px) rotateY(-90deg);
     }
-    50% {
+    30% {
         transform: translateZ(-100px) rotateY(-180deg);
     }
-    75% {
+    45% {
         transform: translateZ(-100px) rotateX(-90deg);
     }
-    85% {
-        transform: translateZ(-100px) rotateX(-90deg);
+    60% {
+        transform: translateZ(-100px) rotateY(90deg);
+    }
+    75% {
+        transform: translateZ(-100px) rotateX(90deg);
+    }
+    97% {
+        transform: translateZ(-100px) rotateX(0deg);
     }
 }
 .shadow {

@@ -83,8 +83,19 @@ public class OrderServlet extends HttpServlet {
         request.setAttribute("user", user);
     }
 
-    /***
-     * Save car in order
+    /**
+     * <p>If the HTTP POST request is correctly formatted,
+     * <code>doPost</code>, created user order and set rental Car
+     * If User not registered redirect to Login page, otherwise redirect to Main page </p>
+     *
+     * @param request  an {@link HttpServletRequest} object that
+     *                 contains the request the client has made of the servlet
+     * @param response an {@link HttpServletResponse} object that
+     *                 contains the response the servlet sends to the client
+     * @throws IOException      if an input or output error is
+     *                          detected when the servlet handles the request
+     * @throws ServletException if the request for the POST
+     *                          could not be handled
      */
     @Override
     protected void doPost(

@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +19,6 @@ import static com.enterprise.rental.dao.jdbc.JdbcCarTemplate.*;
 
 public class JdbcCarDao implements CarDao {
     private static final Logger log = Logger.getLogger(JdbcCarDao.class);
-
     private static final List<Car> carList = getCarsQuery(FIND_ALL_SQL);
 
     @Override
@@ -38,8 +38,9 @@ public class JdbcCarDao implements CarDao {
 
     @Override
     public List<Car> findAll(String query) {
-        String sql = String.format("%sWHERE %s;",
+        String sql = String.format("%s %s;",
                 FILTER_CAR_BY_SQL, query);
+        log.info(sql);
         return getCarsQuery(sql);
     }
 
@@ -66,25 +67,6 @@ public class JdbcCarDao implements CarDao {
         return updateCar(car, query);
     }
 
-    private static Car updateCar(Car car, String query) {
-
-        Connection connection = null;
-        PreparedStatement statement = null;
-        try {
-            connection = getInstance().getConnection();
-            connection.setAutoCommit(false);
-            statement = connection.prepareStatement(query);
-            boolean update = statement.executeUpdate() > 0;
-            log.info(String.format("update car %s", update));
-            connection.commit();
-            return car;
-        } catch (SQLException sqlException) {
-            rollback(connection, sqlException, query);
-            throw new OrderNotFoundException(sqlException);
-        } finally {
-            eventually(connection, statement);
-        }
-    }
 
     @Override
     public boolean delete(long id) {
@@ -110,6 +92,49 @@ public class JdbcCarDao implements CarDao {
         String query = getQuery(params);
 
         return getCarsQuery(query);
+    }
+
+    private static Car updateCar(Car car, String query) {
+
+        Connection connection = null;
+        PreparedStatement statement = null;
+        try {
+            connection = getInstance().getConnection();
+            connection.setAutoCommit(false);
+            statement = connection.prepareStatement(query);
+            boolean update = statement.executeUpdate() > 0;
+            log.info(String.format("update car %s", update));
+            connection.commit();
+            return car;
+        } catch (SQLException sqlException) {
+            rollback(connection, sqlException, query);
+            throw new OrderNotFoundException(sqlException);
+        } finally {
+            eventually(connection, statement);
+        }
+    }
+
+    @Override
+    public Integer countId(String sql) {
+        log.info(sql);
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = getWithoutAutoCommit();
+            statement = connection.prepareStatement(sql);
+            resultSet = statement.executeQuery();
+            connection.commit();
+
+            return resultSet.next() ? resultSet.getInt(1) : 0;
+
+        } catch (SQLException sqlException) {
+            rollback(connection, sqlException, sql);
+            log.info("Vehicle not found");
+            return 0;
+        } finally {
+            eventually(connection, statement, resultSet);
+        }
     }
 
 
@@ -144,7 +169,7 @@ public class JdbcCarDao implements CarDao {
             start = 0;
         }
 
-        return String.format("%sWHERE%s price>=%d ORDER BY %s %s LIMIT %d OFFSET %d;",
+        return String.format("%s %s price>=%d ORDER BY %s %s LIMIT %d OFFSET %d;",
                 FILTER_CAR_BY_SQL, brand, price, direction, sort, limit, start);
     }
 

@@ -43,7 +43,7 @@ ol {
 }
 
 #ui .dice_list_item:nth-child(1) {
-    background-color: #3A0B61;
+    background-color: darkred;
     animation: child1 3000ms ease-in-out infinite alternate;
 }
 

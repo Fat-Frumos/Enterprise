@@ -7,8 +7,7 @@ import com.enterprise.rental.service.CarService;
 import com.enterprise.rental.service.UserService;
 import org.apache.log4j.Logger;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
+import javax.servlet.*;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -20,21 +19,52 @@ import java.util.stream.Collectors;
 
 import static com.enterprise.rental.dao.jdbc.Constants.*;
 
+/**
+ * StaticServlet extends an HTTP servlet suitable for a Web-site.
+ * A subclass of <code>HttpServlet</code> must override two methods:
+ * <ul>
+ * <li> <code>doGet</code>, if the servlet supports HTTP GET requests
+ * <li> <code>doPost</code>, for HTTP POST requests
+ * </ul>
+ *
+ * @author Pasha Pollack
+ */
 @WebServlet(urlPatterns = "/")
 public class StaticServlet extends HttpServlet {
-    private static final CarService carService = new CarService();
-    private static final List<Car> carList = carService.getAll("price>=100 ORDER BY cost LIMIT 10 OFFSET 0");
-    private static final int size = carService.getAll().size();
+    //    private static final List<Car> carList = carService.getAll("price>=100 ORDER BY cost LIMIT 10 OFFSET 0");
     private static final Logger log = Logger.getLogger(StaticServlet.class);
+    private static final CarService carService = new CarService();
+    private static final int ROWS = carService.getNumberOfRows();
 
     /**
-     * Main view
+     * <p>If the HTTP GET request is correctly formatted,
+     * <code>doGet</code>, cars from DataBase </p>
+     * <p>If User not registered redirect to Login page,
+     * otherwise redirect to index page </p>
+     *
+     * <p>Cars list for main page: get list</p>
+     * A Page Request object by passing in the requested page number and the page limit.
+     * {@code Map<String, String> params} is a map of parameters to the sorting and paging
+     *
+     * @param request  an {@link HttpServletRequest} object that
+     *                 contains the request the client has made of the servlet
+     * @param response an {@link HttpServletResponse} object that
+     *                 contains the response the servlet sends to the client
+     * {@code List<Cars>}, if a value is present, otherwise {@code empty List<Cars>}.
+     *
+     * @throws IOException      if an input or output error is
+     *                          detected when the servlet handles the request
+     * @throws ServletException if the request for the POST
+     *                          could not be handled
      */
     @Override
     protected void doGet(
             HttpServletRequest request,
             HttpServletResponse response)
             throws ServletException, IOException {
+
+        response.setContentType("text/html;charset=UTF-8");
+
         String[] carFields = {"id", "name", "brand", "model", "path", "price", "cost", "year", "sort", "direction", "page"};
 
         Map<String, String> params = Arrays.stream(carFields)
@@ -45,56 +75,46 @@ public class StaticServlet extends HttpServlet {
                         request::getParameter,
                         (a, b) -> b));
 
-        int page;
+        String currentPage = request.getParameter("page");
 
+        int tail = 6;
+        int begin = 1;
+        int offset = 9;
 
+        int page = currentPage == null ? 1 : Integer.parseInt(currentPage);
+        int nOfPages = ROWS / offset;
+        int start = page * offset - offset;
 
-        try {
-            page = Integer.parseInt(params.get("page"));
-            if (page <= 1) {
-                page = 1;
-            }
-        } catch (NumberFormatException e) {
-            page = 1;
+        if (nOfPages % offset > 0) {
+            nOfPages++;
         }
 
-
-        int limit;
-        String offset = "limit";
-
-        try {
-            limit = Integer.parseInt(params.get(offset));
-        } catch (NumberFormatException e) {
-            limit = 10;
+        if (page >= 2) {
+            begin++;
         }
 
-        params.put(offset, String.valueOf(limit));
+        if (nOfPages - 5 < page) {
+            tail = nOfPages;
+            begin = nOfPages - 4;
+        }
+
+        if (nOfPages == page) {
+            begin = nOfPages - 5;
+        }
+
+        List<Car> cars = getAuto(params, page);
         params.put("page", String.valueOf(page));
-
-        if (Integer.parseInt(params.get(offset)) == 10
-                && Integer.parseInt(params.get("page")) <= 1
-                && params.size() == 2) {
-            request.setAttribute("cars", carList);
-
-        } else {
-            if (page * limit > size) {
-                page--;
-            }
-
-            List<Car> cars = getAuto(params, page);
-
-            if (cars.isEmpty()) {
-                page--;
-            } else {
-                request.setAttribute("cars", cars);
-            }
-        }
-
-        if (page > size / (limit + 1) - 1) {
-            page = size / (limit);
-        }
-
+        params.put("limit", String.valueOf(start));
+        request.setAttribute("cars", cars);
         request.setAttribute("page", page);
+        request.setAttribute("noOfPages", tail);
+        request.setAttribute("begin", String.valueOf(begin));
+        request.setAttribute("recordsPerPage", offset);
+
+        RequestDispatcher dispatcher = request.getRequestDispatcher(CARS);
+
+        dispatcher.forward(request, response);
+
         HttpSession session = request.getSession();
 
         if (session != null && session.getAttribute("user") != null) {
@@ -116,8 +136,22 @@ public class StaticServlet extends HttpServlet {
                 : carService.getAll(params, page);
     }
 
+
     /**
-     * Create new user
+     * <p>If the HTTP POST request is correctly formatted,
+     * <code>doPost</code>, check if user exists set the error message,
+     * whereas user not found, create new User in DataBase
+     * {@code Optional<User>}, if a value is present, otherwise {@code Optional.empty()}.
+     * <p></>Redirect to Main page </p>
+     *
+     * @param request  an {@link HttpServletRequest} object that
+     *                 contains the request the client has made of the servlet
+     * @param response an {@link HttpServletResponse} object that
+     *                 contains the response the servlet sends to the client
+     * @throws IOException      if an input or output error is
+     *                          detected when the servlet handles the request
+     * @throws ServletException if the request for the POST
+     *                          could not be handled
      */
     @Override
     protected void doPost(
@@ -145,6 +179,20 @@ public class StaticServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Returns {@code String path} instance.
+     *
+     * @param request an {@link HttpServletRequest} object that
+     *                contains the request the client has made
+     *                of the servlet
+     * @param isValid an {@link boolean} if user is valid, set request attribute, otherwise redirect to login page
+     * @param auto    an {@link List<Car>} set request attribute
+     * @param user    an {@link User} set request attribute
+     *
+     *                <p>Get Attribute User from Session</p>
+     * @return {@code Optional<User>}, if a value is present,
+     * otherwise {@code Optional.empty()}.
+     */
     private static String getPath(HttpServletRequest request, List<Car> auto, User user, boolean isValid) {
         String path;
         if (isValid) {
@@ -163,7 +211,39 @@ public class StaticServlet extends HttpServlet {
     }
 
     /**
-     * Request Dispatcher
+     * Defines an object that receives requests from the client
+     * and sends them to any resource
+     *
+     * <p>The servlet container creates the <code>RequestDispatcher</code> object,
+     * which is used as a wrapper around a server resource located
+     * at a particular path or given by a particular name.
+     *
+     * <p>This interface is intended to wrap servlets,
+     * but a servlet container can create <code>RequestDispatcher</code>
+     * objects to wrap any type of resource.
+     * <p>
+     * Includes the content of a resource (servlet, JSP page,
+     * HTML file) in the response. In essence, this method enables
+     * programmatic server-side includes.
+     *
+     * <p>The {@link ServletResponse} object has its path elements
+     * and parameters remain unchanged from the caller's. The included
+     * servlet cannot change the response status code or set headers;
+     * any attempt to make a change is ignored.
+     *
+     * <p>The request and response parameters must be either the same
+     * objects as were passed to the calling servlet's service method or be
+     * subclasses of the {@link ServletRequestWrapper} or {@link ServletResponseWrapper} classes
+     * that wrap them.
+     *
+     * @param request  the {@link HttpServletRequest} object that
+     *                 contains the request the client made of
+     *                 the servlet
+     * @param response the {@link HttpServletResponse} object that
+     *                 contains the response the servlet returns
+     *                 to the client
+     * @param path     the String that contains the response the servlet returns
+     *                 to the client
      */
     void dispatch(
             HttpServletRequest request,

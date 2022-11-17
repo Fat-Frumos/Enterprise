@@ -12,14 +12,16 @@
         font-family: Raleway, Roboto, sans-serif;
         font-weight: 600;
     }
+
 </style>
 <div class="bar">
+
     <a href="/">Cars</a> •
     <a href="/user">Cabinet</a> •
     <c:if test="${not empty user.name}">
         <c:if test="${empty car}">
             <a href="/cars">Cards
-                <span class="cart-basket">${car}</span>
+
             </a> •
         </c:if>
         <c:if test="${not empty car}">
@@ -31,7 +33,6 @@
 
     <c:if test="${empty user.name}">
         <a href="/cars">Cards
-            <span class="cart-basket">${car}</span>
         </a> •
     </c:if>
 

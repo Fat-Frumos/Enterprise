@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-import static com.enterprise.rental.dao.jdbc.Constants.FORBIDDEN;
+import static com.enterprise.rental.dao.jdbc.Constants.*;
 
 public class UserFilter implements Filter {
     private static final Logger log = Logger.getLogger(UserFilter.class);
@@ -31,25 +31,27 @@ public class UserFilter implements Filter {
         HttpServletResponse servletResponse = (HttpServletResponse) response;
 
         HttpSession session = servletRequest.getSession(false);
-
-        User user = (User) session.getAttribute("user");
-
-        if (user != null) {
-            if (user.getRole().equals("manager") || user.getRole().equals("admin") || user.getRole().equals("user")) {
-                log.info(String.format("Access is granted for %s", user));
-                request.setAttribute("user", user);
-                chain.doFilter(request, response);
+        if (session != null) {
+            User user = (User) session.getAttribute("user");
+            if (user != null) {
+                log.info(String.format("User filter Access is granted for %s", user));
+                if (user.getRole().equals("user")
+                        || user.getRole().equals("manager")
+                        || user.getRole().equals("admin")) {
+                    request.setAttribute("user", user);
+                    chain.doFilter(request, response);
+                }
             } else {
                 log.info("Access is FORBIDDEN");
-                servletResponse.sendRedirect(FORBIDDEN);
+                request.getRequestDispatcher(FORBIDDEN)
+                        .forward(servletRequest, servletResponse);
             }
         } else {
-            servletResponse.sendRedirect("/login");
+            request.getRequestDispatcher(LOGIN)
+                    .forward(servletRequest, servletResponse);
         }
     }
 
-    @Override
     public void destroy() {
-
     }
 }

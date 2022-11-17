@@ -8,7 +8,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class CarService implements Service<Car> {
+public class CarService implements ICarService {
     private final CarDao carDao;
 
     public CarService(CarDao carDao) {
@@ -18,6 +18,16 @@ public class CarService implements Service<Car> {
     public CarService() {
         this.carDao = new JdbcCarDao();
     }
+
+
+    @Override
+    public Integer getNumberOfRows() {
+        Integer numOfRows;
+        String sql = "SELECT COUNT(id) FROM car";
+        numOfRows = carDao.countId(sql);
+        return numOfRows;
+    }
+
 
     @Override
     public boolean save(Car car) {
@@ -62,11 +72,14 @@ public class CarService implements Service<Car> {
         return carDao.findAll(params, offset);
     }
 
+    @Override
     public List<Car> getAll(Map<String, String> params) {
         return carDao.findAll(params);
     }
 
+    @Override
     public List<Car> getAll(String sql) {
         return carDao.findAll(sql);
     }
+
 }

@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static com.enterprise.rental.dao.jdbc.Constants.*;
 
@@ -124,14 +123,14 @@ public class CarsServlet extends HttpServlet {
                 Optional<Car> optionalCar = carService.getById(carId);
                 if (optionalCar.isPresent()) {
                     boolean delete = carService.delete(carId);
-                    log.info(String.format("%s %b", id, delete));
                     List<Car> userCars = user.getCars();
                     //TODO DELETE vs UPDATE
                     userCars.remove(optionalCar.get());
                     user.setCars(userCars);
-                    log.info(String.format("%s", user));
                     request.setAttribute("user", user);
                     request.setAttribute("cars", user.getCars());
+                    log.info(String.format("%s %b", id, delete));
+                    log.info(String.format("%s", user));
                     log.info(String.format("%s", user.getCars()));
                 }
             }

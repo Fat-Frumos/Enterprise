@@ -32,7 +32,7 @@
             width: 100%;
             height: 100%;
             transition-duration: 1500ms;
-             background-color: #3A0B61;
+
         }
     </style>
     <link rel="shortcut icon" href="https://raw.githubusercontent.com/Fat-Frumos/Cars/master/wheel.ico"
@@ -45,9 +45,9 @@
         <div class="box__face front">4</div>
         <div class="box__face back">0</div>
         <div class="box__face right">4</div>
-        <div class="box__face left">0</div>
+        <div class="box__face left">4</div>
         <div class="box__face top">0</div>
-        <div class="box__face bottom">0</div>
+        <div class="box__face bottom">4</div>
     </div>
     <div class="shadow"></div>
 </div>
@@ -59,23 +59,15 @@
 
 </div>
 <script>
-    (function() {
+    (function () {
 
-        var canvas, ctx, circ, nodes, mouse, SENSITIVITY, SIBLINGS_LIMIT, DENSITY, NODES_QTY, ANCHOR_LENGTH, MOUSE_RADIUS;
-
-        // how close next node must be to activate connection (in px)
-        // shorter distance == better connection (line width)
+        let canvas, ctx, circ, nodes, mouse, SENSITIVITY, SIBLINGS_LIMIT, DENSITY, NODES_QTY, ANCHOR_LENGTH,
+            MOUSE_RADIUS;
         SENSITIVITY = 100;
-        // note that siblings limit is not 'accurate' as the node can actually have more connections than this value that's because the node accepts sibling nodes with no regard to their current connections this is acceptable because potential fix would not result in significant visual difference
-        // more siblings == bigger node
         SIBLINGS_LIMIT = 10;
-        // default node margin
         DENSITY = 50;
-        // total number of nodes used (incremented after creation)
         NODES_QTY = 0;
-        // avoid nodes spreading
         ANCHOR_LENGTH = 20;
-        // highlight radius
         MOUSE_RADIUS = 200;
 
         circ = 2 * Math.PI;
@@ -105,7 +97,7 @@
             this.brightness = 0;
         }
 
-        Node.prototype.drawNode = function() {
+        Node.prototype.drawNode = function () {
             var color = "rgba(244, 244, 244, " + this.brightness + ")";
             ctx.beginPath();
             ctx.arc(this.x, this.y, 2 * this.radius + 2 * this.siblings.length / SIBLINGS_LIMIT, 0, circ);
@@ -113,7 +105,7 @@
             ctx.fill();
         };
 
-        Node.prototype.drawConnections = function() {
+        Node.prototype.drawConnections = function () {
             for (var i = 0; i < this.siblings.length; i++) {
                 var color = "rgba(222, 222, 222, " + this.brightness + ")";
                 ctx.beginPath();
@@ -125,7 +117,7 @@
             }
         };
 
-        Node.prototype.moveNode = function() {
+        Node.prototype.moveNode = function () {
             this.energy -= 2;
             if (this.energy < 1) {
                 this.energy = Math.random() * 100;
