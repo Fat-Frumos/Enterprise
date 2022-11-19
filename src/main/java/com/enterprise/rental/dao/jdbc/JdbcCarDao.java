@@ -137,7 +137,6 @@ public class JdbcCarDao implements CarDao {
         }
     }
 
-
     @Override
     public List<Car> findAll(
             Map<String, String> params) {
@@ -156,7 +155,7 @@ public class JdbcCarDao implements CarDao {
         direction = direction == null ? "cost" : direction;
 
         String brand = params.get("brand");
-        brand = brand == null ? "" : String.format(" brand='%s' AND", brand);
+        brand = brand == null ? " " : String.format(" brand='%s' AND", brand);
 
         int price = getPrice(params);
 
@@ -169,7 +168,7 @@ public class JdbcCarDao implements CarDao {
             start = 0;
         }
 
-        return String.format("%s %s price>=%d ORDER BY %s %s LIMIT %d OFFSET %d;",
+        return String.format("%s%s price>=%d ORDER BY %s %s LIMIT %d OFFSET %d;",
                 FILTER_CAR_BY_SQL, brand, price, direction, sort, limit, start);
     }
 

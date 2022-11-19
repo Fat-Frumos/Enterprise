@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class CarMapper extends Mapper<Car> {
     public Car mapRow(ResultSet resultSet) {
@@ -51,6 +52,7 @@ public class CarMapper extends Mapper<Car> {
         String[] carFields = {"id", "name", "brand", "model", "path", "price", "cost", "year", "rent"};
         for (String field : carFields) {
             String parameter = request.getParameter(field);
+            System.out.println(parameter);
             if (parameter != null) {
                 params.put(field, parameter);
             }
@@ -58,8 +60,16 @@ public class CarMapper extends Mapper<Car> {
         String rent = params.get("rent") == null
                 ? "off" : params.get("rent");
 
+        long carId;
+
+        if (params.get(carFields[0]) != null) {
+        carId = Long.parseLong(params.get(carFields[0]));
+        } else {
+            carId = UUID.randomUUID().getMostSignificantBits() & 0x7fffffL;
+        }
+
         return new Car.Builder()
-                .id(Long.parseLong(params.get(carFields[0])))
+                .id(carId)
                 .name(params.get(carFields[1]))
                 .brand(params.get(carFields[2]))
                 .model(params.get(carFields[3]))

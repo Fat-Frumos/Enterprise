@@ -50,8 +50,7 @@ public class StaticServlet extends HttpServlet {
      *                 contains the request the client has made of the servlet
      * @param response an {@link HttpServletResponse} object that
      *                 contains the response the servlet sends to the client
-     * {@code List<Cars>}, if a value is present, otherwise {@code empty List<Cars>}.
-     *
+     *                 {@code List<Cars>}, if a value is present, otherwise {@code empty List<Cars>}.
      * @throws IOException      if an input or output error is
      *                          detected when the servlet handles the request
      * @throws ServletException if the request for the POST
@@ -62,8 +61,6 @@ public class StaticServlet extends HttpServlet {
             HttpServletRequest request,
             HttpServletResponse response)
             throws ServletException, IOException {
-
-        response.setContentType("text/html;charset=UTF-8");
 
         String[] carFields = {"id", "name", "brand", "model", "path", "price", "cost", "year", "sort", "direction", "page"};
 
@@ -94,12 +91,12 @@ public class StaticServlet extends HttpServlet {
         }
 
         if (nOfPages - 5 < page) {
-            tail = nOfPages;
-            begin = nOfPages - 4;
+            tail = nOfPages - 1;
+            begin = nOfPages - 5;
         }
 
-        if (nOfPages == page) {
-            begin = nOfPages - 5;
+        if (nOfPages <= page + 1) {
+            begin = nOfPages - 6;
         }
 
         List<Car> cars = getAuto(params, page);

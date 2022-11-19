@@ -11,11 +11,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="author" content="Pasha">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv=Content-Type content="text/html; charset=windows-1251">
+    <link rel="shortcut icon" href="<c:url value="/upload?wheel.ico"/>" type="image/x-icon">
     <title>Main</title>
-    <link rel="shortcut icon" href="https://raw.githubusercontent.com/Fat-Frumos/Cars/master/wheel.ico"
-          type="image/x-icon">
     <style>
         <%@include file="../classes/templates/css/car.css"%>
         <%@include file="../classes/templates/css/slider.css"%>
@@ -51,17 +52,17 @@
         window.location.href = url;
     }
 
-    function closeForm(id) {
-        // // let htmlElement = document.getElementsByClassName("carousel-item");
-        // $(document).on('contextmenu', function (event) {
-        //     if (!$(event.target).hasClass("fade")) {
-        //         event.preventDefault()
-        //         window.history.back();
-        //     }
-        // })
-        alert("Car has been")
+    // function closeForm(id) {
+    //     // // let htmlElement = document.getElementsByClassName("carousel-item");
+    //     // $(document).on('contextmenu', function (event) {
+    //     //     if (!$(event.target).hasClass("fade")) {
+    //     //         event.preventDefault()
+    //     //         window.history.back();
+    //     //     }
+    //     // })
+    //     alert("Car has been")
+    // }
 
-    }
 </script>
 
 </body>

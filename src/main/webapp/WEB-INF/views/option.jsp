@@ -28,7 +28,7 @@
             <label for="price">Price:</label>
             <input type="number" id="price" name="price" min="100" max="1500">
 
-            <ul class="pagination">
+            <ul class="pagination mt-5">
                 <c:if test="${page != 1}">
                     <li class="page-item"><a class="page-link"
                                              onclick="send(${page-1})"><</a>
@@ -53,7 +53,6 @@
                     </li>
                 </c:if>
             </ul>
-
             <br>
             <div class="btn-group sort-btn">
                 <button id="direction" class="btn btn-secondary" data="none">Cost

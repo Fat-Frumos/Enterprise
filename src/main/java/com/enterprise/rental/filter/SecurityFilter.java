@@ -12,15 +12,14 @@ import java.io.IOException;
 import static com.enterprise.rental.dao.jdbc.Constants.LOGIN;
 
 public class SecurityFilter implements Filter {
-    FilterConfig config;
+    protected FilterConfig filterConfig;
     private static final Logger log = Logger.getLogger(SecurityFilter.class);
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        this.config = filterConfig;
+        this.filterConfig = filterConfig;
         String filterName = filterConfig.getFilterName();
         log.info(String.format("SecurityFilter: %s", filterName));
-//        ServletContext servletContext = filterConfig.getServletContext();
     }
 
     public void doFilter(
@@ -44,11 +43,14 @@ public class SecurityFilter implements Filter {
             }
         } else {
             log.info("Access is FORBIDDEN");
-            request.getRequestDispatcher(LOGIN)
-                    .forward(servletRequest, servletResponse);
+            RequestDispatcher dispatcher = request.getRequestDispatcher(LOGIN);
+            if (dispatcher != null) {
+                dispatcher.forward(servletRequest, servletResponse);
+            }
         }
     }
 
     public void destroy() {
+        filterConfig = null;
     }
 }

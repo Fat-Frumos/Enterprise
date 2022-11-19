@@ -20,11 +20,6 @@ import java.util.*;
 
 import static com.enterprise.rental.dao.jdbc.Constants.*;
 
-@MultipartConfig(
-        fileSizeThreshold = 1024 * 1024 * 1, // 1 MB
-        maxFileSize = 1024 * 1024 * 10,      // 10 MB
-        maxRequestSize = 1024 * 1024 * 100   // 100 MB
-)
 @WebServlet(urlPatterns = "/cars")
 public class CarsServlet extends HttpServlet {
     private static final Logger log = Logger.getLogger(CarsServlet.class);

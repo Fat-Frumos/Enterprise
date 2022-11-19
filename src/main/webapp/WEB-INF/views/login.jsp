@@ -9,9 +9,11 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <meta charset="UTF-8">
+<meta name="author" content="Pasha">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="shortcut icon" href="https://raw.githubusercontent.com/Fat-Frumos/Cars/master/wheel.ico" type="image/x-icon">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta http-equiv=Content-Type content="text/html; charset=windows-1251">
+<link rel="shortcut icon" href="<c:url value="/upload?wheel.ico"/>" type="image/x-icon">
 <head>
     <title>Login</title>
 </head>

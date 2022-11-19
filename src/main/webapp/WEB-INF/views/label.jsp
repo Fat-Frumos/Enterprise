@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%--
   Created by IntelliJ IDEA.
@@ -36,9 +37,9 @@
             <div class="col-md-4 col-3 ps-30 my-4">
                 <p class="h4 m-0">
                     <input class="pe-1" style="border: none" value="${auto.brand}" name="brand"
-                           readonly="readonly"></input>
+                           readonly="readonly">
                     <input class="pe-1" style="border: none" value="${auto.name}" name="name"
-                           readonly="readonly"></input>
+                           readonly="readonly">
             </div>
 
             <div class="col-md-4 col-3 ps-30 my-4">
@@ -118,9 +119,44 @@
         </div>
     </form>
     <div class="drop-area" id="MyModal" hidden>
-        <form method="post" action="/upload" enctype="multipart/form-data">
-            <input type="file" name="file"/>
-            <input type="submit" value="Upload"/>
+        <h4>Upload Form</h4>
+        <form action="${pageContext.request.contextPath}/upload" enctype="multipart/form-data" method="post">
+            <input type="file" name="file2"/>
+            <br>
+            <input name="newPrice"
+                   type="number"
+                   class="fas fa-dollar-sign pe-1 form-control"
+                   placeholder="price"
+            <%--                   value="${auto.price}"--%>
+            >
+            <input placeholder="cost"
+                   name="newCost"
+                   type="number"
+                   class="fas fa-dollar-sign pe-1 form-control"
+            <%--                   value="${auto.cost}"--%>
+            >
+            <input name="newBrand"
+                   type="text"
+                   style="border: none"
+                   class="pe-1"
+                   placeholder="brand"
+            <%--                   value="${auto.brand}" --%>
+            >
+            <input name="newName"
+                   type="text"
+                   style="border: none"
+                   class="pe-1"
+                   placeholder="name"
+            <%--                    value="${auto.name}"--%>
+            >
+            <input name="newModel"
+                   type="text"
+                   style="width: 120px"
+                   class="fas fa-dollar-sign pe-1 form-control"
+                   placeholder="model"
+            <%--                   value="${auto.model}"--%>
+            >
+            <input type="submit" value="upload"/>
         </form>
     </div>
 
@@ -177,7 +213,7 @@
 
     function shows(tags) {
         let modal = document.getElementById("MyModal");
-        console.log(modal);
+        console.log(tags);
         modal.hidden = modal.hidden ? false : true;
     }
 

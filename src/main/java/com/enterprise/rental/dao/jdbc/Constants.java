@@ -2,8 +2,8 @@ package com.enterprise.rental.dao.jdbc;
 
 public class Constants {
     // Car sql
-    protected static final String FIELD = " id, name, brand, model, path, price, cost, year, date, rent ";
-    protected static final String CAR_FIELDS = String.format("SELECT%s", FIELD);
+    protected static final String FIELD = "id, name, brand, model, path, price, cost, year, date";
+    protected static final String CAR_FIELDS = String.format("SELECT %s, rent ", FIELD);
     protected static final String FIND_ALL_SQL = CAR_FIELDS + "FROM car LIMIT 80;";
     protected static final String FILTER_CAR_BY_SQL = String.format("%sFROM car WHERE", CAR_FIELDS);
     protected static final String FILTER_BY_ID_SQL = CAR_FIELDS + "FROM car WHERE id=?";

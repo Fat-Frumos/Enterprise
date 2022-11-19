@@ -67,6 +67,6 @@ class CarsServletTest {
 
         System.out.println("Result: " + result);
 
-        assertEquals("Login successfull...", result);
+        assertEquals("Login successfully", result);
     }
 }

@@ -12,11 +12,15 @@ import java.io.IOException;
 import static com.enterprise.rental.dao.jdbc.Constants.*;
 
 public class UserFilter implements Filter {
+
+    protected FilterConfig filterConfig;
     private static final Logger log = Logger.getLogger(UserFilter.class);
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-
+        this.filterConfig = filterConfig;
+        String filterName = filterConfig.getFilterName();
+        log.info(String.format("SecurityFilter: %s", filterName));
     }
 
     @Override
@@ -47,11 +51,11 @@ public class UserFilter implements Filter {
                         .forward(servletRequest, servletResponse);
             }
         } else {
-            request.getRequestDispatcher(LOGIN)
-                    .forward(servletRequest, servletResponse);
+            servletResponse.sendRedirect(LOGIN);
         }
     }
 
     public void destroy() {
+        filterConfig = null;
     }
 }
