@@ -1,6 +1,7 @@
 figure {
     /*border-radius: 10px;*/
-    overflow: hidden;
+    /*overflow: hidden;*/
+    max-width: 800px;
 }
 
 .modal-content:hover {
@@ -19,7 +20,8 @@ img {
 
 li > div.cart-image.fw-900 {
     padding: 0;
-
+    overflow: hidden;
+    height: 175px;
 }
 
 /*.container {*/
@@ -41,11 +43,12 @@ img {
     /*border-radius: 10px;*/
     cursor: pointer;
     transform: perspective(500px) scale(1.2) translateY(-5px);
+
     /*width: 1000px;*/
     z-index: -1;
 }
 #main{
-    transition: transform .7s ease-in;
+    transition: transform 1s ease-in;
 }
 input {
     margin-bottom: 5px;
@@ -80,8 +83,8 @@ div.bar > a:hover {
 .cart-basket {
     font-size: .6rem;
     position: absolute;
-    top: 4px;
-    left: 158px;
+    top: 8px;
+    left: 42px;
     width: 15px;
     height: 15px;
     color: #fff;

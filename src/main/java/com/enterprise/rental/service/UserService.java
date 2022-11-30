@@ -58,14 +58,10 @@ public class UserService implements Service<User> {
         return userDao.findAll();
     }
 
-    @Override
-    public List<User> getRandom(int size) {
-        return null;
-    }
 
     @Override
     public boolean delete(long id) {
-        return false;
+        return userDao.delete(id);
     }
 
     @Override
@@ -84,8 +80,11 @@ public class UserService implements Service<User> {
         return userDao.edit(user);
     }
 
-    public String sendEmail(String name) {
+    public boolean sendEmail(String name) {
         Optional<User> optionalUser = userDao.findByName(name);
+        if (optionalUser.isEmpty()) {
+            return false;
+        }
 
         log.info(optionalUser);
         createPdf();
@@ -108,11 +107,10 @@ public class UserService implements Service<User> {
         try {
             sendEmailWithAttachments(host, port, mailFrom, password, mailTo,
                     subject, message, attachFiles);
-            log.info("Email sent.");
+            log.info("Email sent");
+            return true;
         } catch (Exception ex) {
             throw new DataException("\"Could not send email.\"" + ex.getMessage());
         }
-
-        return optionalUser.isPresent() ? optionalUser.get().getName() : "User not found";
     }
 }

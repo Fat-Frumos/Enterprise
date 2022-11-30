@@ -1,6 +1,16 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<c:choose>
+    <c:when test="${user.language=='ua'}">
+        <fmt:setLocale value="ua" scope="session"/>
+        <fmt:setBundle basename="com.enterprise.rental.utils.BungleUa" var="lang"/>
+    </c:when>
+    <c:otherwise>
+        <fmt:setLocale value="en" scope="session"/>
+        <fmt:setBundle basename="com.enterprise.rental.utils.BungleEn" var="lang"/>
+    </c:otherwise>
+</c:choose>
 <%--
   Created by IntelliJ IDEA.
   User: Pasha
@@ -10,7 +20,7 @@
 --%>
 <!DOCTYPE html>
 <head>
-    <title>Users</title>
+    <title><fmt:message key="title.orders" bundle="${lang}"/></title>
     <meta charset="UTF-8">
     <meta name="author" content="Pasha">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -34,37 +44,46 @@
         <%@include file="../classes/templates/css/dice.css"%>
         <%@include file="../classes/templates/css/loader.css"%>
 
+        h4 {
+            margin: 40px;
+        }
+
     </style>
 </head>
+
 <body>
 <div class="wrapper">
     <jsp:include page="nav.jsp"/>
-    <div class="col-lg-12">
-        <h5 style="text-align: center">List of Orders</h5>
+    <div class="col-lg-12 mb-5">
+        <h4 style="text-align: center"><fmt:message key="h5.orders" bundle="${lang}"/></h4>
     </div>
 
     <div class="col-lg-12">
         <table id="tabs" class="table cell-border" style="width:100%">
             <thead class="TableHead">
             <tr>
-                <th>User#</th>
-                <th>Order#</th>
-                <th>Car#</th>
-                <%--<th>passport</th>--%>
-                <th>Created/Term</th>
-                <th>Damage</th>
-                <th>Reason</th>
-                <th>Payment</th>
-                <th>Rejected</th>
-                <th>Closed</th>
-                <th>Confirm</th>
-                <th>Remove</th>
+                <th><fmt:message key="th.user" bundle="${lang}"/></th>
+                <th><fmt:message key="th.order" bundle="${lang}"/></th>
+                <th><fmt:message key="th.car" bundle="${lang}"/></th>
+
+                <th><fmt:message key="th.create" bundle="${lang}"/>
+                    /
+                    <fmt:message key="th.term" bundle="${lang}"/></th>
+                <th><fmt:message key="th.damage" bundle="${lang}"/></th>
+                <th><fmt:message key="th.reason" bundle="${lang}"/></th>
+                <th><fmt:message key="th.payment" bundle="${lang}"/></th>
+                <th><fmt:message key="th.reject" bundle="${lang}"/></th>
+                <th><fmt:message key="th.close" bundle="${lang}"/></th>
+                <th><fmt:message key="th.confirm" bundle="${lang}"/></th>
+                <th><fmt:message key="th.invoice" bundle="${lang}"/></th>
+                <th><fmt:message key="th.remove" bundle="${lang}"/></th>
+
             </tr>
             </thead>
             <tbody>
             <c:forEach items="${orders}" var="order">
                 <tr class="firstRow">
-                    <form action="${pageContext.request.contextPath}/register" method="post">
+                    <form action="/register" method="post">
                         <td><input style="width: 60px" value="${order.userId}" name="userId"></td>
                         <td><input style="width: 90px" value="${order.orderId}" name="orderId"></td>
                         <td><input style="width: 80px" value="${order.carId}" name="carId"></td>
@@ -74,7 +93,8 @@
                             <fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" value="${order.created}"/>
                             <br>
                             <input name="term" value="${order.term}" style="width: 150px" hidden>
-                                <fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" value="${order.term}"/></input>
+                                <fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" value="${order.term}"/>
+                            </input>
                         </td>
                         <td><input value="${order.damage}" name="damage"></td>
 
@@ -112,6 +132,7 @@
                                 >
                             </div>
                         </td>
+
                         <td style="text-align: center">
                             <button
                                     id="accept-button"
@@ -122,16 +143,26 @@
                                 <i class="fa fa-check"></i>
                             </button>
                         </td>
+                        <td style="text-align: center">
+                            <button
+                                    name="invoice"
+                                    value=""
+                                    class="btn btn-outline-warning"
+                                    onclick="addInvoice(`${order.orderId}`, `${order.userId}`, `${order.carId}`, `${order.damage}`, `${order.payment}`)"
+                            >
+                                <i class="fa fa-credit-card"></i>
+                            </button>
+                        </td>
+                        <td style="text-align: center">
+                            <button
+                                    name="remove"
+                                    value=""
+                                    class="btn btn-outline-danger"
+                                    onclick="remove(${order.orderId})">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </td>
                     </form>
-                    <td style="text-align: center">
-                        <button
-                                name="remove"
-                                value=""
-                                class="btn btn-outline-danger">
-                            onclick="remove(${order.orderId})"
-                            <i class="fa fa-trash"></i>
-                        </button>
-                    </td>
                 </tr>
             </c:forEach>
             </tbody>
@@ -180,6 +211,19 @@
 <script>
     document.querySelectorAll(".true").forEach(element => element.checked = true)
 
+    function addInvoice(orderId, userId, carId, damage, payment) {
+        let url = '/order' + '?orderId=' + orderId + '?userId=' + userId + '?carId=' + carId + '?damage=' + damage + '?payment=' + payment;
+        console.log(url);
+        fetch(url, {
+            method: 'PUT',
+        }).then(response => {
+            console.log('Ok:', response);
+            window.location.href = url;
+        }).catch(err => {
+            console.error(err)
+        })
+    }
+
     function spinner() {
         let dice = document.getElementById("ui");
         dice.hidden = false;
@@ -192,10 +236,6 @@
     function remove(id) {
         let dice = document.getElementById("ui");
         dice.hidden = false;
-
-        // setTimeout(function () {
-        //     dice.hidden = false;
-        // }, 1000);
 
         let url = '/order' + '?orderId=' + id;
         // let url = '/cars' + '?id=' + id;

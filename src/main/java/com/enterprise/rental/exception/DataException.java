@@ -10,7 +10,7 @@ public class DataException extends RuntimeException {
     private static final Logger log = Logger.getLogger(DataException.class);
 
     public DataException(SQLException e) {
-//        super(e);
+        super(e.getMessage());
         log.error(e.getMessage());
     }
 

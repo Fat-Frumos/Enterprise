@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="ct" uri="/WEB-INF/dataTag" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%--
   Created by IntelliJ IDEA.
   User: Pasha
@@ -8,6 +9,16 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<c:choose>
+    <c:when test="${user.language=='ua'}">
+        <fmt:setLocale value="ua" scope="session"/>
+        <fmt:setBundle basename="com.enterprise.rental.utils.BungleUa" var="lang"/>
+    </c:when>
+    <c:otherwise>
+        <fmt:setLocale value="en" scope="session"/>
+        <fmt:setBundle basename="com.enterprise.rental.utils.BungleEn" var="lang"/>
+    </c:otherwise>
+</c:choose>
 <!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
@@ -16,7 +27,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv=Content-Type content="text/html; charset=windows-1251">
     <link rel="shortcut icon" href="<c:url value="/upload?wheel.ico"/>" type="image/x-icon">
-    <title>Car</title>
+    <title><fmt:message key="title.cars" bundle="${lang}"/></title>
 </head>
 
 <style>
@@ -41,7 +52,7 @@
 <div class="container">
     <jsp:include page="nav.jsp"/>
     <div class="row m-0">
-        <div class="col-lg-7 pb-5 pe-lg-5">
+        <div class="col-lg-7 pe-lg-5">
             <jsp:include page="label.jsp"/>
         </div>
         <jsp:include page="car.jsp"/>
@@ -50,7 +61,7 @@
     <jsp:include page="cart.jsp"/>
 
 </div>
-<jsp:include page="burger.jsp"/>
+<%--<jsp:include page="burger.jsp"/>--%>
 
 <div class="day">
     <h6><ct:today format="MMMM dd yyyy"/></h6>

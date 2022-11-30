@@ -1,6 +1,7 @@
 .option {
+    /*width: 200px;*/
     position: absolute;
-    top: 5rem;
+    top: 7vw;
     left: 5vh;
 }
 

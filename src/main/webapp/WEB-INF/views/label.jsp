@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%--
   Created by IntelliJ IDEA.
@@ -20,6 +21,18 @@
     }
 
 </style>
+
+<c:choose>
+    <c:when test="${user.language=='ua'}">
+        <fmt:setLocale value="ua" scope="session"/>
+        <fmt:setBundle basename="com.enterprise.rental.utils.BungleUa" var="lang"/>
+    </c:when>
+    <c:otherwise>
+        <fmt:setLocale value="en" scope="session"/>
+        <fmt:setBundle basename="com.enterprise.rental.utils.BungleEn" var="lang"/>
+    </c:otherwise>
+</c:choose>
+
 <section>
     <form action="${pageContext.request.contextPath}/cars" method="post">
         <div class="row">
@@ -36,14 +49,14 @@
             </div>
             <div class="col-md-4 col-3 ps-30 my-4">
                 <p class="h4 m-0">
-                    <input class="pe-1" style="border: none" value="${auto.brand}" name="brand"
+                    <input class="pe-1" style="border: none; width: 180px" value="${auto.brand}" name="brand"
                            readonly="readonly">
-                    <input class="pe-1" style="border: none" value="${auto.name}" name="name"
+                    <input class="pe-1" style="border: none; width: 180px" value="${auto.name}" name="name"
                            readonly="readonly">
             </div>
 
             <div class="col-md-4 col-3 ps-30 my-4">
-                <p class="h5 m-0">Model</p>
+                <p class="h5 m-0"><fmt:message key="p.model" bundle="${lang}"/></p>
                 <div class="d-flex align-items-end mt-4 mb-2">
                     <p class="fs-14 fw-bold">
                         <input style="width: 120px"
@@ -58,7 +71,7 @@
             </div>
 
             <div class="col-md-4 col-3 ps-30 my-4">
-                <p class="h5 m-0">Self-Drive</p>
+                <p class="h5 m-0"><fmt:message key="p.self" bundle="${lang}"/></p>
                 <div class="d-flex align-items-end mt-4 mb-2">
                     <p class="fs-14 fw-bold">
                         <input style="width: 120px"
@@ -73,7 +86,7 @@
             </div>
 
             <div class="col-md-4 col-3 ps-30 my-4">
-                <p class="h5 m-0">Cost</p>
+                <p class="h5 m-0"><fmt:message key="p.cost" bundle="${lang}"/></p>
                 <div class="d-flex align-items-end mt-4 mb-2">
                     <p class="fs-14 fw-bold">
                         <input style="width: 120px"
@@ -88,7 +101,7 @@
             </div>
 
             <div class="col-md-4 col-3 ps-30 my-4">
-                <p class="h5 m-0">Price</p>
+                <p class="h5 m-0"><fmt:message key="p.price" bundle="${lang}"/></p>
                 <div class="d-flex align-items-end mt-4 mb-2">
                     <p class="fs-14 fw-bold">
                         <input style="width: 120px"
@@ -103,7 +116,7 @@
             </div>
 
             <div class="col-md-4 col-3 ps-30 my-4">
-                <p class="h5 m-0">Driver</p>
+                <p class="h5 m-0"><fmt:message key="p.driver" bundle="${lang}"/></p>
                 <div class="d-flex align-items-end mt-4 mb-2">
                     <p class="fs-14 fw-bold">
                         <input style="width: 120px"
@@ -119,44 +132,48 @@
         </div>
     </form>
     <div class="drop-area" id="MyModal" hidden>
-        <h4>Upload Form</h4>
+        <h4><fmt:message key="h4.upload" bundle="${lang}"/></h4>
         <form action="${pageContext.request.contextPath}/upload" enctype="multipart/form-data" method="post">
-            <input type="file" name="file2"/>
+            <input style="border: none" type="file" name="file2"/>
             <br>
+            <input name="newBrand"
+                   type="text"
+                   style="border: none"
+                   class="fas fa-dollar-sign pe-1 mt-2 form-control"
+                   placeholder="Brand"
+                   value="${auto.brand}"
+            >
+            <input name="newName"
+                   type="text"
+                   style="border: none"
+                   class="fas fa-dollar-sign pe-1 mt-2 form-control"
+                   placeholder="Name"
+                   value="${auto.name}"
+            >
+            <input name="newModel"
+                   type="text"
+                   style="width: 120px"
+                   class="fas fa-dollar-sign pe-1 mt-2 form-control"
+                   placeholder="Model"
+            <%--                   value="${auto.model}"--%>
+            >
             <input name="newPrice"
                    type="number"
-                   class="fas fa-dollar-sign pe-1 form-control"
+                   style="width: 120px"
+                   value="100"
+                   class="fas fa-dollar-sign pe-1 mt-2 form-control"
                    placeholder="price"
             <%--                   value="${auto.price}"--%>
             >
             <input placeholder="cost"
                    name="newCost"
                    type="number"
-                   class="fas fa-dollar-sign pe-1 form-control"
+                   value="10000"
+                   style="width: 120px"
+                   class="fas fa-dollar-sign pe-1 mt-2 form-control"
             <%--                   value="${auto.cost}"--%>
             >
-            <input name="newBrand"
-                   type="text"
-                   style="border: none"
-                   class="pe-1"
-                   placeholder="brand"
-            <%--                   value="${auto.brand}" --%>
-            >
-            <input name="newName"
-                   type="text"
-                   style="border: none"
-                   class="pe-1"
-                   placeholder="name"
-            <%--                    value="${auto.name}"--%>
-            >
-            <input name="newModel"
-                   type="text"
-                   style="width: 120px"
-                   class="fas fa-dollar-sign pe-1 form-control"
-                   placeholder="model"
-            <%--                   value="${auto.model}"--%>
-            >
-            <input type="submit" value="upload"/>
+            <input style="border: none; width: 100px" type="submit" value="<fmt:message key="input.upload" bundle="${lang}"/>"/>
         </form>
     </div>
 
@@ -214,7 +231,8 @@
     function shows(tags) {
         let modal = document.getElementById("MyModal");
         console.log(tags);
-        modal.hidden = modal.hidden ? false : true;
+        modal.hidden = !modal.hidden;
+        // modal.hidden = modal.hidden ? false : true;
     }
 
     function put(id) {

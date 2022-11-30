@@ -65,7 +65,7 @@ public class ErrorHandler extends HttpServlet {
             out.write("<h3>Exception Details</h3>");
             out.write("<ul><li>Servlet Name:" + servletName + "</li>");
             out.write("<li>Exception Name:" + throwable.getClass().getName() + "</li>");
-            out.write("<li>Requested URI:" + requestUri + "</li>");
+            out.write("<li>status Code:" + statusCode + "</li>");
             out.write("<li>Exception Message:" + throwable.getMessage() + "</li>");
             out.write("</ul>");
         }

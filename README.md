@@ -30,17 +30,26 @@
 
 The system administrator has the rights:
 ====car====
-- adding (upload), 
-- deleting cars, 
++ adding (upload), 
++deleting cars, 
 + editing car information;
 [//]: # label.jsp (<form action="/cars" method="post">)
 
-- ====user====
+====user====
 + blocking / unblocking- the user;
 + registration of managers in the system (role).
 
 ===============================
-####INFO: FATAL: upload img d:\car\rent-a-car\null\
+####INFO: FATAL: invoice put
+####INFO: FATAL: locale pages UA (title)
+####INFO: FATAL: new dynamic price + cost
+####INFO: FATAL: hash salt
+####INFO: FATAL: admin filter
+####INFO: FATAL: role enum
++ Destination 'src\main\webapp\WEB-INF\classes\templates\slider-007.png' already exists
+####INFO: FATAL: cars update and delete Set
+redirect to http://localhost:8080/upload?slider-007.png
+####INFO: FATAL: upload img path
 ####INFO: FATAL: add car http://localhost:8080/order
 ####INFO: FATAL: add car to image upload
 #####TODO FATAL: userDto-enum
@@ -48,8 +57,6 @@ The system administrator has the rights:
 #####TODO: Auto-generated delete method
 #####TODO: FATAL: Car edit delete
 ####INFO: FATAL: auth order/user authentication
-####INFO: FATAL: cars update and delete
-####INFO: FATAL: OrderServlet:80 Car null
 ####INFO: FATAL: forgot email html(pdf)
 ####INFO: FATAL: JdbcCarTemplate:58 SELECT id, name, brand, model, path, price, cost, year FROM car LIMIT 80;
 ####INFO: TEST SERVLET: http://localhost:8080/register?orderId=48384729&userId=16492&carId=87&passport=AA+123+456+789&term=2022-11-10+00%3A00%3A00.0&damage=Act+of+Nature&rejected=on&closed=on

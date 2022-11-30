@@ -8,7 +8,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class CarService implements ICarService {
+public class CarService implements Service<Car> {
     private final CarDao carDao;
 
     public CarService(CarDao carDao) {
@@ -20,7 +20,6 @@ public class CarService implements ICarService {
     }
 
 
-    @Override
     public Integer getNumberOfRows() {
         Integer numOfRows;
         String sql = "SELECT COUNT(id) FROM car";
@@ -54,7 +53,6 @@ public class CarService implements ICarService {
         return carDao.findById(id);
     }
 
-    @Override
     public List<Car> getRandom(int size) {
 
         List<Car> list = new ArrayList<>(carDao.findAll());

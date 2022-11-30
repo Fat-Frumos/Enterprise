@@ -91,8 +91,8 @@ public class RegisterServlet extends HttpServlet {
         OrderService orderService = new OrderService();
 
         OrderMapper mapper = new OrderMapper();
-
         Order order = mapper.orderMapper(request);
+        log.info(order);
 
         Order update = orderService.updateOrder(order);
 

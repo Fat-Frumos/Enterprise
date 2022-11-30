@@ -22,12 +22,17 @@ public class DbManager implements AutoCloseable {
     }
 
     public static synchronized DbManager getInstance() {
-        return dbManager == null ? new DbManager() : dbManager;
+        return dbManager == null
+                ? new DbManager()
+                : dbManager;
     }
 
     public Connection getConnection() {
         try {
-            return DriverManager.getConnection(getDBUrl(), getDBName(), getDBPassword());
+            return DriverManager.getConnection(
+                    getDBUrl(),
+                    getDBName(),
+                    getDBPassword());
         } catch (SQLException e) {
             throw new DataException(e);
         }

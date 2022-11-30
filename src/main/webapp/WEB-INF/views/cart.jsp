@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%--
   Created by IntelliJ IDEA.
@@ -18,9 +19,19 @@
     <%@include file="../classes/templates/css/car.css"%>
 </style>
 
+<c:choose>
+    <c:when test="${user.language=='ua'}">
+        <fmt:setLocale value="ua" scope="session"/>
+        <fmt:setBundle basename="com.enterprise.rental.utils.BungleUa" var="lang"/>
+    </c:when>
+    <c:otherwise>
+        <fmt:setLocale value="en" scope="session"/>
+        <fmt:setBundle basename="com.enterprise.rental.utils.BungleEn" var="lang"/>
+    </c:otherwise>
+</c:choose>
+
 <main class="">
     <div>
-        </form>
         <div class="cars">
             <div class="car" id="ads">
                 <c:forEach items="${cars}" var="cars">
@@ -44,9 +55,9 @@
                                 </figure>
                             </div>
                             <div class="cart-image-overlay m-auto">
-                                <span class="badge">Rent:</span>
+                                <span class="badge"><fmt:message key="span.rent" bundle="${lang}"/>:</span>
                                 <span class="cart-detail-badge">$${cars.price}</span>
-                                <span class="badge">| Price:</span>
+                                <span class="badge">| <fmt:message key="span.price" bundle="${lang}"/>:</span>
                                 <span class="cart-detail-badge">$${cars.cost}</span>
                             </div>
                         </li>
@@ -56,7 +67,6 @@
         </div>
     </div>
 </main>
-</nav>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
 <script>
@@ -68,23 +78,22 @@
 
     function popUp(id) {
         if ("${user.role}" === "admin" || "${user.role}" === "manager" || "${user.role}" === "user") {
-        $("#" + id).modal('show');
-        // let url = '/order' + '?id=' + id;
-        let url = '/cart' + '?id=' + id;
-        fetch(url, {
-            method: 'put',
-        }).then(response => {
-            console.log('Ok:', response);
-            window.location.href = url;
-        }).catch(err => {
-            console.error(err)
-        })
+            $("#" + id).modal('show');
+            // let url = '/order' + '?id=' + id;
+            let url = '/cart' + '?id=' + id;
+            fetch(url, {
+                method: 'put',
+            }).then(response => {
+                console.log('Ok:', response);
+                window.location.href = url;
+            }).catch(err => {
+                console.error(err)
+            })
         } else {
             window.location.href = "/login";
         }
         // document.location.reload(true);
     }
-
 
     function showCar(id, path, brand, name, price) {
         console.log(id);

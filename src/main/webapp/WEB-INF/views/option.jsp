@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%--
   Created by IntelliJ IDEA.
   User: Pasha
@@ -7,13 +8,28 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
 <div class="option">
+
+    <c:choose>
+        <c:when test="${user.language=='ua'}">
+            <fmt:setLocale value="ua" scope="session"/>
+            <fmt:setBundle basename="com.enterprise.rental.utils.BungleUa" var="lang"/>
+        </c:when>
+        <c:otherwise>
+            <fmt:setLocale value="en" scope="session"/>
+            <fmt:setBundle basename="com.enterprise.rental.utils.BungleEn" var="lang"/>
+        </c:otherwise>
+    </c:choose>
+
     <form action="${pageContext.request.contextPath}/?page=${page}">
         <div class="priceInput">
             <div onclick="brand()">
-                <label for="brand">Brand:</label>
-                <select id="brand" name="brand">
-                    <option value="" selected disabled hidden>Choose auto</option>
+                <label for="brand"><fmt:message key="label.brand" bundle="${lang}"/>:</label>
+                <select style="width: 180px" id="brand" name="brand">
+                    <option value="" selected disabled hidden>
+                        <fmt:message key="option.choose" bundle="${lang}"/>
+                    </option>
                     <option value="BMW">BMW</option>
                     <option value="Bugatti">Bugatti</option>
                     <option value="Ford">Ford</option>
@@ -25,13 +41,12 @@
                     <option value="Xpeng">Xpeng</option>
                 </select>
             </div>
-            <label for="price">Price:</label>
-            <input type="number" id="price" name="price" min="100" max="1500">
-
-            <ul class="pagination mt-5">
+            <label for="price"><fmt:message key="label.price" bundle="${lang}"/>:</label>
+            <input style="width: 195px" type="number" id="price" name="price" min="100" max="1500">
+            <ul class="pagination mt-2">
                 <c:if test="${page != 1}">
-                    <li class="page-item"><a class="page-link"
-                                             onclick="send(${page-1})"><</a>
+                    <li class="page-item">
+                        <a class="page-link" onclick="send(${page-1})"><</a>
                     </li>
                 </c:if>
                 <c:forEach begin="${begin}" end="${noOfPages}" var="i">
@@ -42,27 +57,29 @@
                             </li>
                         </c:when>
                         <c:otherwise>
-                            <li class="page-item"><a class="page-link" onclick="send(${i})">${i}</a>
+                            <li class="page-item">
+                                <a class="page-link" onclick="send(${i})">${i}</a>
                             </li>
                         </c:otherwise>
                     </c:choose>
                 </c:forEach>
 
                 <c:if test="${page lt noOfPages}">
-                    <li class="page-item"><a class="page-link" onclick="send(${page+1})">></a>
+                    <li class="page-item">
+                        <a class="page-link" onclick="send(${page+1})">></a>
                     </li>
                 </c:if>
             </ul>
-            <br>
-            <div class="btn-group sort-btn">
-                <button id="direction" class="btn btn-secondary" data="none">Cost
+            <div class="btn-group sort-btn mt-2">
+                <button id="direction" class="btn btn-secondary" data="none">
+                    <fmt:message key="button.cost" bundle="${lang}"/>
                     <input name="direction" value="cost" data="none" class="fa fa-sort">
                 </button>
                 <button id="search" class="btn btn-secondary" data-sort="none">
                     <input id="sort" name="sort" value="" class="fa fa-sort"><i class="fa fa-sort"></i>
                 </button>
                 <button id="submit" class="btn btn-primary" type="submit">
-                    Search
+                    <fmt:message key="button.search" bundle="${lang}"/>
                     <i class="fa fa-search"></i>
                 </button>
             </div>
@@ -72,10 +89,6 @@
 
 <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js'></script>
 <script>
-    <%--let ps = document.getElementsByClassName("page-item");--%>
-    <%--if (${page+5 < noOfPages}) {--%>
-    <%--ps[1].remove();--%>
-    // }
 
     function send(page) {
         let brand = document.getElementById("brand").value;
@@ -86,7 +99,7 @@
     }
 
     $("input").on("keydown", function search(e) {
-        if (e.keyCode == 13) {
+        if (e.keyCode === 13) {
             $('#submit').click();
         }
     });
@@ -104,9 +117,9 @@
 
                 if ($this.data('direction') !== 'price') {
                     param = 'price';
-                    direction.innerHTML = "Price<input name=\"direction\" value=\"price\">";
+                    direction.innerHTML = "<fmt:message key="button.price" bundle="${lang}"/><input name=\"direction\" value=\"price\">";
                 } else {
-                    direction.innerHTML = "Cost<input name=\"direction\" value=\"cost\">";
+                    direction.innerHTML = "<fmt:message key="button.cost" bundle="${lang}"/><input name=\"direction\" value=\"cost\">";
                 }
                 $this.data('direction', param).find('.fa').attr('value', '' + param);
             });

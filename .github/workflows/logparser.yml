@@ -60,13 +60,12 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml
 
-    - name: Run with Tomcat
-      run: mvn tomcat7:run -X
-
     - name: Create ZIP artifacts
       run: zip -r ${{ env.DEPLOY_PACKAGE_NAME }} ./ -x *.git*
 
-      
+    - name: Run with Tomcat
+      run: mvn tomcat7:run -X
+
 #     - name: CleanUp
 #       run: |
 #         rm -r ~/.ssh

@@ -107,31 +107,30 @@ class CarsTest {
     void testSortedByPriceDescFoundedCars() throws Exception {
     }
 
-    @Test
-    @DisplayName(value = "Test Find Car By Id")
-    void testFindCarById() throws Exception {
-
-    }
 
     @Test
+    @DisplayName(value = "Test get All Cars")
     void getAll() {
         when(mockCarDao.findAll()).thenReturn(List.of(X5, X7));
         assertEquals(2, service.getAll().size());
     }
 
     @Test
+    @DisplayName(value = "Test Find Car By Id")
     void findById() {
         when(mockCarDao.findById(X7.getId())).thenReturn(Optional.of(X7));
         assertEquals("X7", service.getById(X7.getId()).get().getName());
     }
 
     @Test
+    @DisplayName(value = "Test Save Car")
     void save() {
         when(mockCarDao.save(X5)).thenReturn(true);
         assertTrue(service.save(X5));
     }
 
     @Test
+    @DisplayName(value = "Test Delete Car")
     void delete() {
         when(mockCarDao.delete(X5.getId())).thenReturn(true);
         assertTrue(service.delete(X5.getId()));

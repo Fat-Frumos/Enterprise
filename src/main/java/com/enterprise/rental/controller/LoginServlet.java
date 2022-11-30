@@ -1,6 +1,8 @@
 package com.enterprise.rental.controller;
 
+//import com.enterprise.rental.entity.Session;
 import com.enterprise.rental.entity.User;
+//import com.enterprise.rental.service.SecurityService;
 import com.enterprise.rental.service.UserService;
 import org.apache.log4j.Logger;
 
@@ -59,6 +61,8 @@ public class LoginServlet extends HttpServlet {
 
         UserService userService = new UserService();
 
+//        SecurityService securityService = new SecurityService(userService);
+//        securityService.setUserToken(request, response, new Session());
         String name = request.getParameter("name");
 
         Optional<User> optionalUser = userService.findByName(name);
@@ -71,13 +75,15 @@ public class LoginServlet extends HttpServlet {
             long id = UUID.randomUUID().getMostSignificantBits() & 0x7ffffffL;
             String password = request.getParameter("password");
             String email = request.getParameter("email");
+            String language = request.getParameter("language");
+            log.info(language);
             Timestamp created = new Timestamp(System.currentTimeMillis());
 
             User user = new User.Builder()
                     .userId(id)
                     .name(name)
                     .password(password)
-//                    .language("en")
+                    .language(language)
                     .email(email)
                     .created(created)
                     .active(true)

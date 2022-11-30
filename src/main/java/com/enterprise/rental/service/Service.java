@@ -15,8 +15,6 @@ public interface Service<T> {
 
     List<T> getAll(Map<String, String> params, int offset);
 
-    List<T> getRandom(int size);
-
     boolean delete(long id);
 
     T edit(T t);

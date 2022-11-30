@@ -40,13 +40,11 @@ public class CharsetFilter implements Filter {
 
     public static String getCharsetFromContentType(String contentType) {
 
-        if (contentType == null) {
+        if (contentType == null || !contentType.contains(";")) {
             return null;
         }
+
         int semicolon = contentType.indexOf(";");
-        if (semicolon == -1) {
-            return null;
-        }
 
         String afterSemi = contentType.substring(semicolon + 1);
         int charsetLocation = afterSemi.indexOf("charset=");

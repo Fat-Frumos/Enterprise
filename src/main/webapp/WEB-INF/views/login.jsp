@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%--
   Created by IntelliJ IDEA.
   User: Pasha
@@ -14,6 +15,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta http-equiv=Content-Type content="text/html; charset=windows-1251">
 <link rel="shortcut icon" href="<c:url value="/upload?wheel.ico"/>" type="image/x-icon">
+
 <head>
     <title>Login</title>
 </head>
@@ -33,38 +35,88 @@
     <h3>Sign In</h3>
     <form action="${pageContext.request.contextPath}/" method="post">
         <div class="inputBox">
-            <input type="text" pattern="[a-zA-Z0-9]+" minlength="3" maxlength="10" placeholder="Enter Username"
-                   name="name" autocomplete="on" required>
-            <input type="password" placeholder="Enter Password" name="password" minlength="2" maxlength="16"
-                   autocomplete="on" required>
+            <input name="name"
+                   type="text"
+                   pattern="[a-zA-Z0-9]+"
+                   placeholder="Enter Username"
+                   minlength="3"
+                   maxlength="10"
+                   autocomplete="on"
+                   required
+            >
+            <input name="password"
+                   type="password"
+                   placeholder="Enter Password"
+                   minlength="2"
+                   maxlength="16"
+                   autocomplete="on"
+                   required
+            >
             <%--pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{2,12}$"--%>
         </div>
-        <button type="submit" class='glowing-btn'><span class='glowing-txt'>L<span class='faulty-letter'>o</span><span
-                class='faulty-letter'>g&nbsp;</span><span class='faulty-letter'>In</span></span></button>
+        <button type="submit" class='glowing-btn'>
+            <span class='glowing-txt'>L<span class='faulty-letter'>o</span><span class='faulty-letter'>g&nbsp;</span><span class='faulty-letter'>In</span>
+            </span>
+        </button>
         <%--        <input type="submit" name="" value="Login">--%>
     </form>
     <br>
-    <a onclick="document.getElementById('id01').style.display='block'" class="sign" style="width:auto;">Sign Up</a>
+    <a onclick="document.getElementById('id01').style.display='block'"
+       class="sign"
+       style="width:auto;">
+        Register
+    </a>
 
     <div id="id01" class="modal">
-        <form class="loginBox" action="<c:url value="/login"/>" method="post">
-            <img class="user" height="100px" width="100px"
+        <form class="loginBox"
+              action="<c:url value="/login"/>"
+              method="post">
+            <input id="flag" name="language" hidden>
+            <img class="user"
+                 height="100px"
+                 width="100px"
+                 alt=""
                  src="https://raw.githubusercontent.com/Fat-Frumos/Cars/master/ava.jpg">
+
+                <jsp:include page="flag.jsp"/>
+
             <div class="container">
-                <input type="text" placeholder="Enter Username" name="name" pattern="[a-zA-Z0-9]+" autocomplete="on"
-                       autofocus required>
-                <input type="email" placeholder="Enter Email" name="email" pattern="[^@\s]+@[^@\s]+\.[^@\s]+"
-                       autocomplete="on" required>
-                <input type="password" placeholder="Enter Password" name="password" pattern="[a-zA-Z0-9]+"
-                       autocomplete="on" required>
-                <button type="submit">Sign Up</button>
+
+                <input name="name"
+                       type="text"
+                       pattern="[a-zA-Z0-9]+"
+                       placeholder="Enter Username"
+                       autocomplete="on"
+                       autofocus
+                       required
+                >
+                <input name="email"
+                       type="email"
+                       pattern="[^@\s]+@[^@\s]+\.[^@\s]+"
+                       placeholder="Enter Email"
+                       autocomplete="on"
+                       required
+                >
+                <input name="password"
+                       type="password"
+                       pattern="[a-zA-Z0-9]+"
+                       placeholder="Enter Password"
+                       autocomplete="on"
+                       required
+                >
+                <button type="submit">
+                    Sign Up
+                </button>
             </div>
             <div class="forget">
                 <a class="btn-cancel"
                    onclick="document.getElementById('id01').style.display='none'">
-                    Cancel</a>
+                    Cancel
+                </a>
                 <br>
-                <a href="/user" class="sign glowing-txt" onclick="toCard()">Forgot password?</a>
+                <a href="/user" class="sign glowing-txt" onclick="toCard()">
+                    Forgot password?
+                </a>
                 <br>
             </div>
         </form>
@@ -75,17 +127,17 @@
    title="Close Modal" href="<c:url value="/"/>">&times;</a>
 <script>
 
-    // function toCard() {
-    //     let url = '/user';
-    //     fetch(url, {
-    //         method: 'GET',
-    //     }).then(response => {
-    //         console.log('Ok:', response);
-    //     }).catch(err => {
-    //         console.error(err)
-    //     })
-    //         // window.location.href = url;
-    // }
+    function toCard() {
+        let url = '/user';
+        fetch(url, {
+            method: 'GET',
+        }).then(response => {
+            console.log('Ok:', response);
+        }).catch(err => {
+            console.error(err)
+        })
+        // window.location.href = url;
+    }
 
     let modal = document.getElementById('id01');
 

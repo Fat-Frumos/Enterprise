@@ -8,6 +8,8 @@ public class User implements Serializable {
     private long userId;
     private String name;
     private String password;
+
+    private String salt;
     private String email;
     private String language;
     private String role;
@@ -33,6 +35,7 @@ public class User implements Serializable {
         private String passport;
         private String role;
         private String password;
+        private String salt;
 
         public Builder userId(long userId) {
             this.userId = userId;
@@ -105,10 +108,31 @@ public class User implements Serializable {
             user.role = this.role;
             return user;
         }
+
+        public Builder salt(String salt) {
+            this.salt = salt;
+            return this;
+        }
     }
 
 
     public User() {
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
     }
 
     public boolean isAdmin() {
@@ -133,6 +157,14 @@ public class User implements Serializable {
                 .stream()
                 .filter(key -> params.get(key) != null)
                 .forEach(key -> this.params.put(key, params.get(key)));
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
     }
 
     public boolean isClosed() {

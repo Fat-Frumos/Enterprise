@@ -167,6 +167,7 @@ public class JdbcUserDao implements UserDao {
     }
 
     private Optional<User> getUserSql(String query) {
+        log.info(query);
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -223,6 +224,7 @@ public class JdbcUserDao implements UserDao {
         String password = user.getPassword();
         String email = user.getEmail();
         String role = user.getRole();
+        String language = user.getLanguage();
         log.info(INSERT_USER_SQL + "\n" + user);
         statement.setLong(1, UUID.randomUUID().getMostSignificantBits() & 0x7fffL);
         statement.setString(2, user.getName());
@@ -231,6 +233,7 @@ public class JdbcUserDao implements UserDao {
         statement.setString(5, role);
         statement.setBoolean(6, true);
         statement.setBoolean(7, false);
-        statement.setString(8, "en");
+        statement.setString(8, language);
+        statement.setString(9, user.getSalt());
     }
 }

@@ -20,6 +20,10 @@ public class Order implements Serializable {
     private String passport;
     private String reason;
 
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
     public String getReason() {
         return reason;
     }
@@ -239,6 +243,7 @@ public class Order implements Serializable {
             this.passport = passport;
             return this;
         }
+
         public Builder reason(String reason) {
             this.reason = reason;
             return this;

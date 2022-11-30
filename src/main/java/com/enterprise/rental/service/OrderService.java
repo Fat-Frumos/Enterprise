@@ -1,6 +1,8 @@
 package com.enterprise.rental.service;
 
+import com.enterprise.rental.dao.OrderDao;
 import com.enterprise.rental.dao.jdbc.JdbcOrderDao;
+import com.enterprise.rental.entity.Invoice;
 import com.enterprise.rental.entity.Order;
 import com.enterprise.rental.entity.User;
 
@@ -10,43 +12,51 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class OrderService {
+    private final OrderDao orderDao;
 
-    private final JdbcOrderDao jdbcOrderDao = new JdbcOrderDao();
+    public OrderService(OrderDao orderDao) {
+        this.orderDao = orderDao;
+    }
+
+    public OrderService() {
+        orderDao = new JdbcOrderDao();
+    }
 
     public boolean createOrder(Order order) {
-        return jdbcOrderDao.save(order);
+        return orderDao.save(order);
     }
 
     public List<Order> getAll() {
-        return jdbcOrderDao.findAll();
+        return orderDao.findAll();
     }
 
     public List<Order> getAll(User user) {
         List<Order> orderList = new ArrayList<>();
         if (user.isActive() && Objects.equals(user.getRole(), "user")) {
-            orderList = jdbcOrderDao.findAll(user.getUserId());
+            orderList = orderDao.findAll(String.valueOf(user.getUserId()));
         }
         return orderList;
     }
 
     public Order updateOrder(Order order) {
-        return jdbcOrderDao.edit(order);
+        return orderDao.edit(order);
     }
 
-    public boolean delete(String id) {
-        if (id != null && getById(id).isPresent()) {
-            return jdbcOrderDao.delete(Long.parseLong(id));
+    public boolean delete(long id) {
+        if (id != 0 && getById(id).isPresent()) {
+            return orderDao.delete(id);
         }
         return false;
     }
 
-    public Optional<Order> getById(String id) {
-        if (id != null) {
-            long parseLong = Long.parseLong(id);
-            if (parseLong != 0) {
-                return jdbcOrderDao.findById(parseLong);
-            }
-        }
-        return Optional.empty();
+    public Optional<Order> getById(long id) {
+
+        return id != 0 ? orderDao.findById(id) : Optional.empty();
+    }
+
+    public boolean createInvoice(Invoice invoice) {
+        //TODO
+//        return orderDao.save(invoice);
+        return false;
     }
 }

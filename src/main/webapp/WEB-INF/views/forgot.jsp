@@ -38,8 +38,7 @@
                 <input id="username"
                        type="text"
                        name="username"
-                       placeholder="Username"
-                       pattern="[a-zA-Z0-9]+"
+                       placeholder="Enter username"
                        autocomplete="on"
                        required>
                 <br>
@@ -47,7 +46,7 @@
                 <label for="email"></label>
                 <input id="email" type="email"
                        name="email"
-                       placeholder="Email"
+                       placeholder="Enter email"
                        autocomplete="on"
                        required>
                 <br>

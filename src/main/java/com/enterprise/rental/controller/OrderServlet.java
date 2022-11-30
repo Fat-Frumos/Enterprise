@@ -2,6 +2,7 @@ package com.enterprise.rental.controller;
 
 import com.enterprise.rental.dao.mapper.OrderMapper;
 import com.enterprise.rental.entity.Car;
+import com.enterprise.rental.entity.Invoice;
 import com.enterprise.rental.entity.Order;
 import com.enterprise.rental.entity.User;
 import com.enterprise.rental.exception.DataException;
@@ -62,27 +63,6 @@ public class OrderServlet extends HttpServlet {
         dispatch(request, response, path);
     }
 
-    private static void setUserAttribute(
-            HttpServletRequest request,
-            User user, long carId) {
-
-        List<Car> userCars = user.getCars();
-
-        for (Car car : userCars) {
-            if (car.getId() == carId) {
-                List<Car> cars = new ArrayList<>();
-                userCars.stream()
-                        .filter(auto -> cars.size() < 3)
-                        .forEachOrdered(cars::add);
-                user.setCar(car);
-                request.setAttribute("cars", cars);
-                break;
-            }
-        }
-        request.setAttribute("car", userCars.size());
-        request.setAttribute("user", user);
-    }
-
     /**
      * <p>If the HTTP POST request is correctly formatted,
      * <code>doPost</code>, created user order and set rental Car
@@ -132,7 +112,32 @@ public class OrderServlet extends HttpServlet {
         response.sendRedirect("/user");
     }
 
+    /**
+     * role manager, create the invoice
+     */
+    @Override
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String oid = request.getParameter("orderId");
+        String uid = request.getParameter("userId");
+        String cid = request.getParameter("carId");
+        String damage = (request.getParameter("damage"));
+        String payment = (request.getParameter("payment"));
+        log.info(String.format("%s%s%s%s%s%n", oid, uid, cid, damage, payment));
 
+//        long orderId = Long.parseLong(());
+//        long userId = Long.parseLong((request.getParameter("userId")));
+//        long carId = Long.parseLong((request.getParameter("carId")));
+
+//        double pay = Double.parseDouble(payment);
+//        Invoice invoice = new Invoice(userId, carId, damage, pay);
+//        boolean serviceInvoice = orderService.createInvoice(invoice);
+//        log.info(String.format("serviceInvoice: %s", serviceInvoice));
+        response.sendRedirect("/user");
+    }
+
+    /**
+     * role manager, remove the order
+     */
     @Override
     protected void doDelete(
             HttpServletRequest request,
@@ -143,8 +148,8 @@ public class OrderServlet extends HttpServlet {
         log.info(String.format("Delete order %s", id));
 
         Optional<User> user = getUser(request.getSession(false));
-        if (user.isPresent() && user.get().getRole().equals("manager")) {
-            boolean delete = orderService.delete(id);
+        if ("manager".equals(user.get().getRole()) && user.isPresent() && id != null) {
+            boolean delete = orderService.delete(Long.parseLong(id));
             log.info(String.format("Order# %s, deleted %b", id, delete));
             List<Order> userOrders = orderService.getAll();
             request.setAttribute("orders", userOrders);
@@ -152,6 +157,27 @@ public class OrderServlet extends HttpServlet {
             log.info(String.format("%s", user));
         }
         response.sendRedirect("/user");
+    }
+
+    private static void setUserAttribute(
+            HttpServletRequest request,
+            User user, long carId) {
+
+        List<Car> userCars = user.getCars();
+
+        for (Car car : userCars) {
+            if (car.getId() == carId) {
+                List<Car> cars = new ArrayList<>();
+                userCars.stream()
+                        .filter(auto -> cars.size() < 3)
+                        .forEachOrdered(cars::add);
+                user.setCar(car);
+                request.setAttribute("cars", cars);
+                break;
+            }
+        }
+        request.setAttribute("car", userCars.size());
+        request.setAttribute("user", user);
     }
 
     private static Optional<User> getUser(HttpSession session) {

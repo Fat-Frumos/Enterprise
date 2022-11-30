@@ -95,6 +95,6 @@ class CarServiceTest {
         when(mockDao.findById(1L)).thenReturn(Optional.ofNullable(car));
         Optional<Car> actual = carService.getById(1L);
         verify(mockDao).findById(1L);
-        assertEquals(car, actual);
+        assertEquals(car, actual.get());
     }
 }

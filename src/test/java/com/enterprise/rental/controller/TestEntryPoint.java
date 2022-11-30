@@ -1,5 +1,5 @@
-//package com.enterprise.rental.controller;
-//
+package com.enterprise.rental.controller;
+
 //import org.junit.jupiter.api.Test;
 //
 //import javax.servlet.ServletException;
@@ -15,7 +15,9 @@
 //import static org.junit.jupiter.api.Assertions.assertTrue;
 //import static org.mockito.Mockito.*;
 //
-//public class TestEntryPoint {
+public class TestEntryPoint {
+}
+
 //
 //    @Test
 //    public void testServlet() throws Exception {
@@ -31,11 +33,12 @@
 //
 //        new StaticServlet().doGet(request, response);
 //
-//        verify(request, atLeast(1)).getParameter("name"); // only if you want to verify username was called...
+//        verify(request, atLeast(1)).getParameter("name");
+//
 //        writer.flush(); // it may not have been flushed yet...
 //        assertTrue(stringWriter.toString().contains("My expected string"));
 //    }
-
+//
 //    @Test
 //    public void postLogin() throws ServletException, IOException {
 //        URL url = new URL("http://localhost:8080/?name=alice&password=alice");
@@ -50,7 +53,7 @@
 //        URL url = new URL("http://localhost:8080/?name=alice&password=alice");
 //        HttpURLConnection http = (HttpURLConnection) url.openConnection();
 //        http.disconnect();
-//        assertEquals(304, http.getResponseCode());
+//        assertEquals(200, http.getResponseCode());
 //        assertEquals("OK", http.getResponseMessage());
 //    }
 //

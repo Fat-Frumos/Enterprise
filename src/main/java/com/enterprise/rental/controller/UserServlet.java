@@ -82,6 +82,7 @@ public class UserServlet extends HttpServlet {
         String password = request.getParameter("password");
         String email = request.getParameter("email");
         String role = request.getParameter("role");
+        String language = request.getParameter("language");
 
         Optional<User> optionalUser = userService.findByName(name);
 
@@ -96,7 +97,7 @@ public class UserServlet extends HttpServlet {
                     .userId(id)
                     .name(name)
                     .password(password)
-//                    .language("en")
+                    .language(language)
                     .email(email)
                     .active(true)
                     .role(role)
@@ -120,8 +121,8 @@ public class UserServlet extends HttpServlet {
             HttpServletResponse response)
             throws ServletException, IOException {
 
-        String message = userService.sendEmail(request.getParameter("username"));
-        log.info(String.format("%s check your email address", message));
+        boolean sendEmail = userService.sendEmail(request.getParameter("username"));
+        log.info(String.format("Letter sent: %b", sendEmail));
 //        response.sendRedirect(NOT_FOUND);
         response.sendRedirect(LOGIN);
     }

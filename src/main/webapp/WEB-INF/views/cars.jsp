@@ -1,4 +1,17 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="/WEB-INF/dataTag.tld" prefix="ct" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" %>
+<c:choose>
+    <c:when test="${user.language=='ua'}">
+        <fmt:setLocale value="ua" scope="session"/>
+        <fmt:setBundle basename="com.enterprise.rental.utils.BungleUa" var="lang"/>
+    </c:when>
+    <c:otherwise>
+        <fmt:setLocale value="en" scope="session"/>
+        <fmt:setBundle basename="com.enterprise.rental.utils.BungleEn" var="lang"/>
+    </c:otherwise>
+</c:choose>
 <%--
   Created by IntelliJ IDEA.
   User: Pasha
@@ -6,9 +19,9 @@
   Time: 9:28 PM
   Custom Tag  | Jspl Templates.
 --%>
-<%@ taglib uri="/WEB-INF/dataTag.tld" prefix="ct" %>
-<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" %>
-<html>
+
+<!DOCTYPE html>
+<html lang="${user.language}">
 <head>
     <meta charset="UTF-8">
     <meta name="author" content="Pasha">
@@ -18,7 +31,7 @@
     <link rel="shortcut icon" href="<c:url value="/upload?wheel.ico"/>" type="image/x-icon">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 
-    <title>Cars</title>
+    <title><fmt:message key="title.cars" bundle="${lang}"/></title>
     <style>
         @import url(https://fonts.googleapis.com/css?family=Raleway:100,600,400);
 
@@ -27,20 +40,21 @@
 
         * {
             user-select: none;
-        }
-
-        a {
+            padding: 0;
+            margin: 0;
             font-family: Raleway, Roboto, sans-serif;
             font-weight: 600;
         }
     </style>
 </head>
-
 <body>
+
 <jsp:include page="option.jsp"/>
 <jsp:include page="cart.jsp"/>
 <jsp:include page="nav.jsp"/>
-<jsp:include page="burger.jsp"/>
+
+<%--<jsp:include page="burger.jsp"/>--%>
+<%--<jsp:include page="flag.jsp"/>--%>
 
 <script>
 

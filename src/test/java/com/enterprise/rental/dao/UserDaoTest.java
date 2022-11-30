@@ -35,7 +35,8 @@ class UserDaoTest {
     ResultSet mockResultSet;
     int userId = 100;
 
-    public void setUp() throws SQLException {
+    @Test
+    public void testCreateWithNoExceptions() throws SQLException {
         when(mockDataSource.getConnection()).thenReturn(mockConn);
         when(mockDataSource.getConnection(anyString(), anyString())).thenReturn(mockConn);
         doNothing().when(mockConn).commit();
@@ -45,12 +46,7 @@ class UserDaoTest {
         when(preparedStatement.getGeneratedKeys()).thenReturn(mockResultSet);
         when(mockResultSet.next()).thenReturn(Boolean.TRUE, Boolean.FALSE);
         when(mockResultSet.getInt(100)).thenReturn(userId);
-    }
 
-    @Test
-    public void testCreateWithNoExceptions() throws SQLException {
-
-        setUp();
         UserDao userDao = new JdbcUserDao();
 
         //verify and assert

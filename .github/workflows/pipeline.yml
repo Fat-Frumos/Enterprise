@@ -1,23 +1,24 @@
-name: Docker Image CI
+name: Docker Image Ubuntu-Java-TomCat
 
 on:
   push:
     branches:
-    - main
-    - features/**
-    - dependabot/**
+    - master
   pull_request:
     branches:
-    - main
+    - master
 
 jobs:
   docker:
-    timeout-minutes: 10
+    timeout-minutes: 11
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout
       uses: actions/checkout@v1
+
+    - name: cat IP
+      run: ifconfig
 
     - name: Start containers
       run: docker-compose -f "docker-compose.yml" up -d --build

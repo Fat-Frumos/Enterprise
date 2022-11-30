@@ -16,6 +16,16 @@
     <%@include file="../classes/templates/css/check-box.css"%>
     <%@include file="../classes/templates/css/rental.css"%>
 </style>
+<c:choose>
+    <c:when test="${user.language=='ua'}">
+        <fmt:setLocale value="ua" scope="session"/>
+        <fmt:setBundle basename="com.enterprise.rental.utils.BungleUa" var="lang"/>
+    </c:when>
+    <c:otherwise>
+        <fmt:setLocale value="en" scope="session"/>
+        <fmt:setBundle basename="com.enterprise.rental.utils.BungleEn" var="lang"/>
+    </c:otherwise>
+</c:choose>
 <div class="col-lg-5 p-0 ps-lg-4">
     <form action="${pageContext.request.contextPath}/order" method="post">
         <div style="background: white" class="row m-0">
@@ -27,10 +37,11 @@
                             <input id="carId" name="carId" value="${auto.id}" hidden>
                             <input id="userId" name="userId" value="${user.userId}" hidden>
                             <br>
-                                    <span class="text-muted">Passport</span>
+                                    <span class="text-muted"><fmt:message key="span.passport" bundle="${lang}"/></span>
                                     <input class="form-control"
                                            style="width: 180px"
-                                           name="passport" type="text"
+                                           name="passport"
+                                           type="text"
                                            value=""
                                            placeholder="AA 123 456 789"
                                            pattern="[a-zA-Z]{2}?[- ][0-9]{3}?[- ][0-9]{3}?[- ][0-9]{3}"
@@ -39,7 +50,7 @@
                                     </span>
                             <div class=" w-100 d-flex flex-column align-items-end">
                                 <br>
-                                <p class="text-muted">Term</p>
+                                <p class="text-muted"><fmt:message key="span.term" bundle="${lang}"/></p>
                                 <input id="term"
                                        class="form-control2"
                                        style="width: 110px"
@@ -53,7 +64,7 @@
 
                         <div class="d-flex mb-4">
                         <span class="me-5">
-                                    <span class="text-muted">Phone</span>
+                                    <span class="text-muted"><fmt:message key="span.phone" bundle="${lang}"/></span>
                                     <input class="form-control"
                                            style="width: 180px"
                                            type="tel"
@@ -65,7 +76,7 @@
                                     >
                                     </span>
                             <div class=" w-100 d-flex flex-column align-items-end">
-                                <span class="text-muted">Driver</span>
+                                <span class="text-muted"><fmt:message key="span.driver" bundle="${lang}"/></span>
                                 <div class="w-100 d-flex flex-column align-items-end">
                                     <div class="toggle">
                                         <input id="checkbox" type="checkbox" name="driver">
@@ -79,20 +90,22 @@
                         <jsp:include page="picker.jsp"/>
                         <div class="d-flex mb-4">
                         <span class="me-5">
-                                    <span class="text-muted">Payment</span>
-                            <input id="price" name="price" value="${auto.price}" style="width: 100px" hidden>
+                            <span class="text-muted"><fmt:message key="span.payment" bundle="${lang}"/></span>
+                            <input id="price"
+                                   name="price"
+                                   value="${auto.price}"
+                                   style="width: 100px" hidden>
 
-                                    <input class="form-control"
-                                           style="width: 100px"
-                                           id="payment"
-                                           name="payment"
-                                           type="number"
-                                           min="0"
-                                           pattern="0.00"
-                                           step=".01"
-                                           readonly="readonly"
-                                           value="${auto.price}"/>
-
+                            <input id="payment"
+                                   class="form-control"
+                                   style="width: 100px"
+                                   name="payment"
+                                   type="number"
+                                   min="0"
+                                   pattern="0.00"
+                                   step=".01"
+                                   readonly="readonly"
+                                   value="${auto.price}"/>
                                     </span>
                             <div class=" w-100 d-flex flex-column align-items-end">
                                 <p class="text-muted"></p>
@@ -106,7 +119,12 @@
                 </div>
                 <div class="row m-0">
                     <div class="col-12 mb-4 p-0">
-                        <input type="submit" id="purchase" name="submit" value="Purchase" class="submit"/>
+                        <input id="purchase"
+                               type="submit"
+                               name="submit"
+                               value="<fmt:message key="input.purchase" bundle="${lang}"/>"
+                               class="submit"
+                        />
                         <div class="fa fa-check done"></div>
                         <div class="fa fa-close failed"></div>
                     </div>

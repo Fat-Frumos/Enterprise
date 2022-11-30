@@ -1,8 +1,8 @@
-* {
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
-}
+/** {*/
+/*    padding: 0;*/
+/*    margin: 0;*/
+/*    box-sizing: border-box;*/
+/*}*/
 
 nav {
     top: 1vw;
@@ -16,16 +16,16 @@ body {
 }
 
 .carousel {
-    overflow: visible;
+    /*overflow: visible;*/
 }
 
 img {
-    /*border-radius: 10px;*/
+    border-radius: 10px;
     transition: transform .7s ease-out;
 }
 
 img:hover {
-    /*border-radius: 12px;*/
+    border-radius: 12px;
     transform: scale(1.2);
     cursor: pointer;
 }
@@ -67,6 +67,10 @@ body {
     height: auto;
     position: absolute;
 }
+
+/*.carousel-item:hover {*/
+/*    width: 720px;*/
+/*}*/
 
 .open-button {
     background-color: #555;

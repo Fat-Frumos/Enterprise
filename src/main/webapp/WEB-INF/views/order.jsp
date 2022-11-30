@@ -2,6 +2,16 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="ct" uri="/WEB-INF/dataTag" %>
+<c:choose>
+    <c:when test="${user.language=='ua'}">
+        <fmt:setLocale value="ua" scope="session"/>
+        <fmt:setBundle basename="com.enterprise.rental.utils.BungleUa" var="lang"/>
+    </c:when>
+    <c:otherwise>
+        <fmt:setLocale value="en" scope="session"/>
+        <fmt:setBundle basename="com.enterprise.rental.utils.BungleEn" var="lang"/>
+    </c:otherwise>
+</c:choose>
 <%--
   Created by IntelliJ IDEA.
   User: Pasha
@@ -11,26 +21,22 @@
 --%>
 <html>
 <head>
-    <title>Orders Review</title>
+    <title><fmt:message key="title.orders" bundle="${lang}"/></title>
     <meta charset="UTF-8">
     <meta name="author" content="Pasha">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv=Content-Type content="text/html; charset=windows-1251">
     <link rel="shortcut icon" href="<c:url value="/upload?wheel.ico"/>" type="image/x-icon">
-    <title>Responsive Order table</title>
 
     <style>
-
         @import url('https://fonts.googleapis.com/css?family=Kaushan+Script|Saira&display=swap');
-
         <%@include file="../classes/templates/css/users.css"%>
         <%@include file="../classes/templates/css/check-box.css"%>
 
         body {
             font-family: 'Saira', sans-serif;
             margin-left: 10px;
-            margin-top: 10px;
         }
 
         input {
@@ -55,22 +61,21 @@
 <div class="container">
     <div class="col-lg-12">
         <jsp:include page="nav.jsp"/>
-
-        <h3 style="text-align: center">List of Orders</h3>
+        <h2 style="margin-bottom: 50px; text-align: center"><fmt:message key="h5.orders" bundle="${lang}"/></h2>
     </div>
     <div class="col-lg-12">
         <table id="tabs" class="table-striped" style="width:100%">
             <thead class="TableHead">
             <tr>
-                <th>#order</th>
-                <th>#car</th>
-                <th>created</th>
-                <th>term</th>
-                <th>payment</th>
-                <th>damage</th>
-                <th>reason</th>
-                <th>rejected</th>
-                <th>closed</th>
+                <th><fmt:message key="th.order" bundle="${lang}"/></th>
+                <th><fmt:message key="th.car" bundle="${lang}"/></th>
+                <th><fmt:message key="th.create" bundle="${lang}"/></th>
+                <th><fmt:message key="th.term" bundle="${lang}"/></th>
+                <th><fmt:message key="th.payment" bundle="${lang}"/></th>
+                <th><fmt:message key="th.damage" bundle="${lang}"/></th>
+                <th><fmt:message key="th.reason" bundle="${lang}"/></th>
+                <th><fmt:message key="th.reject" bundle="${lang}"/></th>
+                <th><fmt:message key="th.close" bundle="${lang}"/></th>
             </tr>
             </thead>
             <tbody>

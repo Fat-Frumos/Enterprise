@@ -2,6 +2,7 @@ package com.enterprise.rental.dao.jdbc;
 
 import com.enterprise.rental.dao.OrderDao;
 import com.enterprise.rental.dao.mapper.OrderMapper;
+import com.enterprise.rental.entity.Invoice;
 import com.enterprise.rental.entity.Order;
 import com.enterprise.rental.exception.DataException;
 import com.enterprise.rental.exception.OrderNotFoundException;
@@ -41,6 +42,40 @@ public class JdbcOrderDao implements OrderDao {
                 FILTER_ORDER_BY_USER_ID_SQL, userId);
         log.info(query);
         return getOrdersQuery(query);
+    }
+
+    public boolean save(Invoice invoice) {
+        long id = invoice.getInvoiceId();
+        long userId = invoice.getUserId();
+        long carId = invoice.getCarId();
+        String damage = invoice.getDamage();
+        double payment = invoice.getPayment();
+        String query = String.format("INSERT INTO invoices (invoiceId, userId, carId, damage, payment) VALUES (%d, %d, %d, %s, %d);", id, userId, carId, damage, payment);
+
+        log.info(String.format("%s%n%s", invoice, query));
+
+
+        return templateOrder(query);
+    }
+
+    private static boolean templateOrder(String query) {
+        boolean execute = false;
+
+        Connection connection = null;
+        PreparedStatement statement = null;
+        try {
+            connection = getWithoutAutoCommit();
+            statement = connection.prepareStatement(query);
+            execute = statement.execute();
+            connection.commit();
+
+        } catch (SQLException sqlException) {
+            rollback(connection, sqlException, query);
+
+        } finally {
+            eventually(connection, statement);
+        }
+        return execute;
     }
 
     @Override
@@ -96,31 +131,16 @@ public class JdbcOrderDao implements OrderDao {
     @Override
     public boolean delete(long id) {
 
-        Connection connection = null;
-        PreparedStatement statement = null;
         String query = String.format("%s%d", DELETE_ORDER_SQL, id);
         log.info(query);
-
-        try {
-            connection = getWithoutAutoCommit();
-            statement = connection.prepareStatement(query);
-            statement.execute();
-            connection.commit();
-            return true;
-
-        } catch (SQLException sqlException) {
-            rollback(connection, sqlException, query);
-        } finally {
-            eventually(connection, statement);
-        }
-        return false;
+        return templateOrder(query);
     }
 
     private static Optional<Order> getOrder(
-            ResultSet resultSet) throws SQLException {
-        return !resultSet.next()
+            ResultSet executeSet) throws SQLException {
+        return !executeSet.next()
                 ? Optional.empty()
-                : Optional.of(ORDER_ROW_MAPPER.mapRow(resultSet));
+                : Optional.of(ORDER_ROW_MAPPER.mapRow(executeSet));
     }
 
     private Optional<Order> getOrderById(Long id) {
@@ -145,20 +165,21 @@ public class JdbcOrderDao implements OrderDao {
     }
 
     private List<Order> getOrdersQuery(String query) {
+
         Connection connection = null;
         PreparedStatement statement = null;
-        ResultSet resultSet = null;
+        ResultSet executeSet = null;
         List<Order> orders = new ArrayList<>();
         log.info(String.format("%s", query));
         try {
             connection = getWithoutAutoCommit();
             statement = connection.prepareStatement(query);
-            resultSet = statement.executeQuery();
+            executeSet = statement.executeQuery();
             connection.commit();
 
-            if (resultSet.next()) {
-                while (resultSet.next()) {
-                    Order order = ORDER_ROW_MAPPER.mapRow(resultSet);
+            if (executeSet.next()) {
+                while (executeSet.next()) {
+                    Order order = ORDER_ROW_MAPPER.mapRow(executeSet);
                     orders.add(order);
                 }
                 log.info(String.format("%d order(s)", orders.size()));
@@ -168,31 +189,32 @@ public class JdbcOrderDao implements OrderDao {
         } catch (SQLException sqlException) {
             rollback(connection, sqlException, query);
         } finally {
-            eventually(connection, statement, resultSet);
+            eventually(connection, statement, executeSet);
         }
         return orders;
     }
 
 
     private boolean setOrderQuery(Order order, String query) {
+        boolean execute = false;
         log.info(String.format(" sql: %s", query));
         Connection connection = null;
         PreparedStatement statement = null;
+
         try {
             connection = getWithoutAutoCommit();
             statement = connection.prepareStatement(query);
             setOrders(order, statement);
-            boolean execute = statement.execute();
-
+            execute = statement.execute();
             connection.commit();
-            return execute;
 
         } catch (SQLException sqlException) {
             rollback(connection, sqlException, query);
+
         } finally {
             eventually(connection, statement);
         }
-        return false;
+        return execute;
     }
 
     private static void setOrders(

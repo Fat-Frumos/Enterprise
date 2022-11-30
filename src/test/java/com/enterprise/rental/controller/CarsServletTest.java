@@ -39,10 +39,10 @@ class CarsServletTest {
     RequestDispatcher requestDispatcher;
 
 
-    @BeforeEach
-    void init() {
-        MockitoAnnotations.openMocks(this);
-    }
+//    @BeforeEach
+//    void init() {
+//        MockitoAnnotations.openMocks(this);
+//    }
 
     @Test
     public void test() throws Exception {
