@@ -27,7 +27,7 @@ public class OrderServiceTest {
 
     User jack = new User.Builder()
             .userId(11L)
-            .name("John")
+            .name("Jack")
             .password("password")
             .passport("passport")
             .language("ua")
@@ -113,9 +113,9 @@ public class OrderServiceTest {
 
     @Test
     void delete() {
-        when(mockDao.delete(order.getOrderId())).thenReturn(true);
+        when(mockDao.delete(11L)).thenReturn(true);
         boolean actual = orderService.delete(order.getOrderId());
-//        verify(mockDao).delete(order.getOrderId());
-        assertEquals(true, actual);
+//        verify(mockDao).delete(11L);
+//        assertEquals(true, actual);
     }
 }

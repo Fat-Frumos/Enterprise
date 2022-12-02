@@ -67,7 +67,7 @@ public class OrderMapper extends Mapper<Order> {
             } catch (SQLException e) {
                 throw new DataException(e.getMessage());
             }
-            throw new OrderNotFoundException(exception.getMessage());
+            throw new OrderNotFoundException(exception);
         }
     }
 

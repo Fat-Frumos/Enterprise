@@ -22,7 +22,7 @@
         html,
         body {
             margin: 0;
-            background-color: #59238F;
+            background-color: #41035e;
             overflow: hidden;
         }
 
@@ -45,8 +45,8 @@
         <div class="box__face front">4</div>
         <div class="box__face back">0</div>
         <div class="box__face right">4</div>
-        <div class="box__face left">4</div>
-        <div class="box__face top">0</div>
+        <div class="box__face top">4</div>
+        <div class="box__face left">0</div>
         <div class="box__face bottom">4</div>
     </div>
     <div class="shadow"></div>

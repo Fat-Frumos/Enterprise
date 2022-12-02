@@ -92,11 +92,10 @@ public class RegisterServlet extends HttpServlet {
 
         OrderMapper mapper = new OrderMapper();
         Order order = mapper.orderMapper(request);
-        log.info(order);
 
         Order update = orderService.updateOrder(order);
 
-        log.info(update);
+        log.info(String.format("Order #%d", update.getOrderId()));
 
         List<Order> orders = orderService.getAll();
 

@@ -49,11 +49,13 @@ public class JdbcOrderDao implements OrderDao {
         long userId = invoice.getUserId();
         long carId = invoice.getCarId();
         String damage = invoice.getDamage();
+        String passport = invoice.getPassport();
+        String phone = invoice.getPhone();
+        String reason = invoice.getReason();
         double payment = invoice.getPayment();
-        String query = String.format("INSERT INTO invoices (invoiceId, userId, carId, damage, payment) VALUES (%d, %d, %d, %s, %d);", id, userId, carId, damage, payment);
+        String query = String.format("INSERT INTO invoices (invoice_id, user_id, car_id, damage, payment, reason, passport, phone) VALUES (%d, %d, %d, '%s', %f,'%s','%s','%s');", id, userId, carId, damage, payment, reason, passport, phone);
 
-        log.info(String.format("%s%n%s", invoice, query));
-
+        log.info(String.format("%s", query));
 
         return templateOrder(query);
     }
@@ -197,7 +199,7 @@ public class JdbcOrderDao implements OrderDao {
 
     private boolean setOrderQuery(Order order, String query) {
         boolean execute = false;
-        log.info(String.format(" sql: %s", query));
+        log.info(String.format("Query: %s", query));
         Connection connection = null;
         PreparedStatement statement = null;
 

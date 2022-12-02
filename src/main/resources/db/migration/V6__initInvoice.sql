@@ -1,11 +1,13 @@
-create table invoice
+drop table invoices;
+create table invoices
 (
     invoice_id bigint      not null
         primary key,
-    order_id bigint      not null,
-    user_id  bigint      not null,
-    car_id   bigint      not null,
+    user_id  bigint,
+    car_id   bigint,
     payment  double precision,
-    driver   boolean,
-    damage   varchar(255)
+    damage   varchar(255),
+    reason   varchar(255),
+    passport varchar(50),
+    phone varchar(50)
 );

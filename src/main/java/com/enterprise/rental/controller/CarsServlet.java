@@ -2,15 +2,12 @@ package com.enterprise.rental.controller;
 
 import com.enterprise.rental.dao.mapper.CarMapper;
 import com.enterprise.rental.entity.Car;
+import com.enterprise.rental.entity.Role;
 import com.enterprise.rental.entity.User;
-import com.enterprise.rental.exception.DataException;
 import com.enterprise.rental.service.CarService;
 import org.apache.log4j.Logger;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -22,14 +19,41 @@ import java.util.Optional;
 
 import static com.enterprise.rental.dao.jdbc.Constants.*;
 
-@WebServlet(urlPatterns = "/cars")
-public class CarsServlet extends HttpServlet {
+/**
+ * CarsServlet extends an abstract Servlet suitable for a Web-site.
+ * A subclass of <code>HttpServlet</code> must override four methods:
+ * <ul>
+ * <li> <code>doGet</code>, for HTTP GET requests
+ * <li> <code>doPost</code>, for HTTP POST requests
+ * <li> <code>doPut</code>, if the servlet supports HTTP PUT requests
+ * <li> <code>doDelete</code>, if the servlet supports HTTP DELETE requests
+ * </ul>
+ *
+ */
+public class CarsServlet extends Servlet {
     private static final Logger log = Logger.getLogger(CarsServlet.class);
     private static final CarMapper CAR_MAPPER = new CarMapper();
     private static final CarService carService = new CarService();
     private final List<Car> cars = carService.getAll("id BETWEEN 219 AND 235");
 
-
+    /**
+     * <p>If the HTTP GET request is correctly formatted,
+     * <code>doGet</code>, fetches cars from the database for index page</p>
+     *
+     * <p>Cars list for index page: get list</p>
+     * A Page Request object by passing in the requested page number and the page limit.
+     * {@code Map<String, String> params} is a map of parameters to the sorting and paging
+     *
+     * @param request  an {@link HttpServletRequest} object that
+     *                 contains the request the client has made of the servlet
+     * @param response an {@link HttpServletResponse} object that
+     *                 contains the response the servlet sends to the client
+     *                 {@code List<Cars>}, if a value is present, otherwise {@code empty List<Cars>}.
+     * @throws IOException      if an input or output error is
+     *                          detected when the servlet handles the request
+     * @throws ServletException if the request for the POST
+     *                          could not be handled
+     */
     @Override
     protected void doGet(
             HttpServletRequest request,
@@ -39,7 +63,6 @@ public class CarsServlet extends HttpServlet {
         Collections.shuffle(cars);
         request.setAttribute("cars", cars);
         dispatch(request, response, INDEX);
-
     }
 
     @Override
@@ -52,11 +75,14 @@ public class CarsServlet extends HttpServlet {
 
         if (session != null) {
             User user = (User) session.getAttribute("user");
-            if (Objects.equals(user.getRole(), "admin")) {
+            if (Objects.equals(user.getRole(), Role.ADMIN.role())) {
                 Car carRow = CAR_MAPPER.carMapper(request);
-                String id = (request.getParameter("id"));
+                String parameterId = request.getParameter("id");
 
-                Optional<Car> optionalCar = carService.getById(Long.parseLong(id));
+                long id = parameterId != null ? Long.parseLong(parameterId) : 0;
+
+                Optional<Car> optionalCar = carService.getById(id);
+
                 if (optionalCar.isPresent()) {
                     Car car = optionalCar.get();
                     if (car.getId() == carRow.getId()) {
@@ -65,7 +91,7 @@ public class CarsServlet extends HttpServlet {
                         update.setPath(car.getPath());
                         request.setAttribute("auto", update);
                     }
-                    log.info(String.format("Car#%s mapRow: %s%n %s", id, carRow, optionalCar));
+                    log.info(String.format("Car#%d mapRow: %s%n %s", id, carRow, optionalCar));
                 }
             }
             session.setAttribute("user", user);
@@ -80,7 +106,7 @@ public class CarsServlet extends HttpServlet {
     protected void doPut(
             HttpServletRequest request,
             HttpServletResponse response)
-            throws ServletException, IOException {
+            throws IOException {
 
         String path;
         User user = getUser(request.getSession(false));
@@ -110,18 +136,17 @@ public class CarsServlet extends HttpServlet {
     @Override
     protected void doDelete(
             HttpServletRequest request,
-            HttpServletResponse response) throws ServletException, IOException {
+            HttpServletResponse response) throws IOException {
         String id = (request.getParameter("id"));
         HttpSession session = request.getSession(false);
         if (session != null) {
             User user = (User) session.getAttribute("user");
-            if (user.getRole().equals("admin")) {
+            if (Objects.equals(user.getRole(), Role.ADMIN.role())) {
                 long carId = Long.parseLong(id);
                 Optional<Car> optionalCar = carService.getById(carId);
                 if (optionalCar.isPresent()) {
                     boolean delete = carService.delete(carId);
                     List<Car> userCars = user.getCars();
-                    //TODO DELETE vs UPDATE
                     userCars.remove(optionalCar.get());
                     user.setCars(userCars);
                     request.setAttribute("user", user);
@@ -133,20 +158,5 @@ public class CarsServlet extends HttpServlet {
             }
         }
         response.sendRedirect("/cars");
-    }
-
-    void dispatch(
-            HttpServletRequest request,
-            HttpServletResponse response, String path) {
-
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.setContentType("text/html;charset=utf-8");
-        try {
-            RequestDispatcher dispatcher = getServletContext()
-                    .getRequestDispatcher(path);
-            dispatcher.include(request, response);
-        } catch (Exception e) {
-            throw new DataException(e.getMessage());
-        }
     }
 }

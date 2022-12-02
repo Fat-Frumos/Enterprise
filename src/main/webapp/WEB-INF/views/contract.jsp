@@ -83,7 +83,7 @@
             <tbody>
             <c:forEach items="${orders}" var="order">
                 <tr class="firstRow">
-                    <form action="/register" method="post">
+                    <form action="<c:url value="/register"/>" method="post">
                         <td><input style="width: 60px" value="${order.userId}" name="userId"></td>
                         <td><input style="width: 90px" value="${order.orderId}" name="orderId"></td>
                         <td><input style="width: 80px" value="${order.carId}" name="carId"></td>
@@ -144,14 +144,14 @@
                             </button>
                         </td>
                         <td style="text-align: center">
-                            <button
+                            <div
                                     name="invoice"
                                     value=""
                                     class="btn btn-outline-warning"
-                                    onclick="addInvoice(`${order.orderId}`, `${order.userId}`, `${order.carId}`, `${order.damage}`, `${order.payment}`)"
+                                    onclick="addInvoice(`${order.orderId}`, `${order.userId}`, `${order.carId}`, `${order.damage}`, `${order.payment}`, `${order.reason}`, `${order.passport}`, `${order.phone}`)"
                             >
                                 <i class="fa fa-credit-card"></i>
-                            </button>
+                            </div>
                         </td>
                         <td style="text-align: center">
                             <button
@@ -211,14 +211,14 @@
 <script>
     document.querySelectorAll(".true").forEach(element => element.checked = true)
 
-    function addInvoice(orderId, userId, carId, damage, payment) {
-        let url = '/order' + '?orderId=' + orderId + '?userId=' + userId + '?carId=' + carId + '?damage=' + damage + '?payment=' + payment;
+    function addInvoice(orderId, userId, carId, damage, payment, reason, passport, phone) {
+        let url = '/order' + '?userId=' + userId + '&carId=' + carId + '&damage=' + damage + '&payment=' + payment + '&reason=' + reason + '&passport=' + passport + '&phone=' + phone;
         console.log(url);
         fetch(url, {
             method: 'PUT',
         }).then(response => {
-            console.log('Ok:', response);
             window.location.href = url;
+            console.log('Ok:', response);
         }).catch(err => {
             console.error(err)
         })

@@ -79,6 +79,7 @@ class CarServiceTest {
         boolean save = carService.save(X7);
         assertTrue(save);
         verify(mockDao).save(X7);
+        when(carService.getAll()).thenReturn(cars);
     }
 
     @Test

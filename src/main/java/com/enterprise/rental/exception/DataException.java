@@ -33,4 +33,10 @@ public class DataException extends RuntimeException {
         String format = String.format("%s%s", message, exception.getMessage());
         log.error(format);
     }
+
+    public DataException(Exception exception) {
+        super(exception.getMessage());
+        log.error(String.format("%s", exception.getMessage()));
+
+    }
 }

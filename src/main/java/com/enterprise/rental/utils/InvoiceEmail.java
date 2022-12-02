@@ -8,10 +8,8 @@ import org.apache.log4j.Logger;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
-import static com.enterprise.rental.utils.Mail.sendEmailWithAttachments;
-
-public class Invoice {
-    private static final Logger log = Logger.getLogger(Invoice.class);
+public class InvoiceEmail {
+    private static final Logger log = Logger.getLogger(InvoiceEmail.class);
     public static final String DEST = "/letter.pdf";
 
     public static void createPdf() {

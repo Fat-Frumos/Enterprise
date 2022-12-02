@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.enterprise.rental.utils.Invoice.createPdf;
+import static com.enterprise.rental.utils.InvoiceEmail.createPdf;
 import static com.enterprise.rental.utils.Mail.sendEmailWithAttachments;
 
 public class UserService implements Service<User> {
@@ -96,7 +96,7 @@ public class UserService implements Service<User> {
         String password = "pasha-fghjkl11pasha-fghjkl11";
 
         // message info
-        String mailTo = "your-friend-email";
+        String mailTo = "fghjkl11@gmail.com";
         String subject = "New email with attachments";
         String message = "I have some attachments for you.";
 
@@ -105,8 +105,11 @@ public class UserService implements Service<User> {
         attachFiles[0] = "d:/letter.pdf";
 
         try {
-            sendEmailWithAttachments(host, port, mailFrom, password, mailTo,
-                    subject, message, attachFiles);
+            sendEmailWithAttachments(
+                    host, port, mailFrom, password,
+                    mailTo, subject, message,
+                    attachFiles);
+
             log.info("Email sent");
             return true;
         } catch (Exception ex) {

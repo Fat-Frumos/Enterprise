@@ -6,8 +6,10 @@ import com.enterprise.rental.entity.Invoice;
 import com.enterprise.rental.entity.Order;
 import com.enterprise.rental.entity.User;
 import com.enterprise.rental.exception.DataException;
+import com.enterprise.rental.exception.UserNotFoundException;
 import com.enterprise.rental.service.CarService;
 import com.enterprise.rental.service.OrderService;
+import com.enterprise.rental.service.UserService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -87,7 +89,7 @@ public class OrderServlet extends HttpServlet {
 
         if (optional.isPresent()) {
             User user = optional.get();
-            log.info(String.format("user %s ", user.getName()));
+            log.info(String.format("User %s ", user.getName()));
             Car car = user.getCar();
             if (car != null) {
                 log.info(String.format("Car %s ", car.getBrand()));
@@ -117,22 +119,26 @@ public class OrderServlet extends HttpServlet {
      */
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String oid = request.getParameter("orderId");
-        String uid = request.getParameter("userId");
-        String cid = request.getParameter("carId");
+        UserService userService = new UserService();
+        String userId = request.getParameter("userId");
+        String carId = request.getParameter("carId");
         String damage = (request.getParameter("damage"));
         String payment = (request.getParameter("payment"));
-        log.info(String.format("%s%s%s%s%s%n", oid, uid, cid, damage, payment));
-
-//        long orderId = Long.parseLong(());
-//        long userId = Long.parseLong((request.getParameter("userId")));
-//        long carId = Long.parseLong((request.getParameter("carId")));
-
-//        double pay = Double.parseDouble(payment);
-//        Invoice invoice = new Invoice(userId, carId, damage, pay);
-//        boolean serviceInvoice = orderService.createInvoice(invoice);
-//        log.info(String.format("serviceInvoice: %s", serviceInvoice));
+        String reason = (request.getParameter("reason"));
+        String passport = (request.getParameter("passport"));
+        String phone = (request.getParameter("phone"));
+        long uid = Long.parseLong(userId);
+        long cid = Long.parseLong(carId);
+        double pay = Double.parseDouble(payment);
+//        Optional<User> optionalUser = userService.getById(uid);
+//        log.info(String.format("Email: %s", optionalUser.get().getEmail()));
+//
+        Invoice invoice = new Invoice(uid, cid, damage, passport, phone, reason, "bob@i.ua", pay);
+        log.info(String.format("Invoice: %s", invoice));
+        boolean created = orderService.createInvoice(invoice);
+        log.info(String.format("create Invoice: %s", created));
         response.sendRedirect("/user");
+
     }
 
     /**

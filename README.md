@@ -33,36 +33,41 @@ The system administrator has the rights:
 + adding (upload), 
 +deleting cars, 
 + editing car information;
-[//]: # label.jsp (<form action="/cars" method="post">)
+# (<form action="/cars" method="post">)
 
 ====user====
 + blocking / unblocking- the user;
 + registration of managers in the system (role).
 
 ===============================
-####INFO: FATAL: invoice put
-####INFO: FATAL: locale pages UA (title)
+#####TODO: java doc Servlet, StaticServlet
+####TODO FATAL: order to Dto invoice email
+####INFO: FATAL: forgot email html(pdf)
+####INFO: FATAL: private static final List<Car> carList = carService.getAll("price>=100 ORDER BY cost LIMIT 10 OFFSET 0");
 ####INFO: FATAL: new dynamic price + cost
 ####INFO: FATAL: hash salt
 ####INFO: FATAL: admin filter
 ####INFO: FATAL: role enum
-+ Destination 'src\main\webapp\WEB-INF\classes\templates\slider-007.png' already exists
+####INFO: //TODO DELETE vs UPDATE
+####INFO: //TODO 2. A spy is stubbed using when(spy.foo()).then() syntax. It is safer to stub spies -
+####INFO: with doReturn|Throw() family of methods. More in javadocs for Mockito.spy() method.
+####INFO:+ Destination 'src\main\webapp\WEB-INF\classes\templates\slider-007.png' already exists
 ####INFO: FATAL: cars update and delete Set
-redirect to http://localhost:8080/upload?slider-007.png
-####INFO: FATAL: upload img path
+####INFO: redirect to http://localhost:8080/upload?slider-007.png
 ####INFO: FATAL: add car http://localhost:8080/order
-####INFO: FATAL: add car to image upload
 #####TODO FATAL: userDto-enum
 #####TODO FATAL: validate submit order failed
 #####TODO: Auto-generated delete method
 #####TODO: FATAL: Car edit delete
 ####INFO: FATAL: auth order/user authentication
-####INFO: FATAL: forgot email html(pdf)
+
 ####INFO: FATAL: JdbcCarTemplate:58 SELECT id, name, brand, model, path, price, cost, year FROM car LIMIT 80;
-####INFO: TEST SERVLET: http://localhost:8080/register?orderId=48384729&userId=16492&carId=87&passport=AA+123+456+789&term=2022-11-10+00%3A00%3A00.0&damage=Act+of+Nature&rejected=on&closed=on
+####INFO: TEST SERVLET: http://localhost:8080/
+register?orderId=48384729&userId=16492&carId=87&passport=AA+123+456+789&term=2022-11-10+00%3A00%3A00.0&damage=Act+of+Nature&rejected=on&closed=on
 
 web: java $JAVA_OPTS -jar target/webapp-runner.jar --port $PORT target/*.war
-
+//        String query = request.getQueryString().split("?");
+//        log.info(String.format("query: %s%n", query));
 //upload img
 #####TODO: @One to Many
 
@@ -117,10 +122,8 @@ throw new CarException
 #####TODO: User frontend in cart storage
 #####TODO: Click only image. Btn +/-
 #####TODO: cars list randomize? input
-#####TODO: listener
 #####TODO: request scope
 #####TODO: Token /session
-#####TODO: web.xml file
 
 #####TODO: PRG redirect
 #####TODO boolean validateUser = userService.validateUser(name, password, user);

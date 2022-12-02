@@ -21,11 +21,8 @@ class OrderMapperTest {
         Timestamp now = new Timestamp(System.currentTimeMillis());
         String create = String.valueOf(now);
 
-        String t = resultSet.getString("term");
-        Timestamp term = t
-                == null
-                ? now
-                : Timestamp.valueOf(t);
+        String term = resultSet.getString("term");
+
 
         when(resultSet.getLong("order_id")).thenReturn(1L);
         when(resultSet.getLong("user_id")).thenReturn(11L);
@@ -37,7 +34,7 @@ class OrderMapperTest {
         when(resultSet.getString("phone")).thenReturn("1234565789123");
         when(resultSet.getString("damage")).thenReturn("Scratches");
         when(resultSet.getString("passport")).thenReturn("AA 123456789");
-        when(resultSet.getString("term")).thenReturn(t);
+        when(resultSet.getString("term")).thenReturn(term);
         when(resultSet.getString("created")).thenReturn(create);
 
         Order order = mapper.mapRow(resultSet);
@@ -47,7 +44,7 @@ class OrderMapperTest {
         assertEquals(111l, order.getCarId());
         assertEquals(1500.0, order.getPayment());
         assertEquals(now, order.getCreated());
-//        assertEquals(term, order.getTerm());
+        assertEquals(term, order.getTerm());
         assertFalse(order.isRejected());
         assertEquals("1234565789123", order.getPhone());
         assertEquals("Scratches", order.getDamage());

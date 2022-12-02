@@ -38,7 +38,7 @@ public class UserFilter implements Filter {
         if (session != null) {
             User user = (User) session.getAttribute("user");
             if (user != null) {
-                log.info(String.format("User filter Access is granted for %s", user));
+                log.info(String.format("User Level#3: Access is granted for %s, role %s", user.getName(), user.getRole()));
                 if (user.getRole().equals("user")
                         || user.getRole().equals("manager")
                         || user.getRole().equals("admin")) {

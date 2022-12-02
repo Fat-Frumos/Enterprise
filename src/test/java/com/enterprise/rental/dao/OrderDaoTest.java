@@ -23,10 +23,16 @@ class OrderDaoTest {
     private OrderService service;
 
     @Test
-    void testAddOrder_returnsNewOrder() {
+    void testAddOrderAndReturnsNewOrder() {
         Order order = new Order();
         assertThat(service.createOrder(order), is(notNullValue()));
         verify(daoMock).save(order);
+    }
+    @Test
+    void testUpdateOrderAndReturnsNewOrder() {
+        Order order = new Order();
+        assertThat(service.updateOrder(order), is(order));
+        verify(daoMock).edit(order);
     }
 
 }

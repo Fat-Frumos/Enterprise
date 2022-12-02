@@ -75,17 +75,16 @@ class UserTest {
 
     @Test
     public void testFindAllReturnCorrectData() {
-        JdbcUserDao jdbcUserDao = new JdbcUserDao();
-        List<User> users = jdbcUserDao.findAll();
+        when(mockUserDao.findAll()).thenReturn(users);
         assertFalse(users.isEmpty());
 
         for (User user : users) {
             assertNotEquals(0, user.getUserId());
             assertNotNull(user.getPassword());
-            assertNotNull(user.getName());
             assertNotNull(user.getEmail());
-            //TODO
+            assertNotNull(user.getName());
 //            assertNotNull(user.getSalt());
+            //TODO
         }
     }
 
@@ -104,9 +103,7 @@ class UserTest {
         List<User> users = mockUserDao.findAll(name);
         when(mockUserDao.findAll(name)).thenReturn(List.of(bob));
         assertEquals(users.size(), service.getAll().size());
-
     }
-
 
     @Test
     @DisplayName(value = "Test get All Users")

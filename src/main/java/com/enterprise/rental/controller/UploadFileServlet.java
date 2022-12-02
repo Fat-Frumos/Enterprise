@@ -30,7 +30,6 @@ import java.util.stream.IntStream;
         maxFileSize = 1024 * 1024 * 5,      // 5 MB
         maxRequestSize = 1024 * 1024 * 10   // 10 MB
 )
-@WebServlet("/upload")
 public class UploadFileServlet extends HttpServlet {
     private static final Logger log = Logger.getLogger(UploadFileServlet.class);
     private static final CarService carService = new CarService();

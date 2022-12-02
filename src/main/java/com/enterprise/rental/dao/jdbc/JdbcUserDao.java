@@ -32,7 +32,7 @@ public class JdbcUserDao implements UserDao {
             String sql = String.format("%s'%s'",
                     FILTER_BY_NAME_SQL, name);
             Optional<User> user = getUserSql(sql);
-            log.info(sql + " " + user);
+            log.info(String.format("%s %s", sql, user));
             return user;
         }
         return Optional.empty();

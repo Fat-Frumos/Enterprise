@@ -145,8 +145,7 @@ class UserServiceTest {
 //        when(userService.sendEmail(jack.getName())).thenReturn(true);
 //        boolean sendEmail = userService.sendEmail(jack.getName());
 //        assertTrue(sendEmail);
-        //TODO 2. A spy is stubbed using when(spy.foo()).then() syntax. It is safer to stub spies -
-        //   - with doReturn|Throw() family of methods. More in javadocs for Mockito.spy() method.
+
     }
 
     @Test

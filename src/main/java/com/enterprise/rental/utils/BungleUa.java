@@ -23,7 +23,7 @@ public class BungleUa extends ListResourceBundle {
             {"title.login", "Логін"},
             {"title.cars", "Автівки"},
             {"title.User", "Користувач"},
-            {"title.orders", "Замовленя"},
+            {"title.orders", "Замовлення"},
             {"title.main", "Основна"},
 //login
             {"h3.sign", "Зайти"},
@@ -43,7 +43,7 @@ public class BungleUa extends ListResourceBundle {
 //nav
             {"a.cars", "Авто"},
             {"a.cards", "Кошик"},
-            {"a.cabinet", "Замовленя"},
+            {"a.cabinet", "Замовлення"},
 //main
             {"label.brand", "Бренд"},
             {"label.price", "Ціна"},

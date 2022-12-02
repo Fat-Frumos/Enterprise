@@ -7,9 +7,8 @@ import com.enterprise.rental.service.CarService;
 import com.enterprise.rental.service.UserService;
 import org.apache.log4j.Logger;
 
-import javax.servlet.*;
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -23,24 +22,22 @@ import static com.enterprise.rental.dao.jdbc.Constants.*;
 
 /**
  * Cart Servlet extends an HTTP servlet suitable for a Web-site.
- *
- * A subclass of <code>HttpServlet</code> must override two methods:
+ * A subclass of <code>HttpServlet</code> must override four methods:
  * <ul>
- * <li> <code>doGet</code>, if the servlet supports HTTP GET requests
+ * <li> <code>doGet</code>, for HTTP GET requests
  * <li> <code>doPost</code>, for HTTP POST requests
- * <li> <code>doPut</code>, for HTTP PUT requests
- * <li> <code>doDelete</code>, for HTTP DELETE requests
- * <li> <code>getSessionUser</code>, to get Attribute User from Session</p>
- *</ul>
+ * <li> <code>doPut</code>, if the servlet supports HTTP PUT requests
+ * <li> <code>doDelete</code>, if the servlet supports HTTP DELETE requests
+ *
+ * <li> <code>getSessionUser</code>, to get Attribute User from Session
+ * </ul>
  *
  * @author Pasha Pollack
  */
 @WebServlet(urlPatterns = "/cart")
-public class CartServlet extends HttpServlet {
+public class CartServlet extends Servlet {
     private final CarService carService = new CarService();
     private final UserService userService = new UserService();
-
-
     private static final Logger log = Logger.getLogger(CartServlet.class);
 
     /**
@@ -51,16 +48,15 @@ public class CartServlet extends HttpServlet {
      * Returns {@code Optional<User>} instance.
      *
      * <p>Cars bucket for user: get list and set Attribute User from Session</p>
+     * {@code Optional<User>}, if a value is present, otherwise {@code Optional.empty()}.
      *
      * @param request  an {@link HttpServletRequest} object that
      *                 contains the request the client has made of the servlet
      * @param response an {@link HttpServletResponse} object that
      *                 contains the response the servlet sends to the client
-     * @return {@code Optional<User>}, if a value is present,
-     * otherwise {@code Optional.empty()}.
      * @throws IOException      if an input or output error is
      *                          detected when the servlet handles the request
-     * @throws ServletException if the request for the POST
+     * @throws ServletException if the request for the GET
      *                          could not be handled
      */
     @Override
@@ -133,7 +129,6 @@ public class CartServlet extends HttpServlet {
             }
         }
         response.sendRedirect(path);
-//        dispatch(request, response, path);
     }
 
     /**
@@ -146,13 +141,12 @@ public class CartServlet extends HttpServlet {
      *
      * <p>Put new car to bucket for user:
      * get list and set Attribute User from Session</p>
+     * {@code Optional<Car>}, if a value is present, otherwise {@code Optional.empty()}.
      *
      * @param request  an {@link HttpServletRequest} object that
      *                 contains the request the client has made of the servlet
      * @param response an {@link HttpServletResponse} object that
      *                 contains the response the servlet sends to the client
-     * @return {@code Optional<Car>}, if a value is present,
-     * otherwise {@code Optional.empty()}.
      * @throws IOException      if an input or output error is
      *                          detected when the servlet handles the request
      * @throws ServletException if the request for the PUT
@@ -163,7 +157,7 @@ public class CartServlet extends HttpServlet {
             HttpServletRequest request,
             HttpServletResponse response) throws
             ServletException, IOException {
-
+        String path = LOGIN;
         Optional<User> optionalUser = getSessionUser(request);
 
         if (optionalUser.isPresent()) {
@@ -182,15 +176,20 @@ public class CartServlet extends HttpServlet {
                     request.setAttribute("user", user);
                     log.info(String.format("Put new Car %s into the Cart: %s",
                             car.getBrand(), user.getCars().size()));
-                    response.sendRedirect("/cart");
+                    path = "/cart";
+//                    response.sendRedirect("/cart");
+
                 }
             } catch (NumberFormatException e) {
                 log.info("Car by id not found");
                 request.setAttribute("errorMessage", "Car not found");
-                response.sendRedirect(ORDERS);
+                path = ORDERS;
+//                response.sendRedirect(ORDERS);
+            } finally {
+                response.sendRedirect(path);
             }
         }
-        dispatch(request, response, "/login");
+//        dispatch(request, response, "/login");
     }
 
     /**
@@ -203,20 +202,17 @@ public class CartServlet extends HttpServlet {
      * <code>doDelete</code> returns an HTTP "Bad Request"
      * message.
      *
-     * @param request   the {@link HttpServletRequest} object that
-     *                  contains the request the client made of
-     *                  the servlet
-     *
-     * @param response  the {@link HttpServletResponse} object that
-     *                  contains the response the servlet returns
-     *                  to the client
-     *
-     * @throws IOException   if an input or output error occurs
-     *                              while the servlet is handling the
-     *                              DELETE request
-     *
-     * @throws ServletException  if the request for the
-     *                                  DELETE cannot be handled
+     * @param request  the {@link HttpServletRequest} object that
+     *                 contains the request the client made of
+     *                 the servlet
+     * @param response the {@link HttpServletResponse} object that
+     *                 contains the response the servlet returns
+     *                 to the client
+     * @throws IOException      if an input or output error occurs
+     *                          while the servlet is handling the
+     *                          DELETE request
+     * @throws ServletException if the request for the
+     *                          DELETE cannot be handled
      */
     @Override
     protected void doDelete(
@@ -228,11 +224,10 @@ public class CartServlet extends HttpServlet {
 //        return userCars.isEmpty() ? CARS : checkCard(userCars);
 //        user.getCars().remove(id);
 //    }
-
     }
 
     /**
-     * Returns {@code Optional<User>} instance.
+     * Get User instance {@code Optional<User>} from session
      *
      * @param request an {@link HttpServletRequest} object that
      *                contains the request the client has made
@@ -248,65 +243,5 @@ public class CartServlet extends HttpServlet {
                 && session.getAttribute("user") != null
                 ? Optional.of((User) session.getAttribute("user"))
                 : Optional.empty();
-    }
-
-
-    /**
-     * Defines an object that receives requests from the client
-     * and sends them to any resource
-
-     * <p>The servlet container creates the <code>RequestDispatcher</code> object,
-     * which is used as a wrapper around a server resource located
-     * at a particular path or given by a particular name.
-     *
-     * <p>This interface is intended to wrap servlets,
-     * but a servlet container can create <code>RequestDispatcher</code>
-     * objects to wrap any type of resource.
-     *
-     * Includes the content of a resource (servlet, JSP page,
-     * HTML file) in the response. In essence, this method enables
-     * programmatic server-side includes.
-     *
-     * <p>The {@link ServletResponse} object has its path elements
-     * and parameters remain unchanged from the caller's. The included
-     * servlet cannot change the response status code or set headers;
-     * any attempt to make a change is ignored.
-     *
-     * <p>The request and response parameters must be either the same
-     * objects as were passed to the calling servlet's service method or be
-     * subclasses of the {@link ServletRequestWrapper} or {@link ServletResponseWrapper} classes
-     * that wrap them.
-     *
-     * @param request   the {@link HttpServletRequest} object that
-     *                  contains the request the client made of
-     *                  the servlet
-     *
-     * @param response  the {@link HttpServletResponse} object that
-     *                  contains the response the servlet returns
-     *                  to the client
-     *
-     * @param path  the String that contains the response the servlet returns
-     *                  to the client
-
-     *
-     * @throws IOException   if an input or output error occurs
-     *                              while the servlet is handling the
-     *                              DELETE request
-     *
-     * @throws ServletException  if the request for the
-     *                                  DELETE cannot be handled
-     *
-     */
-    private void dispatch(
-            HttpServletRequest request,
-            HttpServletResponse response, String path)
-            throws IOException, ServletException {
-
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.setContentType("text/html;charset=utf-8");
-
-        RequestDispatcher dispatcher = getServletContext()
-                .getRequestDispatcher(path);
-        dispatcher.include(request, response);
     }
 }

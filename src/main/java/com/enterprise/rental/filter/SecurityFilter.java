@@ -35,7 +35,7 @@ public class SecurityFilter implements Filter {
         if (session != null) {
             User user = (User) session.getAttribute("user");
             if (user != null) {
-                log.info(String.format("Access is granted for %s", user));
+                log.info(String.format("Manager Level#2: Access is granted for %s, role %s", user.getName(), user.getRole()));
                 if (user.getRole().equals("admin") || user.getRole().equals("manager")) {
                     request.setAttribute("user", user);
                     chain.doFilter(servletRequest, servletResponse);

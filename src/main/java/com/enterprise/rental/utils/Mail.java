@@ -11,7 +11,22 @@ import java.util.Properties;
 public class Mail {
 
     /**
-     * Assuming you are sending email through rental.enterprise.com
+     * <p>Assuming you are sending email through rental.enterprise.com to user email
+     * Sets SMTP server properties.
+     * Creates a new session with an authenticator,
+     * a new e-mail message, a message with attachments
+     * sets the part as e-mail's content and sends the e-mail
+     *
+     * @param host        smtp mail gmail property
+     * @param port        smtp mail property
+     * @param userName    of the user who is sending the email
+     * @param password    of the user who is sending the email
+     * @param toAddress   e-mail of the registered User
+     * @param subject     new email with attachments
+     * @param message     to the user in a new email
+     * @param attachFiles array of Attached files in pdf format
+     * @throws AddressException   The exception thrown when a wrongly formatted address is encountered
+     * @throws MessagingException The base class for all exceptions thrown by the Messaging classes
      */
     public static void sendEmailWithAttachments(
             String host, String port,

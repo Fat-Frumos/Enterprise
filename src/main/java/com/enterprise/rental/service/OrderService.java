@@ -55,8 +55,6 @@ public class OrderService {
     }
 
     public boolean createInvoice(Invoice invoice) {
-        //TODO
-//        return orderDao.save(invoice);
-        return false;
+        return orderDao.save(invoice);
     }
 }

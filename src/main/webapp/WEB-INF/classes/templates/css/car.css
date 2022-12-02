@@ -2,6 +2,7 @@ figure {
     /*border-radius: 10px;*/
     /*overflow: hidden;*/
     max-width: 800px;
+    z-index: -1;
 }
 
 .modal-content:hover {
@@ -42,7 +43,7 @@ img {
 #main:hover, div.cart-image.fw-900 > figure > img:hover {
     /*border-radius: 10px;*/
     cursor: pointer;
-    transform: perspective(500px) scale(1.2) translateY(-5px);
+    transform: perspective(500px) scale(1.25) translateY(-5px);
 
     /*width: 1000px;*/
     z-index: -1;

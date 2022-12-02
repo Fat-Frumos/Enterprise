@@ -1,17 +1,17 @@
 package com.enterprise.rental.utils;
 
-import org.apache.log4j.PropertyConfigurator;
+import com.enterprise.rental.filter.UserFilter;
+import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
-import java.util.logging.Logger;
 
 @WebListener
 public class Listener implements ServletContextListener {
-
+    private static final Logger log = Logger.getLogger(Listener.class);
     public Listener() {
 
     }
@@ -22,9 +22,9 @@ public class Listener implements ServletContextListener {
 
         ServletContext servletContext = sce.getServletContext();
         String webAppPath = servletContext.getRealPath("/");
-        String log4jFilePath = webAppPath + "WEB-INF/classes/log4j.xml";
+        String log4jFilePath = String.format("%sWEB-INF/classes/log4j.xml", webAppPath);
         DOMConfigurator.configure(log4jFilePath);
-        System.out.println("initialized log4j configuration from file:"+log4jFilePath);
+        log.info(String.format("Initialized log4j configuration from file:%s%n", log4jFilePath));
 
     }
 

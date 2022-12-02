@@ -1,44 +1,36 @@
 package com.enterprise.rental.entity;
 
-import java.util.Objects;
+import java.io.Serializable;
 import java.util.UUID;
 
-public class Invoice {
+public class Invoice implements Serializable {
     private final long invoiceId = UUID.randomUUID().getMostSignificantBits() & 0x7fffffL;
     private final long userId;
     private final long carId;
     private final String damage;
+    private final String passport;
+    private final String phone;
     private final double payment;
+    private final String reason;
+    private final String email;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Invoice invoice = (Invoice) o;
-        return invoiceId == invoice.invoiceId && userId == invoice.userId && carId == invoice.carId && Double.compare(invoice.payment, payment) == 0 && Objects.equals(damage, invoice.damage);
-    }
-
-    public Invoice(long userId, long carId, String damage, double payment) {
+    public Invoice(long userId, long carId, String damage, String passport, String phone, String reason, String email, double payment) {
         this.userId = userId;
         this.carId = carId;
         this.damage = damage;
+        this.passport = passport;
+        this.phone = phone;
         this.payment = payment;
+        this.reason = reason;
+        this.email = email;
     }
 
-    @Override
-    public String toString() {
-        return "Invoice{" +
-                "invoiceId=" + invoiceId +
-                ", userId=" + userId +
-                ", carId=" + carId +
-                ", damage='" + damage + '\'' +
-                ", payment=" + payment +
-                '}';
+    public String getReason() {
+        return reason;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(invoiceId, userId, carId, damage, payment);
+    public String getEmail() {
+        return email;
     }
 
     public long getInvoiceId() {
@@ -55,6 +47,14 @@ public class Invoice {
 
     public String getDamage() {
         return damage;
+    }
+
+    public String getPassport() {
+        return passport;
+    }
+
+    public String getPhone() {
+        return phone;
     }
 
     public double getPayment() {
