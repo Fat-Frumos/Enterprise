@@ -19,14 +19,12 @@ public class CarService implements Service<Car> {
         this.carDao = new JdbcCarDao();
     }
 
-
     public Integer getNumberOfRows() {
         Integer numOfRows;
         String sql = "SELECT COUNT(id) FROM car";
         numOfRows = carDao.countId(sql);
         return numOfRows;
     }
-
 
     @Override
     public boolean save(Car car) {

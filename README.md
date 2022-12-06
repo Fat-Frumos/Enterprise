@@ -40,7 +40,11 @@ The system administrator has the rights:
 + registration of managers in the system (role).
 
 ===============================
-#####TODO: java doc Servlet, StaticServlet
+####INFO: FATAL: user try jdbc
+####TODO: Transaction isolation (read committed) setAutoCommit false, config file
+####TODO: Duration
+####TODO FATAL: delete from card
+#####TODO: java doc Servlet, StaticServlet, CarsServlet, CartServlet, ..., Dao, UserDao
 ####TODO FATAL: order to Dto invoice email
 ####INFO: FATAL: forgot email html(pdf)
 ####INFO: FATAL: private static final List<Car> carList = carService.getAll("price>=100 ORDER BY cost LIMIT 10 OFFSET 0");
@@ -66,8 +70,6 @@ The system administrator has the rights:
 register?orderId=48384729&userId=16492&carId=87&passport=AA+123+456+789&term=2022-11-10+00%3A00%3A00.0&damage=Act+of+Nature&rejected=on&closed=on
 
 web: java $JAVA_OPTS -jar target/webapp-runner.jar --port $PORT target/*.war
-//        String query = request.getQueryString().split("?");
-//        log.info(String.format("query: %s%n", query));
 //upload img
 #####TODO: @One to Many
 
@@ -81,10 +83,8 @@ context xml screen
 
 // TODO admin option  - > user.setRole()
 // String sql = String.format("DELETE FROM car where car_id = ?", id);
-service: log. err(msg, cause)
-connection rollback
-throw new CarException
 
+throw new CarException
 ####INFO: FATAL: admin option
 
 ####INFO: FATAL: tag file/ internationalization
@@ -134,7 +134,6 @@ throw new CarException
 #####TODO: itext
 conf\server.xml
 - listener.xml
-
 
 * Client sends Http Request to Web Server
 * Code in Web Server => Input:HttpRequest, Output: HttpResponse JEE with Servlets

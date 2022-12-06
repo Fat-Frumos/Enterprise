@@ -6,7 +6,6 @@ import java.sql.SQLException;
 
 public class UserNotFoundException extends RuntimeException {
     private static final Logger log = Logger.getLogger(UserNotFoundException.class);
-
     public UserNotFoundException(String message) {
         super(message);
         log.error(message);

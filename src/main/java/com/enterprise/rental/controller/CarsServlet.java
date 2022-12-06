@@ -20,8 +20,8 @@ import java.util.Optional;
 import static com.enterprise.rental.dao.jdbc.Constants.*;
 
 /**
- * CarsServlet extends an abstract Servlet suitable for a Web-site.
- * A subclass of <code>HttpServlet</code> must override four methods:
+ * <p>CarsServlet extends an abstract Servlet suitable for a Web-site.
+ * <p>A subclass of <code>HttpServlet</code> must override four methods:
  * <ul>
  * <li> <code>doGet</code>, for HTTP GET requests
  * <li> <code>doPost</code>, for HTTP POST requests
@@ -29,6 +29,7 @@ import static com.enterprise.rental.dao.jdbc.Constants.*;
  * <li> <code>doDelete</code>, if the servlet supports HTTP DELETE requests
  * </ul>
  *
+ * @author Pasha Pollack
  */
 public class CarsServlet extends Servlet {
     private static final Logger log = Logger.getLogger(CarsServlet.class);
@@ -39,10 +40,10 @@ public class CarsServlet extends Servlet {
     /**
      * <p>If the HTTP GET request is correctly formatted,
      * <code>doGet</code>, fetches cars from the database for index page</p>
-     *
-     * <p>Cars list for index page: get list</p>
+     * <p>
+     * Cars list for index page: get list
      * A Page Request object by passing in the requested page number and the page limit.
-     * {@code Map<String, String> params} is a map of parameters to the sorting and paging
+     * {@code Map<String, String> params} is a map of parameters to the sorting and pagination
      *
      * @param request  an {@link HttpServletRequest} object that
      *                 contains the request the client has made of the servlet
@@ -65,6 +66,20 @@ public class CarsServlet extends Servlet {
         dispatch(request, response, INDEX);
     }
 
+    /**
+     * <p>If the HTTP POST request is correctly formatted,
+     * <code>doPost</code>, admin updates vehicle date to database
+     * <p>If User not registered redirect to Login page, otherwise redirect to Main page
+     *
+     * @param request  an {@link HttpServletRequest} object that
+     *                 contains the request the client has made of the servlet
+     * @param response an {@link HttpServletResponse} object that
+     *                 contains the response the servlet sends to the client
+     * @throws IOException      if an input or output error is
+     *                          detected when the servlet handles the request
+     * @throws ServletException if the request for the POST
+     *                          could not be handled
+     */
     @Override
     protected void doPost(
             HttpServletRequest request,
@@ -87,11 +102,11 @@ public class CarsServlet extends Servlet {
                     Car car = optionalCar.get();
                     if (car.getId() == carRow.getId()) {
                         Car update = carService.edit(carRow);
-                        log.info(String.format("Updated: %s", update));
+                        log.debug(String.format("Updated: %s", update));
                         update.setPath(car.getPath());
                         request.setAttribute("auto", update);
                     }
-                    log.info(String.format("Car#%d mapRow: %s%n %s", id, carRow, optionalCar));
+                    log.debug(String.format("%sCar#%d mapRow: %s%n %s", PURPLE, id, carRow, optionalCar));
                 }
             }
             session.setAttribute("user", user);
@@ -99,8 +114,18 @@ public class CarsServlet extends Servlet {
         dispatch(request, response, MAIN);
     }
 
-    /***
-     * Save new car in DB
+    /**
+     * <p>If the HTTP PUT request is correctly formatted,
+     * <code>doPut</code>, admin saves vehicle data to database
+     * <p>
+     * If User not registered redirect to Login page, otherwise redirect to Main page
+     *
+     * @param request  an {@link HttpServletRequest} object that
+     *                 contains the request the client has made of the servlet
+     * @param response an {@link HttpServletResponse} object that
+     *                 contains the response the servlet sends to the client
+     * @throws IOException if an input or output error is
+     *                     detected when the servlet handles the request
      */
     @Override
     protected void doPut(
@@ -109,15 +134,20 @@ public class CarsServlet extends Servlet {
             throws IOException {
 
         String path;
-        User user = getUser(request.getSession(false));
+        HttpSession session = request.getSession(false);
 
-        if (user == null || !Objects.equals(user.getRole(), "admin")) {
+        User user = session
+                != null && session.getAttribute("user")
+                != null ? (User) session.getAttribute("user")
+                : null;
+
+        if (user == null || !Objects.equals(user.getRole(), Role.ADMIN.role())) {
             path = LOGIN;
         } else {
             Car carRow = CAR_MAPPER.carMapper(request);
             boolean save = carService.save(carRow);
 
-            log.info(String.format("%s%s%nCreated: %s", user.getRole(), carRow, save));
+            log.debug(String.format("%s%s%nCreated: %s", user.getRole(), carRow, save));
 
             request.setAttribute("auto", carRow);
             request.setAttribute("cars", user.getCars());
@@ -126,13 +156,18 @@ public class CarsServlet extends Servlet {
         response.sendRedirect(path);
     }
 
-    private User getUser(HttpSession session) {
-        return session
-                != null && session.getAttribute("user")
-                != null ? (User) session.getAttribute("user")
-                : null;
-    }
-
+    /**
+     * <p>If the HTTP DELETE request is correctly formatted,
+     * <code>doDelete</code>, admin removes vehicle date from database
+     * If User not registered redirect to Login page, otherwise redirect to Main page
+     *
+     * @param request  an {@link HttpServletRequest} object that
+     *                 contains the request the client has made of the servlet
+     * @param response an {@link HttpServletResponse} object that
+     *                 contains the response the servlet sends to the client
+     * @throws IOException if an input or output error is
+     *                     detected when the servlet handles the request
+     */
     @Override
     protected void doDelete(
             HttpServletRequest request,
@@ -142,7 +177,7 @@ public class CarsServlet extends Servlet {
         if (session != null) {
             User user = (User) session.getAttribute("user");
             if (Objects.equals(user.getRole(), Role.ADMIN.role())) {
-                long carId = Long.parseLong(id);
+                long carId = id != null ? Long.parseLong(id) : 0;
                 Optional<Car> optionalCar = carService.getById(carId);
                 if (optionalCar.isPresent()) {
                     boolean delete = carService.delete(carId);
@@ -151,9 +186,7 @@ public class CarsServlet extends Servlet {
                     user.setCars(userCars);
                     request.setAttribute("user", user);
                     request.setAttribute("cars", user.getCars());
-                    log.info(String.format("%s %b", id, delete));
-                    log.info(String.format("%s", user));
-                    log.info(String.format("%s", user.getCars()));
+                    log.debug(String.format("%s %b", id, delete));
                 }
             }
         }

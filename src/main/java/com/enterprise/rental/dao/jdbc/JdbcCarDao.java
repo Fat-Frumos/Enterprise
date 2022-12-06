@@ -40,7 +40,7 @@ public class JdbcCarDao implements CarDao {
     public List<Car> findAll(String query) {
         String sql = String.format("%s %s;",
                 FILTER_CAR_BY_SQL, query);
-        log.info(sql);
+        log.debug(String.format("%s%s%s", YELLOW, sql, RESET));
         return getCarsQuery(sql);
     }
 
@@ -62,7 +62,7 @@ public class JdbcCarDao implements CarDao {
                 UPDATE_CAR_SQL,
                 brand, model, name, price, cost, id);
 
-        log.info(String.format("%s", query));
+        log.debug(String.format("%s%s%s", YELLOW, query, RESET));
 
         return updateCar(car, query);
     }
@@ -77,8 +77,8 @@ public class JdbcCarDao implements CarDao {
             String query = String.format("DELETE FROM car where id = %d", id);
             String sql = String.format("UPDATE car SET rent = true WHERE id = %d", id);
             Car updatedCar = updateCar(car, query);
-            log.info(String.format("Deleted: %s", updatedCar));
-            log.info(String.format(sql));
+            log.debug(String.format("Deleted: %s", updatedCar));
+            log.debug(String.format("%s%s%s", YELLOW, sql, RESET));
             return true;
         }
         return false;
@@ -99,11 +99,13 @@ public class JdbcCarDao implements CarDao {
         Connection connection = null;
         PreparedStatement statement = null;
         try {
-            connection = getInstance().getConnection();
-            connection.setAutoCommit(false);
+            connection = getConfigConnection();
+//            connection = getInstance().getConnection();
+//            connection.setAutoCommit(false);
+//            connection.setTransactionIsolation(TRANSACTION_READ_COMMITTED);
             statement = connection.prepareStatement(query);
             boolean update = statement.executeUpdate() > 0;
-            log.info(String.format("update car %s", update));
+            log.debug(String.format("update car %s", update));
             connection.commit();
             return car;
         } catch (SQLException sqlException) {
@@ -116,12 +118,12 @@ public class JdbcCarDao implements CarDao {
 
     @Override
     public Integer countId(String sql) {
-        log.info(sql);
+        log.debug(String.format("%s%s%s", YELLOW, sql, RESET));
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try {
-            connection = getWithoutAutoCommit();
+            connection = getConfigConnection();
             statement = connection.prepareStatement(sql);
             resultSet = statement.executeQuery();
             connection.commit();
@@ -130,7 +132,7 @@ public class JdbcCarDao implements CarDao {
 
         } catch (SQLException sqlException) {
             rollback(connection, sqlException, sql);
-            log.info("Vehicle not found");
+            log.debug("Vehicle not found");
             return 0;
         } finally {
             eventually(connection, statement, resultSet);

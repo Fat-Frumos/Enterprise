@@ -1,4 +1,4 @@
-package com.enterprise.rental.dao;
+package com.enterprise.rental.dao.jdbc;
 
 import com.enterprise.rental.exception.DataException;
 

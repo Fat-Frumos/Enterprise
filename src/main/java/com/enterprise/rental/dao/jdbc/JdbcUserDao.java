@@ -16,15 +16,16 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.enterprise.rental.dao.DbManager.getInstance;
 import static com.enterprise.rental.dao.jdbc.Connections.*;
 import static com.enterprise.rental.dao.jdbc.Constants.*;
+import static com.enterprise.rental.dao.jdbc.DbManager.getInstance;
+import static com.enterprise.rental.service.UserService.addSalt;
+import static com.enterprise.rental.service.UserService.saltedPassword;
 
 public class JdbcUserDao implements UserDao {
     private static final UserMapper ROW_MAPPER = new UserMapper();
 
-    private static final Logger log =
-            Logger.getLogger(JdbcUserDao.class);
+    private static final Logger log = Logger.getLogger(JdbcUserDao.class);
 
     @Override
     public Optional<User> findByName(String name) {
@@ -32,7 +33,7 @@ public class JdbcUserDao implements UserDao {
             String sql = String.format("%s'%s'",
                     FILTER_BY_NAME_SQL, name);
             Optional<User> user = getUserSql(sql);
-            log.info(String.format("%s %s", sql, user));
+            log.debug(String.format("%s %s %s", YELLOW, sql, RESET));
             return user;
         }
         return Optional.empty();
@@ -53,18 +54,17 @@ public class JdbcUserDao implements UserDao {
 
         String query = getQuery(user);
 
-        log.info(String.format("%s%n%s", user, query));
+        log.debug(String.format("%s%n%s", user, query));
 
         Connection connection = null;
         PreparedStatement statement = null;
 
         try {
-            connection = getInstance().getConnection();
-            connection.setAutoCommit(false);
+            connection = getConfigConnection();
             statement = connection.prepareStatement(query);
 
             boolean update = statement.executeUpdate() > 0;
-            log.info(update);
+            log.debug(String.valueOf(update));
             connection.commit();
             return user;
 
@@ -100,7 +100,7 @@ public class JdbcUserDao implements UserDao {
 
         } finally {
             eventually(connection, statement);
-            log.info("Connection closed");
+            log.debug("Connection closed");
         }
         return new ArrayList<>();
     }
@@ -123,7 +123,7 @@ public class JdbcUserDao implements UserDao {
         ResultSet resultSet = null;
 
         try {
-            connection = getWithoutAutoCommit();
+            connection = getConfigConnection();
             statement = connection.prepareStatement(USERS_SQL);
             resultSet = statement.executeQuery();
             connection.commit();
@@ -131,7 +131,7 @@ public class JdbcUserDao implements UserDao {
 
         } catch (SQLException sqlException) {
             rollback(connection, sqlException, USERS_SQL);
-            log.info(String.format("Customer not found %s",
+            log.debug(String.format("Customer not found %s",
                     sqlException.getMessage()));
         } finally {
             eventually(connection, statement, resultSet);
@@ -167,15 +167,14 @@ public class JdbcUserDao implements UserDao {
     }
 
     private Optional<User> getUserSql(String query) {
-        log.info(query);
+
+        log.debug(String.format("%s%s%s", YELLOW, query, RESET));
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
 
         try {
-            connection = getInstance().getConnection();
-            connection.setAutoCommit(false);
-
+            connection = getConfigConnection();
             statement = connection.prepareStatement(query);
             resultSet = statement.executeQuery();
             connection.commit();
@@ -186,11 +185,11 @@ public class JdbcUserDao implements UserDao {
 
         } catch (SQLException sqlException) {
             rollback(connection, sqlException, query);
-            log.info("rollback (connection)");
+            log.debug("rollback (connection)");
 
         } finally {
             eventually(connection, statement, resultSet);
-            log.info("closed (connection)");
+//            log.debug("closed (connection)");
         }
         return Optional.empty();
     }
@@ -199,41 +198,48 @@ public class JdbcUserDao implements UserDao {
 
         Connection connection = null;
         PreparedStatement statement = null;
+        boolean execute = false;
 
         try {
-            connection = getWithoutAutoCommit();
+            connection = getConfigConnection();
             statement = connection.prepareStatement(INSERT_USER_SQL);
-            log.info(String.format("%s", INSERT_USER_SQL));
+            log.debug(String.format("%s%s%s", YELLOW, INSERT_USER_SQL, RESET));
             connection.commit();
             setUsers(user, statement);
-            boolean execute = statement.execute();
+            execute = statement.execute();
             connection.commit();
-            return execute;
         } catch (SQLException sqlException) {
             rollback(connection, sqlException, INSERT_USER_SQL);
-            log.info(String.format("%s User can`t added", user.getName()));
+            log.debug(String.format("%s User can`t added", user.getName()));
         } finally {
             eventually(connection, statement);
         }
-        return false;
+        return execute;
     }
 
     private static void setUsers(
             @NotNull User user,
             PreparedStatement statement) throws SQLException {
-        String password = user.getPassword();
+
+        String salt = addSalt(user);
+        String sha256Hex = saltedPassword(user.getPassword(), salt);
         String email = user.getEmail();
         String role = user.getRole();
-        String language = user.getLanguage();
-        log.info(INSERT_USER_SQL + "\n" + user);
+        String language = user.getLanguage() == null || user.getLanguage().equals("") ? "en" : user.getLanguage();
+        String phone = user.getPhone();
+        String passport = user.getPassport();
+        log.debug(String.format("salted password:%s%n rawPassword: %s%n salt:%s", sha256Hex, user.getPassword(), user.getSalt()));
+        log.debug(String.format("%s%n%s", INSERT_USER_SQL, user.getName()));
         statement.setLong(1, UUID.randomUUID().getMostSignificantBits() & 0x7fffL);
         statement.setString(2, user.getName());
         statement.setString(3, email);
-        statement.setString(4, password);
-        statement.setString(5, role);
-        statement.setBoolean(6, true);
-        statement.setBoolean(7, false);
-        statement.setString(8, language);
-        statement.setString(9, user.getSalt());
+        statement.setString(4, sha256Hex);
+        statement.setString(5, passport);
+        statement.setString(6, phone);
+        statement.setString(7, role);
+        statement.setBoolean(8, true);
+        statement.setBoolean(9, false);
+        statement.setString(10, language);
+        statement.setString(11, salt);
     }
 }

@@ -6,10 +6,8 @@ import com.enterprise.rental.entity.Invoice;
 import com.enterprise.rental.entity.Order;
 import com.enterprise.rental.entity.User;
 import com.enterprise.rental.exception.DataException;
-import com.enterprise.rental.exception.UserNotFoundException;
 import com.enterprise.rental.service.CarService;
 import com.enterprise.rental.service.OrderService;
-import com.enterprise.rental.service.UserService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -53,7 +51,7 @@ public class OrderServlet extends HttpServlet {
                 Optional<Car> optionalCar = carService.getById(carId);
                 if (optionalCar.isPresent()) {
                     Car car = optionalCar.get();
-                    log.info(String.format("Get order Rental Car: %s, User : %s", car.getBrand(), user.getName()));
+                    log.debug(String.format("Get order Rental Car: %s, User : %s", car.getBrand(), user.getName()));
                     request.setAttribute("auto", car);
                 }
                 setUserAttribute(request, user, carId);
@@ -89,13 +87,13 @@ public class OrderServlet extends HttpServlet {
 
         if (optional.isPresent()) {
             User user = optional.get();
-            log.info(String.format("User %s ", user.getName()));
+            log.debug(String.format("User %s ", user.getName()));
             Car car = user.getCar();
             if (car != null) {
-                log.info(String.format("Car %s ", car.getBrand()));
+                log.debug(String.format("Car %s ", car.getBrand()));
                 Order orderMapper = ORDER_MAPPER.orderMapper(request);
                 if (orderMapper != null) {
-                    boolean saved = orderService.createOrder(orderMapper);
+                    boolean saved = orderService.save(orderMapper);
                     if (saved) {
                         List<Car> userCars = user.getCars();
                         for (Car userCar : userCars) {
@@ -119,7 +117,6 @@ public class OrderServlet extends HttpServlet {
      */
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        UserService userService = new UserService();
         String userId = request.getParameter("userId");
         String carId = request.getParameter("carId");
         String damage = (request.getParameter("damage"));
@@ -131,12 +128,12 @@ public class OrderServlet extends HttpServlet {
         long cid = Long.parseLong(carId);
         double pay = Double.parseDouble(payment);
 //        Optional<User> optionalUser = userService.getById(uid);
-//        log.info(String.format("Email: %s", optionalUser.get().getEmail()));
+//        log.debug(String.format("Email: %s", optionalUser.get().getEmail()));
 //
         Invoice invoice = new Invoice(uid, cid, damage, passport, phone, reason, "bob@i.ua", pay);
-        log.info(String.format("Invoice: %s", invoice));
+        log.debug(String.format("Invoice: %s", invoice));
         boolean created = orderService.createInvoice(invoice);
-        log.info(String.format("create Invoice: %s", created));
+        log.debug(String.format("create Invoice: %s", created));
         response.sendRedirect("/user");
 
     }
@@ -151,16 +148,16 @@ public class OrderServlet extends HttpServlet {
             throws ServletException, IOException {
 
         String id = (request.getParameter("orderId"));
-        log.info(String.format("Delete order %s", id));
+        log.debug(String.format("Delete order %s", id));
 
         Optional<User> user = getUser(request.getSession(false));
         if ("manager".equals(user.get().getRole()) && user.isPresent() && id != null) {
             boolean delete = orderService.delete(Long.parseLong(id));
-            log.info(String.format("Order# %s, deleted %b", id, delete));
+            log.debug(String.format("Order# %s, deleted %b", id, delete));
             List<Order> userOrders = orderService.getAll();
             request.setAttribute("orders", userOrders);
             request.setAttribute("user", user);
-            log.info(String.format("%s", user));
+            log.debug(String.format("%s", user));
         }
         response.sendRedirect("/user");
     }
@@ -190,7 +187,7 @@ public class OrderServlet extends HttpServlet {
 
         if (session.getAttribute("user") != null) {
             User user = (User) session.getAttribute("user");
-            log.info(String.format("%s %s From Request session",
+            log.debug(String.format("%s %s From Request session",
                     user.getRole(), user.getName()));
             return Optional.of(user);
         }

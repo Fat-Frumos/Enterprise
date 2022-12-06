@@ -5,11 +5,7 @@
       http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
          id="WebApp_ID" version="3.0">
 
-    <welcome-file-list>
-        <welcome-file>index.jsp</welcome-file>
-        <welcome-file>cars.jsp</welcome-file>
-    </welcome-file-list>
-
+    <!--servlets-->
     <servlet>
         <servlet-name>RegisterServlet</servlet-name>
         <servlet-class>com.enterprise.rental.controller.RegisterServlet</servlet-class>
@@ -26,6 +22,15 @@
     <servlet-mapping>
         <servlet-name>CarServlet</servlet-name>
         <url-pattern>/cars</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>CartServlet</servlet-name>
+        <servlet-class>com.enterprise.rental.controller.CartServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CartServlet</servlet-name>
+        <url-pattern>/cart</url-pattern>
     </servlet-mapping>
 
     <servlet>
@@ -55,6 +60,7 @@
         <url-pattern>/login</url-pattern>
     </servlet-mapping>
 
+    <!--filters-->
     <filter>
         <filter-name>Filter</filter-name>
         <filter-class>com.enterprise.rental.filter.SecurityFilter</filter-class>
@@ -94,6 +100,30 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
+    <!--errors-->
+    <error-page>
+        <exception-type>java.lang.Throwable</exception-type>
+        <location>/WEB-INF/views/error/500.jsp</location>
+    </error-page>
+    <error-page>
+        <error-code>443</error-code>
+        <location>/WEB-INF/views/error/403.jsp</location>
+    </error-page>
+    <error-page>
+        <error-code>404</error-code>
+        <location>/WEB-INF/views/error/404.jsp</location>
+    </error-page>
+    <error-page>
+        <exception-type>javax.servlet.ServletException</exception-type>
+        <location>/error</location>
+    </error-page>
+
+    <!--configs-->
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+        <welcome-file>cars.jsp</welcome-file>
+    </welcome-file-list>
+
     <listener>
         <listener-class>com.enterprise.rental.utils.Listener</listener-class>
     </listener>
@@ -104,8 +134,8 @@
     </context-param>
 
     <context-param>
-        <param-name>log4jConfiguration</param-name>
-        <param-value>/WEB-INF/classes/log4j.xml</param-value>
+        <param-name>invoiceConfiguration</param-name>
+        <param-value>/WEB-INF/classes/invoice.xml</param-value>
     </context-param>
 
     <context-param>
@@ -116,7 +146,7 @@
     <jsp-config>
         <taglib>
             <taglib-uri>rental.enterprise.com</taglib-uri>
-            <taglib-location>/WEB-INF/dataTag.tld</taglib-location>
+            <taglib-location>/WEB-INF/tags/dataTag.tld</taglib-location>
         </taglib>
         <jsp-property-group>
             <url-pattern>*.jsp</url-pattern>
@@ -128,20 +158,4 @@
         <session-timeout>10</session-timeout>
     </session-config>
 
-    <error-page>
-        <exception-type>java.lang.Throwable</exception-type>
-        <location>/WEB-INF/views/error/500.jsp</location>
-    </error-page>
-    <error-page>
-        <error-code>443</error-code>
-        <location>/WEB-INF/views/error/443.jsp</location>
-    </error-page>
-    <error-page>
-        <error-code>404</error-code>
-        <location>/WEB-INF/views/error/404.jsp</location>
-    </error-page>
-    <error-page>
-        <exception-type>javax.servlet.ServletException</exception-type>
-        <location>/error</location>
-    </error-page>
 </web-app>

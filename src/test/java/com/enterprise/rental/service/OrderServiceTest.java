@@ -29,6 +29,7 @@ public class OrderServiceTest {
             .userId(11L)
             .name("Jack")
             .password("password")
+            .salt("salt")
             .passport("passport")
             .language("ua")
             .email("email@i.ua")
@@ -71,8 +72,8 @@ public class OrderServiceTest {
     @Test
     @DisplayName(value = "Test save Orders invokes and verify")
     void save() {
-        when(orderService.createOrder(order1)).thenReturn(true);
-        boolean save = orderService.createOrder(order1);
+        when(orderService.save(order1)).thenReturn(true);
+        boolean save = orderService.save(order1);
         assertTrue(save);
     }
 
@@ -80,7 +81,7 @@ public class OrderServiceTest {
     @DisplayName(value = "Test save Order invokes and return true")
     void saveOrder() {
         when(mockDao.save(order)).thenReturn(true);
-        boolean saved = orderService.createOrder(order);
+        boolean saved = orderService.save(order);
         assertTrue(saved);
     }
 
@@ -106,7 +107,7 @@ public class OrderServiceTest {
     void updateOrder() {
 
         when(mockDao.edit(order)).thenReturn(order);
-        Order actual = orderService.updateOrder(order);
+        Order actual = orderService.edit(order);
         verify(mockDao).edit(order);
         assertEquals(order, actual);
     }

@@ -5,11 +5,11 @@ import com.enterprise.rental.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.apache.log4j.Logger;
 
-import java.lang.reflect.Field;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -17,7 +17,7 @@ import static org.mockito.Mockito.when;
 
 
 class UserTest {
-    Logger logger = Logger.getLogger(UserTest.class);
+    private static final Logger log = Logger.getLogger(UserTest.class);
     private static final List<User> users = new ArrayList<>();
 
     User bob = new User.Builder()
@@ -66,9 +66,9 @@ class UserTest {
 
         when(service.getAll("John")).thenReturn(users);
 
-        logger.info(String.format("%s", service.getAll()));
-        logger.info(String.format("%s", bob));
-        logger.info(String.format("%s", users));
+        log.debug(String.format("%s", service.getAll()));
+        log.debug(String.format("%s", bob));
+        log.debug(String.format("%s", users));
 
         assertEquals("John", bob.getName());
     }

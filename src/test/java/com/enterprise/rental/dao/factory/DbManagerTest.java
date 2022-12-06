@@ -1,6 +1,6 @@
 package com.enterprise.rental.dao.factory;
 
-import com.enterprise.rental.dao.DbManager;
+import com.enterprise.rental.dao.jdbc.DbManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

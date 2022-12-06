@@ -1,8 +1,10 @@
 package com.enterprise.rental.filter;
 
 import javax.servlet.*;
+import javax.servlet.annotation.WebFilter;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-
+@WebFilter(filterName = "CharsetFilter", urlPatterns = {"/*"})
 public class CharsetFilter implements Filter {
     protected String encoding;
     protected FilterConfig filterConfig;
@@ -27,6 +29,13 @@ public class CharsetFilter implements Filter {
 
         if (encodingRequest != null) {
             request.setCharacterEncoding(encodingRequest);
+        }
+
+        HttpServletRequest req = (HttpServletRequest) request;
+
+        if (req.getParameter("sessionLocale") != null) {
+            req.getSession().setAttribute("lang", req.getParameter("sessionLocale"));
+
         }
 
         response.setContentType("text/html; charset=windows-1251");

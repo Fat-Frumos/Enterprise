@@ -15,21 +15,22 @@ public class DataException extends RuntimeException {
     }
 
     public DataException(FileNotFoundException e) {
-//        super(e);
+        super(e.getMessage());
         log.error(e.getMessage());
     }
 
     public DataException(String message) {
-//        super(message);
-        log.info(message);
+        super(message);
+        log.error(message);
     }
 
     public DataException(String message, SQLException exception) {
-//        super(exception);
+        super(message);
         log.error(String.format("%s%s", message, exception.getMessage()));
     }
 
     public DataException(String message, IOException exception) {
+        super(exception.getMessage());
         String format = String.format("%s%s", message, exception.getMessage());
         log.error(format);
     }

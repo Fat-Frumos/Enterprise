@@ -15,6 +15,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.enterprise.rental.dao.jdbc.Constants.*;
+import static com.enterprise.rental.service.UserService.saltedPassword;
 
 /**
  * StaticServlet extends <code>Servlet</code> an HTTP servlet suitable for a Web-site.
@@ -32,7 +33,8 @@ import static com.enterprise.rental.dao.jdbc.Constants.*;
 public class StaticServlet extends Servlet {
     private static final Logger log = Logger.getLogger(StaticServlet.class);
     private static final CarService carService = new CarService();
-    private static final int ROWS = carService.getNumberOfRows();
+    private static final UserService userService = new UserService();
+    private static int rows = carService.getNumberOfRows();
 
     /**
      * <p>If the HTTP GET request is correctly formatted,
@@ -78,7 +80,7 @@ public class StaticServlet extends Servlet {
 
         int page = currentPage == null ? 1 : Integer.parseInt(currentPage);
 
-        int nOfPages = ROWS / offset;
+        int nOfPages = rows / offset;
         int start = page * offset - offset;
 
         if (nOfPages % offset > 0) {
@@ -113,15 +115,14 @@ public class StaticServlet extends Servlet {
             User user = (User) session.getAttribute("user");
             user.addParams(params);
             request.setAttribute("car", user.getCars().size());
-            log.info(String.format("Users Params: %s", user.getParams()));
+            log.debug(String.format("Users Params: %s", user.getParams()));
         }
         dispatch(request, response, CARS);
     }
 
     /**
      * <p>If the HTTP POST request is correctly formatted,
-     * <code>doPost</code>, check if user exists set the error message,
-     * whereas user not found, create new User in DataBase
+     * <code>doPost</code>, fetched user from DataBase and entered in the system
      * {@code Optional<User>}, if a value is present,
      * otherwise {@code Optional.empty()}.
      * <p>Redirect to Main page </p>
@@ -141,17 +142,22 @@ public class StaticServlet extends Servlet {
             HttpServletResponse response)
             throws IOException, ServletException {
 
-        UserService userService = new UserService();
-
         List<Car> auto = carService.getRandom(3);
         String name = request.getParameter("name");
         String password = request.getParameter("password");
+
         String path;
         if (name != null && password != null) {
             Optional<User> optionalUser = userService.findByName(name);
             if (optionalUser.isPresent()) {
                 User user = optionalUser.get();
-                boolean isValid = Objects.equals(name, user.getName()) && password.equals(user.getPassword());
+                String saltedPassword = saltedPassword(password, user.getSalt());
+
+                log.debug(String.format("%sRawPassword: %s Name: %s%s",
+                        PURPLE, password, user.getName(), RESET));
+
+                boolean isValid = Objects.equals(name, user.getName()) && saltedPassword.equals(user.getPassword());
+
                 path = setRequestAttribute(request, auto, user, isValid);
             } else {
                 request.setAttribute("errorMessage", "User not found");
@@ -162,16 +168,15 @@ public class StaticServlet extends Servlet {
     }
 
     /**
-     <p>Get List of Cars from the database</p>
+     * <p>Get List of Cars from the database</p>
      * Returns {@code List<Car>}
      * A Page Request object by passing in the requested page number and the page limit.
      *
      * @param params an {@code Map<String, String> params}
      *               is a map of query parameters to the sorting and pagination
-     * @param page an {@link boolean} pagination set page and offset attribute.
-     *             Default values: page = 1, offset = 9,
-     *             max Page get Number Of Rows from database
-     *
+     * @param page   an {@link boolean} pagination set page and offset attribute.
+     *               Default values: page = 1, offset = 9,
+     *               max Page get Number Of Rows from database
      * @return {@code List<User>}, if a value is present,
      * otherwise {@code empty List}.
      */
@@ -207,8 +212,8 @@ public class StaticServlet extends Servlet {
             session.setAttribute("user", user);
             request.setAttribute("cars", auto);
             request.setAttribute("auto", auto.get(0));
-            log.info(String.format("Main Car: %s", auto.get(0)));
-            log.info(String.format("Session customer: %s", session.getAttribute("user")));
+            log.debug(String.format("%s", auto.get(0)));
+            log.debug(String.format("%sSession customer: %s(%s)%s", RED, user.getName(), user.getRole(), RESET));
             path = MAIN;
         } else {
             request.setAttribute("errorMessage", "Your name/password is incorrect");

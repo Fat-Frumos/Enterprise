@@ -17,7 +17,6 @@ class BungleTest {
         }
     }
 
-
         @Test
         void getContentsUa() {
             BungleUa bungle = new BungleUa();

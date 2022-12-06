@@ -18,16 +18,19 @@ class UserMapperTest {
 
         ResultSet resultSet = mock(ResultSet.class);
 
-        when(resultSet.getLong("id")).thenReturn(1l);
+        when(resultSet.getLong("id")).thenReturn(1L);
         when(resultSet.getString("name")).thenReturn("bob");
         when(resultSet.getString("password")).thenReturn("password");
+        when(resultSet.getString("salt")).thenReturn("salt");
+        when(resultSet.getString("phone")).thenReturn("phone");
+        when(resultSet.getString("passport")).thenReturn("passport");
         when(resultSet.getString("email")).thenReturn("email@i.ua");
         when(resultSet.getBoolean("active")).thenReturn(true);
         when(resultSet.getBoolean("closed")).thenReturn(false);
 
         User user = mapper.mapRow(resultSet);
 
-        assertEquals(1l, user.getUserId());
+        assertEquals(1L, user.getUserId());
         assertEquals("bob", user.getName());
         assertEquals("password", user.getPassword());
         assertEquals("email@i.ua", user.getEmail());

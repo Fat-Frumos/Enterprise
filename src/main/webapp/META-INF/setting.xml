@@ -9,7 +9,7 @@
             <protocol>http</protocol>
             <host>rental-car-2.com</host>
             <port>8080</port>
-            <username>pasha</username>
+            <username>Pasha</username>
             <password>admin</password>
             <nonProxyHosts>*.rental-car-2.com|*.apache.org</nonProxyHosts>
         </proxy>

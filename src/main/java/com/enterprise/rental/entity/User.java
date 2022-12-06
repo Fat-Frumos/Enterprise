@@ -8,11 +8,12 @@ public class User implements Serializable {
     private long userId;
     private String name;
     private String password;
-
     private String salt;
     private String email;
     private String language;
     private String role;
+    private String passport;
+    private String phone;
     private boolean active;
     private boolean closed;
     private Set<Order> orders;
@@ -20,8 +21,6 @@ public class User implements Serializable {
     private final Map<String, String> params = new HashMap<>();
     private Car car;
     private Timestamp created;
-    private String passport;
-    private String phone;
 
     public static class Builder {
         private long userId;
@@ -67,10 +66,11 @@ public class User implements Serializable {
             return this;
         }
 
-        public Builder phone(String name) {
-            this.name = name;
+        public Builder phone(String phone) {
+            this.phone = phone;
             return this;
         }
+
 
         public Builder active(boolean active) {
             this.active = active;
@@ -104,6 +104,7 @@ public class User implements Serializable {
             user.email = this.email;
             user.passport = this.passport;
             user.password = this.password;
+            user.salt = this.salt;
             user.phone = this.phone;
             user.role = this.role;
             return user;
@@ -117,6 +118,22 @@ public class User implements Serializable {
 
 
     public User() {
+    }
+
+    public String getPassport() {
+        return passport;
+    }
+
+    public void setPassport(String passport) {
+        this.passport = passport;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public void setName(String name) {
@@ -230,14 +247,14 @@ public class User implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof User)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return userId == user.userId && active == user.active && closed == user.closed && Objects.equals(name, user.name) && Objects.equals(password, user.password) && Objects.equals(email, user.email) && Objects.equals(language, user.language) && Objects.equals(role, user.role) && Objects.equals(orders, user.orders) && Objects.equals(cars, user.cars) && Objects.equals(params, user.params) && Objects.equals(car, user.car) && Objects.equals(created, user.created) && Objects.equals(passport, user.passport) && Objects.equals(phone, user.phone);
+        return userId == user.userId && active == user.active && closed == user.closed && Objects.equals(name, user.name) && Objects.equals(password, user.password) && Objects.equals(salt, user.salt) && Objects.equals(email, user.email) && Objects.equals(language, user.language) && Objects.equals(role, user.role) && Objects.equals(orders, user.orders) && Objects.equals(cars, user.cars) && Objects.equals(params, user.params) && Objects.equals(car, user.car) && Objects.equals(created, user.created) && Objects.equals(passport, user.passport) && Objects.equals(phone, user.phone);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId, name, password, email, language, role, active, closed, orders, cars, params, car, created, passport, phone);
+        return Objects.hash(userId, name, password, salt, email, language, role, active, closed, orders, cars, params, car, created, passport, phone);
     }
 
     @Override
@@ -245,13 +262,13 @@ public class User implements Serializable {
         return "User{" +
                 "userId=" + userId +
                 ", name='" + name + '\'' +
+                ", password='" + password + '\'' +
+                ", salt='" + salt + '\'' +
                 ", email='" + email + '\'' +
                 ", language='" + language + '\'' +
                 ", role='" + role + '\'' +
                 ", active=" + active +
                 ", closed=" + closed +
-                ", cars=" + cars +
-                ", params=" + params +
                 ", passport='" + passport + '\'' +
                 ", phone='" + phone + '\'' +
                 '}';

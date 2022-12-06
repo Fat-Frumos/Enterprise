@@ -1,15 +1,10 @@
 package com.enterprise.rental.controller;
 
-//import com.enterprise.rental.entity.Session;
 import com.enterprise.rental.entity.User;
-//import com.enterprise.rental.service.SecurityService;
 import com.enterprise.rental.service.UserService;
 import org.apache.log4j.Logger;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -19,13 +14,13 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static com.enterprise.rental.dao.jdbc.Constants.LOGIN;
-import static com.enterprise.rental.dao.jdbc.Constants.NOT_FOUND;
+import static com.enterprise.rental.dao.jdbc.Constants.USERS;
 
-//@WebServlet(urlPatterns = "/login")
-public class LoginServlet extends HttpServlet {
+public class LoginServlet extends Servlet {
 
     private static final long serialVersionUID = UUID.randomUUID().getMostSignificantBits() & 0x7ffffffL;
     private static final Logger log = Logger.getLogger(LoginServlet.class);
+    private static final UserService userService = new UserService();
 
     /**
      * Login screen
@@ -47,7 +42,7 @@ public class LoginServlet extends HttpServlet {
             HttpServletRequest request,
             HttpServletResponse response)
             throws ServletException, IOException {
-        dispatch(request, response, "/WEB-INF/views/users.jsp");
+        dispatch(request, response, USERS);
     }
 
     /**
@@ -59,30 +54,32 @@ public class LoginServlet extends HttpServlet {
             HttpServletResponse response)
             throws IOException, ServletException {
 
-        UserService userService = new UserService();
+//        Session session = (Session) request.getSession();
+//        securityService.setUserToken(request, response, session);
 
-//        SecurityService securityService = new SecurityService(userService);
-//        securityService.setUserToken(request, response, new Session());
         String name = request.getParameter("name");
 
         Optional<User> optionalUser = userService.findByName(name);
 
         if (optionalUser.isPresent()) {
-            log.info(String.format("User: %s", optionalUser));
+            log.debug(String.format("User: %s", optionalUser));
             request.setAttribute("errorMessage", String.format("User %s is exists", name));
             request.getRequestDispatcher(LOGIN).forward(request, response);
         } else {
             long id = UUID.randomUUID().getMostSignificantBits() & 0x7ffffffL;
             String password = request.getParameter("password");
+            String passport = request.getParameter("passport");
+            String phone = request.getParameter("phone");
             String email = request.getParameter("email");
             String language = request.getParameter("language");
-            log.info(language);
             Timestamp created = new Timestamp(System.currentTimeMillis());
 
             User user = new User.Builder()
                     .userId(id)
                     .name(name)
                     .password(password)
+                    .passport(passport)
+                    .phone(phone)
                     .language(language)
                     .email(email)
                     .created(created)
@@ -91,30 +88,16 @@ public class LoginServlet extends HttpServlet {
                     .role("user")
                     .build();
 
+            log.debug(String.format("Raw password: %s", password));
+
             boolean save = userService.save(user);
 
-            log.info(String.format("%s is created: %s", user, save));
+            log.debug(String.format("%s is created: %s", user.getName(), save));
 
             request.setAttribute("errorMessage",
                     String.format("User %s is created", name));
 
             dispatch(request, response, LOGIN);
         }
-    }
-
-    /**
-     * Request Dispatcher
-     */
-    void dispatch(
-            HttpServletRequest request,
-            HttpServletResponse response, String path)
-            throws IOException, ServletException {
-
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.setContentType("text/html;charset=utf-8");
-
-        RequestDispatcher dispatcher = getServletContext()
-                .getRequestDispatcher(path);
-        dispatcher.include(request, response);
     }
 }

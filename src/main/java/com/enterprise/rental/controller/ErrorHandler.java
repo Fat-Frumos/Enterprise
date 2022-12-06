@@ -1,5 +1,6 @@
 package com.enterprise.rental.controller;
 
+import com.enterprise.rental.exception.DataException;
 import org.apache.log4j.Logger;
 
 import javax.servlet.annotation.WebServlet;
@@ -14,7 +15,7 @@ public class ErrorHandler extends HttpServlet {
 
     private static final long serialVersionUID = 31L;
 
-    private static final Logger log = Logger.getLogger(ErrorHandler.class);
+    private static final Logger log =Logger.getLogger(ErrorHandler.class);
 
     @Override
     protected void doGet(
@@ -36,8 +37,7 @@ public class ErrorHandler extends HttpServlet {
 
     private void processError(
             HttpServletRequest request,
-            HttpServletResponse response)
-            throws IOException {
+            HttpServletResponse response) {
 
         Throwable throwable = (Throwable) request.getAttribute("javax.servlet.error.exception");
         Integer statusCode = (Integer) request.getAttribute("javax.servlet.error.status_code");
@@ -53,25 +53,30 @@ public class ErrorHandler extends HttpServlet {
         // Set response content type
         response.setContentType("text/html");
 
-        PrintWriter out = response.getWriter();
-        out.write("<html><head><title>Exception/Error Details</title></head><body>");
-        if (statusCode != 500) {
-            log.info("Error Details");
-            out.write("<h3>Error Details</h3>");
-            out.write("<strong>Status Code</strong>:" + statusCode + "<br>");
-            out.write("<strong>Requested URI</strong>:" + requestUri);
-        } else {
-            log.info("Exception Details");
-            out.write("<h3>Exception Details</h3>");
-            out.write("<ul><li>Servlet Name:" + servletName + "</li>");
-            out.write("<li>Exception Name:" + throwable.getClass().getName() + "</li>");
-            out.write("<li>status Code:" + statusCode + "</li>");
-            out.write("<li>Exception Message:" + throwable.getMessage() + "</li>");
-            out.write("</ul>");
-        }
+        try {
+            PrintWriter out = response.getWriter();
 
-        out.write("<br><br>");
-        out.write("<a href=\"index.jsp\">Home Page</a>");
-        out.write("</body></html>");
+            out.write("<html><head><title>Exception/Error Details</title></head><body>");
+
+            if (statusCode != 500) {
+                log.debug("Error Details");
+                out.write("<h3>Error Details</h3>");
+                out.write("<strong>Status Code</strong>:" + statusCode + "<br>");
+                out.write("<strong>Requested URI</strong>:" + requestUri);
+            } else {
+                log.debug("Exception Details");
+                out.write("<h3>Exception Details</h3>");
+                out.write(String.format("<ul><li>Servlet Name:%s</li>", servletName));
+                out.write(String.format("<li>Exception Name:%s</li>", throwable.getClass().getName()));
+                out.write(String.format("<li>status Code:%d</li>", statusCode));
+                out.write(String.format("<li>Exception Message:%s</li></ul>", throwable.getMessage()));
+            }
+
+            out.write("<br><br>");
+            out.write("<a href=\"index.jsp\">Home Page</a>");
+            out.write("</body></html>");
+        } catch (IOException e) {
+            throw new DataException(e);
+        }
     }
 }

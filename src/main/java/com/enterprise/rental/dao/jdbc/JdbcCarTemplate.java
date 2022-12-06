@@ -1,6 +1,5 @@
 package com.enterprise.rental.dao.jdbc;
 
-import com.enterprise.rental.dao.DbManager;
 import com.enterprise.rental.dao.mapper.CarMapper;
 import com.enterprise.rental.entity.Car;
 import com.enterprise.rental.exception.DataException;
@@ -23,13 +22,13 @@ public class JdbcCarTemplate extends DbManager {
 
     protected static Optional<Car> getCarById(long id) {
 
-        log.info(FILTER_BY_ID_SQL);
+        log.debug(String.format("%s%s%s", YELLOW, FILTER_BY_ID_SQL, RESET));
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
 
         try {
-            connection = getWithoutAutoCommit();
+            connection = getConfigConnection();
             statement = connection.prepareStatement(FILTER_BY_ID_SQL);
             statement.setLong(1, id);
 
@@ -41,7 +40,7 @@ public class JdbcCarTemplate extends DbManager {
                     : Optional.of(CAR_ROW_MAPPER.mapRow(resultSet));
 
         } catch (SQLException sqlException) {
-            log.info("Car by id not found");
+            log.debug("Car by id not found");
             rollback(connection, sqlException, String.valueOf(id));
         } finally {
             eventually(connection, statement, resultSet);
@@ -52,14 +51,14 @@ public class JdbcCarTemplate extends DbManager {
     protected static Optional<Car> getCarQuery(String name) {
 
         String query = String.format("%s %s", FILTER_BY_CAR_NAME_SQL, name);
-        log.info(query);
+        log.debug(query);
         List<Car> cars = new ArrayList<>();
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
 
         try {
-            connection = getWithoutAutoCommit();
+            connection = getConfigConnection();
             statement = connection.prepareStatement(FILTER_BY_CAR_NAME_SQL);
             statement.setString(1, name);
             resultSet = statement.executeQuery();
@@ -69,7 +68,7 @@ public class JdbcCarTemplate extends DbManager {
                 cars.add(CAR_ROW_MAPPER.mapRow(resultSet));
             }
         } catch (SQLException sqlException) {
-            log.info("Cars not found");
+            log.debug("Cars not found");
             rollback(connection, sqlException, query);
         } finally {
             eventually(connection, statement, resultSet);
@@ -78,13 +77,12 @@ public class JdbcCarTemplate extends DbManager {
     }
 
     protected static List<Car> getCarsQuery(String query) {
-
-        log.info(query);
+        log.debug(String.format("%s%s%s", YELLOW, query, RESET));
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try {
-            connection = getWithoutAutoCommit();
+            connection = getConfigConnection();
             statement = connection.prepareStatement(query);
             resultSet = statement.executeQuery();
             connection.commit();
@@ -92,11 +90,11 @@ public class JdbcCarTemplate extends DbManager {
             if (resultSet.next()) {
                 return getCars(resultSet);
             } else {
-                log.info("Vehicle not found");
+                log.debug("Vehicle not found");
             }
         } catch (SQLException sqlException) {
             rollback(connection, sqlException, query);
-            log.info("Vehicle not found");
+            log.debug("Vehicle not found");
 
         } finally {
             eventually(connection, statement, resultSet);
@@ -120,11 +118,11 @@ public class JdbcCarTemplate extends DbManager {
             @NotNull Car car)
             throws DataException {
 
-        log.info(INSERT_CAR_SQL);
+        log.debug(INSERT_CAR_SQL);
         Connection connection = null;
         PreparedStatement statement = null;
         try {
-            connection = getWithoutAutoCommit();
+            connection = getConfigConnection();
             statement = connection.prepareStatement(INSERT_CAR_SQL);
 
             boolean preparedStatement =
@@ -135,7 +133,7 @@ public class JdbcCarTemplate extends DbManager {
 
         } catch (SQLException sqlException) {
             rollback(connection, sqlException, INSERT_CAR_SQL);
-            log.info("Car can`t be created");
+            log.debug("Car can`t be created");
 
         } finally {
             eventually(connection, statement);

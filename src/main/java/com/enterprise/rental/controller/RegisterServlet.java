@@ -52,12 +52,12 @@ public class RegisterServlet extends HttpServlet {
             user.setActive(active.equals("on"));
             user.setClosed(closed.equals("on"));
 
-            log.info(String.format(" active: %s lock: %s, role: %s", active, closed, role));
+            log.debug(String.format(" active: %s lock: %s, role: %s", active, closed, role));
 
             user.setRole(role);
             User update = userService.edit(user);
 
-            log.info(update);
+            log.debug(update);
             String[] fields = {"name", "email", "role", "active", "closed"};
             Map<String, String> params = Arrays.stream(fields)
                     .filter(key -> !"".equals(request.getParameter(key))
@@ -68,10 +68,10 @@ public class RegisterServlet extends HttpServlet {
                             (a, b) -> b));
 
             List<User> users = userService.getAll(params);
-            log.info(users.size() + " users");
+            log.debug(users.size() + " users");
             request.setAttribute("users", users);
         } else {
-            log.info("Could not find user");
+            log.debug("Could not find user");
         }
         request.getRequestDispatcher("/user")
                 .forward(request, response);
@@ -93,9 +93,9 @@ public class RegisterServlet extends HttpServlet {
         OrderMapper mapper = new OrderMapper();
         Order order = mapper.orderMapper(request);
 
-        Order update = orderService.updateOrder(order);
+        Order update = orderService.edit(order);
 
-        log.info(String.format("Order #%d", update.getOrderId()));
+        log.debug(String.format("Order #%d", update.getOrderId()));
 
         List<Order> orders = orderService.getAll();
 

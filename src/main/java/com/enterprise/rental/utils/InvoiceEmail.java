@@ -22,7 +22,7 @@ public class InvoiceEmail {
             Chunk chunk = new Chunk("Pdf Writer", font);
             document.add(chunk);
             document.close();
-            log.info("Created PDF document");
+            log.debug("Created PDF document");
 
         } catch (DocumentException | FileNotFoundException e) {
             throw new DataException(e.getMessage());

@@ -2,7 +2,6 @@ package com.enterprise.rental.service;
 
 import com.enterprise.rental.dao.UserDao;
 import com.enterprise.rental.dao.jdbc.JdbcUserDao;
-import com.enterprise.rental.entity.Car;
 import com.enterprise.rental.entity.User;
 import org.junit.jupiter.api.*;
 
@@ -20,7 +19,7 @@ class UserServiceTest {
     List<User> users = new ArrayList<>();
     User bob = new User.Builder()
             .userId(11L)
-            .name("John")
+            .name("Bob")
             .password("password")
             .passport("passport")
             .language("ua")
@@ -45,13 +44,6 @@ class UserServiceTest {
     static void beforeAll() {
         mockDao = mock(JdbcUserDao.class);
         userService = new UserService(mockDao);
-//        optionalUser = Optional.ofNullable(
-//                new User.Builder()
-//                        .userId(1L)
-//                        .name("user")
-//                        .password("test")
-//                        .salt("salt")
-//                        .build());
     }
 
     @BeforeEach
@@ -110,22 +102,13 @@ class UserServiceTest {
         verify(mockDao).edit(jack);
         assertEquals(jack, actual);
     }
+
     @Test
     @DisplayName(value = "Test get users invokes and verify")
     void getAllUserWithParameters() {
         Map<String, String> params = new HashMap<>();
         when(userService.getAll(params)).thenReturn(users);
         List<User> userList = userService.getAll(params);
-        userList.stream().map(Objects::nonNull)
-                .forEach(Assertions::assertTrue);
-    }
-
-    @Test
-    @DisplayName(value = "Test get users with Parameters and verify")
-    void getAllUserWithOffset() {
-        Map<String, String> params = new HashMap<>();
-        when(userService.getAll(params, 1)).thenReturn(users);
-        List<User> userList = userService.getAll(params, 1);
         userList.stream().map(Objects::nonNull)
                 .forEach(Assertions::assertTrue);
     }

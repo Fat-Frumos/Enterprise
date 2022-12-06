@@ -3,14 +3,21 @@ package com.enterprise.rental.service;
 import com.enterprise.rental.dao.UserDao;
 import com.enterprise.rental.dao.jdbc.JdbcUserDao;
 import com.enterprise.rental.entity.Car;
+import com.enterprise.rental.entity.Session;
 import com.enterprise.rental.entity.User;
 import com.enterprise.rental.exception.DataException;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.log4j.Logger;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 import static com.enterprise.rental.utils.InvoiceEmail.createPdf;
 import static com.enterprise.rental.utils.Mail.sendEmailWithAttachments;
@@ -18,6 +25,7 @@ import static com.enterprise.rental.utils.Mail.sendEmailWithAttachments;
 public class UserService implements Service<User> {
 
     private final UserDao userDao;
+    private final Session session = new Session();
 
     private static final Logger log = Logger.getLogger(UserService.class);
 
@@ -58,7 +66,6 @@ public class UserService implements Service<User> {
         return userDao.findAll();
     }
 
-
     @Override
     public boolean delete(long id) {
         return userDao.delete(id);
@@ -80,13 +87,31 @@ public class UserService implements Service<User> {
         return userDao.edit(user);
     }
 
+    public static String addSalt(User user) {
+        String salt = generateUUID();
+        user.setSalt(salt);
+        return salt;
+    }
+
+    public static String saltedPassword(String rawPassword, String salt) {
+        return DigestUtils.sha256Hex(getBytes(String.format("%s%s", rawPassword, salt)));
+    }
+
+    private static byte[] getBytes(String saltedPassword) {
+        return saltedPassword.getBytes(StandardCharsets.UTF_8);
+    }
+
+    private static String generateUUID() {
+        return UUID.randomUUID().toString();
+    }
+
     public boolean sendEmail(String name) {
         Optional<User> optionalUser = userDao.findByName(name);
         if (optionalUser.isEmpty()) {
             return false;
         }
 
-        log.info(optionalUser);
+        log.debug(String.valueOf(optionalUser));
         createPdf();
 
         // SMTP info
@@ -110,10 +135,38 @@ public class UserService implements Service<User> {
                     mailTo, subject, message,
                     attachFiles);
 
-            log.info("Email sent");
+            log.debug("Email sent");
             return true;
         } catch (Exception ex) {
             throw new DataException("\"Could not send email.\"" + ex.getMessage());
         }
     }
+
+    public void setUserToken(HttpServletRequest request, HttpServletResponse response, Session session) {
+
+        // TODO session.setUser(user);
+
+        Cookie[] cookies = request.getCookies();
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equals("user-token")) {
+                session.setToken((cookie.getValue()));
+            } else {
+                cookie = new Cookie("user-token", generateUUID());
+                cookie.setMaxAge(300);
+                session.getUser().setActive(true);
+                session.setToken(cookie.getValue());
+                response.addCookie(cookie);
+            }
+        }
+    }
+
+    private String generateToken(Long id) {
+        User userFromDb = getById(id).orElseThrow();
+        Map<User, String> userTokens = session.getUserTokens();
+        userTokens.put(userFromDb, generateUUID());
+        session.setUserTokens(userTokens);
+        session.setExpired(true);
+        return session.getToken();
+    }
+
 }

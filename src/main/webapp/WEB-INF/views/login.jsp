@@ -9,6 +9,7 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
+<html lang="en">
 <meta charset="UTF-8">
 <meta name="author" content="Pasha">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -30,32 +31,36 @@
 
 <div class="loginBox">
     <img class="user" height="100px" width="100px"
-         src="https://raw.githubusercontent.com/Fat-Frumos/Cars/master/ava.jpg" alt="avatar">
+         src="<c:url value="/upload?ava.jpg"/>" alt="avatar">
     <p><span style="color: red;">${errorMessage}</span></p>
     <h3>Sign In</h3>
     <form action="${pageContext.request.contextPath}/" method="post">
         <div class="inputBox">
-            <input name="name"
-                   type="text"
-                   pattern="[a-zA-Z0-9]+"
-                   placeholder="Enter Username"
-                   minlength="3"
-                   maxlength="10"
-                   autocomplete="on"
-                   required
-            >
-            <input name="password"
-                   type="password"
-                   placeholder="Enter Password"
-                   minlength="2"
-                   maxlength="16"
-                   autocomplete="on"
-                   required
-            >
-            <%--pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{2,12}$"--%>
+            <label>
+                <input name="name"
+                       type="text"
+                       pattern="[a-zA-Z0-9]+"
+                       placeholder="Enter Username"
+                       minlength="3"
+                       maxlength="10"
+                       autocomplete="on"
+                       required
+                >
+            </label>
+            <label>
+                <input name="password"
+                       type="password"
+                       placeholder="Enter Password"
+                       minlength="2"
+                       maxlength="16"
+                       autocomplete="on"
+                       required
+                >
+                <%--pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{2,12}$"--%>
+            </label>
         </div>
         <button type="submit" class='glowing-btn'>
-            <span class='glowing-txt'>L<span class='faulty-letter'>o</span><span class='faulty-letter'>g&nbsp;</span><span class='faulty-letter'>In</span>
+            <span class='glowing-txt'>L<span class='faulty-letter'>o</span><span class='faulty-letter'>g</span><span class='faulty-letter'>in</span>
             </span>
         </button>
         <%--        <input type="submit" name="" value="Login">--%>
@@ -71,39 +76,49 @@
         <form class="loginBox"
               action="<c:url value="/login"/>"
               method="post">
+
+            <label for="flag"></label>
             <input id="flag" name="language" hidden>
+
             <img class="user"
                  height="100px"
                  width="100px"
+                 value="en"
                  alt=""
-                 src="https://raw.githubusercontent.com/Fat-Frumos/Cars/master/ava.jpg">
+                 src="<c:url value="/upload?ava.jpg"/>">
 
-                <jsp:include page="flag.jsp"/>
+            <jsp:include page="flag.jsp"/>
 
             <div class="container">
 
-                <input name="name"
-                       type="text"
-                       pattern="[a-zA-Z0-9]+"
-                       placeholder="Enter Username"
-                       autocomplete="on"
-                       autofocus
-                       required
-                >
-                <input name="email"
-                       type="email"
-                       pattern="[^@\s]+@[^@\s]+\.[^@\s]+"
-                       placeholder="Enter Email"
-                       autocomplete="on"
-                       required
-                >
-                <input name="password"
-                       type="password"
-                       pattern="[a-zA-Z0-9]+"
-                       placeholder="Enter Password"
-                       autocomplete="on"
-                       required
-                >
+                <label>
+                    <input name="name"
+                           type="text"
+                           pattern="[a-zA-Z0-9]+"
+                           placeholder="Enter Username"
+                           autocomplete="on"
+                           autofocus
+                           required
+                    >
+                </label>
+                <label>
+                    <input name="email"
+                           type="email"
+                           pattern="[^@\s]+@[^@\s]+\.[^@\s]+"
+                           placeholder="Enter Email"
+                           autocomplete="on"
+                           required
+                    >
+                </label>
+                <label>
+                    <input name="password"
+                           type="password"
+                           pattern="[a-zA-Z0-9]+"
+                           placeholder="Enter Password"
+                           autocomplete="on"
+                           required
+                    >
+                </label>
                 <button type="submit">
                     Sign Up
                 </button>
@@ -114,7 +129,7 @@
                     Cancel
                 </a>
                 <br>
-                <a href="/user" class="sign glowing-txt" onclick="toCard()">
+                <a href="<c:url value="/user"/>" class="sign glowing-txt" onclick="toCard()">
                     Forgot password?
                 </a>
                 <br>
@@ -142,7 +157,7 @@
     let modal = document.getElementById('id01');
 
     window.onclick = function (event) {
-        if (event.target == modal) {
+        if (event.target === modal) {
             modal.style.display = "none";
         }
     }

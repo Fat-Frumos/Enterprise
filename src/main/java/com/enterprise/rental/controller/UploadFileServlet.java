@@ -12,7 +12,6 @@ import org.apache.log4j.Logger;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,25 +24,27 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
+
 @MultipartConfig(
         fileSizeThreshold = 1024 * 1024 * 1, // 1 MB
         maxFileSize = 1024 * 1024 * 5,      // 5 MB
         maxRequestSize = 1024 * 1024 * 10   // 10 MB
 )
 public class UploadFileServlet extends HttpServlet {
-    private static final Logger log = Logger.getLogger(UploadFileServlet.class);
+    private static final Logger log =Logger.getLogger(UploadFileServlet.class);
     private static final CarService carService = new CarService();
 
     private static final long serialVersionUID = UUID.randomUUID().getMostSignificantBits() & 0x7fffffL;
-    private ServletFileUpload uploader = null;
+
+//    private ServletFileUpload uploader = null;
 
     @Override
     public void init() throws ServletException {
         DiskFileItemFactory fileFactory = new DiskFileItemFactory();
         File filesDir = (File) getServletContext().getAttribute("FILES_DIR_FILE");
-        log.info(filesDir.getAbsolutePath() + "/" + filesDir.getPath());
+//        log.debug(filesDir.getAbsolutePath() + "/" + filesDir.getPath());
         fileFactory.setRepository(filesDir);
-        this.uploader = new ServletFileUpload(fileFactory);
+//        this.uploader = new ServletFileUpload(fileFactory);
     }
 
     @Override
@@ -51,7 +52,7 @@ public class UploadFileServlet extends HttpServlet {
             throws IOException {
 
         String queryString = request.getQueryString();
-        log.info(queryString);
+//        log.debug(queryString);
 
         ServletContext servletContext = getServletContext();
 
@@ -105,8 +106,8 @@ public class UploadFileServlet extends HttpServlet {
 
             getNext(reqFields, reqs, items);
 
-            log.info(Arrays.toString(reqs));
-            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+            log.debug(Arrays.toString(reqs));
+//            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
             Car car = new Car.Builder()
                     .id(carId)
                     .path(reqs[0])
@@ -115,14 +116,14 @@ public class UploadFileServlet extends HttpServlet {
                     .model(reqs[5])
 //                    .price(Double.valueOf(reqFields[1]))
 //                    .cost(Double.valueOf(reqFields[4]))
-                    .created(timestamp.toLocalDateTime())
+//                    .created(timestamp.toLocalDateTime())
                     .price(100.0)
                     .cost(10000.0)
                     .year(2022)
                     .rent(false)
                     .build();
             boolean save = carService.save(car);
-            log.info(String.format("Saved: %s, %s", save, car));
+            log.debug(String.format("Saved: %s, %s", save, car));
         } catch (Exception e) {
             throw new DataException(e.getMessage());
         } finally {
@@ -156,7 +157,7 @@ public class UploadFileServlet extends HttpServlet {
                     if (!file.exists()) {
                         fileItem.write(file);
                     } else {
-                        log.info("File is exists, Rename the file");
+                        log.debug("File is exists, Rename the file");
                         throw new FileAlreadyExistsException(file.getAbsolutePath());
                     }
                 }

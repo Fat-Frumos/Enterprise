@@ -1,6 +1,7 @@
 package com.enterprise.rental.controller;
 
 import com.enterprise.rental.entity.Order;
+import com.enterprise.rental.entity.Role;
 import com.enterprise.rental.entity.User;
 import com.enterprise.rental.exception.DataException;
 import com.enterprise.rental.service.OrderService;
@@ -23,7 +24,7 @@ import static com.enterprise.rental.dao.jdbc.Constants.*;
 @WebServlet(urlPatterns = "/user")
 public class UserServlet extends HttpServlet {
     private final UserService userService = new UserService();
-    private static final Logger log = Logger.getLogger(UserServlet.class);
+    private static final Logger log =Logger.getLogger(UserServlet.class);
 
     /**
      * View all user if forgot
@@ -42,23 +43,23 @@ public class UserServlet extends HttpServlet {
         User user;
         if (session != null) {
             user = (User) session.getAttribute("user");
-            String role = user != null ? user.getRole() : "guest";
+            String role = user != null ? user.getRole() : Role.GUEST.role();
             session.setAttribute("user", user);
-            if (Objects.equals(role, "admin")) {
+            if (Objects.equals(role, Role.ADMIN.role())) {
                 List<User> users = userService.getAll();
-                log.info(String.format("There are %d users", users.size()));
+                log.debug(String.format("There are %d users", users.size()));
                 request.setAttribute("users", users);
                 path = USERS;
-            } else if (Objects.equals(role, "manager")) {
+            } else if (Objects.equals(role, Role.MANAGER.role())) {
                 List<Order> orders = orderService.getAll();
                 request.setAttribute("orders", orders);
                 path = CONTRACT;
-            } else if (Objects.equals(role, "user")) {
+            } else if (Objects.equals(role, Role.USER.role())) {
                 List<Order> userOrders = orderService.getAll()
                         .stream()
                         .filter(order -> order.getUserId() == (user.getUserId()))
                         .collect(Collectors.toList());
-                log.info("Get userOrders: " + userOrders.size());
+                log.debug("Get userOrders: " + userOrders.size());
                 request.setAttribute("orders", userOrders);
                 path = ORDERS;
             } else {
@@ -83,11 +84,13 @@ public class UserServlet extends HttpServlet {
         String email = request.getParameter("email");
         String role = request.getParameter("role");
         String language = request.getParameter("language");
+        String passport = request.getParameter("passport");
+        String phone = request.getParameter("phone");
 
         Optional<User> optionalUser = userService.findByName(name);
 
         if (optionalUser.isPresent()) {
-            log.info(String.format("User: %s", optionalUser));
+            log.debug(String.format("%sUser: %s", PURPLE, optionalUser));
             request.setAttribute("errorMessage", "User is exists please try again");
             response.sendRedirect(LOGIN);
         } else {
@@ -97,6 +100,8 @@ public class UserServlet extends HttpServlet {
                     .userId(id)
                     .name(name)
                     .password(password)
+                    .passport(passport)
+                    .phone(phone)
                     .language(language)
                     .email(email)
                     .active(true)
@@ -104,7 +109,7 @@ public class UserServlet extends HttpServlet {
                     .build();
             boolean save = userService.save(user);
 
-            log.info(String.format("%s is created: %s", user, save));
+            log.debug(String.format("%s is created: %s", user, save));
             request.setAttribute("user", user);
 
             request.getRequestDispatcher(MAIN)
@@ -122,7 +127,7 @@ public class UserServlet extends HttpServlet {
             throws ServletException, IOException {
 
         boolean sendEmail = userService.sendEmail(request.getParameter("username"));
-        log.info(String.format("Letter sent: %b", sendEmail));
+        log.debug(String.format("Letter sent: %b", sendEmail));
 //        response.sendRedirect(NOT_FOUND);
         response.sendRedirect(LOGIN);
     }

@@ -4,14 +4,15 @@ import com.enterprise.rental.dao.OrderDao;
 import com.enterprise.rental.dao.jdbc.JdbcOrderDao;
 import com.enterprise.rental.entity.Invoice;
 import com.enterprise.rental.entity.Order;
+import com.enterprise.rental.entity.Role;
 import com.enterprise.rental.entity.User;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-
-public class OrderService {
+//implements Service<Order>
+public class OrderService  {
     private final OrderDao orderDao;
 
     public OrderService(OrderDao orderDao) {
@@ -22,7 +23,7 @@ public class OrderService {
         orderDao = new JdbcOrderDao();
     }
 
-    public boolean createOrder(Order order) {
+    public boolean save(Order order) {
         return orderDao.save(order);
     }
 
@@ -30,15 +31,18 @@ public class OrderService {
         return orderDao.findAll();
     }
 
-    public List<Order> getAll(User user) {
-        List<Order> orderList = new ArrayList<>();
-        if (user.isActive() && Objects.equals(user.getRole(), "user")) {
-            orderList = orderDao.findAll(String.valueOf(user.getUserId()));
-        }
-        return orderList;
+    public List<Order> getAll(String name) {
+        return orderDao.findAll(name);
     }
 
-    public Order updateOrder(Order order) {
+    public List<Order> getAll(User user) {
+        return user.isActive()
+                && Objects.equals(user.getRole(), Role.USER.role())
+                ? getAll(String.valueOf(user.getUserId()))
+                : new ArrayList<>();
+    }
+
+    public Order edit(Order order) {
         return orderDao.edit(order);
     }
 

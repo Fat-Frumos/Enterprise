@@ -1,8 +1,10 @@
 package com.enterprise.rental.entity;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.Objects;
+
+import static com.enterprise.rental.dao.jdbc.Constants.GREEN;
+import static com.enterprise.rental.dao.jdbc.Constants.RESET;
 
 public class Car implements Serializable {
     private long id;
@@ -85,7 +87,6 @@ public class Car implements Serializable {
         private Double cost;
         private int year;
         private boolean rent;
-        private LocalDateTime created;
 
         public Builder id(long id) {
             this.id = id;
@@ -127,10 +128,7 @@ public class Car implements Serializable {
             return this;
         }
 
-        public Builder created(LocalDateTime time) {
-            this.created = time;
-            return this;
-        }
+
         public Builder rent(boolean rent) {
             this.rent = rent;
             return this;
@@ -146,6 +144,7 @@ public class Car implements Serializable {
             car.price = this.price;
             car.cost = this.cost;
             car.year = this.year;
+            car.rent = this.rent;
             return car;
         }
     }
@@ -165,14 +164,12 @@ public class Car implements Serializable {
 
     @Override
     public String toString() {
-        return "Car{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", brand='" + brand + '\'' +
-                ", model='" + model + '\'' +
-                ", price=" + price +
-                ", cost=" + cost +
-                ", rent=" + rent +
-                '}';
+        return GREEN + "Car{" +
+                " name:'" + name + '\'' +
+                ", brand:'" + brand + '\'' +
+                ", model:'" + model + '\'' +
+                ", price:" + price +
+                ", cost:" + cost +
+                '}' + RESET;
     }
 }

@@ -8,7 +8,6 @@ import com.enterprise.rental.service.UserService;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -28,17 +27,15 @@ import static com.enterprise.rental.dao.jdbc.Constants.*;
  * <li> <code>doPost</code>, for HTTP POST requests
  * <li> <code>doPut</code>, if the servlet supports HTTP PUT requests
  * <li> <code>doDelete</code>, if the servlet supports HTTP DELETE requests
- *
  * <li> <code>getSessionUser</code>, to get Attribute User from Session
  * </ul>
  *
  * @author Pasha Pollack
  */
-@WebServlet(urlPatterns = "/cart")
 public class CartServlet extends Servlet {
     private final CarService carService = new CarService();
     private final UserService userService = new UserService();
-    private static final Logger log = Logger.getLogger(CartServlet.class);
+    private static final Logger log =Logger.getLogger(CartServlet.class);
 
     /**
      * <p>If the HTTP GET request is correctly formatted,
@@ -69,7 +66,7 @@ public class CartServlet extends Servlet {
 
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            log.info(String.format("Get into session User %s bucket cars: %s",
+            log.debug(String.format("Get into session User %s bucket cars: %s",
                     user.getName(), user.getCars().size()));
             List<Car> userCars = user.getCars();
             int size = userCars.size();
@@ -105,26 +102,25 @@ public class CartServlet extends Servlet {
         String path = LOGIN;
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            log.info(String.format("Post from session %s", user));
+            log.debug(String.format("Post from session %s", user));
             if (Objects.equals(user.getRole(), "user")) {
                 int id = Integer.parseInt(request.getParameter("id"));
                 Optional<Car> optional = carService.getById(id);
                 if (optional.isPresent()) {
                     Car car = optional.get();
-                    log.info(car);
-                    log.info(String.format("Main post car %d from User session %s", id, user.getName()));
+                    log.debug(String.format("Main post car %s from User session %s", car, user.getName()));
                     Order order = new Order(id, user.getUserId(), false);
-                    log.info(String.format("saved %s", order));
+                    log.debug(String.format("saved %s", order));
                     Set<Order> orders = user.getOrders();
                     if (orders != null) {
                         orders.add(order);
                         user.setOrders(orders);
-                        path = "/user";
+                        path = USER;
                     } else {
                         path = MAIN;
                     }
                 } else {
-                    path = "/cart";
+                    path = CART;
                 }
             }
         }
@@ -134,35 +130,30 @@ public class CartServlet extends Servlet {
     /**
      * <p>If the HTTP PUT request is correctly formatted,
      * <code>doPut</code>, set car to CartUser
-     * If User not registered redirect to Login page,
-     * otherwise redirect to ORDERS page </p>
-     * <p>
-     * Returns {@code Optional<User>} instance.
-     *
+     * <p>If User not registered redirect to Login page,
+     * otherwise redirect to ORDERS page
+     * <p>Returns {@code Optional<User>} instance.
      * <p>Put new car to bucket for user:
-     * get list and set Attribute User from Session</p>
+     * get list and set Attribute User from Session
      * {@code Optional<Car>}, if a value is present, otherwise {@code Optional.empty()}.
      *
      * @param request  an {@link HttpServletRequest} object that
      *                 contains the request the client has made of the servlet
      * @param response an {@link HttpServletResponse} object that
      *                 contains the response the servlet sends to the client
-     * @throws IOException      if an input or output error is
-     *                          detected when the servlet handles the request
-     * @throws ServletException if the request for the PUT
-     *                          could not be handled
+     * @throws IOException if an input or output error is
+     *                     detected when the servlet handles the request
      */
     @Override
     protected void doPut(
             HttpServletRequest request,
             HttpServletResponse response) throws
-            ServletException, IOException {
+            IOException {
         String path = LOGIN;
         Optional<User> optionalUser = getSessionUser(request);
-
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            log.info(String.format("Session %s %s From Put ",
+            log.debug(String.format("Session %s %s From Put ",
                     user.getRole(), user.getName()));
 
             String carId = request.getParameter("id");
@@ -174,22 +165,18 @@ public class CartServlet extends Servlet {
                     user = userService.bookCar(car, user);
                     request.setAttribute("auto", user.getCar());
                     request.setAttribute("user", user);
-                    log.info(String.format("Put new Car %s into the Cart: %s",
+                    log.debug(String.format("Put new Car %s into the Cart: %s",
                             car.getBrand(), user.getCars().size()));
-                    path = "/cart";
-//                    response.sendRedirect("/cart");
-
+                    path = CART;
                 }
             } catch (NumberFormatException e) {
-                log.info("Car by id not found");
+                log.debug("Car by id not found");
                 request.setAttribute("errorMessage", "Car not found");
                 path = ORDERS;
-//                response.sendRedirect(ORDERS);
             } finally {
                 response.sendRedirect(path);
             }
         }
-//        dispatch(request, response, "/login");
     }
 
     /**
@@ -219,10 +206,10 @@ public class CartServlet extends Servlet {
             HttpServletRequest request,
             HttpServletResponse response)
             throws ServletException, IOException {
-        //        dispatch(request, response, ORDERS);
 //    private static String getPath(List<Car> userCars) {
 //        return userCars.isEmpty() ? CARS : checkCard(userCars);
 //        user.getCars().remove(id);
+//        dispatch(request, response, ORDERS);
 //    }
     }
 

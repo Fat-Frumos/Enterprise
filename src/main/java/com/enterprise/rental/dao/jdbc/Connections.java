@@ -9,20 +9,22 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Objects;
 
-import static com.enterprise.rental.dao.DbManager.getInstance;
+import static com.enterprise.rental.dao.jdbc.DbManager.getInstance;
+import static java.sql.Connection.TRANSACTION_READ_COMMITTED;
 
 public class Connections {
     private static final Logger log = Logger.getLogger(Connections.class);
 
-    protected static Connection getWithoutAutoCommit() {
+    protected static Connection getConfigConnection() {
 
         Connection connection;
         try {
             connection = getInstance().getConnection();
             connection.setAutoCommit(false);
+            connection.setTransactionIsolation(TRANSACTION_READ_COMMITTED);
 
-        } catch (SQLException e) {
-            throw new DataException(e.getMessage(), e);
+        } catch (SQLException sqlException) {
+            throw new DataException(sqlException.getMessage(), sqlException);
         }
         return connection;
     }
@@ -46,7 +48,7 @@ public class Connections {
     protected static boolean rollback(
             Connection connection,
             SQLException sqlException, String query) {
-        log.info(String.format("Rollback: %s%n%s%n", sqlException.getMessage(), query));
+        log.debug(String.format("Rollback: %s%n%s%n", sqlException.getMessage(), query));
         return rollback(connection);
     }
 
@@ -62,9 +64,9 @@ public class Connections {
             try {
                 if (connection != null)
                     connection.rollback();
-//                log.info("connection rollback");
+//                log.debug("connection rollback");
             } catch (SQLException e) {
-                log.info(String.format("connection can not rollback: %s", e.getMessage()));
+                log.debug(String.format("connection can not rollback: %s", e.getMessage()));
             }
         }
     }
@@ -78,9 +80,9 @@ public class Connections {
             try {
                 if (connection != null)
                     connection.close();
-//                log.info("connection closed");
+//                log.debug("connection closed");
             } catch (SQLException e) {
-                log.info(String.format("connection not closed: %s", e.getMessage()));
+                log.debug(String.format("connection not closed: %s", e.getMessage()));
             }
         }
     }
@@ -89,14 +91,14 @@ public class Connections {
         try {
             Objects.requireNonNull(statement).close();
         } catch (SQLException e) {
-            log.info("Prepared Statement not closed");
+            log.debug("Prepared Statement not closed");
             throw new DataException(e.getMessage(), e);
         } finally {
             try {
                 if (statement != null)
                     statement.close();
             } catch (SQLException e) {
-                log.info(String.format("Prepared Statement not closed: %s", e.getMessage()));
+                log.debug(String.format("Prepared Statement not closed: %s", e.getMessage()));
             }
         }
     }
@@ -106,7 +108,7 @@ public class Connections {
             Objects.requireNonNull(resultSet).close();
             return true;
         } catch (SQLException sqlException) {
-            log.info(String.format("resultSet not closed: %s",
+            log.debug(String.format("resultSet not closed: %s",
                     sqlException.getMessage()));
             throw new DataException(sqlException);
         } finally {
@@ -114,7 +116,7 @@ public class Connections {
                 if (resultSet != null)
                     resultSet.close();
             } catch (SQLException e) {
-                log.info(String.format("ResultSet closed: %s", e.getMessage()));
+                log.debug(String.format("ResultSet closed: %s", e.getMessage()));
             }
         }
     }

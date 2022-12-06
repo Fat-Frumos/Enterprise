@@ -40,7 +40,7 @@ public class JdbcOrderDao implements OrderDao {
     public List<Order> findAll(long userId) {
         String query = String.format("%s%s",
                 FILTER_ORDER_BY_USER_ID_SQL, userId);
-        log.info(query);
+        log.debug(query);
         return getOrdersQuery(query);
     }
 
@@ -53,9 +53,17 @@ public class JdbcOrderDao implements OrderDao {
         String phone = invoice.getPhone();
         String reason = invoice.getReason();
         double payment = invoice.getPayment();
-        String query = String.format("INSERT INTO invoices (invoice_id, user_id, car_id, damage, payment, reason, passport, phone) VALUES (%d, %d, %d, '%s', %f,'%s','%s','%s');", id, userId, carId, damage, payment, reason, passport, phone);
+        String query = String.format("INSERT INTO invoices (invoice_id, user_id, car_id, damage, payment, reason, passport, phone) VALUES (%d, %d, %d, '%s', %f,'%s','%s','%s');",
+                id,
+                userId,
+                carId,
+                damage,
+                payment,
+                reason,
+                passport,
+                phone);
 
-        log.info(String.format("%s", query));
+        log.debug(String.format("%s", query));
 
         return templateOrder(query);
     }
@@ -66,7 +74,7 @@ public class JdbcOrderDao implements OrderDao {
         Connection connection = null;
         PreparedStatement statement = null;
         try {
-            connection = getWithoutAutoCommit();
+            connection = getConfigConnection();
             statement = connection.prepareStatement(query);
             execute = statement.execute();
             connection.commit();
@@ -109,16 +117,16 @@ public class JdbcOrderDao implements OrderDao {
                 UPDATE_ORDER_SQL,
                 damage, reason, payment, rejected, closed, order.getOrderId());
 
-        log.info(String.format("%s%n%s", order, query));
+        log.debug(String.format("%s%n%s", order, query));
 
         Connection connection = null;
         PreparedStatement statement = null;
 
         try {
-            connection = getWithoutAutoCommit();
+            connection = getConfigConnection();
             statement = connection.prepareStatement(query);
             boolean update = statement.executeUpdate() > 0;
-            log.info(String.format("%s %s", update, query));
+            log.debug(String.format("%s %s", update, query));
             connection.commit();
             return order;
 
@@ -134,7 +142,7 @@ public class JdbcOrderDao implements OrderDao {
     public boolean delete(long id) {
 
         String query = String.format("%s%d", DELETE_ORDER_SQL, id);
-        log.info(query);
+        log.debug(query);
         return templateOrder(query);
     }
 
@@ -151,11 +159,11 @@ public class JdbcOrderDao implements OrderDao {
         PreparedStatement statement = null;
         String query = String.format("%s%d", FILTER_ORDER_BY_ID_SQL, id);
         try {
-            connection = getWithoutAutoCommit();
+            connection = getConfigConnection();
             statement = connection.prepareStatement(FILTER_ORDER_BY_ID_SQL);
 
             statement.setLong(1, id);
-            log.info(query);
+            log.debug(query);
             return getOrder(statement.executeQuery());
 
         } catch (SQLException sqlException) {
@@ -172,9 +180,9 @@ public class JdbcOrderDao implements OrderDao {
         PreparedStatement statement = null;
         ResultSet executeSet = null;
         List<Order> orders = new ArrayList<>();
-        log.info(String.format("%s", query));
+        log.debug(String.format("%s%s%s", YELLOW, query, RESET));
         try {
-            connection = getWithoutAutoCommit();
+            connection = getConfigConnection();
             statement = connection.prepareStatement(query);
             executeSet = statement.executeQuery();
             connection.commit();
@@ -184,7 +192,7 @@ public class JdbcOrderDao implements OrderDao {
                     Order order = ORDER_ROW_MAPPER.mapRow(executeSet);
                     orders.add(order);
                 }
-                log.info(String.format("%d order(s)", orders.size()));
+                log.debug(String.format("%d order(s)", orders.size()));
                 return orders;
             }
 
@@ -199,12 +207,12 @@ public class JdbcOrderDao implements OrderDao {
 
     private boolean setOrderQuery(Order order, String query) {
         boolean execute = false;
-        log.info(String.format("Query: %s", query));
+        log.debug(String.format("Query: %s", query));
         Connection connection = null;
         PreparedStatement statement = null;
 
         try {
-            connection = getWithoutAutoCommit();
+            connection = getConfigConnection();
             statement = connection.prepareStatement(query);
             setOrders(order, statement);
             execute = statement.execute();
@@ -230,7 +238,7 @@ public class JdbcOrderDao implements OrderDao {
         String reason = order.getReason();
         double payment = order.getPayment();
         Timestamp term = order.getTerm();
-        log.info(order);
+        log.debug(String.valueOf(order));
 
         statement.setLong(1, UUID.randomUUID().getMostSignificantBits() & 0x7ffffffL);
         statement.setLong(2, order.getUserId());

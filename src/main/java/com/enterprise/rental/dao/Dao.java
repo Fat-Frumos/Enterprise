@@ -1,14 +1,18 @@
 package com.enterprise.rental.dao;
 
+import com.enterprise.rental.dao.jdbc.JdbcCarDao;
+import org.apache.log4j.Logger;
+
 import java.util.List;
 import java.util.Optional;
 
 /**
- * <p>Resource collection API</p>
- *
+ * <p>Resource collection API
  * <code>Dao</code> defines a base interface for all DAO interfaces.
- * Defines a type for performing CRUD operations on instances.
+ * <p>Defines a type for performing CRUD operations on instances.
  * Generic version of the Dao class.
+
+ * @author Pasha Pollack
  */
 public interface Dao<T> {
 

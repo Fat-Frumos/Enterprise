@@ -25,14 +25,16 @@ public class UserMapper extends Mapper<User> {
             String email = resultSet.getString("email");
             String salt = resultSet.getString("salt");
             String password = resultSet.getString("password");
-            String language = resultSet.getString("language");
-            log.info(language);
-//            String passport = resultSet.getString("passport");
-//            String phone = resultSet.getString("phone");
+            String passport = resultSet.getString("passport");
+            String phone = resultSet.getString("phone");
             boolean active = resultSet.getBoolean("active");
             boolean closed = resultSet.getBoolean("closed");
+            String language = resultSet.getString("language");
+
             String role = resultSet.getString("role")
                     != null ? resultSet.getString("role") : "guest";
+
+            log.debug(String.format("language:%s, password:%s, salt:%s", language, password, salt));
 
             return new User.Builder()
                     .userId(id)
@@ -41,8 +43,8 @@ public class UserMapper extends Mapper<User> {
                     .language(language)
                     .email(email)
                     .salt(salt)
-//                    .passport(passport)
-//                    .phone(phone)
+                    .passport(passport)
+                    .phone(phone)
                     .created(created)
                     .active(active)
                     .closed(closed)
@@ -57,27 +59,5 @@ public class UserMapper extends Mapper<User> {
             }
             throw new UserNotFoundException("User not found", exception);
         }
-    }
-
-    public Optional<User> userMapper(HttpServletRequest request) {
-
-        String[] userFields = {"id", "name", "password", "email", "salt", "language", "role", "active", "closed"};
-
-        Map<String, String> user = Arrays.stream(userFields)
-                .filter(key -> !"".equals(request.getParameter(key))
-                        && request.getParameter(key) != null)
-                .collect(Collectors.toMap(key -> key, request::getParameter, (a, b) -> b));
-
-        return Optional.of(new User.Builder()
-                .userId(Long.parseLong(user.get(userFields[0])))
-                .name(user.get(userFields[1]))
-                .password(user.get(userFields[2]))
-                .email(user.get(userFields[3]))
-                .salt(user.get(userFields[4]))
-                .language(user.get(userFields[5]))
-                .role(user.get(userFields[6]))
-                .active(true)
-                .build()
-        );
     }
 }

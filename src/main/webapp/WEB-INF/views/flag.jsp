@@ -1,4 +1,3 @@
-<%@ page import="com.enterprise.rental.entity.User" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%--
@@ -40,17 +39,6 @@
 
 </style>
 
-<%--<c:choose>--%>
-<%--    <c:when test="${user.language=='ua'}">--%>
-<%--        <fmt:setLocale value="ua" scope="session"/>--%>
-<%--        <fmt:setBundle basename="com.enterprise.rental.utils.BungleUa" var="lang"/>--%>
-<%--    </c:when>--%>
-<%--    <c:otherwise>--%>
-<%--        <fmt:setLocale value="en" scope="session"/>--%>
-<%--        <fmt:setBundle basename="com.enterprise.rental.utils.BungleEn" var="lang"/>--%>
-<%--    </c:otherwise>--%>
-<%--</c:choose>--%>
-
 <div id="lang-switch">
     <div id='language' onclick="changeLang()">
         <a onclick="enLang()" id='en' href="#"></a>
@@ -81,20 +69,19 @@
 
     function changeLang() {
         language.style.overflow = language.style.overflow === "visible" ? "hidden" : "visible";
-    };
+    }
 
     function uaLang() {
         // add_element();
         flag.value = 'ua';
-<%--        <fmt:setBundle basename="com.enterprise.rental.utils.BungleUa" var="lang"/>--%>
         document.getElementById("ua").style.top = '0';
         document.getElementById("en").style.top = '30px';
-    };
+    }
 
     function enLang() {
         flag.value = 'en';
 
         document.getElementById("en").style.top = '0';
         document.getElementById("ua").style.top = '30px';
-    };
+    }
 </script>

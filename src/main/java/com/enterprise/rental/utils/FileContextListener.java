@@ -18,7 +18,7 @@ public class FileContextListener implements ServletContextListener {
         String relativePath = ctx.getInitParameter("templates.img");
         File file = new File(String.format("%s%s%s", rootPath, File.separator, relativePath));
         if (!file.exists()) file.mkdirs();
-        log.info("File Directory created to be used for storing files");
+        log.debug("File Directory created to be used for storing files");
         ctx.setAttribute("FILES_DIR_FILE", file);
         ctx.setAttribute("FILES_DIR", String.format("%s%s%s", rootPath, File.separator, relativePath));
     }

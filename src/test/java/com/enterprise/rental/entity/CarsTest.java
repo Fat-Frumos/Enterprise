@@ -17,7 +17,7 @@ import static org.mockito.Mockito.when;
 
 
 class CarsTest {
-    Logger logger = Logger.getLogger(CarsTest.class);
+    Logger log = Logger.getLogger(CarsTest.class);
     private static final List<Car> cars = new ArrayList<>();
     static final Car X7 = new Car.Builder().id(1L).name("X7").brand("BMW").model("G07").path("http//").price(25000.0).cost(10000.0).year(2022).build();
     static final Car X5 = new Car.Builder().id(2L).name("X5").brand("BMW").model("GT-2").path("http//").price(22000.0).cost(10000.0).year(2020).build();
@@ -46,9 +46,9 @@ class CarsTest {
         Car car = new Car.Builder().id(2l).name("X5").brand("BMW").model("GT-2").path("http//").price(10000.0).cost(10000.0).year(2020).build();
         when(service.getAll("BMW")).thenReturn(cars);
 
-        logger.info(String.format("%s", service.getAll()));
-        logger.info(String.format("%s", car));
-        logger.info(String.format("%s", cars));
+        log.debug(String.format("%s", service.getAll()));
+        log.debug(String.format("%s", car));
+        log.debug(String.format("%s", cars));
 
         assertEquals(2, car.getId());
         assertEquals(10000.0, car.getPrice());
