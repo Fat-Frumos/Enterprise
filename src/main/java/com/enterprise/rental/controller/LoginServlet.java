@@ -1,6 +1,7 @@
 package com.enterprise.rental.controller;
 
 import com.enterprise.rental.entity.User;
+import com.enterprise.rental.service.impl.DefaultUserService;
 import com.enterprise.rental.service.UserService;
 import org.apache.log4j.Logger;
 
@@ -20,7 +21,7 @@ public class LoginServlet extends Servlet {
 
     private static final long serialVersionUID = UUID.randomUUID().getMostSignificantBits() & 0x7ffffffL;
     private static final Logger log = Logger.getLogger(LoginServlet.class);
-    private static final UserService userService = new UserService();
+    private static final UserService userService = new DefaultUserService();
 
     /**
      * Login screen
@@ -40,8 +41,7 @@ public class LoginServlet extends Servlet {
     @Override
     protected void doPut(
             HttpServletRequest request,
-            HttpServletResponse response)
-            throws ServletException, IOException {
+            HttpServletResponse response) {
         dispatch(request, response, USERS);
     }
 
@@ -54,13 +54,13 @@ public class LoginServlet extends Servlet {
             HttpServletResponse response)
             throws IOException, ServletException {
 
-//        Session session = (Session) request.getSession();
-//        securityService.setUserToken(request, response, session);
+        HttpSession session = request.getSession();
+        userService.setUserToken(request, response, session);
 
         String name = request.getParameter("name");
 
         Optional<User> optionalUser = userService.findByName(name);
-
+        //TODO to Service
         if (optionalUser.isPresent()) {
             log.debug(String.format("User: %s", optionalUser));
             request.setAttribute("errorMessage", String.format("User %s is exists", name));

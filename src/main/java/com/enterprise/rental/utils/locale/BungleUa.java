@@ -1,8 +1,11 @@
-package com.enterprise.rental.utils;
+package com.enterprise.rental.utils.locale;
 
 import java.util.ListResourceBundle;
 
 public class BungleUa extends ListResourceBundle {
+    private static final CurrencyConvector currencyConvector = new CurrencyConvector();
+    private static final double exchange = currencyConvector.exchangeFrom(1D, "USD");
+
     /**
      * Returns an array in which each item is a pair of objects in an
      * <code>Object</code> array. The first element of each pair is
@@ -19,6 +22,21 @@ public class BungleUa extends ListResourceBundle {
 
     static final Object[][] contents = {
 
+            {"month.September", "Вересень"},
+            {"month.October", "Жовтень"},
+            {"month.November", "Листопад"},
+            {"month.December", "Грудень"},
+            {"month.January", "Січень"},
+            {"month.February", "Лютий"},
+            {"month.March", "Березень"},
+            {"month.April", "Квітень"},
+            {"month.May", "Травень"},
+            {"month.June", "June"},
+            {"month.July", "Липень"},
+            {"month.August", "Серпень"},
+
+            {"exchange", String.format("%s", exchange)},
+            {"exchange.sign", "\u20B4"},
 // <html lang="ua">
             {"title.login", "Логін"},
             {"title.cars", "Автівки"},

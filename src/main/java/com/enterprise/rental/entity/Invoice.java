@@ -1,6 +1,7 @@
 package com.enterprise.rental.entity;
 
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.UUID;
 
 public class Invoice implements Serializable {
@@ -59,5 +60,30 @@ public class Invoice implements Serializable {
 
     public double getPayment() {
         return payment;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Invoice invoice = (Invoice) o;
+        return invoiceId == invoice.invoiceId && userId == invoice.userId && carId == invoice.carId && Double.compare(invoice.payment, payment) == 0 && Objects.equals(damage, invoice.damage) && Objects.equals(passport, invoice.passport) && Objects.equals(phone, invoice.phone) && Objects.equals(reason, invoice.reason) && Objects.equals(email, invoice.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(invoiceId, userId, carId, damage, passport, phone, payment, reason, email);
+    }
+
+    @Override
+    public String toString() {
+        return "Invoice{" +
+                "invoiceId=" + invoiceId +
+                ", userId=" + userId +
+                ", damage='" + damage + '\'' +
+                ", payment=" + payment +
+                ", reason='" + reason + '\'' +
+                ", email='" + email + '\'' +
+                '}';
     }
 }

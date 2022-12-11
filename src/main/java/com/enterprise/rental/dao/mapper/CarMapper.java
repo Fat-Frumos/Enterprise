@@ -3,6 +3,7 @@ package com.enterprise.rental.dao.mapper;
 import com.enterprise.rental.entity.Car;
 import com.enterprise.rental.exception.CarNotFoundException;
 import com.enterprise.rental.exception.DataException;
+import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.ResultSet;
@@ -12,6 +13,9 @@ import java.util.Map;
 import java.util.UUID;
 
 public class CarMapper extends Mapper<Car> {
+
+    private static final Logger log = Logger.getLogger(CarMapper.class);
+
     public Car mapRow(ResultSet resultSet) {
 
         try {
@@ -52,7 +56,7 @@ public class CarMapper extends Mapper<Car> {
         String[] carFields = {"id", "name", "brand", "model", "path", "price", "cost", "year", "rent"};
         for (String field : carFields) {
             String parameter = request.getParameter(field);
-            System.out.println(parameter);
+            log.info(parameter);
             if (parameter != null) {
                 params.put(field, parameter);
             }
@@ -63,7 +67,7 @@ public class CarMapper extends Mapper<Car> {
         long carId;
 
         if (params.get(carFields[0]) != null) {
-        carId = Long.parseLong(params.get(carFields[0]));
+            carId = Long.parseLong(params.get(carFields[0]));
         } else {
             carId = UUID.randomUUID().getMostSignificantBits() & 0x7fffffL;
         }

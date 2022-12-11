@@ -4,6 +4,7 @@ import com.enterprise.rental.dao.OrderDao;
 import com.enterprise.rental.dao.jdbc.JdbcOrderDao;
 import com.enterprise.rental.entity.Order;
 import com.enterprise.rental.entity.User;
+import com.enterprise.rental.service.impl.DefaultOrderService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,10 +19,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
-public class OrderServiceTest {
+class OrderServiceTest {
 
     private static final OrderDao mockDao = mock(JdbcOrderDao.class);
-    private static final OrderService orderService = new OrderService(mockDao);
+    private static final OrderService orderService = new DefaultOrderService(mockDao);
 
     List<Order> orders = new ArrayList<>();
 

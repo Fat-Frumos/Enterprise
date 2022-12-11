@@ -13,11 +13,9 @@ public interface Service<T> {
 
     List<T> getAll(Map<String, String> params);
 
-    List<T> getAll(Map<String, String> params, int offset);
-
-    boolean delete(long id);
+    Optional<T> getById(long id);
 
     T edit(T t);
 
-    Optional<T> getById(long id);
+    boolean delete(long id);
 }

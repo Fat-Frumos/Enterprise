@@ -4,11 +4,11 @@
 <c:choose>
     <c:when test="${user.language=='ua'}">
         <fmt:setLocale value="ua" scope="session"/>
-        <fmt:setBundle basename="com.enterprise.rental.utils.BungleUa" var="lang"/>
+        <fmt:setBundle basename="com.enterprise.rental.utils.locale.BungleUa" var="lang"/>
     </c:when>
     <c:otherwise>
         <fmt:setLocale value="en" scope="session"/>
-        <fmt:setBundle basename="com.enterprise.rental.utils.BungleEn" var="lang"/>
+        <fmt:setBundle basename="com.enterprise.rental.utils.locale.BungleEn" var="lang"/>
     </c:otherwise>
 </c:choose>
 <%--
@@ -201,14 +201,17 @@
             </ol>
         </div>
     </div>
-    <!-- partial:index.partial.html -->
-    <span class="content">
-  <!-- <h1 contenteditable data-text="Grow">Grow</h1> -->
-</span>
-
     <script src="https://cdn.jsdelivr.net/npm/TagCloud@2.2.0/dist/TagCloud.min.js"></script>
 </div>
 <script>
+
+    let navigation = document.querySelector('.navigation');
+    console.log(navigation);
+
+    navigation.onclick = function () {
+        navigation.classList.toggle('active')
+    }
+
     document.querySelectorAll(".true").forEach(element => element.checked = true)
 
     function addInvoice(orderId, userId, carId, damage, payment, reason, passport, phone) {

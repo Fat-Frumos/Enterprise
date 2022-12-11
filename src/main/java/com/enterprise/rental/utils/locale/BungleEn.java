@@ -1,4 +1,4 @@
-package com.enterprise.rental.utils;
+package com.enterprise.rental.utils.locale;
 
 import java.util.ListResourceBundle;
 
@@ -8,7 +8,23 @@ public class BungleEn extends ListResourceBundle {
     }
 
     static final Object[][] contents = {
+
+            {"month.September", "September"},
+            {"month.October", "October"},
+            {"month.November", "November"},
+            {"month.December", "December"},
+            {"month.January", "January"},
+            {"month.February", "February"},
+            {"month.March", "March"},
+            {"month.April", "April"},
+            {"month.May", "May"},
+            {"month.June", "June"},
+            {"month.July", "July"},
+            {"month.August", "August"},
+
 // <html lang="en">
+            {"exchange", "1"},
+            {"exchange.sign", "$"},
             {"title.login", "Login"},
             {"title.cars", "Cars"},
             {"title.user", "User"},

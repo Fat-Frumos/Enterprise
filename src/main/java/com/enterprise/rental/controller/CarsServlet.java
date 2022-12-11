@@ -5,6 +5,7 @@ import com.enterprise.rental.entity.Car;
 import com.enterprise.rental.entity.Role;
 import com.enterprise.rental.entity.User;
 import com.enterprise.rental.service.CarService;
+import com.enterprise.rental.service.impl.DefaultCarService;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -34,7 +35,7 @@ import static com.enterprise.rental.dao.jdbc.Constants.*;
 public class CarsServlet extends Servlet {
     private static final Logger log = Logger.getLogger(CarsServlet.class);
     private static final CarMapper CAR_MAPPER = new CarMapper();
-    private static final CarService carService = new CarService();
+    private static final CarService carService = new DefaultCarService();
     private final List<Car> cars = carService.getAll("id BETWEEN 219 AND 235");
 
     /**

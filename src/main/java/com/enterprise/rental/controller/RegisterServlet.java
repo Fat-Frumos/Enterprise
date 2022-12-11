@@ -3,6 +3,8 @@ package com.enterprise.rental.controller;
 import com.enterprise.rental.dao.mapper.OrderMapper;
 import com.enterprise.rental.entity.Order;
 import com.enterprise.rental.entity.User;
+import com.enterprise.rental.service.impl.DefaultOrderService;
+import com.enterprise.rental.service.impl.DefaultUserService;
 import com.enterprise.rental.service.OrderService;
 import com.enterprise.rental.service.UserService;
 import org.apache.commons.logging.Log;
@@ -22,6 +24,7 @@ import java.util.stream.Collectors;
 import static com.enterprise.rental.dao.jdbc.Constants.CONTRACT;
 
 public class RegisterServlet extends HttpServlet {
+    private static final UserService userService = new DefaultUserService();
     private static final Log log = LogFactory.getLog(RegisterServlet.class);
 
     /***
@@ -34,8 +37,6 @@ public class RegisterServlet extends HttpServlet {
             HttpServletResponse response)
             throws ServletException, IOException {
 
-        UserService userService = new UserService();
-
         String name = request.getParameter("name");
 
         Optional<User> optionalUser = userService.findByName(name);
@@ -45,7 +46,6 @@ public class RegisterServlet extends HttpServlet {
             String role = request.getParameter("role");
             String access = request.getParameter("active");
             String close = request.getParameter("closed");
-
             String active = access != null ? access : "off";
             String closed = close != null ? close : "off";
 
@@ -75,7 +75,6 @@ public class RegisterServlet extends HttpServlet {
         }
         request.getRequestDispatcher("/user")
                 .forward(request, response);
-
     }
 
     /***
@@ -88,7 +87,7 @@ public class RegisterServlet extends HttpServlet {
             HttpServletResponse response)
             throws ServletException, IOException {
 
-        OrderService orderService = new OrderService();
+        OrderService orderService = new DefaultOrderService();
 
         OrderMapper mapper = new OrderMapper();
         Order order = mapper.orderMapper(request);

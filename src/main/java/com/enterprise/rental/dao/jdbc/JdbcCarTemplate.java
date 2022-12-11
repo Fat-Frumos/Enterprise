@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.enterprise.rental.dao.jdbc.Connections.*;
 import static com.enterprise.rental.dao.jdbc.Constants.*;
 
 public class JdbcCarTemplate extends DbManager {

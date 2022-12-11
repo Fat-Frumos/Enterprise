@@ -19,15 +19,15 @@
 <c:choose>
     <c:when test="${user.language=='ua'}">
         <fmt:setLocale value="ua" scope="session"/>
-        <fmt:setBundle basename="com.enterprise.rental.utils.BungleUa" var="lang"/>
+        <fmt:setBundle basename="com.enterprise.rental.utils.locale.BungleUa" var="lang"/>
     </c:when>
     <c:otherwise>
         <fmt:setLocale value="en" scope="session"/>
-        <fmt:setBundle basename="com.enterprise.rental.utils.BungleEn" var="lang"/>
+        <fmt:setBundle basename="com.enterprise.rental.utils.locale.BungleEn" var="lang"/>
     </c:otherwise>
 </c:choose>
 <div class="col-lg-5 p-0 ps-lg-4">
-    <form action="${pageContext.request.contextPath}/order" method="post">
+    <form action="<c:url value="/order"/>" method="post">
         <div style="background: white" class="row m-0">
             <div class="col-12 px-0">
                 <div class="row bg-light m-0">
@@ -87,14 +87,17 @@
                                 </span>
                             </div>
                         </div>
-                        <jsp:include page="picker.jsp"/>
+<%--                        <jsp:include page="picker.jsp"/>--%>
                         <div class="d-flex mb-4">
                         <span class="me-5">
                             <span class="text-muted"><fmt:message key="span.payment" bundle="${lang}"/></span>
-                            <input id="price"
-                                   name="price"
-                                   value="${auto.price}"
-                                   style="width: 100px" hidden>
+                            <label for="price">
+                        <fmt:message key="exchange.sign" bundle="${lang}"/>
+                    </label>
+                            </label><input id="price"
+                                                              name="price"
+                                                              value="${auto.price}"
+                                                              style="width: 100px" hidden>
 
                             <input id="payment"
                                    class="form-control"
@@ -139,6 +142,10 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 
     <script>
+
+        const pay = document.getElementById("payment");
+        pay.value *= expf;
+
         $(document).ready(function () {
             $(".submit").click(function () {
                 $(".submit").addClass("purchase");
@@ -163,9 +170,9 @@
 
         checkbox.onchange = checkbox = (element) => {
             if (element.target.checked) {
-                payment.value = (50 + parseFloat(price.value)) * day;
+                payment.value = (50 + parseFloat(price.value)) * day * expf;
             } else {
-                payment.value = (parseFloat(price.value)) * day;
+                payment.value = (parseFloat(price.value)) * day * expf;
             }
             console.log("with driver " + element.target.checked + ", payment: " + payment.value);
         }

@@ -20,19 +20,29 @@
         margin: 0;
     }
 
+    div > label {
+        padding-top: 1px;
+        padding-left: 2px;
+        font-weight: 300;
+        color: #c8c8c8;
+    }
+
 </style>
 
 <c:choose>
     <c:when test="${user.language=='ua'}">
         <fmt:setLocale value="ua" scope="session"/>
-        <fmt:setBundle basename="com.enterprise.rental.utils.BungleUa" var="lang"/>
+        <fmt:setBundle basename="com.enterprise.rental.utils.locale.BungleUa" var="lang"/>
     </c:when>
     <c:otherwise>
         <fmt:setLocale value="en" scope="session"/>
-        <fmt:setBundle basename="com.enterprise.rental.utils.BungleEn" var="lang"/>
+        <fmt:setBundle basename="com.enterprise.rental.utils.locale.BungleEn" var="lang"/>
     </c:otherwise>
 </c:choose>
 
+<span id="exchangeLabel" class="cart-detail-badge" hidden>
+    <fmt:message key="exchange" bundle="${lang}"/>
+</span>
 <section>
     <form action="${pageContext.request.contextPath}/cars" method="post">
         <div class="row">
@@ -88,52 +98,57 @@
             <div class="col-md-4 col-3 ps-30 my-4">
                 <p class="h5 m-0"><fmt:message key="p.cost" bundle="${lang}"/></p>
                 <div class="d-flex align-items-end mt-4 mb-2">
-                    <p class="fs-14 fw-bold">
-                        <input style="width: 120px"
-                               type="text"
-                               class="fas fa-dollar-sign pe-1 form-control"
-                               value="${auto.cost}"
-                               name="cost"
-                               readonly="readonly"
-                        >
-                    </p>
+                    <label for="cost">
+                        <fmt:message key="exchange.sign" bundle="${lang}"/>
+                    </label>
+                    <input style="width: 120px"
+                           id="cost"
+                           type="text"
+                           class="fas fa-dollar-sign pe-1 form-control"
+                           value="${auto.cost}"
+                           name="cost"
+                           readonly="readonly"
+                    >
                 </div>
             </div>
 
             <div class="col-md-4 col-3 ps-30 my-4">
                 <p class="h5 m-0"><fmt:message key="p.price" bundle="${lang}"/></p>
                 <div class="d-flex align-items-end mt-4 mb-2">
-                    <p class="fs-14 fw-bold">
-                        <input style="width: 120px"
-                               type="text"
-                               class="fas fa-dollar-sign pe-1 form-control"
-                               value="${auto.price}"
-                               name="price"
-                               readonly="readonly"
-                        >
-                    </p>
+                    <label for="oldPrice">
+                        <fmt:message key="exchange.sign" bundle="${lang}"/>
+                    </label>
+                    <input style="width: 120px"
+                           id="oldPrice"
+                           type="text"
+                           class="fas fa-dollar-sign pe-1 form-control"
+                           value="${auto.price}"
+                           name="price"
+                           readonly="readonly"
+                    >
                 </div>
             </div>
 
             <div class="col-md-4 col-3 ps-30 my-4">
                 <p class="h5 m-0"><fmt:message key="p.driver" bundle="${lang}"/></p>
                 <div class="d-flex align-items-end mt-4 mb-2">
-                    <p class="fs-14 fw-bold">
-                        <input style="width: 120px"
-                               type="text"
-                               class="fas fa-dollar-sign pe-1 form-control"
-                               value="50"
-                               name="driver"
-                               readonly="readonly"
-                        >
-                    </p>
+                    <label for="driver">
+                        <fmt:message key="exchange.sign" bundle="${lang}"/>
+                    </label><input style="width: 120px"
+                                   id="driver"
+                                   type="text"
+                                   class="fas fa-dollar-sign pe-1 form-control"
+                                   value="50"
+                                   name="driver"
+                                   readonly="readonly"
+                >
                 </div>
             </div>
         </div>
     </form>
     <div class="drop-area" id="MyModal" hidden>
         <h4><fmt:message key="h4.upload" bundle="${lang}"/></h4>
-        <form action="${pageContext.request.contextPath}/upload" enctype="multipart/form-data" method="post">
+        <form action="/upload" enctype="multipart/form-data" method="post">
             <input style="border: none" type="file" name="file2"/>
             <br>
             <input name="newBrand"
@@ -173,7 +188,8 @@
                    class="fas fa-dollar-sign pe-1 mt-2 form-control"
             <%--                   value="${auto.cost}"--%>
             >
-            <input style="border: none; width: 100px" type="submit" value="<fmt:message key="input.upload" bundle="${lang}"/>"/>
+            <input style="border: none; width: 100px" type="submit"
+                   value="<fmt:message key="input.upload" bundle="${lang}"/>"/>
         </form>
     </div>
 
@@ -183,6 +199,29 @@
 </section>
 
 <script>
+
+    const ex = document.getElementById("exchangeLabel");
+    let expf = parseFloat(ex.innerHTML).toFixed(2);
+
+    const cost = document.getElementById("cost");
+    const pp = document.getElementById("oldPrice");
+    const driver = document.getElementById("driver");
+    cost.value *= expf;
+    pp.value *= expf;
+    driver.value *= expf;
+
+    console.log(pp.value);
+    console.log(cost.value);
+    console.log(driver.value);
+    console.log(expf);
+
+    for (let i = 0; i < pp.length; i++) {
+        pp[i].innerHTML = "" + (pp[i].innerHTML * expf).toFixed(0);
+        cost[i].innerHTML = "" + (cost[i].innerHTML * expf).toFixed(0)
+        console.log(pp[i].innerHTML);
+        console.log(cost[i].innerHTML);
+    }
+
     if ("${user.role}" === "admin") {
 
         let tags = document.getElementById("tags");

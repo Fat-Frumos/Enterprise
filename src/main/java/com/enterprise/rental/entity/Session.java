@@ -1,6 +1,5 @@
 package com.enterprise.rental.entity;
 
-import java.util.List;
 import java.util.Map;
 
 public class Session {
@@ -8,7 +7,6 @@ public class Session {
     private String token;
     private boolean expired;
     private User user;
-    private List<Car> CarList;
     private Map<User, String> userTokens;
 
     public String getToken() {
@@ -35,19 +33,21 @@ public class Session {
         this.user = user;
     }
 
-    public List<Car> getCarList() {
-        return CarList;
-    }
-
-    public void setCarList(List<Car> carList) {
-        CarList = carList;
-    }
-
     public Map<User, String> getUserTokens() {
         return userTokens;
     }
 
     public void setUserTokens(Map<User, String> userTokens) {
         this.userTokens = userTokens;
+    }
+
+    public Session(String token, boolean expired, User user, Map<User, String> userTokens) {
+        this.token = token;
+        this.expired = expired;
+        this.user = user;
+        this.userTokens = userTokens;
+    }
+
+    public Session() {
     }
 }

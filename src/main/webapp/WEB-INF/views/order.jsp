@@ -5,11 +5,11 @@
 <c:choose>
     <c:when test="${user.language=='ua'}">
         <fmt:setLocale value="ua" scope="session"/>
-        <fmt:setBundle basename="com.enterprise.rental.utils.BungleUa" var="lang"/>
+        <fmt:setBundle basename="com.enterprise.rental.utils.locale.BungleUa" var="lang"/>
     </c:when>
     <c:otherwise>
         <fmt:setLocale value="en" scope="session"/>
-        <fmt:setBundle basename="com.enterprise.rental.utils.BungleEn" var="lang"/>
+        <fmt:setBundle basename="com.enterprise.rental.utils.locale.BungleEn" var="lang"/>
     </c:otherwise>
 </c:choose>
 <%--
@@ -85,7 +85,7 @@
                     <td><p>${order.carId}</p></td>
                     <td><p style="width: 90px"><fmt:formatDate pattern="yyyy-MM-dd" value="${order.created}"/></p></td>
                     <td><p style="width: 90px"><fmt:formatDate pattern="yyyy-MM-dd" value="${order.term}"/></p></td>
-                    <td><p>${order.payment}</p></td>
+                    <td><p>${order.payment} $</p></td>
                     <td><p style="width: 180px">${order.damage}</p></td>
                     <td><p style="width: 280px">${order.reason}</p></td>
                         <%--                    <td><p style="width: 120px">${order.passport}</p></td>--%>

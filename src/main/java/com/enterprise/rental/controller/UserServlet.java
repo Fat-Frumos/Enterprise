@@ -4,8 +4,10 @@ import com.enterprise.rental.entity.Order;
 import com.enterprise.rental.entity.Role;
 import com.enterprise.rental.entity.User;
 import com.enterprise.rental.exception.DataException;
-import com.enterprise.rental.service.OrderService;
 import com.enterprise.rental.service.UserService;
+import com.enterprise.rental.service.impl.DefaultOrderService;
+import com.enterprise.rental.service.impl.DefaultUserService;
+import com.enterprise.rental.service.OrderService;
 import org.apache.log4j.Logger;
 
 import javax.servlet.RequestDispatcher;
@@ -23,7 +25,7 @@ import static com.enterprise.rental.dao.jdbc.Constants.*;
 
 @WebServlet(urlPatterns = "/user")
 public class UserServlet extends HttpServlet {
-    private final UserService userService = new UserService();
+    private final UserService userService = new DefaultUserService();
     private static final Logger log =Logger.getLogger(UserServlet.class);
 
     /**
@@ -32,12 +34,12 @@ public class UserServlet extends HttpServlet {
      * if Admin role show all users
      */
     @Override
-    protected void doGet(
+    public void doGet(
             HttpServletRequest request,
             HttpServletResponse response)
             throws ServletException, IOException {
 
-        OrderService orderService = new OrderService();
+        OrderService orderService = new DefaultOrderService();
         HttpSession session = request.getSession(false);
         String path = "/";
         User user;
@@ -124,11 +126,10 @@ public class UserServlet extends HttpServlet {
     protected void doPut(
             HttpServletRequest request,
             HttpServletResponse response)
-            throws ServletException, IOException {
+            throws IOException {
 
         boolean sendEmail = userService.sendEmail(request.getParameter("username"));
         log.debug(String.format("Letter sent: %b", sendEmail));
-//        response.sendRedirect(NOT_FOUND);
         response.sendRedirect(LOGIN);
     }
 

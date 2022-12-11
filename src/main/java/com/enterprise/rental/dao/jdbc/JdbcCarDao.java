@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.enterprise.rental.dao.jdbc.Connections.*;
+import static com.enterprise.rental.dao.jdbc.DbManager.*;
 import static com.enterprise.rental.dao.jdbc.Constants.*;
 import static com.enterprise.rental.dao.jdbc.JdbcCarTemplate.*;
 
@@ -40,7 +40,6 @@ public class JdbcCarDao implements CarDao {
     public List<Car> findAll(String query) {
         String sql = String.format("%s %s;",
                 FILTER_CAR_BY_SQL, query);
-        log.debug(String.format("%s%s%s", YELLOW, sql, RESET));
         return getCarsQuery(sql);
     }
 
@@ -62,8 +61,6 @@ public class JdbcCarDao implements CarDao {
                 UPDATE_CAR_SQL,
                 brand, model, name, price, cost, id);
 
-        log.debug(String.format("%s%s%s", YELLOW, query, RESET));
-
         return updateCar(car, query);
     }
 
@@ -75,10 +72,8 @@ public class JdbcCarDao implements CarDao {
         if (optionalCar.isPresent()) {
             Car car = optionalCar.get();
             String query = String.format("DELETE FROM car where id = %d", id);
-            String sql = String.format("UPDATE car SET rent = true WHERE id = %d", id);
             Car updatedCar = updateCar(car, query);
-            log.debug(String.format("Deleted: %s", updatedCar));
-            log.debug(String.format("%s%s%s", YELLOW, sql, RESET));
+            log.debug(String.format("Deleted: %s%s %s%s", updatedCar, YELLOW, query, RESET));
             return true;
         }
         return false;
@@ -95,14 +90,11 @@ public class JdbcCarDao implements CarDao {
     }
 
     private static Car updateCar(Car car, String query) {
-
+        log.debug(String.format("%s%s%s", YELLOW, query, RESET));
         Connection connection = null;
         PreparedStatement statement = null;
         try {
             connection = getConfigConnection();
-//            connection = getInstance().getConnection();
-//            connection.setAutoCommit(false);
-//            connection.setTransactionIsolation(TRANSACTION_READ_COMMITTED);
             statement = connection.prepareStatement(query);
             boolean update = statement.executeUpdate() > 0;
             log.debug(String.format("update car %s", update));

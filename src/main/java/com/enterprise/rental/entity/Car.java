@@ -1,20 +1,31 @@
 package com.enterprise.rental.entity;
 
+import com.enterprise.rental.dao.jdbc.factory.Column;
+import com.enterprise.rental.dao.jdbc.factory.Entity;
+import com.enterprise.rental.dao.jdbc.factory.Table;
+
 import java.io.Serializable;
 import java.util.Objects;
 
-import static com.enterprise.rental.dao.jdbc.Constants.GREEN;
-import static com.enterprise.rental.dao.jdbc.Constants.RESET;
-
+@Entity
+@Table(name = "cars")
 public class Car implements Serializable {
+    @Column(name = "id", length = 1024)
     private long id;
+    @Column(name = "name", length = 1024)
     private String name;
+    @Column(name = "brand", length = 1024)
     private String brand;
+    @Column(name = "model", length = 1024)
     private String model;
+    @Column(name = "path", length = 1024)
     private String path;
+    @Column(name = "price", length = 1024)
     private Double price;
+    @Column(name = "cost", length = 1024)
     private Double cost;
     private int year;
+    private User user;
 
     public boolean isRent() {
         return rent;
@@ -69,12 +80,18 @@ public class Car implements Serializable {
         return cost;
     }
 
-    public void setCost(Double cost) {
-        this.cost = cost;
-    }
+    public void setCost(Double cost) {this.cost = cost;}
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    public User user() {
+        return user;
+    }
+
+    public void user(User user) {
+        this.user = user;
     }
 
     public static class Builder {
@@ -128,7 +145,6 @@ public class Car implements Serializable {
             return this;
         }
 
-
         public Builder rent(boolean rent) {
             this.rent = rent;
             return this;
@@ -164,12 +180,13 @@ public class Car implements Serializable {
 
     @Override
     public String toString() {
-        return GREEN + "Car{" +
-                " name:'" + name + '\'' +
+        return "Car{" +
+                "name:'" + name + '\'' +
                 ", brand:'" + brand + '\'' +
                 ", model:'" + model + '\'' +
+                ", path:" + path +
                 ", price:" + price +
                 ", cost:" + cost +
-                '}' + RESET;
+                '}';
     }
 }

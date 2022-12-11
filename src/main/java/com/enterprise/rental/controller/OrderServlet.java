@@ -5,16 +5,14 @@ import com.enterprise.rental.entity.Car;
 import com.enterprise.rental.entity.Invoice;
 import com.enterprise.rental.entity.Order;
 import com.enterprise.rental.entity.User;
-import com.enterprise.rental.exception.DataException;
 import com.enterprise.rental.service.CarService;
+import com.enterprise.rental.service.impl.DefaultCarService;
+import com.enterprise.rental.service.impl.DefaultOrderService;
 import com.enterprise.rental.service.OrderService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -25,11 +23,22 @@ import java.util.Optional;
 
 import static com.enterprise.rental.dao.jdbc.Constants.*;
 
-@WebServlet(urlPatterns = "/order")
-public class OrderServlet extends HttpServlet {
+/**
+ * <p>Order Servlet extends an abstract Servlet suitable for a Web-site.
+ * <p>A subclass of <code>HttpServlet</code> must override four methods:
+ * <code>doGet</code>, for HTTP GET requests
+ * <code>doPost</code>, for HTTP POST requests
+ * <code>doPut</code>, for HTTP PUT requests
+ * <code>doDelete</code>, for HTTP DELETE requests
+ * <code>setUserAttribute</code>, setUserAttribute
+ *
+ * @author Pasha Pollack
+ */
+
+public class OrderServlet extends Servlet {
     private static final Log log = LogFactory.getLog(OrderServlet.class);
-    private static final CarService carService = new CarService();
-    private static final OrderService orderService = new OrderService();
+    private static final CarService carService = new DefaultCarService();
+    private static final OrderService orderService = new DefaultOrderService();
     private static final OrderMapper ORDER_MAPPER = new OrderMapper();
 
     @Override
@@ -87,7 +96,8 @@ public class OrderServlet extends HttpServlet {
 
         if (optional.isPresent()) {
             User user = optional.get();
-            log.debug(String.format("User %s ", user.getName()));
+            log.debug(String.format("%s %s From Request session",
+                    user.getRole(), user.getName()));
             Car car = user.getCar();
             if (car != null) {
                 log.debug(String.format("Car %s ", car.getBrand()));
@@ -132,10 +142,9 @@ public class OrderServlet extends HttpServlet {
 //
         Invoice invoice = new Invoice(uid, cid, damage, passport, phone, reason, "bob@i.ua", pay);
         log.debug(String.format("Invoice: %s", invoice));
-        boolean created = orderService.createInvoice(invoice);
+        boolean created = orderService.save(invoice);
         log.debug(String.format("create Invoice: %s", created));
         response.sendRedirect("/user");
-
     }
 
     /**
@@ -145,19 +154,25 @@ public class OrderServlet extends HttpServlet {
     protected void doDelete(
             HttpServletRequest request,
             HttpServletResponse response)
-            throws ServletException, IOException {
+            throws IOException {
 
         String id = (request.getParameter("orderId"));
         log.debug(String.format("Delete order %s", id));
 
-        Optional<User> user = getUser(request.getSession(false));
-        if ("manager".equals(user.get().getRole()) && user.isPresent() && id != null) {
-            boolean delete = orderService.delete(Long.parseLong(id));
-            log.debug(String.format("Order# %s, deleted %b", id, delete));
-            List<Order> userOrders = orderService.getAll();
-            request.setAttribute("orders", userOrders);
-            request.setAttribute("user", user);
-            log.debug(String.format("%s", user));
+        Optional<User> optionalUser = getUser(request.getSession(false));
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            if ("manager".equals(user.getRole()) && id != null) {
+                boolean delete = orderService.delete(Long.parseLong(id));
+                log.debug(String.format("Order# %s, deleted %b", id, delete));
+                List<Order> userOrders = orderService.getAll();
+                request.setAttribute("orders", userOrders);
+                request.setAttribute("user", user);
+                log.debug(String.format("%s", user));
+
+                log.debug(String.format("%s %s From Request session",
+                        user.getRole(), user.getName()));
+            }
         }
         response.sendRedirect("/user");
     }
@@ -181,31 +196,5 @@ public class OrderServlet extends HttpServlet {
         }
         request.setAttribute("car", userCars.size());
         request.setAttribute("user", user);
-    }
-
-    private static Optional<User> getUser(HttpSession session) {
-
-        if (session.getAttribute("user") != null) {
-            User user = (User) session.getAttribute("user");
-            log.debug(String.format("%s %s From Request session",
-                    user.getRole(), user.getName()));
-            return Optional.of(user);
-        }
-        return Optional.empty();
-    }
-
-    void dispatch(
-            HttpServletRequest request,
-            HttpServletResponse response, String path) {
-
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.setContentType("text/html;charset=utf-8");
-        try {
-            RequestDispatcher dispatcher = getServletContext()
-                    .getRequestDispatcher(path);
-            dispatcher.include(request, response);
-        } catch (Exception e) {
-            throw new DataException(e.getMessage());
-        }
     }
 }

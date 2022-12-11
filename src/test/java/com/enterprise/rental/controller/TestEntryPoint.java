@@ -1,5 +1,5 @@
-package com.enterprise.rental.controller;
-
+//package com.enterprise.rental.controller;
+//
 //import org.junit.jupiter.api.Test;
 //
 //import javax.servlet.ServletException;
@@ -15,9 +15,8 @@ package com.enterprise.rental.controller;
 //import static org.junit.jupiter.api.Assertions.assertTrue;
 //import static org.mockito.Mockito.*;
 //
-public class TestEntryPoint {
-}
-
+//public class TestEntryPoint {
+//
 //
 //    @Test
 //    public void testServlet() throws Exception {

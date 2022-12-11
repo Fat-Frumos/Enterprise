@@ -15,8 +15,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.enterprise.rental.dao.jdbc.Connections.*;
 import static com.enterprise.rental.dao.jdbc.Constants.*;
+import static com.enterprise.rental.dao.jdbc.DbManager.*;
 
 public class JdbcOrderDao implements OrderDao {
 
@@ -53,7 +53,8 @@ public class JdbcOrderDao implements OrderDao {
         String phone = invoice.getPhone();
         String reason = invoice.getReason();
         double payment = invoice.getPayment();
-        String query = String.format("INSERT INTO invoices (invoice_id, user_id, car_id, damage, payment, reason, passport, phone) VALUES (%d, %d, %d, '%s', %f,'%s','%s','%s');",
+        String query = String.format("%s VALUES (%d, %d, %d, '%s', %f,'%s','%s','%s');",
+                INSERT_INVOICE,
                 id,
                 userId,
                 carId,
@@ -63,7 +64,7 @@ public class JdbcOrderDao implements OrderDao {
                 passport,
                 phone);
 
-        log.debug(String.format("%s", query));
+        log.debug(String.format("%s%s", YELLOW, query));
 
         return templateOrder(query);
     }
@@ -117,7 +118,7 @@ public class JdbcOrderDao implements OrderDao {
                 UPDATE_ORDER_SQL,
                 damage, reason, payment, rejected, closed, order.getOrderId());
 
-        log.debug(String.format("%s%n%s", order, query));
+        log.debug(String.format("%s%s%n%s%s", RED, order, query, RESET));
 
         Connection connection = null;
         PreparedStatement statement = null;
@@ -140,8 +141,8 @@ public class JdbcOrderDao implements OrderDao {
 
     @Override
     public boolean delete(long id) {
-
         String query = String.format("%s%d", DELETE_ORDER_SQL, id);
+        log.debug(String.format("%s %s%s", RED, query, RESET));
         log.debug(query);
         return templateOrder(query);
     }
@@ -163,7 +164,7 @@ public class JdbcOrderDao implements OrderDao {
             statement = connection.prepareStatement(FILTER_ORDER_BY_ID_SQL);
 
             statement.setLong(1, id);
-            log.debug(query);
+            log.debug(String.format("%s%s%s", YELLOW, query, RESET));
             return getOrder(statement.executeQuery());
 
         } catch (SQLException sqlException) {
@@ -207,7 +208,7 @@ public class JdbcOrderDao implements OrderDao {
 
     private boolean setOrderQuery(Order order, String query) {
         boolean execute = false;
-        log.debug(String.format("Query: %s", query));
+        log.debug(String.format(YELLOW + "Query: %s", query) + RESET);
         Connection connection = null;
         PreparedStatement statement = null;
 

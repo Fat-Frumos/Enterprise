@@ -3,6 +3,7 @@ package com.enterprise.rental.dao.mapper;
 import com.enterprise.rental.entity.Order;
 import com.enterprise.rental.exception.DataException;
 import com.enterprise.rental.exception.OrderNotFoundException;
+import com.enterprise.rental.utils.locale.CurrencyConvector;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,10 +15,10 @@ import java.util.Map;
 import java.util.UUID;
 
 public class OrderMapper extends Mapper<Order> {
-    private static final Logger log = Logger.getLogger(OrderMapper.class);
 
     public Order mapRow(ResultSet resultSet) {
-//        String[] mapRow = {"orderId", "carId", "userId", "payment", "passport", "reason", "phone", "damage", "created", "term", "driver"};
+
+
         try {
             long orderId = resultSet.getLong("order_id");
             long carId = resultSet.getLong("car_id");

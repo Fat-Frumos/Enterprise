@@ -1,4 +1,4 @@
-package com.enterprise.rental.utils;
+package com.enterprise.rental.utils.email;
 
 import com.enterprise.rental.exception.DataException;
 import com.itextpdf.text.*;

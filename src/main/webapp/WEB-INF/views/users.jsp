@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%--<%@ taglib prefix="ct" uri="/WEB-INF/tags/dataTag" %>--%>
 <%--
   Created by IntelliJ IDEA.
   User: Pasha
@@ -22,7 +23,6 @@
 </head>
 <body>
 <jsp:include page="nav.jsp"/>
-
 <div class="container">
     <div class="col-lg-12">
         <h5 style="text-align: center">List of Users</h5>

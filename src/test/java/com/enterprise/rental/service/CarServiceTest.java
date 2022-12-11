@@ -2,6 +2,7 @@ package com.enterprise.rental.service;
 
 import com.enterprise.rental.dao.CarDao;
 import com.enterprise.rental.entity.Car;
+import com.enterprise.rental.service.impl.DefaultCarService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,7 +20,7 @@ import static org.mockito.Mockito.*;
 
 class CarServiceTest {
     private static final CarDao mockDao = mock(CarDao.class);
-    private static final CarService carService = new CarService(mockDao);
+    private static final CarService carService = new DefaultCarService(mockDao);
 
     List<Car> cars = new ArrayList<>();
     static final Car car = new Car.Builder().id(1L).name("X7").brand("BMW").model("G07").path("http//").price(25000.0).cost(10000.0).year(2022).build();

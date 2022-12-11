@@ -11,9 +11,7 @@ import javax.servlet.annotation.WebListener;
 @WebListener
 public class Listener implements ServletContextListener {
 
-    public Listener() {
-
-    }
+    public Listener() {}
 
     /* This method is called when the servlet context is initialized(when the Web application is deployed). */
     @Override

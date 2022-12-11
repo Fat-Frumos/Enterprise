@@ -13,5 +13,4 @@ public interface CarDao extends Dao<Car> {
 
     Integer countId(String sql);
 
-//    List<Car> findCars(int recordsPerPage, );
 }

@@ -48,7 +48,6 @@
 
     function openForm(id) {
         let url = '/order?id=' + id;
-
         window.location.href = url;
     }
 

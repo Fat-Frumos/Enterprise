@@ -12,11 +12,11 @@
 <c:choose>
     <c:when test="${user.language=='ua'}">
         <fmt:setLocale value="ua" scope="session"/>
-        <fmt:setBundle basename="com.enterprise.rental.utils.BungleUa" var="lang"/>
+        <fmt:setBundle basename="com.enterprise.rental.utils.locale.BungleUa" var="lang"/>
     </c:when>
     <c:otherwise>
         <fmt:setLocale value="en" scope="session"/>
-        <fmt:setBundle basename="com.enterprise.rental.utils.BungleEn" var="lang"/>
+        <fmt:setBundle basename="com.enterprise.rental.utils.locale.BungleEn" var="lang"/>
     </c:otherwise>
 </c:choose>
 <!DOCTYPE html>
@@ -48,9 +48,8 @@
         <jsp:include page="tag.jsp"/>
     </div>
 </nav>
-
+<jsp:include page="nav.jsp"/>
 <div class="container">
-    <jsp:include page="nav.jsp"/>
     <div class="row m-0">
         <div class="col-lg-7 pe-lg-5">
             <jsp:include page="label.jsp"/>
@@ -61,8 +60,6 @@
     <jsp:include page="cart.jsp"/>
 
 </div>
-<%--<jsp:include page="burger.jsp"/>--%>
-
 <div class="day">
     <h6><ct:today format="MMMM dd yyyy"/></h6>
     <a style="text-transform: capitalize" href="/user/${user}">(${user})</a>

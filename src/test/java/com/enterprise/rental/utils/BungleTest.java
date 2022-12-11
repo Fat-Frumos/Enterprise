@@ -1,5 +1,7 @@
 package com.enterprise.rental.utils;
 
+import com.enterprise.rental.utils.locale.BungleEn;
+import com.enterprise.rental.utils.locale.BungleUa;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

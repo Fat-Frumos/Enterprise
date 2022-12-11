@@ -1,12 +1,15 @@
 package com.enterprise.rental.controller;
 
+import com.enterprise.rental.entity.User;
 import com.enterprise.rental.exception.DataException;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.Optional;
 
 /**
  * Servlet extends an HTTP servlet suitable <code>HttpServlet</code> for a Web-site
@@ -14,7 +17,7 @@ import java.io.IOException;
  *
  * @author Pasha Pollack
  */
-abstract class Servlet extends HttpServlet {
+public abstract class Servlet extends HttpServlet {
 
     /**
      * Defines an object that receives requests from the client
@@ -51,7 +54,7 @@ abstract class Servlet extends HttpServlet {
      * @param path     the String that contains the response
      *                 the servlet returns to the client
      */
-    void dispatch(
+    protected void dispatch(
             HttpServletRequest request,
             HttpServletResponse response,
             String path) {
@@ -66,5 +69,37 @@ abstract class Servlet extends HttpServlet {
         } catch (ServletException | IOException e) {
             throw new DataException(e.getMessage());
         }
+    }
+
+    /**
+     * Get User instance {@code Optional<User>} from session
+     * <p>Get Attribute User from Session</p>
+     *
+     * The servlet container uses this interface to create
+     * a session between an HTTP client and an HTTP server.
+     * The session persists for a specified time period,
+     * across more than one connection or page request from the user.
+     * A session usually corresponds to one user,
+     * who may visit a site many times.
+     * The server can maintain a session in many ways such as
+     * using cookies or rewriting URLs.
+     *<p>
+     * Set the object bound with the specified name in this session,
+     * or null if no object is bound under the name.
+     * {@code name} a string specifying the name of the object
+     *
+     * @param session an {@link HttpSession} object that
+     *                contains the request the client has made
+     *                of the servlet
+     * @return {@code Optional<User>}, if a value is present,
+     * otherwise {@code Optional.empty()}.
+     */
+    protected static Optional<User> getUser(HttpSession session) {
+
+        if (session.getAttribute("user") != null) {
+            User user = (User) session.getAttribute("user");
+            return Optional.of(user);
+        }
+        return Optional.empty();
     }
 }

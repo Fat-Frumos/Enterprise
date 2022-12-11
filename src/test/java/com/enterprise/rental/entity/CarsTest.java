@@ -2,19 +2,20 @@ package com.enterprise.rental.entity;
 
 import com.enterprise.rental.dao.jdbc.JdbcCarDao;
 import com.enterprise.rental.service.CarService;
+import com.enterprise.rental.service.impl.DefaultCarService;
+import org.apache.log4j.Logger;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.apache.log4j.Logger;
 
-import java.lang.reflect.Field;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
 
 class CarsTest {
     Logger log = Logger.getLogger(CarsTest.class);
@@ -22,15 +23,14 @@ class CarsTest {
     static final Car X7 = new Car.Builder().id(1L).name("X7").brand("BMW").model("G07").path("http//").price(25000.0).cost(10000.0).year(2022).build();
     static final Car X5 = new Car.Builder().id(2L).name("X5").brand("BMW").model("GT-2").path("http//").price(22000.0).cost(10000.0).year(2020).build();
     JdbcCarDao mockCarDao = mock(JdbcCarDao.class);
-    CarService service = new CarService(mockCarDao);
+    CarService service = new DefaultCarService(mockCarDao);
 
     @BeforeEach
     void init() {
         cars.add(X5);
         cars.add(X7);
-        service = new CarService(mockCarDao);
+        service = new DefaultCarService(mockCarDao);
     }
-
 
     @Test
     @DisplayName(value = "Set Car name")
@@ -42,8 +42,8 @@ class CarsTest {
     }
 
     @Test
-    public void testFindByBrand() {
-        Car car = new Car.Builder().id(2l).name("X5").brand("BMW").model("GT-2").path("http//").price(10000.0).cost(10000.0).year(2020).build();
+    void testFindByBrand() {
+        Car car = new Car.Builder().id(2L).name("X5").brand("BMW").model("GT-2").path("http//").price(10000.0).cost(10000.0).year(2020).build();
         when(service.getAll("BMW")).thenReturn(cars);
 
         log.debug(String.format("%s", service.getAll()));
@@ -56,7 +56,7 @@ class CarsTest {
     }
 
     @Test
-    public void testFindAllReturnCorrectData() {
+    void testFindAllReturnCorrectData() {
         JdbcCarDao jdbcCarDao = new JdbcCarDao();
         List<Car> cars = jdbcCarDao.findAll();
         assertFalse(cars.isEmpty());
@@ -70,43 +70,20 @@ class CarsTest {
 
     @Test
     @DisplayName(value = "Test Find All Cars")
-    void testFindAllCars() throws Exception {
+    void testFindAllCars() {
         when(mockCarDao.findAll()).thenReturn(cars);
         List<Car> auto = mockCarDao.findAll();
-        assertEquals(auto, cars);
+        auto.forEach(Assertions::assertNotNull);
     }
 
     @Test
-    @DisplayName(value = "Test Find Cars By Brand Id Length")
-    void testFindCarsByBrandIdSize() throws Exception {
+    @DisplayName(value = "Test Size Find Cars By Brand")
+    void testFindCarsByBrandIdSize() {
         String brand = "BMW";
         List<Car> cars = mockCarDao.findAll(brand);
         when(mockCarDao.findAll(brand)).thenReturn(List.of(X5, X7));
         assertEquals(cars.size(), service.getAll().size());
-
     }
-
-    @Test
-    @DisplayName(value = "Test Sorted By Rating Asc Founded Cars")
-    void testSortedByRatingAscFoundedCars() throws Exception {
-    }
-
-    @Test
-    @DisplayName(value = "Test Sorted By Rating Desc Founded Cars")
-    void testSortedByRatingDescFoundedCars() throws Exception {
-    }
-
-    @Test
-    @DisplayName(value = "Test Sorted By Price Asc Founded Cars")
-    void testSortedByPriceAscFoundedCars() throws Exception {
-
-    }
-
-    @Test
-    @DisplayName(value = "Test Sorted By Price Desc Founded Cars")
-    void testSortedByPriceDescFoundedCars() throws Exception {
-    }
-
 
     @Test
     @DisplayName(value = "Test get All Cars")
@@ -119,7 +96,9 @@ class CarsTest {
     @DisplayName(value = "Test Find Car By Id")
     void findById() {
         when(mockCarDao.findById(X7.getId())).thenReturn(Optional.of(X7));
-        assertEquals("X7", service.getById(X7.getId()).get().getName());
+        Optional<Car> optionalCar = service.getById(X7.getId());
+        assertTrue(optionalCar.isPresent());
+        assertEquals("X7", optionalCar.get().getName());
     }
 
     @Test

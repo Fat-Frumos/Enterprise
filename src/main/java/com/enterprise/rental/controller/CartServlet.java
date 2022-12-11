@@ -4,6 +4,8 @@ import com.enterprise.rental.entity.Car;
 import com.enterprise.rental.entity.Order;
 import com.enterprise.rental.entity.User;
 import com.enterprise.rental.service.CarService;
+import com.enterprise.rental.service.impl.DefaultCarService;
+import com.enterprise.rental.service.impl.DefaultUserService;
 import com.enterprise.rental.service.UserService;
 import org.apache.log4j.Logger;
 
@@ -18,6 +20,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import static com.enterprise.rental.dao.jdbc.Constants.*;
+import static com.itextpdf.text.BaseColor.ORANGE;
 
 /**
  * Cart Servlet extends an HTTP servlet suitable for a Web-site.
@@ -33,9 +36,9 @@ import static com.enterprise.rental.dao.jdbc.Constants.*;
  * @author Pasha Pollack
  */
 public class CartServlet extends Servlet {
-    private final CarService carService = new CarService();
-    private final UserService userService = new UserService();
-    private static final Logger log =Logger.getLogger(CartServlet.class);
+    private final CarService carService = new DefaultCarService();
+    private final UserService userService = new DefaultUserService();
+    private static final Logger log = Logger.getLogger(CartServlet.class);
 
     /**
      * <p>If the HTTP GET request is correctly formatted,
@@ -153,8 +156,8 @@ public class CartServlet extends Servlet {
         Optional<User> optionalUser = getSessionUser(request);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            log.debug(String.format("Session %s %s From Put ",
-                    user.getRole(), user.getName()));
+            log.debug(String.format("%sSession %s %s From Put%s",
+                    RED, user.getRole(), user.getName(), RESET));
 
             String carId = request.getParameter("id");
             try {
@@ -170,7 +173,7 @@ public class CartServlet extends Servlet {
                     path = CART;
                 }
             } catch (NumberFormatException e) {
-                log.debug("Car by id not found");
+                log.debug(String.format("%sCar by id not found%s", ORANGE, RESET));
                 request.setAttribute("errorMessage", "Car not found");
                 path = ORDERS;
             } finally {

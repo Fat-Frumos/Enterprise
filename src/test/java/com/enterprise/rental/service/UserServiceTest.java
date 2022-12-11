@@ -3,6 +3,7 @@ package com.enterprise.rental.service;
 import com.enterprise.rental.dao.UserDao;
 import com.enterprise.rental.dao.jdbc.JdbcUserDao;
 import com.enterprise.rental.entity.User;
+import com.enterprise.rental.service.impl.DefaultUserService;
 import org.junit.jupiter.api.*;
 
 import java.util.*;
@@ -14,7 +15,7 @@ import static org.mockito.Mockito.*;
 class UserServiceTest {
     private static UserDao mockDao;
 
-    private static UserService userService;
+    private static DefaultUserService userService;
 
     List<User> users = new ArrayList<>();
     User bob = new User.Builder()
@@ -39,11 +40,10 @@ class UserServiceTest {
             .role("user")
             .build();
 
-
     @BeforeAll
     static void beforeAll() {
         mockDao = mock(JdbcUserDao.class);
-        userService = new UserService(mockDao);
+        userService = new DefaultUserService(mockDao);
     }
 
     @BeforeEach
@@ -62,7 +62,6 @@ class UserServiceTest {
         assertEquals(jack, actual);
         verify(mockDao).findById(12L);
     }
-
 
     @Test
     @DisplayName(value = "Test find User by Name invokes and return entity")
@@ -122,14 +121,14 @@ class UserServiceTest {
                 .forEach(Assertions::assertTrue);
     }
 
-    @Test
-    @DisplayName(value = "Test send Email to User invokes and check not false")
-    void sendEmailToUser() {
+//    @Test
+//    @DisplayName(value = "Test send Email to User invokes and check not false")
+//    void sendEmailToUser() {
 //        when(userService.sendEmail(jack.getName())).thenReturn(true);
 //        boolean sendEmail = userService.sendEmail(jack.getName());
 //        assertTrue(sendEmail);
-
-    }
+//
+//    }
 
     @Test
     @DisplayName(value = "Test get All Users with Query invokes and check not Null")

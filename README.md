@@ -39,17 +39,20 @@ The system administrator has the rights:
 + blocking / unblocking- the user;
 + registration of managers in the system (role).
 
+#####TODO: java doc Servlet, StaticServlet, CarsServlet, CartServlet, ..., Dao, UserDao
+
 ===============================
 ####INFO: FATAL: user try jdbc
+####INFO: FATAL: Service I
+####INFO: TEST: testcontainers
 ####TODO: Transaction isolation (read committed) setAutoCommit false, config file
 ####TODO: Duration
 ####TODO FATAL: delete from card
-#####TODO: java doc Servlet, StaticServlet, CarsServlet, CartServlet, ..., Dao, UserDao
+####TODO //String sql = String.format("UPDATE car SET rent = true WHERE id = %d", id);
 ####TODO FATAL: order to Dto invoice email
 ####INFO: FATAL: forgot email html(pdf)
 ####INFO: FATAL: private static final List<Car> carList = carService.getAll("price>=100 ORDER BY cost LIMIT 10 OFFSET 0");
 ####INFO: FATAL: new dynamic price + cost
-####INFO: FATAL: hash salt
 ####INFO: FATAL: admin filter
 ####INFO: FATAL: role enum
 ####INFO: //TODO DELETE vs UPDATE

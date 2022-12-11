@@ -22,11 +22,11 @@
 <c:choose>
     <c:when test="${user.language=='ua'}">
         <fmt:setLocale value="ua" scope="session"/>
-        <fmt:setBundle basename="com.enterprise.rental.utils.BungleUa" var="lang"/>
+        <fmt:setBundle basename="com.enterprise.rental.utils.locale.BungleUa" var="lang"/>
     </c:when>
     <c:otherwise>
         <fmt:setLocale value="en" scope="session"/>
-        <fmt:setBundle basename="com.enterprise.rental.utils.BungleEn" var="lang"/>
+        <fmt:setBundle basename="com.enterprise.rental.utils.locale.BungleEn" var="lang"/>
     </c:otherwise>
 </c:choose>
 
@@ -55,10 +55,14 @@
                                 </figure>
                             </div>
                             <div class="cart-image-overlay m-auto">
+                                <span id="exchange" class="cart-detail-badge" hidden>
+                                    <fmt:message key="exchange" bundle="${lang}"/>
+                                </span>
+
                                 <span class="badge"><fmt:message key="span.rent" bundle="${lang}"/>:</span>
-                                <span class="cart-detail-badge">$${cars.price}</span>
-                                <span class="badge">| <fmt:message key="span.price" bundle="${lang}"/>:</span>
-                                <span class="cart-detail-badge">$${cars.cost}</span>
+                                <span class="oldPrice" class="cart-detail-badge">${cars.price}</span><span class="badge"><fmt:message key="exchange.sign" bundle="${lang}"/></span>
+                                | <span class="badge"><fmt:message key="span.price" bundle="${lang}"/></span>:
+                                <span class="cost" class="cart-detail-badge">${cars.cost}</span><span class="badge"><fmt:message key="exchange.sign" bundle="${lang}"/></span>
                             </div>
                         </li>
                     </ul>
@@ -70,8 +74,24 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
 <script>
+    const e = document.getElementById("exchange");
+    let epf = parseFloat(e.innerHTML).toFixed(2);
+
+    const c = document.getElementsByClassName("cost");
+    const p = document.getElementsByClassName("oldPrice");
+
+    for (let i = 0; i < p.length; i++) {
+        p[i].innerHTML = "" + (p[i].innerHTML * epf).toFixed(0);
+        c[i].innerHTML = "" + (c[i].innerHTML * epf).toFixed(0)
+    }
+
+    // vp = (p.innerHTML);
+    // pe =  parseFloat(p.innerHTML);
+    // p.innerHTML = vp;
+
 
     window.addEventListener('contextmenu', (event) => {
+
         event.preventDefault()
         window.history.back();
     })

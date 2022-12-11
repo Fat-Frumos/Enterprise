@@ -160,7 +160,6 @@ public class User implements Serializable {
         cars.add(car);
     }
 
-
     public List<Car> getCars() {
         return cars;
     }

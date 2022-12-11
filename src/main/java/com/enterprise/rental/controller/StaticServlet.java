@@ -4,6 +4,8 @@ import com.enterprise.rental.entity.Car;
 import com.enterprise.rental.entity.User;
 import com.enterprise.rental.service.CarService;
 import com.enterprise.rental.service.UserService;
+import com.enterprise.rental.service.impl.DefaultCarService;
+import com.enterprise.rental.service.impl.DefaultUserService;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletException;
@@ -32,9 +34,10 @@ import static com.enterprise.rental.service.UserService.saltedPassword;
  */
 public class StaticServlet extends Servlet {
     private static final Logger log = Logger.getLogger(StaticServlet.class);
-    private static final CarService carService = new CarService();
-    private static final UserService userService = new UserService();
+    private static final CarService carService = new DefaultCarService();
+    private static final UserService userService = new DefaultUserService();
     private static int rows = carService.getNumberOfRows();
+
 
     /**
      * <p>If the HTTP GET request is correctly formatted,
@@ -57,7 +60,7 @@ public class StaticServlet extends Servlet {
      *                          could not be handled
      */
     @Override
-    protected void doGet(
+    public void doGet(
             HttpServletRequest request,
             HttpServletResponse response)
             throws ServletException, IOException {

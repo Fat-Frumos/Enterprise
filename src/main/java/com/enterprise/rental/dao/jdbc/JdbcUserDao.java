@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.enterprise.rental.dao.jdbc.Connections.*;
+import static com.enterprise.rental.dao.jdbc.DbManager.*;
 import static com.enterprise.rental.dao.jdbc.Constants.*;
 import static com.enterprise.rental.dao.jdbc.DbManager.getInstance;
 import static com.enterprise.rental.service.UserService.addSalt;
@@ -153,17 +153,19 @@ public class JdbcUserDao implements UserDao {
 
     @Override
     public Optional<User> findById(Long id) {
-        try (Connection connection = getInstance().getConnection();
-             PreparedStatement statement = connection.prepareStatement(FILTER_USER_BY_ID_SQL)) {
-            statement.setLong(1, id);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                return !resultSet.next()
-                        ? Optional.empty()
-                        : Optional.of(ROW_MAPPER.mapRow(resultSet));
-            }
-        } catch (SQLException e) {
-            throw new DataException(e);
-        }
+        return getUserSql(String.format("%s%d", FILTER_USER_BY_ID_SQL, id));
+
+//        try (Connection connection = getInstance().getConnection();
+//             PreparedStatement statement = connection.prepareStatement(FILTER_USER_BY_ID_SQL)) {
+//            statement.setLong(1, id);
+//            try (ResultSet resultSet = statement.executeQuery()) {
+//                return !resultSet.next()
+//                        ? Optional.empty()
+//                        : Optional.of(ROW_MAPPER.mapRow(resultSet));
+//            }
+//        } catch (SQLException e) {
+//            throw new DataException(e);
+//        }
     }
 
     private Optional<User> getUserSql(String query) {

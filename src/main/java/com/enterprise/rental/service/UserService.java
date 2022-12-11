@@ -1,17 +1,12 @@
 package com.enterprise.rental.service;
 
-import com.enterprise.rental.dao.UserDao;
-import com.enterprise.rental.dao.jdbc.JdbcUserDao;
 import com.enterprise.rental.entity.Car;
-import com.enterprise.rental.entity.Session;
 import com.enterprise.rental.entity.User;
-import com.enterprise.rental.exception.DataException;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.log4j.Logger;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -19,154 +14,44 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.enterprise.rental.utils.InvoiceEmail.createPdf;
-import static com.enterprise.rental.utils.Mail.sendEmailWithAttachments;
-
-public class UserService implements Service<User> {
-
-    private final UserDao userDao;
-    private final Session session = new Session();
-
-    private static final Logger log = Logger.getLogger(UserService.class);
-
-    public UserService(UserDao userDao) {
-        this.userDao = userDao;
-    }
-
-    public UserService() {
-        this.userDao = new JdbcUserDao();
-    }
-
-    public Optional<User> findByName(@NotNull String name) {
-        return userDao.findByName(name);
-    }
-
-    @Override
-    public boolean save(User user) {
-        return userDao.save(user);
-    }
-
-    @Override
-    public List<User> getAll() {
-        return userDao.findAll();
-    }
-
-    @Override
-    public List<User> getAll(String query) {
-        return userDao.findAll(query);
-    }
-
-    @Override
-    public List<User> getAll(Map<String, String> params) {
-        return userDao.findAll();
-    }
-
-    @Override
-    public List<User> getAll(Map<String, String> params, int offset) {
-        return userDao.findAll();
-    }
-
-    @Override
-    public boolean delete(long id) {
-        return userDao.delete(id);
-    }
-
-    @Override
-    public Optional<User> getById(long id) {
-        return userDao.findById(id);
-    }
-
-    public User bookCar(@NotNull Car car, @NotNull User user) {
-        if (!user.getCars().contains(car)) {
-            user.addCar(car);
-        }
-        return user;
-    }
-
-    public User edit(User user) {
-        return userDao.edit(user);
-    }
-
-    public static String addSalt(User user) {
+public interface UserService extends Service<User> {
+    static String addSalt(User user) {
         String salt = generateUUID();
         user.setSalt(salt);
         return salt;
     }
 
-    public static String saltedPassword(String rawPassword, String salt) {
+    static String saltedPassword(String rawPassword, String salt) {
         return DigestUtils.sha256Hex(getBytes(String.format("%s%s", rawPassword, salt)));
     }
 
-    private static byte[] getBytes(String saltedPassword) {
+    static byte[] getBytes(String saltedPassword) {
         return saltedPassword.getBytes(StandardCharsets.UTF_8);
     }
 
-    private static String generateUUID() {
+    static String generateUUID() {
         return UUID.randomUUID().toString();
     }
 
-    public boolean sendEmail(String name) {
-        Optional<User> optionalUser = userDao.findByName(name);
-        if (optionalUser.isEmpty()) {
-            return false;
-        }
+    boolean save(User user);
 
-        log.debug(String.valueOf(optionalUser));
-        createPdf();
+    List<User> getAll();
 
-        // SMTP info
-        String host = "smtp.gmail.com";
-        String port = "587";
-        String mailFrom = "pasha-fghjkl11@i.ua";
-        String password = "pasha-fghjkl11pasha-fghjkl11";
+    List<User> getAll(String query);
 
-        // message info
-        String mailTo = "fghjkl11@gmail.com";
-        String subject = "New email with attachments";
-        String message = "I have some attachments for you.";
+    List<User> getAll(Map<String, String> params);
 
-        // attachments
-        String[] attachFiles = new String[2];
-        attachFiles[0] = "d:/letter.pdf";
+    Optional<User> findByName(@NotNull String name);
 
-        try {
-            sendEmailWithAttachments(
-                    host, port, mailFrom, password,
-                    mailTo, subject, message,
-                    attachFiles);
+    Optional<User> getById(long id);
 
-            log.debug("Email sent");
-            return true;
-        } catch (Exception ex) {
-            throw new DataException("\"Could not send email.\"" + ex.getMessage());
-        }
-    }
+    User bookCar(@NotNull Car car, @NotNull User user);
 
-    public void setUserToken(HttpServletRequest request, HttpServletResponse response, Session session) {
+    User edit(User user);
 
-        // TODO session.setUser(user);
+    boolean delete(long id);
 
-        Cookie[] cookies = request.getCookies();
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals("user-token")) {
-                session.setToken((cookie.getValue()));
-            } else {
-                cookie = new Cookie("user-token", generateUUID());
-                cookie.setMaxAge(300);
-                session.getUser().setActive(true);
-                session.setToken(cookie.getValue());
-                response.addCookie(cookie);
-            }
-        }
-    }
+    boolean sendEmail(String name);
 
-    private String generateToken(Long id) {
-        User userFromDb = getById(id).orElseThrow();
-        Map<User, String> userTokens = session.getUserTokens();
-        userTokens.put(userFromDb, generateUUID());
-        session.setUserTokens(userTokens);
-        session.setExpired(true);
-        return session.getToken();
-    }
-
+    void setUserToken(HttpServletRequest request, HttpServletResponse response, HttpSession session);
 }

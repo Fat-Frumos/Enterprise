@@ -14,11 +14,13 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
         <slf4j.version>2.0.0</slf4j.version>
         <servlet-api-version>2.5</servlet-api-version>
         <mockito.version>4.8.0</mockito.version>
         <exec.mainClass>com.enterprise.Starter</exec.mainClass>
         <heroku.appName>rent-a-car-enterprise</heroku.appName>
+        <jackson.version>2.14.0</jackson.version>
     </properties>
     <distributionManagement>
         <repository>
@@ -76,12 +78,24 @@
             <version>4.8.0</version>
             <scope>test</scope>
         </dependency>
-                <dependency>
-                    <groupId>org.hamcrest</groupId>
-                    <artifactId>hamcrest</artifactId>
-                    <version>2.2</version>
-                    <scope>test</scope>
-                </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>1.17.6</version>
+            <scope>test</scope>
+        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.hamcrest</groupId>-->
+<!--            <artifactId>hamcrest</artifactId>-->
+<!--            <version>2.2</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.httpcomponents</groupId>-->
+<!--            <artifactId>httpclient</artifactId>-->
+<!--            <version>4.5.13</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
         <!--        <dependency>-->
         <!--            <groupId>com.h2database</groupId>-->
         <!--            <artifactId>h2</artifactId>-->
@@ -109,10 +123,30 @@
             <version>1.4</version>
         </dependency>
         <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.11.0</version>
+        </dependency>
+        <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
             <version>1.15</version>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.json</groupId>-->
+<!--            <artifactId>json</artifactId>-->
+<!--            <version>20220320</version>-->
+<!--        </dependency>-->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.14.0</version>
+        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.flywaydb</groupId>-->
+<!--            <artifactId>flyway-core</artifactId>-->
+<!--            <version>8.5.10</version>-->
+<!--        </dependency>-->
     </dependencies>
 
     <build>
@@ -121,7 +155,7 @@
                 <directory>src/main/resources</directory>
                 <includes>
                     <include>application.properties</include>
-                    <include>logging.properties</include>
+                    <include>log4j2.properties</include>
                 </includes>
             </resource>
         </resources>

@@ -34,8 +34,6 @@ public class UserMapper extends Mapper<User> {
             String role = resultSet.getString("role")
                     != null ? resultSet.getString("role") : "guest";
 
-            log.debug(String.format("language:%s, password:%s, salt:%s", language, password, salt));
-
             return new User.Builder()
                     .userId(id)
                     .name(name)
@@ -59,5 +57,41 @@ public class UserMapper extends Mapper<User> {
             }
             throw new UserNotFoundException("User not found", exception);
         }
+    }
+
+    public Optional<User> userMapper(HttpServletRequest request) {
+        String[] fields = {"userId", "name", "password", "passport", "phone", "language", "email", "created"};
+
+        Map<String, String> params = Arrays.stream(fields)
+                .filter(key -> !"".equals(request.getParameter(key))
+                        && request.getParameter(key) != null)
+                .collect(Collectors.toMap(
+                        key -> key, request::getParameter, (a, b) -> b));
+
+        long id = Long.parseLong(params.get(fields[0]));
+        String name = params.get(fields[1]);
+        String password = params.get(fields[2]);
+        String passport = params.get(fields[3]);
+        String phone = params.get(fields[4]);
+        String language = params.get(fields[5]);
+        String email = params.get(fields[6]);
+        Timestamp createTimestamp = Timestamp.valueOf(params.get(fields[7]));
+
+
+        User user = new User.Builder()
+                .userId(id)
+                .name(name)
+                .password(password)
+                .passport(passport)
+                .phone(phone)
+                .language(language)
+                .email(email)
+                .created(createTimestamp)
+                .active(true)
+                .closed(false)
+                .build();
+
+        log.info(user);
+        return Optional.of(user);
     }
 }
