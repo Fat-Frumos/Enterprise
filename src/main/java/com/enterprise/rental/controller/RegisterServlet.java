@@ -3,10 +3,11 @@ package com.enterprise.rental.controller;
 import com.enterprise.rental.dao.mapper.OrderMapper;
 import com.enterprise.rental.entity.Order;
 import com.enterprise.rental.entity.User;
-import com.enterprise.rental.service.impl.DefaultOrderService;
-import com.enterprise.rental.service.impl.DefaultUserService;
 import com.enterprise.rental.service.OrderService;
 import com.enterprise.rental.service.UserService;
+import com.enterprise.rental.service.impl.DefaultOrderService;
+import com.enterprise.rental.service.impl.DefaultUserService;
+import com.enterprise.rental.service.locale.CurrencyConvector;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -22,14 +23,40 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.enterprise.rental.dao.jdbc.Constants.CONTRACT;
+import static com.enterprise.rental.dao.jdbc.Constants.USER;
 
-public class RegisterServlet extends HttpServlet {
-    private static final UserService userService = new DefaultUserService();
+/**
+ * Java class that represent a Register service for update operations
+ * Register Servlet extends abstract class Servlet
+ *
+ * @author Pasha Pollack
+ */
+public class RegisterServlet extends Servlet {
+    private OrderMapper mapper;
+    private OrderService orderService;
+    private UserService userService;
     private static final Log log = LogFactory.getLog(RegisterServlet.class);
 
-    /***
-     * Update date User
-     * Role: admin
+    @Override
+    public void init() throws ServletException {
+        super.init();
+        mapper = new OrderMapper();
+        orderService = new DefaultOrderService();
+        userService = new DefaultUserService();
+    }
+
+    /**
+     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+     * Updates a user by setting their name and active.
+     * Username and password is not able to be updated.
+     * <p>
+     * Called by the server (via the <code>service</code> method) to
+     * allow a servlet to handle a GET request.
+     *
+     * <p>Overriding this method to support a GET request also
+     * automatically supports an HTTP HEAD request. A HEAD
+     * request is a GET request that returns with body in the
+     * response, only the request header fields.
      */
     @Override
     protected void doGet(
@@ -39,7 +66,7 @@ public class RegisterServlet extends HttpServlet {
 
         String name = request.getParameter("name");
 
-        Optional<User> optionalUser = userService.findByName(name);
+        Optional<User> optionalUser = userService.getByName(name);
 
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
@@ -55,9 +82,8 @@ public class RegisterServlet extends HttpServlet {
             log.debug(String.format(" active: %s lock: %s, role: %s", active, closed, role));
 
             user.setRole(role);
-            User update = userService.edit(user);
+            userService.edit(user);
 
-            log.debug(update);
             String[] fields = {"name", "email", "role", "active", "closed"};
             Map<String, String> params = Arrays.stream(fields)
                     .filter(key -> !"".equals(request.getParameter(key))
@@ -67,19 +93,20 @@ public class RegisterServlet extends HttpServlet {
                             request::getParameter,
                             (a, b) -> b));
 
-            List<User> users = userService.getAll(params);
-            log.debug(users.size() + " users");
-            request.setAttribute("users", users);
+            request.setAttribute("users", userService.getAll(params));
         } else {
             log.debug("Could not find user");
         }
-        request.getRequestDispatcher("/user")
-                .forward(request, response);
+        redirect(request, response, USER);
     }
 
     /***
      * Update date Order
-     * Role: manager
+     * <p>
+     * Overriding this method to support a POST request also
+     * automatically supports an HTTP HEAD request. A HEAD
+     * request is a POST request that returns with body in the
+     * response, only the request header fields.
      */
     @Override
     protected void doPost(
@@ -87,10 +114,7 @@ public class RegisterServlet extends HttpServlet {
             HttpServletResponse response)
             throws ServletException, IOException {
 
-        OrderService orderService = new DefaultOrderService();
-
-        OrderMapper mapper = new OrderMapper();
-        Order order = mapper.orderMapper(request);
+        Order order = mapper.mapper(request);
 
         Order update = orderService.edit(order);
 
@@ -101,7 +125,6 @@ public class RegisterServlet extends HttpServlet {
         request.setAttribute("orders", orders);
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType("text/html;charset=utf-8");
-        request.getRequestDispatcher(CONTRACT)
-                .forward(request, response);
+        dispatch(request, response, CONTRACT);
     }
 }

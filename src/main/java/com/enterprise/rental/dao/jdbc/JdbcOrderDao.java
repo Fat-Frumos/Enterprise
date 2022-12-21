@@ -18,6 +18,15 @@ import java.util.UUID;
 import static com.enterprise.rental.dao.jdbc.Constants.*;
 import static com.enterprise.rental.dao.jdbc.DbManager.*;
 
+/**
+ * Jdbc Java class that represent an implementing OrderDao
+ * performing CRUD operations on instances of {@link Order}.
+ * JdbcOrderDao the Java API that manages connecting to a database,
+ * issuing queries and commands, and handling result sets obtained from the database.
+ *
+ * @author Pasha Pollack
+ * @see OrderDao
+ */
 public class JdbcOrderDao implements OrderDao {
 
     private static final OrderMapper ORDER_ROW_MAPPER = new OrderMapper();
@@ -75,14 +84,14 @@ public class JdbcOrderDao implements OrderDao {
         Connection connection = null;
         PreparedStatement statement = null;
         try {
-            connection = getConfigConnection();
+            connection = configConnection();
             statement = connection.prepareStatement(query);
             execute = statement.execute();
             connection.commit();
 
         } catch (SQLException sqlException) {
-            rollback(connection, sqlException, query);
-
+            log.debug(String.format("%s%s", YELLOW, query));
+            rollback(connection, sqlException);
         } finally {
             eventually(connection, statement);
         }
@@ -94,6 +103,12 @@ public class JdbcOrderDao implements OrderDao {
         return getOrderById(id);
     }
 
+    /**
+     * Find User by Order.
+     *
+     * @param name the Order
+     * @return {@code Optional<User>}, if a value is present, otherwise {@code Optional.empty()}.
+     */
     @Override
     public Optional<Order> findByName(String name) {
         return Optional.empty();
@@ -118,13 +133,13 @@ public class JdbcOrderDao implements OrderDao {
                 UPDATE_ORDER_SQL,
                 damage, reason, payment, rejected, closed, order.getOrderId());
 
-        log.debug(String.format("%s%s%n%s%s", RED, order, query, RESET));
+        log.debug(String.format("%s%s%s%n%s%s", PURPLE, order, YELLOW, query, RESET));
 
         Connection connection = null;
         PreparedStatement statement = null;
 
         try {
-            connection = getConfigConnection();
+            connection = configConnection();
             statement = connection.prepareStatement(query);
             boolean update = statement.executeUpdate() > 0;
             log.debug(String.format("%s %s", update, query));
@@ -132,7 +147,8 @@ public class JdbcOrderDao implements OrderDao {
             return order;
 
         } catch (SQLException sqlException) {
-            rollback(connection, sqlException, query);
+            rollback(connection, sqlException);
+            log.debug(String.format("%s%s%s", YELLOW, query, RESET));
             throw new OrderNotFoundException(sqlException);
         } finally {
             eventually(connection, statement);
@@ -143,7 +159,6 @@ public class JdbcOrderDao implements OrderDao {
     public boolean delete(long id) {
         String query = String.format("%s%d", DELETE_ORDER_SQL, id);
         log.debug(String.format("%s %s%s", RED, query, RESET));
-        log.debug(query);
         return templateOrder(query);
     }
 
@@ -160,17 +175,17 @@ public class JdbcOrderDao implements OrderDao {
         PreparedStatement statement = null;
         String query = String.format("%s%d", FILTER_ORDER_BY_ID_SQL, id);
         try {
-            connection = getConfigConnection();
+            connection = configConnection();
             statement = connection.prepareStatement(FILTER_ORDER_BY_ID_SQL);
 
             statement.setLong(1, id);
-            log.debug(String.format("%s%s%s", YELLOW, query, RESET));
             return getOrder(statement.executeQuery());
 
         } catch (SQLException sqlException) {
-            rollback(connection, sqlException, query);
+            rollback(connection, sqlException);
             throw new DataException(sqlException);
         } finally {
+            log.debug(String.format("%s%s%s", YELLOW, query, RESET));
             eventually(connection, statement);
         }
     }
@@ -183,7 +198,7 @@ public class JdbcOrderDao implements OrderDao {
         List<Order> orders = new ArrayList<>();
         log.debug(String.format("%s%s%s", YELLOW, query, RESET));
         try {
-            connection = getConfigConnection();
+            connection = configConnection();
             statement = connection.prepareStatement(query);
             executeSet = statement.executeQuery();
             connection.commit();
@@ -198,7 +213,7 @@ public class JdbcOrderDao implements OrderDao {
             }
 
         } catch (SQLException sqlException) {
-            rollback(connection, sqlException, query);
+            rollback(connection, sqlException);
         } finally {
             eventually(connection, statement, executeSet);
         }
@@ -208,19 +223,19 @@ public class JdbcOrderDao implements OrderDao {
 
     private boolean setOrderQuery(Order order, String query) {
         boolean execute = false;
-        log.debug(String.format(YELLOW + "Query: %s", query) + RESET);
+        log.debug(String.format("%sQuery: %s", YELLOW, query, RESET));
         Connection connection = null;
         PreparedStatement statement = null;
 
         try {
-            connection = getConfigConnection();
+            connection = configConnection();
             statement = connection.prepareStatement(query);
             setOrders(order, statement);
             execute = statement.execute();
             connection.commit();
 
         } catch (SQLException sqlException) {
-            rollback(connection, sqlException, query);
+            rollback(connection, sqlException);
 
         } finally {
             eventually(connection, statement);

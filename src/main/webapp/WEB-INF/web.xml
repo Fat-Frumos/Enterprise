@@ -42,14 +42,14 @@
         <url-pattern>/order</url-pattern>
     </servlet-mapping>
 
-<!--    <servlet>-->
-<!--        <servlet-name>UploadServlet</servlet-name>-->
-<!--        <servlet-class>com.enterprise.rental.controller.UploadFileServlet</servlet-class>-->
-<!--    </servlet>-->
-<!--    <servlet-mapping>-->
-<!--        <servlet-name>UploadServlet</servlet-name>-->
-<!--        <url-pattern>/upload</url-pattern>-->
-<!--    </servlet-mapping>-->
+    <servlet>
+        <servlet-name>UploadServlet</servlet-name>
+        <servlet-class>com.enterprise.rental.controller.UploadFileServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>UploadServlet</servlet-name>
+        <url-pattern>/upload</url-pattern>
+    </servlet-mapping>
 
     <servlet>
         <servlet-name>FrontController</servlet-name>

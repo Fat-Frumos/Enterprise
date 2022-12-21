@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -21,11 +22,11 @@ import static org.mockito.Mockito.*;
 class CarServiceTest {
     private static final CarDao mockDao = mock(CarDao.class);
     private static final CarService carService = new DefaultCarService(mockDao);
-
+    static final Timestamp now = new Timestamp(System.currentTimeMillis());
     List<Car> cars = new ArrayList<>();
-    static final Car car = new Car.Builder().id(1L).name("X7").brand("BMW").model("G07").path("http//").price(25000.0).cost(10000.0).year(2022).build();
-    static final Car X7 = new Car.Builder().id(4L).name("X7").brand("BMW").model("G07").path("http//").price(25000.0).cost(10000.0).year(2022).build();
-    static final Car X5 = new Car.Builder().id(5L).name("X5").brand("BMW").model("GT-2").path("http//").price(22000.0).cost(10000.0).year(2020).build();
+    static final Car car = new Car.Builder().id(1L).name("X7").brand("BMW").model("G07").path("http//").price(25000.0).cost(10000.0).year(2022).date(now).build();
+    static final Car X7 = new Car.Builder().id(4L).name("X7").brand("BMW").model("G07").path("http//").price(25000.0).cost(10000.0).year(2022).date(now).build();
+    static final Car X5 = new Car.Builder().id(5L).name("X5").brand("BMW").model("GT-2").path("http//").price(22000.0).cost(10000.0).year(2020).date(now).build();
 
     @BeforeEach
     void init() {

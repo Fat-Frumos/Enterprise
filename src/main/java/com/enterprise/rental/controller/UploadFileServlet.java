@@ -10,29 +10,36 @@ import org.apache.log4j.Logger;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.IntStream;
 
 import static com.enterprise.rental.dao.jdbc.Constants.CARS;
-import static com.enterprise.rental.dao.jdbc.Constants.MAIN;
 
-@WebServlet("/upload")
-public class UploadFileServlet extends HttpServlet {
+/**
+ * Java class that represent an Upload File service for update images.
+ * <p>
+ * A subclass of <code>UploadFileServlet</code> override two methods:
+ * <code>doGet</code>, for HTTP GET requests (read image)
+ * <code>doPost</code>, for HTTP POST requests (save image)
+ *
+ * @author Pasha Pollack
+ */
+public class UploadFileServlet extends Servlet {
     private static final Logger log = Logger.getLogger(UploadFileServlet.class);
     private static final CarService carService = new DefaultCarService();
     // location to store file uploaded
-    private static final String UPLOAD_DIRECTORY = "upload";
+    private static final String UPLOAD_DIRECTORY = "/WEB-INF/classes/templates/img/";
 
     // upload settings
     private static final int MEMORY_THRESHOLD = 1024 * 1024 * 1;  // 1MB
     private static final int MAX_FILE_SIZE = 1024 * 1024 * 5; // 5MB
     private static final int MAX_REQUEST_SIZE = 1024 * 1024 * 10; // 10MB
-
 
     private static final long serialVersionUID = UUID.randomUUID().getMostSignificantBits() & 0x7fffffL;
 
@@ -42,23 +49,30 @@ public class UploadFileServlet extends HttpServlet {
     public void init() throws ServletException {
         DiskFileItemFactory fileFactory = new DiskFileItemFactory();
         File filesDir = (File) getServletContext().getAttribute("FILES_DIR_FILE");
-        log.debug(filesDir);
-        log.debug(filesDir.getAbsolutePath() + "/" + filesDir.getPath());
         fileFactory.setRepository(filesDir);
         this.uploader = new ServletFileUpload(fileFactory);
     }
 
+    /**
+     * Get image from server to the page
+     * Is used to process GET request.
+     *
+     * @param request  Http Servlet Request
+     * @param response Http Servlet Response
+     * @throws IOException If the target resource throws this exception
+     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+     */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected void doGet(
+            HttpServletRequest request,
+            HttpServletResponse response)
             throws IOException {
 
         String queryString = request.getQueryString();
-        log.debug(queryString);
-
         ServletContext servletContext = getServletContext();
 
         try (InputStream inputStream = servletContext
-                .getResourceAsStream(String.format("/WEB-INF/classes/templates/img/%s", queryString))) {
+                .getResourceAsStream(String.format("%s%s", UPLOAD_DIRECTORY, queryString))) {
             OutputStream outputStream = response.getOutputStream();
             if (inputStream != null) {
                 response.setContentType("image/jpeg");
@@ -74,15 +88,24 @@ public class UploadFileServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Upon receiving file upload submission, parses the request,
+     * read upload data and saves the file on disk.
+     * <p>
+     * Is used to process POST request.
+     *
+     * @param request  Http Servlet Request
+     * @param response Http Servlet Response
+     * @throws ServletException If the target resource throws ServletException
+     * @throws IOException      If the target resource throws IOException
+     * @see HttpServlet#doPost(HttpServletRequest request,
+     * HttpServletResponse response)
+     */
     protected void doPost(
             HttpServletRequest request,
             HttpServletResponse response)
             throws ServletException, IOException {
 
-        /**
-         * Upon receiving file upload submission, parses the request to read
-         * upload data and saves the file on disk.
-         */
         // checks if the request actually contains upload file
         if (!ServletFileUpload.isMultipartContent(request)) {
             // if not, we stop here
@@ -91,7 +114,7 @@ public class UploadFileServlet extends HttpServlet {
             writer.flush();
             return;
         }
-        String path = "src/main/webapp/WEB-INF/classes/templates/img/";
+        String path = String.format("src/main/webapp%s", UPLOAD_DIRECTORY);
         // configures upload settings
         DiskFileItemFactory factory = new DiskFileItemFactory();
         // sets memory threshold - beyond which files are stored in disk
@@ -119,145 +142,62 @@ public class UploadFileServlet extends HttpServlet {
         }
 
         try {
-
             // parses the request's content to extract file data
             List<FileItem> formItems = upload.parseRequest(request);
 
             long carId = UUID.randomUUID().getMostSignificantBits() & 0x7fffffL;
-            String[] reqFields = {"filename", "newPrice", "newName", "newBrand", "newCost", "newModel"};
-            String[] reqs = new String[7];
+            String[] requestFields = {"filename", "newPrice", "newName", "newBrand", "newCost", "newModel"};
+            String[] requests = new String[7];
 
 
-            for (FileItem fileItem : formItems) {
-                for (int i = 1; i < reqFields.length; i++) {
-                    String field = reqFields[i];
-                    if (fileItem.getFieldName().equals(field)) {
-                        reqs[i] = (fileItem.getString());
-                        log.info(reqs[i]);
-                    }
-                }
-            }
+            formItems.forEach(fileItem -> IntStream.range(1, requestFields.length)
+                    .filter(i -> fileItem.getFieldName().equals(requestFields[i]))
+                    .forEach(i -> requests[i] = (fileItem.getString())));
 
-            if (formItems != null && formItems.size() > 0) {
+            if (formItems.size() > 0) {
                 // iterates over form's fields
                 for (FileItem item : formItems) {
                     // processes only fields that are not form fields
                     if (!item.isFormField()) {
-                        String fileName = new File(item.getName()).getName();
-                        String filePath = uploadPath + File.separator + fileName;
+                        String filePath = String.format("%s%s%s",
+                                uploadPath,
+                                File.separator,
+                                new File(item.getName())
+                                        .getName());
+
                         File storeFile = new File(filePath);
 
                         String file_name2 = item.getName();
-                        reqs[0] = (String.format("/upload?%s", file_name2));
-                        log.info(reqs[0]);
+                        requests[0] = (String.format("/upload?%s", file_name2));
                         item.write(new File(path + file_name2));
+
                         // saves the file on disk
                         item.write(storeFile);
-                        request.setAttribute("message",
-                                "Upload has been done successfully!");
+                        request.setAttribute("message", "Upload has been done successfully!");
                     }
                 }
             }
+            log.info(requests);
+
             Car car = new Car.Builder()
                     .id(carId)
-                    .path(reqs[0])
-                    .price(100.0)
-                    .cost(10000.0)
+                    .path(requests[0])
                     .year(2022)
-                    .year(2022)
+                    .date(new Timestamp(System.currentTimeMillis()))
                     .rent(false)
-                    .name(reqs[2])
-                    .brand(reqs[3])
-//                    .price(Double.valueOf(reqFields[1]))
-//                    .cost(Double.valueOf(reqFields[4]))
-                    .model(reqs[5])
+                    .name(requests[2])
+                    .brand(requests[3])
+                    .price(Double.valueOf(requests[1]))
+                    .cost(Double.valueOf(requests[4]))
+                    .model(requests[5])
                     .build();
+
             boolean save = carService.save(car);
             log.info(String.format("Saved: %s, %s", save, car));
         } catch (Exception ex) {
-            request.setAttribute("message",
-                    "There was an error: " + ex.getMessage());
+            request.setAttribute("message", "There was an error: " + ex.getMessage());
         }
         // redirects client to message page
-        getServletContext().getRequestDispatcher(CARS).forward(
-                request, response);
+        dispatch(request, response, CARS);
     }
 }
-
-//
-//        String file_name = "";
-//        String file_name2 = "";
-////        String path = request.getQueryString();
-//        long carId = UUID.randomUUID().getMostSignificantBits() & 0x7fffffL;
-//
-//        String[] reqFields = {"filename", "newPrice", "newName", "newBrand", "newCost", "newModel"};
-//
-//        String[] reqs = new String[7];
-//
-//        response.setContentType("text/html");
-//        PrintWriter writer = response.getWriter();
-//        boolean isMultipartContent = ServletFileUpload.isMultipartContent(request);
-//        if (!isMultipartContent) {
-//            return;
-//        }
-//        FileItemFactory factory = new DiskFileItemFactory();
-//        ServletFileUpload upload = new ServletFileUpload(factory);
-//        try {
-//            List<FileItem> fields = upload.parseRequest(request);
-//            Iterator<FileItem> items = fields.iterator();
-//            if (!items.hasNext()) {
-//                return;
-//            }
-//            while (items.hasNext()) {
-//                FileItem fileItem = items.next();
-//
-//                boolean isFormField = fileItem.isFormField();
-//                if (isFormField) {
-//
-//                    for (int i = 1; i < reqFields.length; i++) {
-//                        String field = reqFields[i];
-//                        if (fileItem.getFieldName().equals(field)) {
-//                            log.info(reqs[i]);
-//                            reqs[i] = (fileItem.getString());
-//                        }
-//                    }
-//
-//                } else {
-//                    if (fileItem.getSize() > 0) {
-////                            fileItem.write(new File("E:\\uploaded\\" + fileItem.getName()));
-//
-//                        file_name2 = fileItem.getName();
-//                        reqs[0] = (String.format("/upload?%s", file_name2));
-//                        fileItem.write(new File("src/main/webapp/WEB-INF/classes/templates/" + file_name2));
-//                    }
-//                }
-//            }
-//            log.info(Arrays.toString(reqs));
-////            price, cost, year, date, rent
-//            Car car = new Car.Builder()
-//                    .id(carId)
-//                    .path(reqs[0])
-//                    .price(100.0)
-//                    .cost(10000.0)
-//                    .year(2022)
-//                    .year(2022)
-//                    .rent(false)
-//                    .name(reqs[2])
-//                    .brand(reqs[3])
-////                    .price(Double.valueOf(reqFields[1]))
-////                    .cost(Double.valueOf(reqFields[4]))
-//                    .model(reqs[5])
-//                    .build();
-//            boolean save = carService.save(car);
-//            log.info(String.format("Saved: %s, %s", save, car));
-//        } catch (Exception e) {
-//            throw new DataException(e.getMessage());
-//        } finally {
-//            writer.println("<script type='text/javascript'>");
-//            writer.println("window.location.href='/upload?" + file_name2 + "'");
-//            writer.println("</script>");
-//            writer.close();
-//        }
-//        response.sendRedirect(MAIN);
-//    }
-//}

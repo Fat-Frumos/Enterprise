@@ -11,35 +11,33 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Optional;
 
+import static com.enterprise.rental.dao.jdbc.Constants.USER;
+
 /**
- * Servlet extends an HTTP servlet suitable <code>HttpServlet</code> for a Web-site
- * An abstract class of <code>Servlet</code> has one method <code>dispatch</code>
+ * Abstract class Servlet extends an HTTP servlet suitable <code>HttpServlet</code> for a web-site.
+ * Class of <code>Servlet</code> has one method <code>dispatch</code>
  *
  * @author Pasha Pollack
+ * @see HttpServlet
  */
 public abstract class Servlet extends HttpServlet {
 
     /**
      * Defines an object that receives requests from the client
-     * and sends them to any resource
-     * <p>
+     * and sends them to any resource.
      * The servlet container creates the <code>RequestDispatcher</code> object,
      * which is used as a wrapper around a server resource located
      * at a particular path or given by a particular name.
-     * <p>
      * This abstract class is intended to wrap servlets,
      * but a servlet container can create <code>RequestDispatcher</code>
      * objects to wrap any type of resource.
-     * <p>
      * Includes the content of a resource (servlet, JSP page,
      * HTML file) in the response. In essence, this method enables
      * programmatic server-side includes.
-     * <p>
      * The {@link ServletResponse} object has its path elements
      * and parameters remain unchanged from the caller's. The included
      * servlet cannot change the response status code or set headers;
      * any attempt to make a change is ignored.
-     * <p>
      * The request and response parameters must be either the same
      * objects as were passed to the calling servlet's service method or be
      * subclasses of the {@link ServletRequestWrapper} or {@link ServletResponseWrapper} classes
@@ -72,9 +70,32 @@ public abstract class Servlet extends HttpServlet {
     }
 
     /**
-     * Get User instance {@code Optional<User>} from session
-     * <p>Get Attribute User from Session</p>
+     * Sends a temporary redirect response to the client using the specified redirect location path.
      *
+     * @param request  the {@link HttpServletRequest} object that
+     *                 contains the request the client made of
+     *                 the servlet
+     * @param response the {@link HttpServletResponse} object that
+     *                 contains the response the servlet returns
+     *                 to the client
+     * @param path     the String that contains the response
+     *                 the servlet returns to the client
+     */
+    protected void redirect(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            String path) {
+        try {
+            response.sendRedirect(path);
+        } catch (Exception e) {
+            dispatch(request, response, path);
+        }
+    }
+
+    /**
+     * Get User instance {@code Optional<User>} from session
+     * <p>Get Attribute User from session scope</p>
+     * <p>
      * The servlet container uses this interface to create
      * a session between an HTTP client and an HTTP server.
      * The session persists for a specified time period,
@@ -83,7 +104,7 @@ public abstract class Servlet extends HttpServlet {
      * who may visit a site many times.
      * The server can maintain a session in many ways such as
      * using cookies or rewriting URLs.
-     *<p>
+     * <p>
      * Set the object bound with the specified name in this session,
      * or null if no object is bound under the name.
      * {@code name} a string specifying the name of the object
@@ -101,5 +122,21 @@ public abstract class Servlet extends HttpServlet {
             return Optional.of(user);
         }
         return Optional.empty();
+    }
+
+    /**
+     * Get User instance {@code Optional<User>} from request
+     *
+     * @param request an {@link HttpServletRequest} object that
+     *                contains the request the client has made
+     *                of the servlet
+     *
+     *                <p>Get Attribute User from HttpServletRequest</p>
+     * @return {@code Optional<User>}, if a value is present,
+     * otherwise {@code Optional.empty()}.
+     */
+    protected Optional<User> getUser(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        return getUser(session);
     }
 }

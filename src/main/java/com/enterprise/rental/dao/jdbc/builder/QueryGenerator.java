@@ -1,9 +1,15 @@
-package com.enterprise.rental.dao.jdbc.factory;
+package com.enterprise.rental.dao.jdbc.builder;
 
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.StringJoiner;
 
+/**
+ * Query generator is used to generate a query by giving set of rules.
+ * Returns a String Builder of Field objects reflecting all the fields declared by the class.
+ *
+ * @author Pasha Pollack
+ */
 public class QueryGenerator {
 
     static String findAll(Class<?> clazz) {
@@ -25,10 +31,8 @@ public class QueryGenerator {
         Table annotation = clazz.getAnnotation(Table.class);
         String name = annotation.name().isEmpty() ? clazz.getName() : annotation.name();
         query.append(name);
-        query.append(";");
+//        query.append(";");
 
         return query.toString();
     }
-
-
 }

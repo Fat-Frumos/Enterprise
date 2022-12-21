@@ -10,6 +10,15 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+/**
+ * Servlet implementation class ErrorHandler
+ * allow an application to register an error event handler.
+ * The <code>ErrorHandler</code> is used to process exceptions.
+ * It`s catches all Exceptions for the Identity Provisioning UI
+ * and sends them to ExceptionAction to handle.
+ *
+ * @author Pasha Pollack
+  */
 @WebServlet("/error")
 public class ErrorHandler extends HttpServlet {
 
@@ -17,6 +26,16 @@ public class ErrorHandler extends HttpServlet {
 
     private static final Logger log =Logger.getLogger(ErrorHandler.class);
 
+    /**
+     * @see HttpServlet #HttpServlet()
+     */
+    public ErrorHandler() {
+        super();
+    }
+
+    /**
+     * @see HttpServlet #doGet(HttpServletRequest request, HttpServletResponse response)
+     */
     @Override
     protected void doGet(
             HttpServletRequest request,
@@ -26,6 +45,9 @@ public class ErrorHandler extends HttpServlet {
         processError(request, response);
     }
 
+    /**
+     * @see HttpServlet #doPost(HttpServletRequest request, HttpServletResponse response)
+     */
     @Override
     protected void doPost(
             HttpServletRequest request,
@@ -35,6 +57,17 @@ public class ErrorHandler extends HttpServlet {
         processError(request, response);
     }
 
+
+    /**
+     * Is used to process exception.
+     * It defines a type of exception and sets
+     * required error message to session.
+     * Analyze the servlet exception
+     * Set response content type
+     *
+     * @param request The http request.
+     * @param response The http response.
+     */
     private void processError(
             HttpServletRequest request,
             HttpServletResponse response) {
@@ -50,7 +83,6 @@ public class ErrorHandler extends HttpServlet {
             requestUri = "Unknown";
         }
 
-        // Set response content type
         response.setContentType("text/html");
 
         try {

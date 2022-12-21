@@ -1,4 +1,4 @@
-package com.enterprise.rental.utils.email;
+package com.enterprise.rental.service.email;
 
 import com.enterprise.rental.exception.DataException;
 import com.itextpdf.text.*;
@@ -8,10 +8,20 @@ import org.apache.log4j.Logger;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
-public class InvoiceEmail {
-    private static final Logger log = Logger.getLogger(InvoiceEmail.class);
+/**
+ * The InvoicePdf class describes the functions of a created attachment in format PDF.
+ *
+ * @author Pasha Pollack
+ */
+public class InvoicePdf {
+    private static final Logger log = Logger.getLogger(InvoicePdf.class);
     public static final String DEST = "/letter.pdf";
 
+    /**
+     * The created document in format PDF.
+     *
+     * @author Pasha Pollack
+     */
     public static void createPdf() {
 
         try {

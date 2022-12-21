@@ -1,9 +1,16 @@
 package com.enterprise.rental.dao.jdbc;
 
+/**
+ * The Constants class describes the constants variables
+ * Includes Sql queries, paths, and fonts
+ *
+ * @author Pasha Pollack
+ */
 public class Constants {
     // Car sql
-    protected static final String FIELD = "id, name, brand, model, path, price, cost, year, date";
-    protected static final String CAR_FIELDS = String.format("SELECT %s, rent ", FIELD);
+    protected static final String FIELD = "id, name, brand, model, path, price, cost, year, rent, date ";
+    protected static final String CAR_FIELDS = String.format("SELECT %s", FIELD);
+    public static final String FIND_ALL_LIMIT_SQL = String.format("%sFROM car", CAR_FIELDS);
     public static final String FIND_ALL_SQL = String.format("%sFROM car LIMIT 80;", CAR_FIELDS);
     protected static final String FILTER_CAR_BY_SQL = String.format("%sFROM car WHERE", CAR_FIELDS);
     protected static final String FILTER_BY_ID_SQL = String.format("%sFROM car WHERE id=?", CAR_FIELDS);
@@ -49,17 +56,10 @@ public class Constants {
     public static final String RED = "\033[1;31m";    // RED
     public static final String GREEN = "\033[1;32m"; // GREEN
     public static final String YELLOW = "\033[1;33m"; // YELLOW
-    public static final String PURPLE = "\033[1;34m";   // BLUE
-    public static final String BLUE_BOLD = "\033[1;35m";   // BLUE
-    //    public static final String PURPLE = "\033[1;35m"; // PURPLE
-    public static final String CYAN_BOLD = "\033[1;36m";   // CYAN
+    public static final String PURPLE = "\033[1;34m";   // PURPLE
+    public static final String BLUE = "\033[1;35m";   // BLUE
+    public static final String CYAN = "\033[1;36m";   // CYAN
     public static final String WHITE_BOLD = "\033[1;37m";  // WHITE
     public static final String RESET = "\033[0m";  // Text Reset
 
-    public static final String UPLOAD_DIRECTORY = "upload";
-    public static final String DEFAULT_FILENAME = "default.file";
-
-    public static final int MEMORY_THRESHOLD = 1024 * 1024 * 3;
-    public static final int MAX_FILE_SIZE = 1024 * 1024 * 40;
-    public static final int MAX_REQUEST_SIZE = 1024 * 1024 * 50;
 }

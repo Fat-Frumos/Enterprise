@@ -3,7 +3,12 @@ package com.enterprise.rental.entity;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.UUID;
-
+/**
+ * Java class that represent an Invoice,
+ * implements {@link Serializable} interface.
+ *
+ * @author Pasha Pollack
+ */
 public class Invoice implements Serializable {
     private final long invoiceId = UUID.randomUUID().getMostSignificantBits() & 0x7fffffL;
     private final long userId;

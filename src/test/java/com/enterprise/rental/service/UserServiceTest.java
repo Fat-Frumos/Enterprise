@@ -67,7 +67,7 @@ class UserServiceTest {
     @DisplayName(value = "Test find User by Name invokes and return entity")
     void findUserByName() {
         when(mockDao.findByName("jack")).thenReturn(Optional.ofNullable(jack));
-        Optional<User> optionalJack = userService.findByName("jack");
+        Optional<User> optionalJack = userService.getByName("jack");
         assertTrue(optionalJack.isPresent());
         User actual = optionalJack.get();
         assertEquals(jack, actual);
@@ -127,7 +127,6 @@ class UserServiceTest {
 //        when(userService.sendEmail(jack.getName())).thenReturn(true);
 //        boolean sendEmail = userService.sendEmail(jack.getName());
 //        assertTrue(sendEmail);
-//
 //    }
 
     @Test

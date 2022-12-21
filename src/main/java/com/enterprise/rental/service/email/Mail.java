@@ -1,4 +1,4 @@
-package com.enterprise.rental.utils.email;
+package com.enterprise.rental.service.email;
 
 import com.enterprise.rental.exception.DataException;
 
@@ -8,7 +8,14 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Properties;
 
+/**
+ * The Mail class describes the functions of a send Email with attachments service.
+ *
+ * @author Pasha Pollack
+ */
 public class Mail {
+    Mail() {
+    }
 
     /**
      * <p>Assuming you are sending email through rental.enterprise.com to user email
@@ -34,7 +41,7 @@ public class Mail {
             final String password, String toAddress,
             String subject, String message,
             String[] attachFiles)
-            throws AddressException, MessagingException {
+            throws MessagingException {
 
         // sets SMTP server properties
         Properties properties = new Properties();
@@ -46,7 +53,9 @@ public class Mail {
         properties.put("mail.password", password);
 
         // creates a new session with an authenticator
+        //The class PasswordAuthentication is a data holder that is used by Authenticator
         Authenticator auth = new Authenticator() {
+            @Override
             public PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication(userName, password);
             }

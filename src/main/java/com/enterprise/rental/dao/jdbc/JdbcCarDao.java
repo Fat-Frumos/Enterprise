@@ -1,7 +1,9 @@
 package com.enterprise.rental.dao.jdbc;
 
 import com.enterprise.rental.dao.CarDao;
+import com.enterprise.rental.dao.OrderDao;
 import com.enterprise.rental.entity.Car;
+import com.enterprise.rental.entity.Order;
 import com.enterprise.rental.exception.OrderNotFoundException;
 import org.apache.log4j.Logger;
 
@@ -17,6 +19,15 @@ import static com.enterprise.rental.dao.jdbc.DbManager.*;
 import static com.enterprise.rental.dao.jdbc.Constants.*;
 import static com.enterprise.rental.dao.jdbc.JdbcCarTemplate.*;
 
+/**
+ * Java class that represent an implementing CarDao
+ * Jdbc Car Dao performing CRUD operations on instances of {@link Car}.
+ * JdbcCarDao the Java API that manages connecting to a database,
+ * issuing queries and commands, and handling result sets obtained from the database.
+ *
+ * @author Pasha Pollack
+ * @see OrderDao
+ */
 public class JdbcCarDao implements CarDao {
     private static final Logger log = Logger.getLogger(JdbcCarDao.class);
     private static final List<Car> carList = getCarsQuery(FIND_ALL_SQL);
@@ -73,7 +84,7 @@ public class JdbcCarDao implements CarDao {
             Car car = optionalCar.get();
             String query = String.format("DELETE FROM car where id = %d", id);
             Car updatedCar = updateCar(car, query);
-            log.debug(String.format("Deleted: %s%s %s%s", updatedCar, YELLOW, query, RESET));
+            log.debug(String.format("%sDeleted: %n%s%s %s%s", RED, updatedCar, YELLOW, query, RESET));
             return true;
         }
         return false;
@@ -94,14 +105,14 @@ public class JdbcCarDao implements CarDao {
         Connection connection = null;
         PreparedStatement statement = null;
         try {
-            connection = getConfigConnection();
+            connection = configConnection();
             statement = connection.prepareStatement(query);
             boolean update = statement.executeUpdate() > 0;
             log.debug(String.format("update car %s", update));
             connection.commit();
             return car;
         } catch (SQLException sqlException) {
-            rollback(connection, sqlException, query);
+            rollback(connection, sqlException);
             throw new OrderNotFoundException(sqlException);
         } finally {
             eventually(connection, statement);
@@ -115,7 +126,7 @@ public class JdbcCarDao implements CarDao {
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try {
-            connection = getConfigConnection();
+            connection = configConnection();
             statement = connection.prepareStatement(sql);
             resultSet = statement.executeQuery();
             connection.commit();
@@ -123,7 +134,7 @@ public class JdbcCarDao implements CarDao {
             return resultSet.next() ? resultSet.getInt(1) : 0;
 
         } catch (SQLException sqlException) {
-            rollback(connection, sqlException, sql);
+            rollback(connection, sqlException);
             log.debug("Vehicle not found");
             return 0;
         } finally {

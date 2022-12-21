@@ -1,17 +1,17 @@
 package com.enterprise.rental.utils;
 
+import org.junit.jupiter.api.Test;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.format.TextStyle;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-public class LocaleData {
+class TestLocaleData {
 
-    public static void main(String[] args) throws ParseException {
+    @Test
+    void testCalendar() throws ParseException {
         Calendar start = Calendar.getInstance();
         Calendar finish = Calendar.getInstance();
         start.set(1939, Calendar.SEPTEMBER, 1);
@@ -27,7 +27,7 @@ public class LocaleData {
 
 
         for (int i = 2022; i < 2027; i++) {
-            String birth = String.format("25/02/%d", i);
+            String birth = String.format("22/02/%d", i);
             String dayBirth = getDayStringNew(birth);
             System.out.println(dayBirth);
         }

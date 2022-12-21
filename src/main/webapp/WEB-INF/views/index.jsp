@@ -10,11 +10,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
     <meta name="author" content="Pasha">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv=Content-Type content="text/html; charset=windows-1251">
+    <meta http-equiv=Content-Type content="text/html; charset=UTF-8">
     <link rel="shortcut icon" href="<c:url value="/upload?wheel.ico"/>" type="image/x-icon">
     <title>Main</title>
     <style>
@@ -27,7 +26,9 @@
 <div class="carousel">
     <c:forEach items="${cars}" var="cars">
         <figure class="carousel-item">
-            <img class="fade" onclick="openForm(${cars.id})" src="${cars.path}"
+            <img class="fade"
+                 onclick="openForm(${cars.id})"
+                 src="${cars.path}"
                  alt="${cars.id}">
         </figure>
     </c:forEach>
@@ -47,8 +48,13 @@
     });
 
     function openForm(id) {
-        let url = '/order?id=' + id;
-        window.location.href = url;
+        if ("${user.role}" === "admin" || "${user.role}" === "manager" || "${user.role}" === "user") {
+            window.location.href =
+                "/order?id=" + id;
+        } else {
+            window.location.href =
+                "/login";
+        }
     }
 
     // function closeForm(id) {

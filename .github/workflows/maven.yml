@@ -25,5 +25,11 @@ jobs:
       - name: Build with Maven
         run: mvn -B package --file pom.xml
 
+      - name: Start docker-compose container
+        run: docker-compose -f "docker-compose.yml" up -d --build
+
+      - name: Run flyway:migrate
+        run: mvn flyway:migrate
+
       - name: Run with Tomcat
         run: mvn tomcat7:run -X

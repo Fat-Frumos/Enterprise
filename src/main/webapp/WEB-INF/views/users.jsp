@@ -1,5 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%--<%@ taglib prefix="ct" uri="/WEB-INF/tags/dataTag" %>--%>
+<%@ taglib prefix="ct" uri="/WEB-INF/tags/dataTag.tld" %>
 <%--
   Created by IntelliJ IDEA.
   User: Pasha
@@ -74,19 +74,6 @@
     <div class="inner three"></div>
     <div class="nucleus"></div>
 </div>
-<%--<div class="loading">--%>
-<%--    <div class="outer">--%>
-<%--        <span></span>--%>
-<%--        <span></span>--%>
-<%--        <span></span>--%>
-<%--    </div>--%>
-<%--    <div class="inner">--%>
-<%--        <span></span>--%>
-<%--        <span></span>--%>
-<%--        <span></span>--%>
-<%--    </div>--%>
-<%--</div>--%>
-<h5 style="left: 90vw; top: 0; position: absolute"><ct:today format="MMMM dd yyyy"/></h5>
 <link
         rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"

@@ -1,5 +1,10 @@
-package com.enterprise.rental.utils.locale;
+package com.enterprise.rental.service.locale;
 
+/**
+ * NbuRate Dto class representing json format Nbu rate from locale NBUStatService
+ *
+ * @author Pasha Pollack
+ */
 public class NbuRate {
     private String r030;
     private String txt;

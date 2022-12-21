@@ -1,14 +1,16 @@
+<%@ page import="com.enterprise.rental.entity.User" %>
+<%@ page import="java.util.Locale" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <c:choose>
     <c:when test="${user.language=='ua'}">
         <fmt:setLocale value="ua" scope="session"/>
-        <fmt:setBundle basename="com.enterprise.rental.utils.locale.BungleUa" var="lang"/>
+        <fmt:setBundle basename="com.enterprise.rental.service.locale.BungleUa" var="lang"/>
     </c:when>
     <c:otherwise>
         <fmt:setLocale value="en" scope="session"/>
-        <fmt:setBundle basename="com.enterprise.rental.utils.locale.BungleEn" var="lang"/>
+        <fmt:setBundle basename="com.enterprise.rental.service.locale.BungleEn" var="lang"/>
     </c:otherwise>
 </c:choose>
 <%--
@@ -50,7 +52,6 @@
 
     </style>
 </head>
-
 <body>
 <div class="wrapper">
     <jsp:include page="nav.jsp"/>
@@ -75,12 +76,13 @@
                 <th><fmt:message key="th.reject" bundle="${lang}"/></th>
                 <th><fmt:message key="th.close" bundle="${lang}"/></th>
                 <th><fmt:message key="th.confirm" bundle="${lang}"/></th>
-                <th><fmt:message key="th.invoice" bundle="${lang}"/></th>
+<%--                <th><fmt:message key="th.invoice" bundle="${lang}"/></th>--%>
                 <th><fmt:message key="th.remove" bundle="${lang}"/></th>
 
             </tr>
             </thead>
             <tbody>
+<%--            <span id="exchangeRate" hidden><fmt:message key="exchange" bundle="${lang}"/></span>--%>
             <c:forEach items="${orders}" var="order">
                 <tr class="firstRow">
                     <form action="<c:url value="/register"/>" method="post">
@@ -94,7 +96,6 @@
                             <br>
                             <input name="term" value="${order.term}" style="width: 150px" hidden>
                                 <fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" value="${order.term}"/>
-                            </input>
                         </td>
                         <td><input value="${order.damage}" name="damage"></td>
 
@@ -108,13 +109,16 @@
                             ></td>
                         </c:if>
                         <td>
-                            <input name="payment"
-                                   type="number"
-                                   min="0"
-                                   pattern="0.00"
-                                   style="width: 100px"
-                                   value="${order.payment}"
-                            >
+                                <input name="payment"
+                                       class="orderPayment"
+                                       type="number"
+                                       min="0"
+<%--                                       pattern="0.00"--%>
+                                       style="width: 100px"
+                                       value="${order.payment}"
+                                >
+                            $
+<%--                            <span class="badge"><fmt:message key="exchange.sign" bundle="${lang}"/></span>--%>
                         </td>
                         <td style="text-align: center">
                             <div class="toggle">
@@ -143,16 +147,16 @@
                                 <i class="fa fa-check"></i>
                             </button>
                         </td>
-                        <td style="text-align: center">
-                            <div
-                                    name="invoice"
-                                    value=""
-                                    class="btn btn-outline-warning"
-                                    onclick="addInvoice(`${order.orderId}`, `${order.userId}`, `${order.carId}`, `${order.damage}`, `${order.payment}`, `${order.reason}`, `${order.passport}`, `${order.phone}`)"
-                            >
-                                <i class="fa fa-credit-card"></i>
-                            </div>
-                        </td>
+<%--                        <td style="text-align: center">--%>
+<%--                            <div--%>
+<%--                                    name="invoice"--%>
+<%--                                    value=""--%>
+<%--                                    class="btn btn-outline-warning"--%>
+<%--                                    onclick="addInvoice(`${order.orderId}`, `${order.userId}`, `${order.carId}`, `${order.damage}`, `${order.payment}`, `${order.reason}`, `${order.passport}`, `${order.phone}`)"--%>
+<%--                            >--%>
+<%--                                <i class="fa fa-credit-card"></i>--%>
+<%--                            </div>--%>
+<%--                        </td>--%>
                         <td style="text-align: center">
                             <button
                                     name="remove"
@@ -205,7 +209,16 @@
 </div>
 <script>
 
-    let navigation = document.querySelector('.navigation');
+    //     let exchangeRate = parseFloat(document.getElementById("exchangeRate").innerHTML).toFixed(2);
+    //
+    //     let rates = document.getElementsByClassName("orderPayment");
+    //
+    //     for (let i = 0; i < rates.length; i++) {
+    //         rates[i].value = "" + (rates[i].value * exchangeRate).toFixed(0);
+    // }
+
+
+let navigation = document.querySelector('.navigation');
     console.log(navigation);
 
     navigation.onclick = function () {

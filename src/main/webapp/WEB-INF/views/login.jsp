@@ -77,8 +77,8 @@
               action="<c:url value="/login"/>"
               method="post">
 
-            <label for="flag"></label>
-            <input id="flag" name="language" hidden>
+<%--            <label for="flag"></label>--%>
+<%--            <input id="flag" name="language" hidden>--%>
 
             <img class="user"
                  height="100px"
@@ -87,7 +87,7 @@
                  alt=""
                  src="<c:url value="/upload?ava.jpg"/>">
 
-            <jsp:include page="flag.jsp"/>
+<%--            <jsp:include page="flag.jsp"/>--%>
 
             <div class="container">
 

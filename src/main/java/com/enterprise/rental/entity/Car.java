@@ -1,14 +1,26 @@
 package com.enterprise.rental.entity;
 
-import com.enterprise.rental.dao.jdbc.factory.Column;
-import com.enterprise.rental.dao.jdbc.factory.Entity;
-import com.enterprise.rental.dao.jdbc.factory.Table;
+import com.enterprise.rental.dao.jdbc.builder.Column;
+import com.enterprise.rental.dao.jdbc.builder.Entity;
+import com.enterprise.rental.dao.jdbc.builder.Table;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.Objects;
 
+/**
+ * Java class that represent a Car,
+ * implements {@link Serializable} interface.
+ * <p>
+ * Annotation for query builder
+ *
+ * @author Pasha Pollack
+ * @see Column
+ * @see Table
+ * @see Entity
+ */
 @Entity
-@Table(name = "cars")
+@Table(name = "car")
 public class Car implements Serializable {
     @Column(name = "id", length = 1024)
     private long id;
@@ -24,8 +36,16 @@ public class Car implements Serializable {
     private Double price;
     @Column(name = "cost", length = 1024)
     private Double cost;
+    @Column(name = "year", length = 256)
     private int year;
-    private User user;
+    @Column(name = "rent", length = 8)
+    private boolean rent;
+    @Column(name = "date", length = 256)
+    private Timestamp date;
+    private User driver;
+
+    public Car() {
+    }
 
     public boolean isRent() {
         return rent;
@@ -35,9 +55,12 @@ public class Car implements Serializable {
         this.rent = rent;
     }
 
-    private boolean rent;
+    public Timestamp getDate() {
+        return date;
+    }
 
-    public Car() {
+    public void setDate(Timestamp date) {
+        this.date = date;
     }
 
     public long getId() {
@@ -80,20 +103,25 @@ public class Car implements Serializable {
         return cost;
     }
 
-    public void setCost(Double cost) {this.cost = cost;}
+    public void setCost(Double cost) {
+        this.cost = cost;
+    }
 
     public void setPath(String path) {
         this.path = path;
     }
 
     public User user() {
-        return user;
+        return driver;
     }
 
     public void user(User user) {
-        this.user = user;
+        this.driver = user;
     }
 
+    /**
+     * The builder pattern creates new entity of User.
+      */
     public static class Builder {
         private long id;
         private String name;
@@ -104,6 +132,7 @@ public class Car implements Serializable {
         private Double cost;
         private int year;
         private boolean rent;
+        private Timestamp date;
 
         public Builder id(long id) {
             this.id = id;
@@ -150,6 +179,11 @@ public class Car implements Serializable {
             return this;
         }
 
+        public Builder date(Timestamp date) {
+            this.date = date;
+            return this;
+        }
+
         public Car build() {
             Car car = new Car();
             car.id = this.id;
@@ -161,7 +195,13 @@ public class Car implements Serializable {
             car.cost = this.cost;
             car.year = this.year;
             car.rent = this.rent;
+            car.date = this.date;
             return car;
+        }
+
+        public Builder term(Timestamp timestamp) {
+            this.date = timestamp;
+            return this;
         }
     }
 

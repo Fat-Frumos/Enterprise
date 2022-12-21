@@ -32,17 +32,17 @@
 <c:choose>
     <c:when test="${user.language=='ua'}">
         <fmt:setLocale value="ua" scope="session"/>
-        <fmt:setBundle basename="com.enterprise.rental.utils.locale.BungleUa" var="lang"/>
+        <fmt:setBundle basename="com.enterprise.rental.service.locale.BungleUa" var="lang"/>
     </c:when>
     <c:otherwise>
         <fmt:setLocale value="en" scope="session"/>
-        <fmt:setBundle basename="com.enterprise.rental.utils.locale.BungleEn" var="lang"/>
+        <fmt:setBundle basename="com.enterprise.rental.service.locale.BungleEn" var="lang"/>
     </c:otherwise>
 </c:choose>
 
-<span id="exchangeLabel" class="cart-detail-badge" hidden>
-    <fmt:message key="exchange" bundle="${lang}"/>
-</span>
+<%--<span id="exchangeLabel" class="cart-detail-badge" hidden>--%>
+<%--    <fmt:message key="exchange" bundle="${lang}"/>--%>
+<%--</span>--%>
 <section>
     <form action="${pageContext.request.contextPath}/cars" method="post">
         <div class="row">
@@ -99,7 +99,8 @@
                 <p class="h5 m-0"><fmt:message key="p.cost" bundle="${lang}"/></p>
                 <div class="d-flex align-items-end mt-4 mb-2">
                     <label for="cost">
-                        <fmt:message key="exchange.sign" bundle="${lang}"/>
+                        $
+<%--                        <fmt:message key="exchange.sign" bundle="${lang}"/>--%>
                     </label>
                     <input style="width: 120px"
                            id="cost"
@@ -116,7 +117,8 @@
                 <p class="h5 m-0"><fmt:message key="p.price" bundle="${lang}"/></p>
                 <div class="d-flex align-items-end mt-4 mb-2">
                     <label for="oldPrice">
-                        <fmt:message key="exchange.sign" bundle="${lang}"/>
+                        $
+<%--                        <fmt:message key="exchange.sign" bundle="${lang}"/>--%>
                     </label>
                     <input style="width: 120px"
                            id="oldPrice"
@@ -133,7 +135,8 @@
                 <p class="h5 m-0"><fmt:message key="p.driver" bundle="${lang}"/></p>
                 <div class="d-flex align-items-end mt-4 mb-2">
                     <label for="driver">
-                        <fmt:message key="exchange.sign" bundle="${lang}"/>
+                        $
+<%--                        <fmt:message key="exchange.sign" bundle="${lang}"/>--%>
                     </label><input style="width: 120px"
                                    id="driver"
                                    type="text"
@@ -175,18 +178,16 @@
             <input name="newPrice"
                    type="number"
                    style="width: 120px"
-                   value="100"
                    class="fas fa-dollar-sign pe-1 mt-2 form-control"
                    placeholder="price"
-            <%--                   value="${auto.price}"--%>
+                   value="${auto.price}"
             >
             <input placeholder="cost"
                    name="newCost"
                    type="number"
-                   value="10000"
                    style="width: 120px"
                    class="fas fa-dollar-sign pe-1 mt-2 form-control"
-            <%--                   value="${auto.cost}"--%>
+                   value="${auto.cost}"
             >
             <input style="border: none; width: 100px" type="submit"
                    value="<fmt:message key="input.upload" bundle="${lang}"/>"/>
@@ -200,27 +201,27 @@
 
 <script>
 
-    const ex = document.getElementById("exchangeLabel");
-    let expf = parseFloat(ex.innerHTML).toFixed(2);
-
-    const cost = document.getElementById("cost");
-    const pp = document.getElementById("oldPrice");
-    const driver = document.getElementById("driver");
-    cost.value *= expf;
-    pp.value *= expf;
-    driver.value *= expf;
-
-    console.log(pp.value);
-    console.log(cost.value);
-    console.log(driver.value);
-    console.log(expf);
-
-    for (let i = 0; i < pp.length; i++) {
-        pp[i].innerHTML = "" + (pp[i].innerHTML * expf).toFixed(0);
-        cost[i].innerHTML = "" + (cost[i].innerHTML * expf).toFixed(0)
-        console.log(pp[i].innerHTML);
-        console.log(cost[i].innerHTML);
-    }
+    // const ex = document.getElementById("exchangeLabel");
+    // let expf = parseFloat(ex.innerHTML).toFixed(2);
+    //
+    // const cost = document.getElementById("cost");
+    // const pp = document.getElementById("oldPrice");
+    // const driver = document.getElementById("driver");
+    // cost.value *= expf;
+    // pp.value *= expf;
+    // driver.value *= expf;
+    //
+    // console.log(pp.value);
+    // console.log(cost.value);
+    // console.log(driver.value);
+    // console.log(expf);
+    //
+    // for (let i = 0; i < pp.length; i++) {
+    //     pp[i].innerHTML = "" + (pp[i].innerHTML * expf).toFixed(0);
+    //     cost[i].innerHTML = "" + (cost[i].innerHTML * expf).toFixed(0)
+    //     console.log(pp[i].innerHTML);
+    //     console.log(cost[i].innerHTML);
+    // }
 
     if ("${user.role}" === "admin") {
 
@@ -254,17 +255,14 @@
                 }
             }
         )
-
-        let brand = document.querySelector("body > div.container > div.row.m-0 > div.col-lg-7.pb-5.pe-lg-5 > section > form > div > div:nth-child(2) > p > input:nth-child(1)")
-        let model = document.querySelector("body > div.container > div.row.m-0 > div.col-lg-7.pb-5.pe-lg-5 > section > form > div > div:nth-child(2) > p > input:nth-child(2)")
+        // document.querySelector("body > div.container > div > div.col-lg-7.pe-lg-5 > section > form > div > div:nth-child(2) > p > input:nth-child(1)")
+        let brand = document.querySelector("body > div.container > div > div.col-lg-7.pe-lg-5 > section > form > div > div:nth-child(2) > p > input:nth-child(1)")
+        let model = document.querySelector("body > div.container > div > div.col-lg-7.pe-lg-5 > section > form > div > div:nth-child(3) > div > p > input")
         brand.readOnly = false;
         model.readOnly = false;
+        document.querySelector("#oldPrice").readOnly = false;
+        document.querySelector("#cost").readOnly = false;
 
-        for (let i = 3; i < 8; i++) {
-            let query = "body > div.container > div.row.m-0 > div.col-lg-7.pb-5.pe-lg-5 > section > form > div > div:nth-child(" + i + ") > div > p > input";
-            let input = document.querySelector(query);
-            input.readOnly = false;
-        }
     }
 
     function shows(tags) {

@@ -20,10 +20,10 @@ import static com.enterprise.rental.dao.jdbc.Constants.*;
 import static com.enterprise.rental.service.UserService.saltedPassword;
 
 /**
- * StaticServlet extends <code>Servlet</code> an HTTP servlet suitable for a Web-site.
- * A subclass of <code>Servlet</code> must override four methods:
+ * StaticServlet class that represent an index page <code>Main</code> an HTTP servlet suitable for a Web-site.
+ * A subclass of <code>Servlet</code> override two methods:
  * <ul>
- * <li> <code>doGet</code>, if the servlet supports HTTP GET requests
+ * <li> <code>doGet</code>, if the servlet supports HTTP GET requests (all cars)
  * <li> <code>doPost</code>, for HTTP POST requests
  *
  * <li> <code>getAuto</code> fetches {@code List<Car>} using <code>CarService</code>
@@ -38,14 +38,12 @@ public class StaticServlet extends Servlet {
     private static final UserService userService = new DefaultUserService();
     private static int rows = carService.getNumberOfRows();
 
-
     /**
      * <p>If the HTTP GET request is correctly formatted,
      * <code>doGet</code>, fetches {@code List<Car>} from the database</p>
      *
      * <p>If User not registered redirect to Login page,
      * otherwise redirect to main page </p>
-     * <p>
      * A Page Request object by passing in the requested page number and the page limit.
      * {@code Map<String, String> params} is a map of parameters to the sorting and pagination
      *
@@ -64,8 +62,10 @@ public class StaticServlet extends Servlet {
             HttpServletRequest request,
             HttpServletResponse response)
             throws ServletException, IOException {
+        String lang = request.getParameter("lang");
 
-        String[] carFields = {"id", "name", "brand", "model", "path", "price", "cost", "year", "sort", "direction", "page"};
+
+        String[] carFields = {"id", "name", "brand", "model", "path", "price", "cost", "year", "sort", "direction", "page", "date"};
 
         Map<String, String> params = Arrays.stream(carFields)
                 .filter(key -> !"".equals(request.getParameter(key))
@@ -117,8 +117,9 @@ public class StaticServlet extends Servlet {
         if (session != null && session.getAttribute("user") != null) {
             User user = (User) session.getAttribute("user");
             user.addParams(params);
+            user.setLanguage(lang);
             request.setAttribute("car", user.getCars().size());
-            log.debug(String.format("Users Params: %s", user.getParams()));
+            log.debug(String.format("User: %s", user));
         }
         dispatch(request, response, CARS);
     }
@@ -145,34 +146,32 @@ public class StaticServlet extends Servlet {
             HttpServletResponse response)
             throws IOException, ServletException {
 
-        List<Car> auto = carService.getRandom(3);
         String name = request.getParameter("name");
         String password = request.getParameter("password");
 
-        String path;
+        String path = LOGIN;
         if (name != null && password != null) {
-            Optional<User> optionalUser = userService.findByName(name);
+            Optional<User> optionalUser = userService.getByName(name);
             if (optionalUser.isPresent()) {
                 User user = optionalUser.get();
                 String saltedPassword = saltedPassword(password, user.getSalt());
 
-                log.debug(String.format("%sRawPassword: %s Name: %s%s",
-                        PURPLE, password, user.getName(), RESET));
+                log.debug(String.format("%s%s: %s/%s%s",
+                        PURPLE, user.getName(), password, saltedPassword, RESET));
 
                 boolean isValid = Objects.equals(name, user.getName()) && saltedPassword.equals(user.getPassword());
 
-                path = setRequestAttribute(request, auto, user, isValid);
+                path = setRequestAttribute(request, carService.getRandom(3), user, isValid);
             } else {
                 request.setAttribute("errorMessage", "User not found");
-                path = LOGIN;
             }
             dispatch(request, response, path);
         }
     }
 
     /**
-     * <p>Get List of Cars from the database</p>
-     * Returns {@code List<Car>}
+     * Get List of Cars from the CarService with parameters
+     * <p>
      * A Page Request object by passing in the requested page number and the page limit.
      *
      * @param params an {@code Map<String, String> params}
@@ -180,7 +179,7 @@ public class StaticServlet extends Servlet {
      * @param page   an {@link boolean} pagination set page and offset attribute.
      *               Default values: page = 1, offset = 9,
      *               max Page get Number Of Rows from database
-     * @return {@code List<User>}, if a value is present,
+     * @return {@code List<Car>}, if a value is present,
      * otherwise {@code empty List}.
      */
     private static List<Car> getAuto(Map<String, String> params, int page) {
@@ -209,18 +208,17 @@ public class StaticServlet extends Servlet {
      * otherwise {@code Optional.empty()}.
      */
     private static String setRequestAttribute(HttpServletRequest request, List<Car> auto, User user, boolean isValid) {
-        String path;
+        String path = LOGIN;
         if (isValid) {
             HttpSession session = request.getSession();
             session.setAttribute("user", user);
             request.setAttribute("cars", auto);
             request.setAttribute("auto", auto.get(0));
-            log.debug(String.format("%s", auto.get(0)));
+            log.debug(String.format("%s%s%s", GREEN, auto.get(0), RESET));
             log.debug(String.format("%sSession customer: %s(%s)%s", RED, user.getName(), user.getRole(), RESET));
             path = MAIN;
         } else {
             request.setAttribute("errorMessage", "Your name/password is incorrect");
-            path = LOGIN;
         }
         return path;
     }

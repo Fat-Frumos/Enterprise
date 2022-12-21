@@ -5,6 +5,12 @@ import java.sql.Timestamp;
 import java.util.Objects;
 import java.util.UUID;
 
+/**
+ * Java class that represent an Order,
+ * implements {@link Serializable} interface.
+ *
+ * @author Pasha Pollack
+ */
 public class Order implements Serializable {
     private long orderId = UUID.randomUUID().getMostSignificantBits() & 0x7ffffffL;
     private long userId;
@@ -40,27 +46,26 @@ public class Order implements Serializable {
         this.passport = passport;
     }
 
-    public Order(long carId, long userId, boolean driver) {
+    public Order(long carId, long userId) {
         this.carId = carId;
         this.userId = userId;
-        this.driver = driver;
     }
-
-    public Order(long orderId, long userId, long carId, Timestamp term, double payment, boolean driver, boolean rejected, boolean closed, Timestamp created, String phone, String damage, String passport, String reason) {
-        this.orderId = orderId;
-        this.userId = userId;
-        this.carId = carId;
-        this.term = term;
-        this.payment = payment;
-        this.driver = driver;
-        this.rejected = rejected;
-        this.closed = closed;
-        this.created = created;
-        this.phone = phone;
-        this.damage = damage;
-        this.passport = passport;
-        this.reason = reason;
-    }
+//
+//    public Order(long orderId, long userId, long carId, Timestamp term, double payment, boolean driver, boolean rejected, boolean closed, Timestamp created, String phone, String damage, String passport, String reason) {
+//        this.orderId = orderId;
+//        this.userId = userId;
+//        this.carId = carId;
+//        this.term = term;
+//        this.payment = payment;
+//        this.driver = driver;
+//        this.rejected = rejected;
+//        this.closed = closed;
+//        this.created = created;
+//        this.phone = phone;
+//        this.damage = damage;
+//        this.passport = passport;
+//        this.reason = reason;
+//    }
 
     public Order() {
     }
@@ -146,6 +151,10 @@ public class Order implements Serializable {
         this.closed = closed;
     }
 
+    public void setOrderId(long id) {
+        this.orderId = id;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -173,10 +182,6 @@ public class Order implements Serializable {
                 ", damage='" + damage + '\'' +
                 ", reason='" + reason + '\'' +
                 '}';
-    }
-
-    public void setOrderId(long id) {
-        this.orderId = id;
     }
 
     public static class Builder {
@@ -259,6 +264,11 @@ public class Order implements Serializable {
             return this;
         }
 
+        /**
+         * The builder pattern creates new entity of Order.
+         *
+         * @return Order entity
+         */
         public Order build() {
             Order order = new Order();
             order.userId = this.userId;

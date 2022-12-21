@@ -1,7 +1,9 @@
 package com.enterprise.rental.utils;
 
-import com.enterprise.rental.utils.locale.CurrencyConvector;
+import com.enterprise.rental.service.locale.CurrencyConvector;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TestCurrencyConvector {
 
@@ -9,10 +11,7 @@ class TestCurrencyConvector {
     void testCurrencyConvector() {
 
         CurrencyConvector currencyConvector = new CurrencyConvector();
-        currencyConvector.updateExchange();
-        System.out.println(currencyConvector.exchangeTo(400D, "USD"));
-        System.out.println(currencyConvector.exchangeFrom(400D, "USD"));
-
+        System.out.println(currencyConvector.exchangeMultiply(1D, "USD"));
+        assertEquals(35, currencyConvector.exchangeMultiply(1D, "USD"), 2.001);
     }
-
 }

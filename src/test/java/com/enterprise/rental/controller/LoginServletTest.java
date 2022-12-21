@@ -54,21 +54,21 @@ class LoginServletTest {
 
     }
 
-    @Test
-    void TestLoginServlet() throws IOException, ServletException {
-
-        when(request.getParameter("name")).thenReturn("Mockito");
-        when(request.getParameter("password")).thenReturn("Test");
-
-        StringWriter stringWriter = new StringWriter();
-        PrintWriter writer = new PrintWriter(stringWriter);
-        when(response.getWriter()).thenReturn(writer);
-
-        RequestDispatcher dispatcher = mock(RequestDispatcher.class);
-        HttpSession session = mock(HttpSession.class);
-
-        when(request.getRequestDispatcher(INDEX)).thenReturn(dispatcher);
-        when(request.getSession()).thenReturn(session);
+//    @Test
+//    void TestLoginServlet() throws IOException, ServletException {
+//
+//        when(request.getParameter("name")).thenReturn("Mockito");
+//        when(request.getParameter("password")).thenReturn("Test");
+//
+//        StringWriter stringWriter = new StringWriter();
+//        PrintWriter writer = new PrintWriter(stringWriter);
+//        when(response.getWriter()).thenReturn(writer);
+//
+//        RequestDispatcher dispatcher = mock(RequestDispatcher.class);
+//        HttpSession session = mock(HttpSession.class);
+//
+//        when(request.getRequestDispatcher(INDEX)).thenReturn(dispatcher);
+//        when(request.getSession()).thenReturn(session);
 
 //        HttpGet req = new HttpGet(String.format("http://localhost:%d/cars", port));
 //        HttpPost rep = new HttpPost(String.format("http://localhost:%d/cars", port));
@@ -76,10 +76,9 @@ class LoginServletTest {
 //        System.out.println(req);
 //        System.out.println(rep);
 
-        UserServlet userServlet = new UserServlet();
-        userServlet.doGet(request, response);
-        verify(session).setAttribute("user", bob);
-        verify(dispatcher).forward(request, response);
-
-    }
+//        UserServlet userServlet = new UserServlet();
+//        userServlet.doGet(request, response);
+//        verify(session).setAttribute("user", bob);
+//        verify(dispatcher).forward(request, response);
+//    }
 }

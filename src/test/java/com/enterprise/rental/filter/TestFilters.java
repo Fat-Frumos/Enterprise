@@ -57,7 +57,7 @@ class TestFilters extends Mockito {
         SecurityFilter filter = new SecurityFilter();
 
         when(mockReq.getReader()).thenReturn(br);
-        when(mockReq.getRequestURI()).thenReturn("/order");
+        when(mockReq.getRequestURI()).thenReturn("/register");
         when(mockReq.getRequestDispatcher(ORDERS)).thenReturn(dispatcher);
         when(mockReq.getRequestURI()).thenReturn("/user");
         when(mockReq.getRequestDispatcher(USERS)).thenReturn(dispatcher);

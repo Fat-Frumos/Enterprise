@@ -25,7 +25,7 @@ import static com.enterprise.rental.dao.jdbc.Constants.*;
 
 /**
  * <p>Order Servlet extends an abstract Servlet suitable for a Web-site.
- * <p>A subclass of <code>HttpServlet</code> must override four methods:
+ * <p>A subclass of <code>HttpServlet</code> override four methods:
  * <code>doGet</code>, for HTTP GET requests
  * <code>doPost</code>, for HTTP POST requests
  * <code>doPut</code>, for HTTP PUT requests
@@ -101,9 +101,9 @@ public class OrderServlet extends Servlet {
             Car car = user.getCar();
             if (car != null) {
                 log.debug(String.format("Car %s ", car.getBrand()));
-                Order orderMapper = ORDER_MAPPER.orderMapper(request);
-                if (orderMapper != null) {
-                    boolean saved = orderService.save(orderMapper);
+                Order mapper = ORDER_MAPPER.mapper(request);
+                if (mapper != null) {
+                    boolean saved = orderService.save(mapper);
                     if (saved) {
                         List<Car> userCars = user.getCars();
                         for (Car userCar : userCars) {
@@ -168,7 +168,7 @@ public class OrderServlet extends Servlet {
                 List<Order> userOrders = orderService.getAll();
                 request.setAttribute("orders", userOrders);
                 request.setAttribute("user", user);
-                log.debug(String.format("%s", user));
+                log.debug(String.format("%s%s%s", GREEN, user, RESET));
 
                 log.debug(String.format("%s %s From Request session",
                         user.getRole(), user.getName()));

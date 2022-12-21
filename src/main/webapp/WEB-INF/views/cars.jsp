@@ -5,11 +5,11 @@
 <c:choose>
     <c:when test="${user.language=='ua'}">
         <fmt:setLocale value="ua" scope="session"/>
-        <fmt:setBundle basename="com.enterprise.rental.utils.locale.BungleUa" var="lang"/>
+        <fmt:setBundle basename="com.enterprise.rental.service.locale.BungleUa" var="lang"/>
     </c:when>
     <c:otherwise>
         <fmt:setLocale value="en" scope="session"/>
-        <fmt:setBundle basename="com.enterprise.rental.utils.locale.BungleEn" var="lang"/>
+        <fmt:setBundle basename="com.enterprise.rental.service.locale.BungleEn" var="lang"/>
     </c:otherwise>
 </c:choose>
 <%--
@@ -52,8 +52,7 @@
 <jsp:include page="option.jsp"/>
 <jsp:include page="cart.jsp"/>
 <jsp:include page="nav.jsp"/>
-<%--<jsp:include page="flag.jsp"/>--%>
-
+    <jsp:include page="flag.jsp"/>
 <script>
 
     $("input").on("keydown", function search(e) {

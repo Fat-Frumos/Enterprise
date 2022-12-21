@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -20,10 +21,11 @@ import static org.mockito.Mockito.when;
 class CarsTest {
     Logger log = Logger.getLogger(CarsTest.class);
     private static final List<Car> cars = new ArrayList<>();
-    static final Car X7 = new Car.Builder().id(1L).name("X7").brand("BMW").model("G07").path("http//").price(25000.0).cost(10000.0).year(2022).build();
-    static final Car X5 = new Car.Builder().id(2L).name("X5").brand("BMW").model("GT-2").path("http//").price(22000.0).cost(10000.0).year(2020).build();
-    JdbcCarDao mockCarDao = mock(JdbcCarDao.class);
-    CarService service = new DefaultCarService(mockCarDao);
+    private static final Timestamp now = new Timestamp(System.currentTimeMillis());
+    static final Car X7 = new Car.Builder().id(1L).name("X7").brand("BMW").model("G07").path("http//").price(25000.0).cost(10000.0).year(2022).date(now).build();
+    static final Car X5 = new Car.Builder().id(2L).name("X5").brand("BMW").model("GT-2").path("http//").price(22000.0).cost(10000.0).year(2020).date(now).build();
+    static JdbcCarDao mockCarDao = mock(JdbcCarDao.class);
+    static CarService service = new DefaultCarService(mockCarDao);
 
     @BeforeEach
     void init() {
@@ -43,7 +45,7 @@ class CarsTest {
 
     @Test
     void testFindByBrand() {
-        Car car = new Car.Builder().id(2L).name("X5").brand("BMW").model("GT-2").path("http//").price(10000.0).cost(10000.0).year(2020).build();
+        Car car = new Car.Builder().id(2L).name("X5").brand("BMW").model("GT-2").path("http//").price(10000.0).cost(10000.0).year(2020).date(now).build();
         when(service.getAll("BMW")).thenReturn(cars);
 
         log.debug(String.format("%s", service.getAll()));
@@ -57,9 +59,9 @@ class CarsTest {
 
     @Test
     void testFindAllReturnCorrectData() {
-        JdbcCarDao jdbcCarDao = new JdbcCarDao();
-        List<Car> cars = jdbcCarDao.findAll();
-        assertFalse(cars.isEmpty());
+        when(mockCarDao.findAll()).thenReturn(cars);
+        List<Car> auto = mockCarDao.findAll();
+        assertFalse(auto.isEmpty());
 
         for (Car car : cars) {
             assertNotEquals(0, car.getId());

@@ -15,10 +15,25 @@ import java.util.UUID;
 
 import static com.enterprise.rental.dao.jdbc.Constants.*;
 
+/**
+ * JdbcTemplate is a central class in the JDBC core package
+ * that simplifies the use of JDBC and helps to avoid common errors.
+ * It internally uses JDBC API and eliminates a lot of problems with JDBC API
+ *
+ * @author Pasha Pollack
+ */
 public class JdbcCarTemplate extends DbManager {
     private static final CarMapper CAR_ROW_MAPPER = new CarMapper();
     private static final Logger log = Logger.getLogger(JdbcCarTemplate.class);
 
+    /**
+     * <p>Retrieves the Car with the specified id</p>
+     * Is used to return an Car from the database by the given id,
+     * otherwise {@code Optional.empty}.
+     *
+     * @param id of car
+     * @return the Optional, or <code>Optional.empty</code> if the name was not found
+     */
     protected static Optional<Car> getCarById(long id) {
 
         log.debug(String.format("%s%s%s", YELLOW, FILTER_BY_ID_SQL, RESET));
@@ -27,7 +42,7 @@ public class JdbcCarTemplate extends DbManager {
         ResultSet resultSet = null;
 
         try {
-            connection = getConfigConnection();
+            connection = configConnection();
             statement = connection.prepareStatement(FILTER_BY_ID_SQL);
             statement.setLong(1, id);
 
@@ -39,14 +54,22 @@ public class JdbcCarTemplate extends DbManager {
                     : Optional.of(CAR_ROW_MAPPER.mapRow(resultSet));
 
         } catch (SQLException sqlException) {
-            log.debug("Car by id not found");
-            rollback(connection, sqlException, String.valueOf(id));
+            log.debug(String.format("Car by id not found: %s", id));
+            rollback(connection, sqlException);
         } finally {
             eventually(connection, statement, resultSet);
         }
         return Optional.empty();
     }
 
+    /**
+     * <p>Retrieves the entity with the specified name</p>
+     * Is used to return an object from the database by the given name,
+     * otherwise {@code Optional.empty}.
+     *
+     * @param name of object
+     * @return the Optional, or <code>Optional.empty</code> if the name was not found
+     */
     protected static Optional<Car> getCarQuery(String name) {
 
         String query = String.format("%s %s", FILTER_BY_CAR_NAME_SQL, name);
@@ -57,7 +80,7 @@ public class JdbcCarTemplate extends DbManager {
         ResultSet resultSet = null;
 
         try {
-            connection = getConfigConnection();
+            connection = configConnection();
             statement = connection.prepareStatement(FILTER_BY_CAR_NAME_SQL);
             statement.setString(1, name);
             resultSet = statement.executeQuery();
@@ -67,33 +90,40 @@ public class JdbcCarTemplate extends DbManager {
                 cars.add(CAR_ROW_MAPPER.mapRow(resultSet));
             }
         } catch (SQLException sqlException) {
-            log.debug("Cars not found");
-            rollback(connection, sqlException, query);
+            log.debug(String.format("Cars not found: %s", query));
+            rollback(connection, sqlException);
         } finally {
             eventually(connection, statement, resultSet);
         }
         return Optional.of(cars.get(0));
     }
 
+    /**
+     * <p>Retrieves all defined Cars</p>
+     * Is used to get objects from the database with query parameter.
+     *
+     * @param query the additional settings.
+     * @return the collection of Cars.
+     */
     protected static List<Car> getCarsQuery(String query) {
-        log.debug(String.format("%s%s%s", YELLOW, query, RESET));
+
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try {
-            connection = getConfigConnection();
+            connection = configConnection();
             statement = connection.prepareStatement(query);
             resultSet = statement.executeQuery();
             connection.commit();
-
+            log.debug(String.format("%s%s%s", YELLOW, query, RESET));
             if (resultSet.next()) {
                 return getCars(resultSet);
             } else {
                 log.debug("Vehicle not found");
             }
         } catch (SQLException sqlException) {
-            rollback(connection, sqlException, query);
-            log.debug("Vehicle not found");
+            rollback(connection, sqlException);
+            log.error("Vehicle not found");
 
         } finally {
             eventually(connection, statement, resultSet);
@@ -101,6 +131,12 @@ public class JdbcCarTemplate extends DbManager {
         return new ArrayList<>();
     }
 
+    /**
+     * Get instances of the destination class {@link Car} to List using the {@link CarMapper}
+     *
+     * @param resultSet the ResultSet returned by JDBC API
+     * @return list of Cars
+     */
     private static List<Car> getCars(
             ResultSet resultSet)
             throws SQLException {
@@ -113,6 +149,12 @@ public class JdbcCarTemplate extends DbManager {
         return cars;
     }
 
+    /**
+     * Creates a PreparedStatement object for sending parameterized SQL statements to the database
+     *
+     * @param car instances of Car
+     * @return list of Cars
+     */
     protected static boolean setCarQuery(
             @NotNull Car car)
             throws DataException {
@@ -121,7 +163,7 @@ public class JdbcCarTemplate extends DbManager {
         Connection connection = null;
         PreparedStatement statement = null;
         try {
-            connection = getConfigConnection();
+            connection = configConnection();
             statement = connection.prepareStatement(INSERT_CAR_SQL);
 
             boolean preparedStatement =
@@ -131,8 +173,8 @@ public class JdbcCarTemplate extends DbManager {
             return preparedStatement;
 
         } catch (SQLException sqlException) {
-            rollback(connection, sqlException, INSERT_CAR_SQL);
-            log.debug("Car can`t be created");
+            rollback(connection, sqlException);
+            log.debug(String.format("Car can`t be created: %s", INSERT_CAR_SQL));
 
         } finally {
             eventually(connection, statement);
@@ -140,6 +182,12 @@ public class JdbcCarTemplate extends DbManager {
         return false;
     }
 
+    /**
+     * Set instance of the destination class {@link Car} to PreparedStatement
+     *
+     * @param car instances of Car
+     * @return boolean true if successful
+     */
     private static boolean setPreparedStatement(
             Car car,
             PreparedStatement statement)

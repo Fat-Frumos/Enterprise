@@ -9,15 +9,24 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
+<c:choose>
+    <c:when test="${user.language=='ua'}">
+        <fmt:setLocale value="ua" scope="session"/>
+        <fmt:setBundle basename="com.enterprise.rental.service.locale.BungleUa" var="lang"/>
+    </c:when>
+    <c:otherwise>
+        <fmt:setLocale value="en" scope="session"/>
+        <fmt:setBundle basename="com.enterprise.rental.service.locale.BungleEn" var="lang"/>
+    </c:otherwise>
+</c:choose>
 <style>
     #language {
         height: 30px;
         width: 50px;
-
         overflow: hidden;
         position: absolute;
-        left: 280px;
-        top: 50px;
+        left: 300px;
+        top: 25px;
     }
 
     #language #en {
@@ -33,16 +42,19 @@
         background: url(https://cdn3.iconfinder.com/data/icons/finalflags/256/Ukraine-Flag.png) center center;
         height: 20px;
         width: 30px;
-        top: 30px;
+        top: -20px;
         left: 0;
     }
 
 </style>
 
-<div id="lang-switch">
+<label for="flag"></label>
+<input id="flag" name="language" hidden>
+
+<div id="lang-switch" onmouseenter="normalImg()" onmouseout="bigImg()">
     <div id='language' onclick="changeLang()">
-        <a onclick="enLang()" id='en' href="#"></a>
-        <a onclick="uaLang()" id='ua' href="#"></a>
+        <a onclick="enLang()" id='en' href="/?lang=en" ></a>
+        <a onclick="uaLang()" id='ua' href="/?lang=ua" ></a>
     </div>
 </div>
 
@@ -50,21 +62,18 @@
     const language = document.getElementById("language");
     const flag = document.getElementById("flag");
 
-<%--        let add_element = () => {--%>
 
-<%--&lt;%&ndash;            &lt;%&ndash;%>--%>
-<%--&lt;%&ndash;            User user = (User) request.getAttribute("user");&ndash;%&gt;--%>
-<%--&lt;%&ndash;            if (user != null) {&ndash;%&gt;--%>
-<%--&lt;%&ndash;            user.setLanguage("en");&ndash;%&gt;--%>
-<%--&lt;%&ndash;            request.setAttribute("user", user);&ndash;%&gt;--%>
-<%--&lt;%&ndash;            }&ndash;%&gt;--%>
-<%--&lt;%&ndash;             %>&ndash;%&gt;--%>
+    if ("${user.language}" === "ua") {
+        uaLang();
+    }
 
-<%--        const template = document.createElement('div');--%>
-<%--        template.innerHTML = "${user.language}";--%>
+    function bigImg() {
 
-<%--        document.body.appendChild(template);--%>
-<%--    }--%>
+    }
+
+    function normalImg(x) {
+        changeLang()
+    }
 
 
     function changeLang() {
@@ -75,13 +84,13 @@
         // add_element();
         flag.value = 'ua';
         document.getElementById("ua").style.top = '0';
-        document.getElementById("en").style.top = '30px';
+        document.getElementById("en").style.top = '-20px';
+
     }
 
     function enLang() {
         flag.value = 'en';
-
         document.getElementById("en").style.top = '0';
-        document.getElementById("ua").style.top = '30px';
+        document.getElementById("ua").style.top = '-20px';
     }
 </script>

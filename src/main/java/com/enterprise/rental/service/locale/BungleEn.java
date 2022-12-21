@@ -1,14 +1,37 @@
-package com.enterprise.rental.utils.locale;
+package com.enterprise.rental.service.locale;
 
 import java.util.ListResourceBundle;
 
+/**
+ * BungleEn extends ListResourceBundle that manages resources for a session locale in a convenient and easy to use list.
+ * <p>
+ * BungleEn must override getContents and provide an array,
+ * where each item in the array is a pair of objects.
+ * <p>
+ * The first element of each pair is the key, which must be a String,
+ * and the second element is the value associated with that key.
+ *
+ * @author Pasha Pollack
+ * @see java.util.ResourceBundle
+ */
 public class BungleEn extends ListResourceBundle {
+
+    /**
+     * Returns an array in which each item is a pair of objects in an
+     * <code>Object</code> array. The first element of each pair is
+     * the key, which must be a <code>String</code>, and the second
+     * element is the value associated with that key.
+     *
+     * @return an array of an <code>Object</code> array representing a
+     * key-value pair.
+     */
     public Object[][] getContents() {
         return contents;
     }
 
     static final Object[][] contents = {
 
+            {"span.card", "Card"},
             {"month.September", "September"},
             {"month.October", "October"},
             {"month.November", "November"},

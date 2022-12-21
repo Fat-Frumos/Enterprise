@@ -17,6 +17,12 @@ import java.util.UUID;
 import static com.enterprise.rental.dao.jdbc.Constants.LOGIN;
 import static com.enterprise.rental.dao.jdbc.Constants.USERS;
 
+/**
+ * Servlet implementation class Login User Servlet
+ * the core Login classes to get the job done.
+ *
+ * @author Pasha Pollack
+ */
 public class LoginServlet extends Servlet {
 
     private static final long serialVersionUID = UUID.randomUUID().getMostSignificantBits() & 0x7ffffffL;
@@ -24,7 +30,16 @@ public class LoginServlet extends Servlet {
     private static final UserService userService = new DefaultUserService();
 
     /**
-     * Login screen
+     * @see #LoginServlet()
+     */
+    public LoginServlet() {
+        super();
+    }
+
+    /**
+     * @see #doGet(HttpServletRequest request, HttpServletResponse response)
+     * Logs out a user by deliting the session attribute "username" and then updates
+     * the user session created to the user by adding the end time of the session
      */
     @Override
     protected void doGet(
@@ -37,7 +52,9 @@ public class LoginServlet extends Servlet {
 
         dispatch(request, response, LOGIN);
     }
-
+    /**
+     * @see #doPut(HttpServletRequest request, HttpServletResponse response)
+     */
     @Override
     protected void doPut(
             HttpServletRequest request,
@@ -46,7 +63,13 @@ public class LoginServlet extends Servlet {
     }
 
     /**
-     * Create new User
+     * Creates a user in database . Gets Parameters from create in users.jsp
+     * Logs in user by setting session attribute and then creating a user session.
+     * Then the time of the user session start is also set as an attribute
+     * Redirects an excited user to the home page and a new user to a page to
+     * set their name and password
+     *
+     * @see #doPost(HttpServletRequest request, HttpServletResponse response)
      */
     @Override
     protected void doPost(
@@ -59,12 +82,12 @@ public class LoginServlet extends Servlet {
 
         String name = request.getParameter("name");
 
-        Optional<User> optionalUser = userService.findByName(name);
-        //TODO to Service
+        Optional<User> optionalUser = userService.getByName(name);
+
         if (optionalUser.isPresent()) {
             log.debug(String.format("User: %s", optionalUser));
             request.setAttribute("errorMessage", String.format("User %s is exists", name));
-            request.getRequestDispatcher(LOGIN).forward(request, response);
+//            request.getRequestDispatcher(LOGIN).forward(request, response);
         } else {
             long id = UUID.randomUUID().getMostSignificantBits() & 0x7ffffffL;
             String password = request.getParameter("password");
@@ -82,14 +105,13 @@ public class LoginServlet extends Servlet {
                     .phone(phone)
                     .language(language)
                     .email(email)
-                    .created(created)
+//                    .created(created)
                     .active(true)
                     .closed(false)
                     .role("user")
                     .build();
 
             log.debug(String.format("Raw password: %s", password));
-
             boolean save = userService.save(user);
 
             log.debug(String.format("%s is created: %s", user.getName(), save));
@@ -97,7 +119,7 @@ public class LoginServlet extends Servlet {
             request.setAttribute("errorMessage",
                     String.format("User %s is created", name));
 
-            dispatch(request, response, LOGIN);
         }
+            dispatch(request, response, LOGIN);
     }
 }

@@ -14,11 +14,11 @@
     <c:choose>
         <c:when test="${user.language=='ua'}">
             <fmt:setLocale value="ua" scope="session"/>
-            <fmt:setBundle basename="com.enterprise.rental.utils.locale.BungleUa" var="lang"/>
+            <fmt:setBundle basename="com.enterprise.rental.service.locale.BungleUa" var="lang"/>
         </c:when>
         <c:otherwise>
             <fmt:setLocale value="en" scope="session"/>
-            <fmt:setBundle basename="com.enterprise.rental.utils.locale.BungleEn" var="lang"/>
+            <fmt:setBundle basename="com.enterprise.rental.service.locale.BungleEn" var="lang"/>
         </c:otherwise>
     </c:choose>
 
@@ -97,7 +97,7 @@
         let sort = document.getElementById("sort").value;
         window.location.href = "?page=" + page + "&direction=" + direction + "&sort=" + sort + "&price=" + price + "&brand=" + brand;
     }
-
+    // push the button Enter into input
     $("input").on("keydown", function search(e) {
         if (e.keyCode === 13) {
             $('#submit').click();
@@ -108,7 +108,7 @@
         fn(window.jQuery, window, document);
     }(function ($) {
         'use strict';
-
+        // sort direction the buttons cost and price
         $(function () {
             $('.sort-btn').on('click', '[data]', function (event) {
                 event.preventDefault();
@@ -124,7 +124,7 @@
                 $this.data('direction', param).find('.fa').attr('value', '' + param);
             });
         });
-
+        // sort direction by asc/desc order
         $(function () {
             $('.sort-btn').on('click', '[data-sort]', function (event) {
                 event.preventDefault();

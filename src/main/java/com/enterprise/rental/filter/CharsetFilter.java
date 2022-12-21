@@ -1,52 +1,87 @@
 package com.enterprise.rental.filter;
 
+import org.apache.log4j.Logger;
+
 import javax.servlet.*;
-import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-@WebFilter(filterName = "CharsetFilter", urlPatterns = {"/*"})
+
+/**
+ * Filter to Charset for windows-1251 is an object that performs filtering tasks
+ * on either the request to a resource (a servlet or static content),
+ * or on the response from a resource, or both. Implementation of <code>Filter</code>
+ *
+ * @author Pasha Pollack
+ * @see javax.servlet.Filter
+ */
 public class CharsetFilter implements Filter {
+    private static final Logger log = Logger.getLogger(CharsetFilter.class);
     protected String encoding;
+
+    /**
+     * A filter configuration object used by a servlet container to pass information to a filter during initialization
+     */
     protected FilterConfig filterConfig;
 
-    public void init(FilterConfig config) throws ServletException {
+    /**
+     * <p>The servlet container calls the init method exactly once after instantiating the filter.
+     * The init method must complete successfully before the filter is asked to do any filtering work.</p>
+     * A filter configuration object used by a servlet container
+     * to pass information to a filter during initialization.
+     *
+     * @param config <code> FilterConfig</code> configuration and initialization
+     * @see javax.servlet.FilterConfig
+     */
+    public void init(FilterConfig config) {
 
         filterConfig = config;
-
+        log.info("Encoding filter initiated");
         //read Parameter
         encoding = encoding
                 != null
                 ? config.getInitParameter("encoding")  //"requestEncoding"
-                : "UTF-8"; // "text/html; charset=windows-1251"
+                : "UTF-8";
     }
 
+    /**
+     * Method allows the Filter to Set character encoding windows-1251 on the request and response
+     *
+     * @param request  the <code>ServletRequest</code> an object to provide client request information to a servlet
+     * @param response the <code>ServletResponse</code> object contains the filter's response
+     * @param next     the <code>FilterChain</code> for invoking the next filter or the resource
+     * @throws IOException      if an I/O related error has occurred during the processing
+     * @throws ServletException if an exception occurs that interferes with the
+     *                          filter's normal operation
+     * @see javax.servlet.FilterChain
+     */
+    @Override
     public void doFilter(ServletRequest request,
                          ServletResponse response,
                          FilterChain next)
             throws IOException, ServletException {
 
-        String encodingRequest = selectEncoding(request);
-
+        String charEncoding = getCharsetFromContentType(request.getContentType());
+        String encodingRequest = (charEncoding == null) ? encoding : charEncoding;
+        //set Encoding Character request
         if (encodingRequest != null) {
             request.setCharacterEncoding(encodingRequest);
         }
-
-        HttpServletRequest req = (HttpServletRequest) request;
-
-        if (req.getParameter("sessionLocale") != null) {
-            req.getSession().setAttribute("lang", req.getParameter("sessionLocale"));
-
+        HttpServletRequest httpRequest = (HttpServletRequest) request;
+        if (httpRequest.getParameter("sessionLocale") != null) {
+            httpRequest.getSession().setAttribute(
+                    "lang", httpRequest.getParameter("sessionLocale"));
         }
-
+        //set ContentType response
         response.setContentType("text/html; charset=windows-1251");
         next.doFilter(request, response);
     }
 
-    private String selectEncoding(ServletRequest request) {
-        String charEncoding = getCharsetFromContentType(request.getContentType());
-        return (charEncoding == null) ? encoding : charEncoding;
-    }
-
+    /**
+     * Parse Charset From Content Type
+     *
+     * @param contentType a content Type Charset
+     * @return {@code String charset} Location
+     */
     public static String getCharsetFromContentType(String contentType) {
 
         if (contentType == null || !contentType.contains(";")) {
@@ -63,7 +98,16 @@ public class CharsetFilter implements Filter {
                 : null;
     }
 
+    /**
+     * Clean up all the filters supplied,
+     * calling each one's destroy method in turn,
+     * but in reverse order.
+     *
+     * @see Filter#init(FilterConfig)
+     */
+    @Override
     public void destroy() {
+        log.info("Encoding filter destroyed");
         encoding = null;
         filterConfig = null;
     }
