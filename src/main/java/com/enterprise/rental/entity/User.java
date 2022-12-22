@@ -28,7 +28,6 @@ public class User implements Serializable {
     private Car car;
     private Timestamp created;
 
-    private double exchange;
     /**
      * The builder pattern creates new entity of {@link User}.
      * <p>
@@ -421,14 +420,6 @@ public class User implements Serializable {
         this.orders = orders;
     }
 
-    public double getExchange() {
-        return exchange;
-    }
-
-    public void setExchange(double exchange) {
-        this.exchange = exchange;
-    }
-
     /**
      * Returns {@code true} if the arguments are equal to each other
      * and {@code false} otherwise.
@@ -471,14 +462,12 @@ public class User implements Serializable {
         return "User{" +
                 "userId=" + userId +
                 ", name='" + name + '\'' +
-                ", password='" + password + '\'' +
                 ", salt='" + salt + '\'' +
                 ", email='" + email + '\'' +
                 ", language='" + language + '\'' +
                 ", role='" + role + '\'' +
                 ", active=" + active +
                 ", closed=" + closed +
-                ", passport='" + passport + '\'' +
                 ", phone='" + phone + '\'' +
                 '}';
     }

@@ -52,7 +52,9 @@
 <jsp:include page="option.jsp"/>
 <jsp:include page="cart.jsp"/>
 <jsp:include page="nav.jsp"/>
+<c:if test="${not empty user}">
     <jsp:include page="flag.jsp"/>
+</c:if>
 <script>
 
     $("input").on("keydown", function search(e) {

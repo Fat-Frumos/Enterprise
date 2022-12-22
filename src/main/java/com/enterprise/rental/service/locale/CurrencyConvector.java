@@ -20,7 +20,7 @@ public class CurrencyConvector implements ExchangeService {
     private static final Logger log = Logger.getLogger(CurrencyConvector.class);
     private static final String NBU_URL = "https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?json";
     private static final Map<String, Double> concurrentHashMap = new ConcurrentHashMap<>();
-    public static double exchangeRate = 1;
+    public static double exchangeRate;
 
     /**
      * Default constructor call update Exchange
@@ -30,6 +30,7 @@ public class CurrencyConvector implements ExchangeService {
      */
     public CurrencyConvector() {
         updateExchange();
+        exchangeRate = exchangeMultiply(1D, "USD");
     }
 
     /**

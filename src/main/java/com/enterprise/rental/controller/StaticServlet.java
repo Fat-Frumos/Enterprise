@@ -116,8 +116,11 @@ public class StaticServlet extends Servlet {
 
         if (session != null && session.getAttribute("user") != null) {
             User user = (User) session.getAttribute("user");
-            user.addParams(params);
+            if (lang != null) {
             user.setLanguage(lang);
+            }
+
+            user.addParams(params);
             request.setAttribute("car", user.getCars().size());
             log.debug(String.format("User: %s", user));
         }

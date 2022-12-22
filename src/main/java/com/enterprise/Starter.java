@@ -1,8 +1,8 @@
 package com.enterprise;
 
-//import org.apache.catalina.LifecycleException;
-//import org.apache.catalina.core.StandardContext;
-//import org.apache.catalina.startup.Tomcat;
+import org.apache.catalina.LifecycleException;
+import org.apache.catalina.core.StandardContext;
+import org.apache.catalina.startup.Tomcat;
 import org.apache.log4j.Logger;
 
 /**
@@ -28,26 +28,26 @@ public class Starter {
 //     * @throws LifecycleException General purpose exception that is thrown
 //     *                            to indicate a lifecycle related problem.
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws LifecycleException {
 
-//        Tomcat tomcatServer = new Tomcat();
-//        // The user should ensure that the file permissions for the base directory are appropriate.
-//        tomcatServer.setBaseDir(".");
-//        //Set the port for the default connector.
-//        tomcatServer.setPort(TOMCAT_PORT);
-//        // The hostname of the default host, default is 'localhost'
-//        tomcatServer.setHostname(TOMCAT_HOSTNAME);
-//        // Set the auto deploy flag value for this host.
-//        tomcatServer.getHost().setAutoDeploy(false);
-//        // Standard implementation of the Context interface.
-//        StandardContext standardContext = new StandardContext();
-//        standardContext.setPath(CONTEXT_PATH);
-//        // Add a LifecycleEvent listener to this component.
-//        standardContext.addLifecycleListener(new Tomcat.FixContextListener());
-//        standardContext.setReloadable(false);
-//        tomcatServer.start();
-//
-//        log.debug(String.format("Tomcat started to http://localhost:%d%s%s%n", TOMCAT_PORT, CONTEXT_PATH, INTERNAL_PATH));
-//        tomcatServer.getServer().await();
+        Tomcat tomcatServer = new Tomcat();
+        // The user should ensure that the file permissions for the base directory are appropriate.
+        tomcatServer.setBaseDir(".");
+        //Set the port for the default connector.
+        tomcatServer.setPort(TOMCAT_PORT);
+        // The hostname of the default host, default is 'localhost'
+        tomcatServer.setHostname(TOMCAT_HOSTNAME);
+        // Set the auto deploy flag value for this host.
+        tomcatServer.getHost().setAutoDeploy(false);
+        // Standard implementation of the Context interface.
+        StandardContext standardContext = new StandardContext();
+        standardContext.setPath(CONTEXT_PATH);
+        // Add a LifecycleEvent listener to this component.
+        standardContext.addLifecycleListener(new Tomcat.FixContextListener());
+        standardContext.setReloadable(false);
+        tomcatServer.start();
+
+        log.debug(String.format("Tomcat started to http://localhost:%d%s%s%n", TOMCAT_PORT, CONTEXT_PATH, INTERNAL_PATH));
+        tomcatServer.getServer().await();
     }
 }

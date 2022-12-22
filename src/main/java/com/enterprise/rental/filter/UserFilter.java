@@ -2,7 +2,6 @@ package com.enterprise.rental.filter;
 
 import com.enterprise.rental.entity.Role;
 import com.enterprise.rental.entity.User;
-import com.enterprise.rental.service.locale.CurrencyConvector;
 import org.apache.log4j.Logger;
 
 import javax.servlet.*;
@@ -13,7 +12,6 @@ import java.io.IOException;
 import java.util.Objects;
 
 import static com.enterprise.rental.dao.jdbc.Constants.*;
-import static com.enterprise.rental.service.locale.CurrencyConvector.exchangeRate;
 
 /**
  * Filter contains pages that require authentication
@@ -88,10 +86,10 @@ public class UserFilter implements Filter {
             if (Objects.equals(user.getRole(), Role.USER.role())
                     || Objects.equals(user.getRole(), Role.MANAGER.role())
                     || Objects.equals(user.getRole(), Role.ADMIN.role())) {
-                user.setExchange("ua".equals(user.getLanguage()) ? exchangeRate : 1);
+//                user.setExchange("ua".equals(user.getLanguage()) ? exchangeRate : 1);
                 log.debug(String.format(
-                        "%sUser Level#3: Access is granted for %s, role %s, exchange: %s%s",
-                        CYAN, user.getName(), user.getRole(), exchangeRate, RESET));
+                        "%sUser Level#3: Access is granted for %s, role %s, %s",
+                        CYAN, user.getName(), user.getRole(),  RESET));
                 request.setAttribute("user", user);
                 chain.doFilter(request, response);
             } else {

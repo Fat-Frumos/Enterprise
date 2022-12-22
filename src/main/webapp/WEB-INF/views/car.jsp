@@ -116,18 +116,24 @@
                             </div>
                         </div>
 
+                        <input id="language"
+                               name="language"
+                               value="${user.language}"
+                               hidden
+                        />
                         <div class="d-flex mb-4">
                         <span class="me-5">
                             <span class="text-muted"><fmt:message key="span.payment" bundle="${lang}"/></span>
 
-<%--                        <fmt:message key="exchange.sign" bundle="${lang}"/>--%>
                             <label for="price"></label>
                             <input id="price"
                                    name="price"
                                    value="${auto.price}"
                                    style="width: 100px" hidden>
-
-                            <label for="payment">$</label>
+                               <span id="exchangeLabel" class="cart-detail-badge" hidden>
+                                <fmt:message key="exchange" bundle="${lang}"/>
+                            </span>
+                            <label for="payment"><fmt:message key="exchange.sign" bundle="${lang}"/></label>
                             <input id="payment"
                                    class="form-control"
                                    style="width: 100px"
@@ -170,10 +176,13 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 
     <script>
-        // let exchangeFloat = parseFloat(document.getElementById("exchangeLabel").innerHTML).toFixed(2);
-        // const pay = document.getElementById("payment");
-        // pay.value *= exchangeFloat;
-        let exchangeFloat = 1;
+        let exchangeFloat = parseFloat(document.getElementById("exchangeLabel").innerHTML).toFixed(2);
+        const pay = document.getElementById("payment");
+
+        pay.value *= exchangeFloat;
+
+
+        // let exchangeFloat = 1;
         $(document).ready(function () {
             $(".submit").click(function () {
                 $(".submit").addClass("purchase");

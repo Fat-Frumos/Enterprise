@@ -40,9 +40,10 @@
     </c:otherwise>
 </c:choose>
 
-<%--<span id="exchangeLabel" class="cart-detail-badge" hidden>--%>
-<%--    <fmt:message key="exchange" bundle="${lang}"/>--%>
-<%--</span>--%>
+<span id="exchangeLabel" class="cart-detail-badge" hidden>
+    <fmt:message key="exchange" bundle="${lang}"/>
+</span>
+
 <section>
     <form action="${pageContext.request.contextPath}/cars" method="post">
         <div class="row">
@@ -99,8 +100,7 @@
                 <p class="h5 m-0"><fmt:message key="p.cost" bundle="${lang}"/></p>
                 <div class="d-flex align-items-end mt-4 mb-2">
                     <label for="cost">
-                        $
-<%--                        <fmt:message key="exchange.sign" bundle="${lang}"/>--%>
+                        <fmt:message key="exchange.sign" bundle="${lang}"/>
                     </label>
                     <input style="width: 120px"
                            id="cost"
@@ -112,13 +112,16 @@
                     >
                 </div>
             </div>
-
+            <input id="language"
+                   name="language"
+                   value="${user.language}"
+                   hidden
+            />
             <div class="col-md-4 col-3 ps-30 my-4">
                 <p class="h5 m-0"><fmt:message key="p.price" bundle="${lang}"/></p>
                 <div class="d-flex align-items-end mt-4 mb-2">
                     <label for="oldPrice">
-                        $
-<%--                        <fmt:message key="exchange.sign" bundle="${lang}"/>--%>
+                        <fmt:message key="exchange.sign" bundle="${lang}"/>
                     </label>
                     <input style="width: 120px"
                            id="oldPrice"
@@ -135,8 +138,7 @@
                 <p class="h5 m-0"><fmt:message key="p.driver" bundle="${lang}"/></p>
                 <div class="d-flex align-items-end mt-4 mb-2">
                     <label for="driver">
-                        $
-<%--                        <fmt:message key="exchange.sign" bundle="${lang}"/>--%>
+                        <fmt:message key="exchange.sign" bundle="${lang}"/>
                     </label><input style="width: 120px"
                                    id="driver"
                                    type="text"
@@ -201,27 +203,27 @@
 
 <script>
 
-    // const ex = document.getElementById("exchangeLabel");
-    // let expf = parseFloat(ex.innerHTML).toFixed(2);
-    //
-    // const cost = document.getElementById("cost");
-    // const pp = document.getElementById("oldPrice");
-    // const driver = document.getElementById("driver");
-    // cost.value *= expf;
-    // pp.value *= expf;
-    // driver.value *= expf;
-    //
-    // console.log(pp.value);
-    // console.log(cost.value);
-    // console.log(driver.value);
-    // console.log(expf);
-    //
-    // for (let i = 0; i < pp.length; i++) {
-    //     pp[i].innerHTML = "" + (pp[i].innerHTML * expf).toFixed(0);
-    //     cost[i].innerHTML = "" + (cost[i].innerHTML * expf).toFixed(0)
-    //     console.log(pp[i].innerHTML);
-    //     console.log(cost[i].innerHTML);
-    // }
+     const ex = document.getElementById("exchangeLabel");
+     let expf = parseFloat(ex.innerHTML).toFixed(2);
+
+    const cost = document.getElementById("cost");
+    const pp = document.getElementById("oldPrice");
+    const driver = document.getElementById("driver");
+    cost.value *= expf;
+    pp.value *= expf;
+    driver.value *= expf;
+
+    console.log(pp.value);
+    console.log(cost.value);
+    console.log(driver.value);
+    console.log(expf);
+
+    for (let i = 0; i < pp.length; i++) {
+        pp[i].value = "" + (pp[i].value * expf).toFixed(0);
+        cost[i].value = "" + (cost[i].value * expf).toFixed(0)
+        // console.log(pp[i].innerHTML);
+        // console.log(cost[i].innerHTML);
+    }
 
     if ("${user.role}" === "admin") {
 

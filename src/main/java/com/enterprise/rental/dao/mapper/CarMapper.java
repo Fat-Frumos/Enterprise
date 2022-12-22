@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.enterprise.rental.service.locale.CurrencyConvector.exchangeRate;
+
 /**
  * Class CarMapper extends Mapper(Car).
  * It used for mapping data from ResultSet to Car
@@ -43,6 +45,17 @@ public class CarMapper extends Mapper<Car> {
                 params.put(field, parameter);
             }
         }
+
+        String language = request.getParameter("language");
+
+        double pay = language == null || "en".equals(language)
+                ? Double.parseDouble(request.getParameter(carFields[5]))
+                : Math.round((Double.parseDouble(request.getParameter(carFields[5])) / exchangeRate) * 100) / 100.0;
+
+        double cost = language == null || "en".equals(language)
+                ? Double.parseDouble(request.getParameter(carFields[6]))
+                : Math.round((Double.parseDouble(request.getParameter(carFields[6])) / exchangeRate) * 100) / 100.0;
+
         Timestamp timestamp;
         String date = params.get(carFields[9]);
         if (date == null) {
@@ -60,8 +73,8 @@ public class CarMapper extends Mapper<Car> {
                 .brand(params.get(carFields[2]))
                 .model(params.get(carFields[3]))
                 .path(params.get(carFields[4]))
-                .price(Double.valueOf(params.get(carFields[5])))
-                .cost(Double.valueOf(params.get(carFields[6])))
+                .price(pay)
+                .cost(cost)
 //                .year(Integer.parseInt(params.get(carFields[7])))
                 .date(timestamp)
                 .rent((params.get(carFields[8]) == null

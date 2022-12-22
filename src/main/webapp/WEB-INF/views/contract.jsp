@@ -46,6 +46,11 @@
         <%@include file="../classes/templates/css/dice.css"%>
         <%@include file="../classes/templates/css/loader.css"%>
 
+        body, .table td{
+            text-align: center;
+            margin: 0;
+            padding: 8px 0 0;
+        }
         h4 {
             margin: 40px;
         }
@@ -60,14 +65,14 @@
     </div>
 
     <div class="col-lg-12">
-        <table id="tabs" class="table cell-border" style="width:100%">
+        <table id="tabs" class="table cell-border" >
             <thead class="TableHead">
             <tr>
                 <th><fmt:message key="th.user" bundle="${lang}"/></th>
                 <th><fmt:message key="th.order" bundle="${lang}"/></th>
                 <th><fmt:message key="th.car" bundle="${lang}"/></th>
 
-                <th><fmt:message key="th.create" bundle="${lang}"/>
+                <th style="width: 230px"><fmt:message key="th.create" bundle="${lang}"/>
                     /
                     <fmt:message key="th.term" bundle="${lang}"/></th>
                 <th><fmt:message key="th.damage" bundle="${lang}"/></th>
@@ -75,22 +80,22 @@
                 <th><fmt:message key="th.payment" bundle="${lang}"/></th>
                 <th><fmt:message key="th.reject" bundle="${lang}"/></th>
                 <th><fmt:message key="th.close" bundle="${lang}"/></th>
-                <th><fmt:message key="th.confirm" bundle="${lang}"/></th>
+                <th style="width: 50px"><fmt:message key="th.confirm" bundle="${lang}"/></th>
 <%--                <th><fmt:message key="th.invoice" bundle="${lang}"/></th>--%>
-                <th><fmt:message key="th.remove" bundle="${lang}"/></th>
+                <th style="width: 50px"><fmt:message key="th.remove" bundle="${lang}"/></th>
 
             </tr>
             </thead>
             <tbody>
-<%--            <span id="exchangeRate" hidden><fmt:message key="exchange" bundle="${lang}"/></span>--%>
+            <span id="exchangeRate" hidden><fmt:message key="exchange" bundle="${lang}"/></span>
             <c:forEach items="${orders}" var="order">
                 <tr class="firstRow">
                     <form action="<c:url value="/register"/>" method="post">
-                        <td><input style="width: 60px" value="${order.userId}" name="userId"></td>
-                        <td><input style="width: 90px" value="${order.orderId}" name="orderId"></td>
-                        <td><input style="width: 80px" value="${order.carId}" name="carId"></td>
-                            <%--                        <td><input style="width: 120px" value="${order.passport}" name="passport"></td>--%>
-                        <td style="width: 225px">
+                        <td><input style="text-align: center; width: 60px" value="${order.userId}" name="userId"></td>
+                        <td><input style="text-align: center; width: 90px" value="${order.orderId}" name="orderId"></td>
+                        <td><input style="text-align: center; width: 80px" value="${order.carId}" name="carId"></td>
+                            <%--  <td><input style="width: 120px" value="${order.passport}" name="passport"></td>--%>
+                        <td style="text-align: center;width: 180px">
                             <input name="created" value="${order.created}" style="width: 150px" hidden>
                             <fmt:formatDate pattern="yyyy-MM-dd HH:mm:ss" value="${order.created}"/>
                             <br>
@@ -117,8 +122,12 @@
                                        style="width: 100px"
                                        value="${order.payment}"
                                 >
-                            $
-<%--                            <span class="badge"><fmt:message key="exchange.sign" bundle="${lang}"/></span>--%>
+                            <span class="badge"><fmt:message key="exchange.sign" bundle="${lang}"/></span>
+                            <input id="language"
+                                   name="language"
+                                   value="${user.language}"
+                                   hidden
+                            />
                         </td>
                         <td style="text-align: center">
                             <div class="toggle">
@@ -209,13 +218,13 @@
 </div>
 <script>
 
-    //     let exchangeRate = parseFloat(document.getElementById("exchangeRate").innerHTML).toFixed(2);
-    //
-    //     let rates = document.getElementsByClassName("orderPayment");
-    //
-    //     for (let i = 0; i < rates.length; i++) {
-    //         rates[i].value = "" + (rates[i].value * exchangeRate).toFixed(0);
-    // }
+        let exchangeRate = parseFloat(document.getElementById("exchangeRate").innerHTML).toFixed(2);
+
+        let rates = document.getElementsByClassName("orderPayment");
+
+        for (let i = 0; i < rates.length; i++) {
+            rates[i].value = "" + (rates[i].value * exchangeRate).toFixed(0);
+    }
 
 
 let navigation = document.querySelector('.navigation');

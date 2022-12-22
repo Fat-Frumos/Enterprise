@@ -167,7 +167,7 @@ public class CartServlet extends Servlet {
                     path = CART;
                 }
             } catch (NumberFormatException e) {
-                log.debug(String.format("%sCar by id not found%s", ORANGE, RESET));
+                log.debug(String.format("%sCar by id not found%s", PURPLE, RESET));
                 request.setAttribute("errorMessage", "Car not found");
                 path = ORDERS;
             } finally {

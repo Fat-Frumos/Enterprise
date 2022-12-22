@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.enterprise.rental.service.locale.CurrencyConvector.exchangeRate;
+
 /**
  * Class OrderMapper extends Mapper(User).
  * <p>
@@ -35,6 +37,12 @@ public class OrderMapper extends Mapper<Order> {
     @Override
     public Order mapper(HttpServletRequest request) {
 
+        String language = request.getParameter("language");
+
+        double pay = language == null || "en".equals(language)
+                ? Double.parseDouble(request.getParameter(orderFields[7]))
+                : Math.round((Double.parseDouble(request.getParameter(orderFields[7])) / exchangeRate) * 100) / 100.0;
+
         Map<String, String> params = new HashMap<>();
         for (String key : orderFields) {
             if (!"".equals(request.getParameter(key))
@@ -46,15 +54,14 @@ public class OrderMapper extends Mapper<Order> {
         String timestamp = request.getParameter("term");
         timestamp += timestamp.length() == 10 ? " 00:00:00.0" : "";
 
+
         return new Order.Builder()
                 .orderId(params.get(orderFields[0]) != null
                         ? Long.parseLong(params.get(orderFields[0]))
                         : UUID.randomUUID().getMostSignificantBits() & 0x7ffffffL)
                 .carId(Long.parseLong(params.get(orderFields[1])))
                 .userId(Long.parseLong(params.get(orderFields[2])))
-                .payment(params.get(orderFields[7]) != null
-                        ? Double.parseDouble(params.get(orderFields[7]))
-                        : 0)
+                .payment(pay)
                 .passport(params.get(orderFields[3]))
                 .reason(params.get(orderFields[4]))
                 .phone(params.get(orderFields[5]))

@@ -30,6 +30,9 @@
     </c:otherwise>
 </c:choose>
 
+<span id="rateExchange" class="cart-detail-badge" hidden>
+    <fmt:message key="exchange" bundle="${lang}"/>
+</span>
 <main class="">
     <div>
         <div class="cars">
@@ -55,14 +58,13 @@
                                 </figure>
                             </div>
                             <div class="cart-image-overlay m-auto">
-<%--                                <span id="exchange" class="cart-detail-badge" hidden>--%>
-<%--                                    <fmt:message key="exchange" bundle="${lang}"/>--%>
-<%--                                </span>--%>
-<%--                                <fmt:message key="exchange.sign" bundle="${lang}"/>--%>
+
                                 <span class="badge"><fmt:message key="span.rent" bundle="${lang}"/>:</span>
-                                <span class="oldPrice" class="cart-detail-badge">${cars.price}</span><span class="badge">$</span>
+                                <span class="oldPrice" class="cart-detail-badge">${cars.price}</span><span
+                                    class="badge"><fmt:message key="exchange.sign" bundle="${lang}"/></span>
                                 | <span class="badge"><fmt:message key="span.price" bundle="${lang}"/></span>:
-                                <span class="cost" class="cart-detail-badge">${cars.cost}</span><span class="badge">$</span>
+                                <span class="cost" class="cart-detail-badge">${cars.cost}</span><span
+                                    class="badge"><fmt:message key="exchange.sign" bundle="${lang}"/></span>
                             </div>
                         </li>
                     </ul>
@@ -74,20 +76,16 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
 <script>
-    // const e = document.getElementById("exchange");
-    // let epf = parseFloat(e.innerHTML).toFixed(2);
-    //
-    // const c = document.getElementsByClassName("cost");
-    // const p = document.getElementsByClassName("oldPrice");
-    //
-    // for (let i = 0; i < p.length; i++) {
-    //     p[i].innerHTML = "" + (p[i].innerHTML * epf).toFixed(0);
-    //     c[i].innerHTML = "" + (c[i].innerHTML * epf).toFixed(0)
-    // }
+    let e = document.getElementById("rateExchange");
+    let epf = parseFloat(e.innerHTML).toFixed(2);
 
-    // vp = (p.innerHTML);
-    // pe =  parseFloat(p.innerHTML);
-    // p.innerHTML = vp;
+    const c = document.getElementsByClassName("cost");
+    const p = document.getElementsByClassName("oldPrice");
+
+    for (let i = 0; i < p.length; i++) {
+        p[i].innerHTML = "" + (p[i].innerHTML * epf).toFixed(0);
+        c[i].innerHTML = "" + (c[i].innerHTML * epf).toFixed(0)
+    }
 
 
     window.addEventListener('contextmenu', (event) => {

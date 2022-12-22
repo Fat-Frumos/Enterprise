@@ -58,7 +58,7 @@
     </div>
     <hr>
     <jsp:include page="cart.jsp"/>
-    <jsp:include page="flag.jsp"/>
+<%--    <jsp:include page="flag.jsp"/>--%>
 
 </div>
 <div class="day">

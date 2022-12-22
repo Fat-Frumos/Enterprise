@@ -43,7 +43,7 @@
         <div class="carousel-inner">
             <div class="carousel-item active">
                 <img class="d-block w-100"
-                     src="https://raw.githubusercontent.com/Fat-Frumos/Cars/master/images/slider-47.jpg"
+                     src="<c:url value="/upload?slider-47.jpg"/>" alt="main">
                      alt=" ">
                 <div class="slide_style_left text-center">
                     <div class="row">
