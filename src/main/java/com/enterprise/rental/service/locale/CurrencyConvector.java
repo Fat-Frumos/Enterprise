@@ -20,7 +20,8 @@ public class CurrencyConvector implements ExchangeService {
     private static final Logger log = Logger.getLogger(CurrencyConvector.class);
     private static final String NBU_URL = "https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?json";
     private static final Map<String, Double> concurrentHashMap = new ConcurrentHashMap<>();
-    public static double exchangeRate;
+
+    public static double exchange;
 
     /**
      * Default constructor call update Exchange
@@ -30,7 +31,7 @@ public class CurrencyConvector implements ExchangeService {
      */
     public CurrencyConvector() {
         updateExchange();
-        exchangeRate = exchangeMultiply(1D, "USD");
+        exchange = exchangeMultiply(1D, "USD");
     }
 
     /**
@@ -38,16 +39,16 @@ public class CurrencyConvector implements ExchangeService {
      * Read data from concurrentHashMap,
      * Return the multiplied exchange values
      *
-     * @param exchange     current exchange
+     * @param rate         current exchange
      * @param primaryPrice current primary price of Car
      * @return rounded result values
      */
-    public double exchangeMultiply(Double primaryPrice, String exchange) {
+    public double exchangeMultiply(Double primaryPrice, String rate) {
 
         for (Exchange currency : Exchange.values()) {
-            if (currency.get().equalsIgnoreCase(exchange)) {
-                exchangeRate = concurrentHashMap.get(exchange);
-                return round(primaryPrice * exchangeRate);
+            if (currency.get().equalsIgnoreCase(rate)) {
+                exchange = concurrentHashMap.get(rate);
+                return round(primaryPrice * exchange);
             }
         }
         return primaryPrice;
@@ -81,6 +82,7 @@ public class CurrencyConvector implements ExchangeService {
      * @return rounded result values
      */
     private static Double round(double exchange) {
+
         return Math.round((exchange) * 100.0) / 100.0;
     }
 
@@ -108,7 +110,21 @@ public class CurrencyConvector implements ExchangeService {
                     });
             nbuRates.forEach(nbuRate -> concurrentHashMap.put(nbuRate.getCc(), nbuRate.getRate()));
         } catch (IOException exception) {
-            log.error("Could not updating currency rates: ", exception);
+            log.debug("USD rate = 36. Could not updating currency rates: ", exception);
+            concurrentHashMap.put("USD", 36D);
         }
+    }
+
+    /**
+     * To calculate the final price after discount,
+     * we will have to multiply the actual price with the discount
+     * <p>
+     *
+     * @param discount : price
+     */
+
+    public static double discount(int discount, double price) {
+
+        return price * discount / 100;
     }
 }

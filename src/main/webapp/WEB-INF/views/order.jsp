@@ -39,7 +39,10 @@
         font-family: 'Saira', sans-serif;
         /*margin-left: 10px;*/
     }
-
+.navigation ul {
+    display: flex;
+    width: 350px;
+}
     input {
         border: none;
     }

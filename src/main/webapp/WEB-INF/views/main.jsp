@@ -44,7 +44,7 @@
 </style>
 <body>
 <nav>
-    <div style="position: absolute;top:7vh; left: 3vw;">
+    <div style="position: absolute;top:55vh; left: 1vw;">
         <jsp:include page="tag.jsp"/>
     </div>
 </nav>

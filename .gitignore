@@ -27,6 +27,7 @@
 hs_err_pid*
 
 TODO.md
+application.properties
 logs/
 null/
 tomcat.8080/

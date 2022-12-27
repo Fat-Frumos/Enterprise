@@ -3,6 +3,7 @@ package com.enterprise.rental.dao.mapper;
 import com.enterprise.rental.entity.Car;
 import com.enterprise.rental.exception.CarNotFoundException;
 import com.enterprise.rental.exception.DataException;
+import com.enterprise.rental.service.locale.CurrencyConvector;
 import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.enterprise.rental.service.locale.CurrencyConvector.exchangeRate;
+import static com.enterprise.rental.service.locale.CurrencyConvector.exchange;
 
 /**
  * Class CarMapper extends Mapper(Car).
@@ -26,6 +27,7 @@ import static com.enterprise.rental.service.locale.CurrencyConvector.exchangeRat
  */
 public class CarMapper extends Mapper<Car> {
     private static final Logger log = Logger.getLogger(CarMapper.class);
+    private static final CurrencyConvector discount = new CurrencyConvector();
     private static final String[] carFields = {"id", "name", "brand", "model", "path", "price", "cost", "year", "rent", "date"};
 
     /**
@@ -50,19 +52,20 @@ public class CarMapper extends Mapper<Car> {
 
         double pay = language == null || "en".equals(language)
                 ? Double.parseDouble(request.getParameter(carFields[5]))
-                : Math.round((Double.parseDouble(request.getParameter(carFields[5])) / exchangeRate) * 100) / 100.0;
+                : Math.round((Double.parseDouble(request.getParameter(carFields[5])) / exchange) * 100) / 100.0;
 
         double cost = language == null || "en".equals(language)
                 ? Double.parseDouble(request.getParameter(carFields[6]))
-                : Math.round((Double.parseDouble(request.getParameter(carFields[6])) / exchangeRate) * 100) / 100.0;
+                : Math.round((Double.parseDouble(request.getParameter(carFields[6])) / exchange) * 100) / 100.0;
 
         Timestamp timestamp;
+
         String date = params.get(carFields[9]);
-        if (date == null) {
-            timestamp = new Timestamp(System.currentTimeMillis());
-        } else {
+        if (date != null) {
             date += date.length() == 10 ? " 00:00:00.0" : "";
             timestamp = Timestamp.valueOf(date);
+        } else {
+            timestamp = new Timestamp(System.currentTimeMillis());
         }
 
         return new Car.Builder()
@@ -97,6 +100,8 @@ public class CarMapper extends Mapper<Car> {
             String date = resultSet.getString(carFields[9]);
             Timestamp term = date == null ? create : Timestamp.valueOf(date);
 
+            Double discountPrice = discount.discount(50, resultSet.getDouble(carFields[5]));
+
             return new Car.Builder()
                     .id(resultSet.getLong(carFields[0]))
                     .year(Integer.parseInt(resultSet.getString(carFields[7])))
@@ -105,12 +110,10 @@ public class CarMapper extends Mapper<Car> {
                     .brand(resultSet.getString(carFields[2]))
                     .model(resultSet.getString(carFields[3]))
                     .path(resultSet.getString(carFields[4]))
-                    .price(resultSet.getDouble(carFields[5]))
+                    .price(discountPrice)
                     .cost(resultSet.getDouble(carFields[6]))
                     .date(term)
                     .build();
-//            log.debug(String.format("result %s", build));
-//            return build;
         } catch (SQLException exception) {
             try {
                 resultSet.close();

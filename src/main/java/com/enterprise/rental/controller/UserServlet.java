@@ -85,7 +85,9 @@ public class UserServlet extends Servlet {
         HttpSession session = request.getSession(false);
         String path = "/";
         User user;
-        if (session != null) {
+        if (session == null) {
+            path = FORGOT;
+        } else {
             user = (User) session.getAttribute("user");
             String role = user != null ? user.getRole() : Role.GUEST.role();
             session.setAttribute("user", user);
@@ -106,10 +108,11 @@ public class UserServlet extends Servlet {
                 log.debug("Get userOrders: " + userOrders.size());
                 request.setAttribute("orders", userOrders);
                 path = ORDERS;
+            } else if (Objects.equals(role, Role.GUEST.role()) && user != null) {
+                path = FORGOT;
             }
-        } else {
-            path = FORGOT;
         }
+        log.debug(String.format("path: %s", path));
         dispatch(request, response, path);
     }
 
@@ -181,6 +184,7 @@ public class UserServlet extends Servlet {
 
         boolean sendEmail = userService.sendEmail(request.getParameter("username"));
         log.debug(String.format("Letter sent: %b", sendEmail));
-        redirect(request, response, LOGIN);
+
+        redirect(request, response, FORGOT);
     }
 }

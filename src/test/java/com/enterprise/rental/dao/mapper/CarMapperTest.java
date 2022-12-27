@@ -41,7 +41,7 @@ class CarMapperTest {
         assertEquals("X7", car.getName());
         assertEquals("G07", car.getModel());
         assertEquals("http//", car.getPath());
-        assertEquals(500.0, car.getPrice());
+        assertEquals(500.0/2, car.getPrice());
         assertEquals(25000.0, car.getCost());
         assertEquals(2022, car.getYear());
     }

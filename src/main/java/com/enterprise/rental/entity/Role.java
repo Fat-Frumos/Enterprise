@@ -41,6 +41,11 @@ public enum Role {
     public String role() {
         return role;
     }
+
+    @Override
+    public String toString() {
+        return role;
+    }
 }
 
 

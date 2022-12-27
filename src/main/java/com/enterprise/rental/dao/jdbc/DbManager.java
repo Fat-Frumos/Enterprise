@@ -26,7 +26,7 @@ public class DbManager implements AutoCloseable {
     private static final String DB_URL_PROPERTY_NAME = "db.url";
     private static final String DB_NAME_PROPERTY_NAME = "db.username";
     private static final String DB_PASSWORD_PROPERTY_NAME = "db.password";
-    private static final String FILE_PROPS = "src/main/resources/application.properties";
+//    private static final String FILE_PROPS = "src/main/resources/application.properties";
     private Properties properties;
     private static DbManager dbManager;
 
@@ -34,7 +34,7 @@ public class DbManager implements AutoCloseable {
      * Default constructor user for upload properties connection
      */
     public DbManager() {
-        loadProperties();
+//        loadProperties();
     }
 
     /**
@@ -229,28 +229,34 @@ public class DbManager implements AutoCloseable {
         getConnection().close();
     }
 
+
     // Reads resource properties file
-    private void loadProperties() {
-        properties = new Properties();
-        try (FileInputStream inputStream = new FileInputStream(FILE_PROPS)) {
-            properties.load(inputStream);
-        } catch (IOException exception) {
-            throw new DataException("Cannot read the file", exception);
-        }
-    }
+//    private void loadProperties() {
+//        properties = new Properties();
+//        try (FileInputStream inputStream = new FileInputStream(FILE_PROPS)) {
+//            properties.load(inputStream);
+//        } catch (IOException exception) {
+//            throw new DataException("Cannot read the file", exception);
+//        }
+//    }
 
     // Get credentials for the property with the specified key in this property list.
     // Params: key – the property key.
     // Returns: the value in this property list with the specified key value
     private String getDBUrl() {
-        return properties.getProperty(DB_URL_PROPERTY_NAME);
+        return "jdbc:postgresql://peanut.db.elephantsql.com:5432/lnycichw";
+
+//        return properties.getProperty(DB_URL_PROPERTY_NAME);
     }
 
     private String getDBName() {
-        return properties.getProperty(DB_NAME_PROPERTY_NAME);
+        return "lnycichw";
+
+//        return properties.getProperty(DB_NAME_PROPERTY_NAME);
     }
 
     private String getDBPassword() {
-        return properties.getProperty(DB_PASSWORD_PROPERTY_NAME);
+        return "hGsOS0-qZ1UiYkneTgpy8iXJZ7RzP8lY";
+//        return properties.getProperty(DB_PASSWORD_PROPERTY_NAME);
     }
 }

@@ -66,6 +66,6 @@ jobs:
     - name: Run with Tomcat
       run: mvn tomcat7:run -X
 
-#     - name: CleanUp
-#       run: |
-#         rm -r ~/.ssh
+    - name: CleanUp
+      run: |
+        rm -r ~/.ssh

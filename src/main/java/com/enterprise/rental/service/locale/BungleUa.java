@@ -16,6 +16,7 @@ import java.util.ListResourceBundle;
  */
 public class BungleUa extends ListResourceBundle {
     private static final CurrencyConvector currencyConvector = new CurrencyConvector();
+    private static final double usd = currencyConvector.exchangeMultiply(1D, "USD");
 
     /**
      * Returns an array in which each item is a pair of objects in an
@@ -48,7 +49,7 @@ public class BungleUa extends ListResourceBundle {
             {"month.August", "\u0421\u0435\u0440\u043F\u0435\u043D\u044C"},
 
 // <html lang="en">
-            {"exchange", "" + currencyConvector.exchangeMultiply(1D, "USD")},
+            {"exchange", "" + usd},
             {"exchange.sign", "\u20B4"},
             {"title.login", "\u041B\u043E\u0433\u0456\u043D"},
             {"title.cars", "\u0410\u0432\u0442\u0456\u0432\u043A\u0438"},

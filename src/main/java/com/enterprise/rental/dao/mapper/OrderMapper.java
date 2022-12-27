@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.enterprise.rental.service.locale.CurrencyConvector.exchangeRate;
+import static com.enterprise.rental.service.locale.CurrencyConvector.exchange;
 
 /**
  * Class OrderMapper extends Mapper(User).
@@ -41,7 +41,7 @@ public class OrderMapper extends Mapper<Order> {
 
         double pay = language == null || "en".equals(language)
                 ? Double.parseDouble(request.getParameter(orderFields[7]))
-                : Math.round((Double.parseDouble(request.getParameter(orderFields[7])) / exchangeRate) * 100) / 100.0;
+                : Math.round((Double.parseDouble(request.getParameter(orderFields[7])) / exchange) * 100) / 100.0;
 
         Map<String, String> params = new HashMap<>();
         for (String key : orderFields) {

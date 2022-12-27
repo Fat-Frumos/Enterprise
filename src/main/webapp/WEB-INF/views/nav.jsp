@@ -32,33 +32,50 @@
     <ul>
         <li class="list">
             <a href="<c:url value="/"/>">
-                <span id= "facebook" class="icon"><ion-icon name="car-sport-outline"></ion-icon></span>
+                <span id="facebook" class="icon"><ion-icon name="car-sport-outline"></ion-icon></span>
                 <span class="text">
                     <fmt:message key="a.cars" bundle="${lang}"/>
                 </span>
             </a>
         </li>
+
         <li class="list">
-            <a href="/user">
+            <c:choose>
+                <c:when test="${empty user}">
+                    <a href="/login">
                 <span class="icon">
                     <ion-icon name="document-text-outline"></ion-icon>
                 </span>
-                <span class="text">
+                        <span class="text">
                     <fmt:message key="a.cabinet" bundle="${lang}"/>
                 </span>
-            </a>
+                    </a>
+                </c:when>
+                <c:otherwise>
+                    <a href="/user">
+                <span class="icon">
+                    <ion-icon name="document-text-outline"></ion-icon>
+                </span>
+                        <span class="text">
+                    <fmt:message key="a.cabinet" bundle="${lang}"/>
+                </span>
+                    </a>
+                </c:otherwise>
+            </c:choose>
+            <c:if test="${empty user}">
+            </c:if>
         </li>
 
 
-            <c:if test="${empty car}">
-                <li class="list">
-                    <a href="<c:url value="/cars"/>">
-                        <span class="icon"><ion-icon name="cart-outline"></ion-icon></span>
-                        <span class="text"><fmt:message key="a.cards" bundle="${lang}"/>
+        <c:if test="${empty car}">
+            <li class="list">
+                <a href="<c:url value="/cars"/>">
+                    <span class="icon"><ion-icon name="cart-outline"></ion-icon></span>
+                    <span class="text"><fmt:message key="a.cards" bundle="${lang}"/>
                     </span>
-                    </a>
-                </li>
-            </c:if>
+                </a>
+            </li>
+        </c:if>
         <c:if test="${not empty user.name}">
             <c:if test="${not empty car}">
                 <li class="list">
@@ -91,7 +108,8 @@
 </div>
 
 <script>
-    const list = document.querySelectorAll('.list');
+    let list = document.querySelectorAll('.list');
+    const cabinet = document.getElementById('cabinet');
 
     function activeLink() {
         list.forEach((item) =>

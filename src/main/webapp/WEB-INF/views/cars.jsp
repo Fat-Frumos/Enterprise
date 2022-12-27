@@ -45,6 +45,10 @@
             font-family: Raleway, Roboto, sans-serif;
             font-weight: 600;
         }
+        .navigation ul {
+    display: flex;
+    width: 350px;
+}
     </style>
 </head>
 <body>
