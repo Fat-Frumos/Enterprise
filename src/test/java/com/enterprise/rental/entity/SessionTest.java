@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static com.enterprise.rental.entity.Role.USER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -23,7 +24,7 @@ class SessionTest {
                 .language("ua")
                 .email("email@i.ua")
                 .active(true)
-                .role("user")
+                .role(USER.role())
                 .build();
 
 //        session = new Session("user-token", false, bob, new HashMap<>());

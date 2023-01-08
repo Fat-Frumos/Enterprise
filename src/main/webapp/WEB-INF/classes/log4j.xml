@@ -5,8 +5,7 @@
 
     <appender name="console" class="org.apache.log4j.ConsoleAppender">
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern"
-                   value="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n" />
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} %p %m%n"/>
         </layout>
     </appender>
 
@@ -21,9 +20,39 @@
         </layout>
     </appender>
     <root>
-        <level value="DEBUG"/>
+        <level value="INFO"/>
         <appender-ref ref="console"/>
-        <appender-ref ref="file"/>
+<!--        <appender-ref ref="file"/>-->
     </root>
-
 </log4j:configuration>
+
+
+        <!--<?xml version="1.0" encoding="UTF-8"?>-->
+        <!--<Configuration status="WARN">-->
+        <!--    <Properties>-->
+        <!--        <property name="pattern_5">-->
+        <!--            %d{yyy-MM-dd HH:mm:ss} [%t] %-5level %logger{5} - %msg%n-->
+        <!--        </property>-->
+        <!--    </Properties>-->
+        <!--    <Appenders>-->
+        <!--        <File name="TxtFile" filemame="logs/text.log" bufferedIO="true">-->
+        <!--            <PatternLayout pattern="${pattern_5}"/>-->
+        <!--        </File>-->
+
+        <!--        <Console name="LogToConsole" target="INFO">-->
+        <!--            <PatternLayout pattern="%highlight{%d{HH:mm:ss.SSS} [%t] %-5level %logger{5} - %msg%n}{TRACE=cyan}"-->
+        <!--                           disableAnsi="false"/>-->
+        <!--        </Console>-->
+        <!--    </Appenders>-->
+        <!--    <Loggers>-->
+        <!--        <Logger name="com.enterprise" level="info" additivity="false">-->
+        <!--            <AppenderRef ref="LogToConsole"/>-->
+        <!--            <AppenderRef ref="TxtFile"/>-->
+        <!--        </Logger>-->
+        <!--        <Root level="info">-->
+        <!--            <AppenderRef ref="LogToConsole" level="INFO"/>-->
+        <!--            <AppenderRef ref="TxtFile" level="error"/>-->
+        <!--        </Root>-->
+        <!--    </Loggers>-->
+        <!--</Configuration>-->
+

@@ -175,7 +175,6 @@
                    style="width: 120px"
                    class="fas fa-dollar-sign pe-1 mt-2 form-control"
                    placeholder="Model"
-            <%--                   value="${auto.model}"--%>
             >
             <input name="newPrice"
                    type="number"
@@ -195,10 +194,6 @@
                    value="<fmt:message key="input.upload" bundle="${lang}"/>"/>
         </form>
     </div>
-
-    <%--    <div style="position: absolute; top: 10vh; left: -17vw;">--%>
-    <%--        <span id="tags" class="content"></span>--%>
-    <%--    </div>--%>
 </section>
 
 <script>
@@ -221,8 +216,7 @@
     for (let i = 0; i < pp.length; i++) {
         pp[i].value = "" + (pp[i].value * expf).toFixed(0);
         cost[i].value = "" + (cost[i].value * expf).toFixed(0)
-        // console.log(pp[i].innerHTML);
-        // console.log(cost[i].innerHTML);
+
     }
 
     if ("${user.role}" === "admin") {

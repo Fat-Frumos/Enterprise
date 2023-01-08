@@ -1,37 +1,38 @@
 package com.enterprise.rental.controller;
 
 import com.enterprise.rental.entity.User;
-import com.enterprise.rental.service.impl.DefaultUserService;
+import com.enterprise.rental.exception.ServiceException;
 import com.enterprise.rental.service.UserService;
-import org.apache.log4j.Logger;
+import com.enterprise.rental.service.impl.DefaultUserService;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.sql.Timestamp;
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.enterprise.rental.dao.jdbc.Constants.LOGIN;
-import static com.enterprise.rental.dao.jdbc.Constants.USERS;
+import static com.enterprise.rental.controller.Parameter.ERROR;
+import static com.enterprise.rental.dao.jdbc.Constants.LOGIN_JSP;
+import static com.enterprise.rental.dao.jdbc.Constants.USERS_JSP;
+import static com.enterprise.rental.entity.Role.USER;
 
 /**
  * Servlet implementation class Login User Servlet
  * the core Login classes to get the job done.
  *
- * @author Pasha Pollack
+ * @author Pasha Polyak
  */
 public class LoginServlet extends Servlet {
 
-    private static final long serialVersionUID = UUID.randomUUID().getMostSignificantBits() & 0x7ffffffL;
-    private static final Logger log = Logger.getLogger(LoginServlet.class);
+    private static final long serialVersionUID = UUID.randomUUID().getMostSignificantBits() & 0x7ffffL;
+    private static final Logger LOGGER = LogManager.getLogger();
     private static final UserService userService = new DefaultUserService();
 
-    /**
-     * @see #LoginServlet()
-     */
     public LoginServlet() {
         super();
     }
@@ -50,8 +51,9 @@ public class LoginServlet extends Servlet {
         HttpSession session = request.getSession();
         session.invalidate();
 
-        dispatch(request, response, LOGIN);
+        dispatch(request, response, LOGIN_JSP);
     }
+
     /**
      * @see #doPut(HttpServletRequest request, HttpServletResponse response)
      */
@@ -59,7 +61,7 @@ public class LoginServlet extends Servlet {
     protected void doPut(
             HttpServletRequest request,
             HttpServletResponse response) {
-        dispatch(request, response, USERS);
+        dispatch(request, response, USERS_JSP);
     }
 
     /**
@@ -82,44 +84,35 @@ public class LoginServlet extends Servlet {
 
         String name = request.getParameter("name");
 
-        Optional<User> optionalUser = userService.getByName(name);
+        Optional<User> optionalUser = userService.findByName(name);
 
         if (optionalUser.isPresent()) {
-            log.debug(String.format("User: %s", optionalUser));
-            request.setAttribute("errorMessage", String.format("User %s is exists", name));
-//            request.getRequestDispatcher(LOGIN).forward(request, response);
+            LOGGER.log( Level.INFO, "User: {}", optionalUser);
+            request.setAttribute(ERROR.value(), String.format("User %s is exists", name));
         } else {
-            long id = UUID.randomUUID().getMostSignificantBits() & 0x7ffffffL;
-            String password = request.getParameter("password");
-            String passport = request.getParameter("passport");
-            String phone = request.getParameter("phone");
-            String email = request.getParameter("email");
-            String language = request.getParameter("language");
-            Timestamp created = new Timestamp(System.currentTimeMillis());
-
             User user = new User.Builder()
-                    .userId(id)
+                    .userId(UUID.randomUUID().getMostSignificantBits() & 0x7ffffffL)
                     .name(name)
-                    .password(password)
-                    .passport(passport)
-                    .phone(phone)
-                    .language(language)
-                    .email(email)
-//                    .created(created)
+                    .password(request.getParameter("password"))
+                    .passport(request.getParameter("passport"))
+                    .phone(request.getParameter("phone"))
+                    .language(request.getParameter("language"))
+                    .email(request.getParameter("email"))
                     .active(true)
                     .closed(false)
-                    .role("user")
+                    .role(USER.role())
                     .build();
 
-            log.debug(String.format("Raw password: %s", password));
-            boolean save = userService.save(user);
+            try {
+                boolean save = userService.save(user);
+                LOGGER.log( Level.INFO, "{} is created: {}", user.getName(), save);
+            } catch (ServiceException e) {
+                LOGGER.log(Level.ERROR, "Can not created User {}", user.getName());
+            }
 
-            log.debug(String.format("%s is created: %s", user.getName(), save));
-
-            request.setAttribute("errorMessage",
-                    String.format("User %s is created", name));
+            request.setAttribute(ERROR.value(), String.format("User %s is created", name));
 
         }
-            dispatch(request, response, LOGIN);
+        dispatch(request, response, LOGIN_JSP);
     }
 }

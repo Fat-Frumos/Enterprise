@@ -31,7 +31,7 @@
 <div class="navigation">
     <ul>
         <li class="list">
-            <a href="<c:url value="/"/>">
+            <a href="${pageContext.request.contextPath}/">
                 <span id="facebook" class="icon"><ion-icon name="car-sport-outline"></ion-icon></span>
                 <span class="text">
                     <fmt:message key="a.cars" bundle="${lang}"/>
@@ -42,7 +42,7 @@
         <li class="list">
             <c:choose>
                 <c:when test="${empty user}">
-                    <a href="/login">
+                    <a href="${pageContext.request.contextPath}/login">
                 <span class="icon">
                     <ion-icon name="document-text-outline"></ion-icon>
                 </span>
@@ -69,7 +69,7 @@
 
         <c:if test="${empty car}">
             <li class="list">
-                <a href="<c:url value="/cars"/>">
+                <a href="${pageContext.request.contextPath}/cars">
                     <span class="icon"><ion-icon name="cart-outline"></ion-icon></span>
                     <span class="text"><fmt:message key="a.cards" bundle="${lang}"/>
                     </span>
@@ -79,7 +79,7 @@
         <c:if test="${not empty user.name}">
             <c:if test="${not empty car}">
                 <li class="list">
-                    <a href="<c:url value="/cart"/>">
+                    <a href="${pageContext.request.contextPath}/cart">
                         <span class="icon">
                             <ion-icon name="cart-outline"></ion-icon>
                         </span>
@@ -93,7 +93,7 @@
         </c:if>
 
         <li class="list active">
-            <a style="text-transform: capitalize" href="<c:url value="/login"/>">
+            <a style="text-transform: capitalize" href="${pageContext.request.contextPath}/login">
                 <span class="icon"><ion-icon name="person-outline"></ion-icon></span>
                 <span class="text">
             <c:if test="${not empty user.name}">

@@ -3,13 +3,14 @@ package com.enterprise.rental.controller;
 import com.enterprise.rental.dao.mapper.OrderMapper;
 import com.enterprise.rental.entity.Order;
 import com.enterprise.rental.entity.User;
+import com.enterprise.rental.exception.ServiceException;
 import com.enterprise.rental.service.OrderService;
 import com.enterprise.rental.service.UserService;
 import com.enterprise.rental.service.impl.DefaultOrderService;
 import com.enterprise.rental.service.impl.DefaultUserService;
-import com.enterprise.rental.service.locale.CurrencyConvector;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.Level;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -22,20 +23,21 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.enterprise.rental.dao.jdbc.Constants.CONTRACT;
-import static com.enterprise.rental.dao.jdbc.Constants.USER;
+import static com.enterprise.rental.dao.jdbc.Constants.CONTRACT_JSP;
+import static com.enterprise.rental.dao.jdbc.Constants.USER_URL;
 
 /**
  * Java class that represent a Register service for update operations
  * Register Servlet extends abstract class Servlet
  *
- * @author Pasha Pollack
+ * @author Pasha Polyak
  */
 public class RegisterServlet extends Servlet {
+    private static final Logger LOGGER = LogManager.getLogger();
     private OrderMapper mapper;
     private OrderService orderService;
     private UserService userService;
-    private static final Log log = LogFactory.getLog(RegisterServlet.class);
+
 
     @Override
     public void init() throws ServletException {
@@ -66,7 +68,7 @@ public class RegisterServlet extends Servlet {
 
         String name = request.getParameter("name");
 
-        Optional<User> optionalUser = userService.getByName(name);
+        Optional<User> optionalUser = userService.findByName(name);
 
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
@@ -79,10 +81,15 @@ public class RegisterServlet extends Servlet {
             user.setActive(active.equals("on"));
             user.setClosed(closed.equals("on"));
 
-            log.debug(String.format(" active: %s lock: %s, role: %s", active, closed, role));
+            LOGGER.log( Level.INFO, "active: {}, lock: {}, role: {}", active, closed, role);
+
 
             user.setRole(role);
-            userService.edit(user);
+            try {
+                userService.edit(user);
+            } catch (ServiceException e) {
+                LOGGER.log(Level.ERROR, "{}", e.getMessage());
+            }
 
             String[] fields = {"name", "email", "role", "active", "closed"};
             Map<String, String> params = Arrays.stream(fields)
@@ -93,11 +100,15 @@ public class RegisterServlet extends Servlet {
                             request::getParameter,
                             (a, b) -> b));
 
-            request.setAttribute("users", userService.getAll(params));
+            try {
+                request.setAttribute("users", userService.findAllBy(params));
+            } catch (ServiceException e) {
+                LOGGER.log(Level.ERROR, "Failed to get users");
+            }
         } else {
-            log.debug("Could not find user");
+            LOGGER.log( Level.INFO, "Could not find user");
         }
-        redirect(request, response, USER);
+        redirect(request, response, USER_URL);
     }
 
     /***
@@ -118,13 +129,17 @@ public class RegisterServlet extends Servlet {
 
         Order update = orderService.edit(order);
 
-        log.debug(String.format("Order #%d", update.getOrderId()));
+        LOGGER.log( Level.INFO, "Order #{}", update.getOrderId());
 
-        List<Order> orders = orderService.getAll();
 
-        request.setAttribute("orders", orders);
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.setContentType("text/html;charset=utf-8");
-        dispatch(request, response, CONTRACT);
+        try {
+            List<Order> orders = orderService.findAllBy();
+            request.setAttribute("orders", orders);
+            response.setStatus(HttpServletResponse.SC_OK);
+            response.setContentType("text/html;charset=utf-8");
+        } catch (ServiceException e) {
+            LOGGER.log(Level.ERROR, e.getMessage(), e);
+        }
+        dispatch(request, response, CONTRACT_JSP);
     }
 }

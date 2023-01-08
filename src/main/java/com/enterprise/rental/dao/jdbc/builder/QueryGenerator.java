@@ -8,7 +8,7 @@ import java.util.StringJoiner;
  * Query generator is used to generate a query by giving set of rules.
  * Returns a String Builder of Field objects reflecting all the fields declared by the class.
  *
- * @author Pasha Pollack
+ * @author Pasha Polyak
  */
 public class QueryGenerator {
 

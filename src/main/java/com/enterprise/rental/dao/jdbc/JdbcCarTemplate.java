@@ -3,7 +3,9 @@ package com.enterprise.rental.dao.jdbc;
 import com.enterprise.rental.dao.mapper.CarMapper;
 import com.enterprise.rental.entity.Car;
 import com.enterprise.rental.exception.DataException;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.validation.constraints.NotNull;
 import java.sql.*;
@@ -20,11 +22,11 @@ import static com.enterprise.rental.dao.jdbc.Constants.*;
  * that simplifies the use of JDBC and helps to avoid common errors.
  * It internally uses JDBC API and eliminates a lot of problems with JDBC API
  *
- * @author Pasha Pollack
+ * @author Pasha Polyak
  */
 public class JdbcCarTemplate extends DbManager {
     private static final CarMapper CAR_ROW_MAPPER = new CarMapper();
-    private static final Logger log = Logger.getLogger(JdbcCarTemplate.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * <p>Retrieves the Car with the specified id</p>
@@ -34,15 +36,15 @@ public class JdbcCarTemplate extends DbManager {
      * @param id of car
      * @return the Optional, or <code>Optional.empty</code> if the name was not found
      */
-    protected static Optional<Car> getCarById(long id) {
+    protected static Optional<Car> getCarById(Long id) {
 
-        log.debug(String.format("%s%s%s", YELLOW, FILTER_BY_ID_SQL, RESET));
+        LOGGER.log( Level.INFO, "{}{}{}", YELLOW, FILTER_BY_ID_SQL, RESET);
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
 
         try {
-            connection = configConnection();
+            connection = proxyConnection();
             statement = connection.prepareStatement(FILTER_BY_ID_SQL);
             statement.setLong(1, id);
 
@@ -54,7 +56,7 @@ public class JdbcCarTemplate extends DbManager {
                     : Optional.of(CAR_ROW_MAPPER.mapRow(resultSet));
 
         } catch (SQLException sqlException) {
-            log.debug(String.format("Car by id not found: %s", id));
+            LOGGER.log( Level.INFO, "Car by id not found: {}", id);
             rollback(connection, sqlException);
         } finally {
             eventually(connection, statement, resultSet);
@@ -71,16 +73,15 @@ public class JdbcCarTemplate extends DbManager {
      * @return the Optional, or <code>Optional.empty</code> if the name was not found
      */
     protected static Optional<Car> getCarQuery(String name) {
-
         String query = String.format("%s %s", FILTER_BY_CAR_NAME_SQL, name);
-        log.debug(query);
+        LOGGER.log( Level.INFO, query);
         List<Car> cars = new ArrayList<>();
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
 
         try {
-            connection = configConnection();
+            connection = proxyConnection();
             statement = connection.prepareStatement(FILTER_BY_CAR_NAME_SQL);
             statement.setString(1, name);
             resultSet = statement.executeQuery();
@@ -90,7 +91,7 @@ public class JdbcCarTemplate extends DbManager {
                 cars.add(CAR_ROW_MAPPER.mapRow(resultSet));
             }
         } catch (SQLException sqlException) {
-            log.debug(String.format("Cars not found: %s", query));
+            LOGGER.log( Level.INFO, "Cars not found: {}", query);
             rollback(connection, sqlException);
         } finally {
             eventually(connection, statement, resultSet);
@@ -111,19 +112,19 @@ public class JdbcCarTemplate extends DbManager {
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try {
-            connection = configConnection();
+            connection = proxyConnection();
             statement = connection.prepareStatement(query);
             resultSet = statement.executeQuery();
             connection.commit();
-            log.debug(String.format("%s%s%s", YELLOW, query, RESET));
+            LOGGER.log( Level.INFO, "{}{}{}", YELLOW, query, RESET);
             if (resultSet.next()) {
                 return getCars(resultSet);
             } else {
-                log.debug("Vehicle not found");
+                LOGGER.log( Level.INFO, "Vehicle not found");
             }
         } catch (SQLException sqlException) {
             rollback(connection, sqlException);
-            log.error("Vehicle not found");
+            LOGGER.log(Level.ERROR, "Vehicle not found");
 
         } finally {
             eventually(connection, statement, resultSet);
@@ -154,16 +155,17 @@ public class JdbcCarTemplate extends DbManager {
      *
      * @param car instances of Car
      * @return list of Cars
+     * @throws DataException custom exception
      */
     protected static boolean setCarQuery(
             @NotNull Car car)
             throws DataException {
 
-        log.debug(INSERT_CAR_SQL);
+        LOGGER.log( Level.INFO, INSERT_CAR_SQL);
         Connection connection = null;
         PreparedStatement statement = null;
         try {
-            connection = configConnection();
+            connection = proxyConnection();
             statement = connection.prepareStatement(INSERT_CAR_SQL);
 
             boolean preparedStatement =
@@ -174,7 +176,7 @@ public class JdbcCarTemplate extends DbManager {
 
         } catch (SQLException sqlException) {
             rollback(connection, sqlException);
-            log.debug(String.format("Car can`t be created: %s", INSERT_CAR_SQL));
+            LOGGER.log( Level.INFO, "Car can`t be created: {}", INSERT_CAR_SQL);
 
         } finally {
             eventually(connection, statement);
@@ -201,7 +203,8 @@ public class JdbcCarTemplate extends DbManager {
         statement.setDouble(6, car.getPrice());
         statement.setDouble(7, car.getCost());
         statement.setInt(8, car.getYear());
-        statement.setTimestamp(9, Timestamp.valueOf(LocalDateTime.now()));
+        statement.setBoolean(9, car.isRent());
+        statement.setTimestamp(10, Timestamp.valueOf(LocalDateTime.now()));
 
         return statement.execute();
     }

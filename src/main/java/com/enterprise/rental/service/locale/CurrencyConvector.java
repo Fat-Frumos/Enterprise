@@ -2,7 +2,9 @@ package com.enterprise.rental.service.locale;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.net.URL;
@@ -14,14 +16,14 @@ import java.util.concurrent.ConcurrentHashMap;
  * Converter Locale exchange rate to US dollars,
  * and vice versa at the real exchange rate in json format
  *
- * @author Pasha Pollack
+ * @author Pasha Polyak
  */
 public class CurrencyConvector implements ExchangeService {
-    private static final Logger log = Logger.getLogger(CurrencyConvector.class);
+    private static final Logger LOGGER = LogManager.getLogger();
     private static final String NBU_URL = "https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?json";
     private static final Map<String, Double> concurrentHashMap = new ConcurrentHashMap<>();
 
-    public static double exchange;
+    public static int exchange;
 
     /**
      * Default constructor call update Exchange
@@ -31,7 +33,7 @@ public class CurrencyConvector implements ExchangeService {
      */
     public CurrencyConvector() {
         updateExchange();
-        exchange = exchangeMultiply(1D, "USD");
+        exchange = (int) exchangeMultiply(1D, "USD");
     }
 
     /**
@@ -47,7 +49,8 @@ public class CurrencyConvector implements ExchangeService {
 
         for (Exchange currency : Exchange.values()) {
             if (currency.get().equalsIgnoreCase(rate)) {
-                exchange = concurrentHashMap.get(rate);
+
+                exchange = concurrentHashMap.get(rate).intValue();
                 return round(primaryPrice * exchange);
             }
         }
@@ -100,7 +103,7 @@ public class CurrencyConvector implements ExchangeService {
     @Override
     public void updateExchange() {
         try {
-            log.info("Update exchange");
+            LOGGER.log(Level.INFO, "Update exchange");
             ObjectMapper objectMapper = new ObjectMapper();
             URL rates = new URL(NBU_URL);
 
@@ -110,7 +113,7 @@ public class CurrencyConvector implements ExchangeService {
                     });
             nbuRates.forEach(nbuRate -> concurrentHashMap.put(nbuRate.getCc(), nbuRate.getRate()));
         } catch (IOException exception) {
-            log.debug("USD rate = 36. Could not updating currency rates: ", exception);
+            LOGGER.log( Level.INFO, "USD rate = 36. Could not updating currency rates: ", exception);
             concurrentHashMap.put("USD", 36D);
         }
     }
@@ -120,11 +123,11 @@ public class CurrencyConvector implements ExchangeService {
      * we will have to multiply the actual price with the discount
      * <p>
      *
-     * @param discount : price
+     * @param discount: discount
+     * @param price:    price
+     * @return price after discount
      */
-
     public static double discount(int discount, double price) {
-
         return price * discount / 100;
     }
 }

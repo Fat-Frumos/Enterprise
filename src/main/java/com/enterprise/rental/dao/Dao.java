@@ -1,5 +1,7 @@
 package com.enterprise.rental.dao;
 
+import com.enterprise.rental.exception.DaoException;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -10,7 +12,7 @@ import java.util.Optional;
  * The provides methods to work with database and required entities.
  * Every dao class should instantiate this interface.
  *
- * @author Pasha Pollack
+ * @author Pasha Polyak
  */
 public interface Dao<T> {
 
@@ -21,7 +23,7 @@ public interface Dao<T> {
      * @param t The object to create.
      * @return boolean true, or false if the entity was not saved
      */
-    boolean save(T t);
+    boolean save(T t) throws DaoException;
 
     /**
      * <p>Retrieves the entity with the specified id
@@ -43,7 +45,7 @@ public interface Dao<T> {
      * @param name of object
      * @return the Optional, or <code>Optional.empty</code> if the name was not found
      */
-    Optional<T> findByName(String name);
+    Optional<T> findByName(String name) throws DaoException;
 
     /**
      * <p>Retrieves all defined entities
@@ -51,7 +53,7 @@ public interface Dao<T> {
      *
      * @return the collection of all Generic entities
      */
-    List<T> findAll();
+    List<T> findAll() throws DaoException;
 
     /**
      * <p>Retrieves all defined entities</p>
@@ -60,7 +62,7 @@ public interface Dao<T> {
      * @param params the additional settings.
      * @return the collection of all Generic entities.
      */
-    List<T> findAll(String params);
+    List<T> findAll(String params) throws DaoException;
 
     /**
      * <p>Update the entity with changes</p>
@@ -69,7 +71,7 @@ public interface Dao<T> {
      * @param t The object to update
      * @return T changed Generic entity.
      */
-    T edit(T t);
+    T edit(T t) throws DaoException;
 
     /**
      * <p>Removes the specified entity by ID</p>
@@ -78,5 +80,5 @@ public interface Dao<T> {
      * @param id the resource ID.
      * @return boolean true, or false if the entity was not deleted
      */
-    boolean delete(long id);
+    boolean delete(Long id) throws DaoException;
 }

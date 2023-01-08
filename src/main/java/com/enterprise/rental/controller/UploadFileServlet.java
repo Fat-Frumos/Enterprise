@@ -6,7 +6,9 @@ import com.enterprise.rental.service.impl.DefaultCarService;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -19,7 +21,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
-import static com.enterprise.rental.dao.jdbc.Constants.CARS;
+import static com.enterprise.rental.dao.jdbc.Constants.CARS_JSP;
 
 /**
  * Java class that represent an Upload File service for update images.
@@ -31,19 +33,18 @@ import static com.enterprise.rental.dao.jdbc.Constants.CARS;
  * @author Pasha Pollack
  */
 public class UploadFileServlet extends Servlet {
-    private static final Logger log = Logger.getLogger(UploadFileServlet.class);
+    private static final Logger LOGGER = LogManager.getLogger();
     private static final CarService carService = new DefaultCarService();
     // location to store file uploaded
     private static final String UPLOAD_DIRECTORY = "/WEB-INF/classes/templates/img/";
 
     // upload settings
-    private static final int MEMORY_THRESHOLD = 1024 * 1024 * 1;  // 1MB
+    private static final int MEMORY_THRESHOLD = 1024 * 1024;  // 1MB
     private static final int MAX_FILE_SIZE = 1024 * 1024 * 5; // 5MB
     private static final int MAX_REQUEST_SIZE = 1024 * 1024 * 10; // 10MB
 
     private static final long serialVersionUID = UUID.randomUUID().getMostSignificantBits() & 0x7fffffL;
-
-    private ServletFileUpload uploader = null;
+    private ServletFileUpload uploader;
 
     @Override
     public void init() throws ServletException {
@@ -85,6 +86,8 @@ public class UploadFileServlet extends Servlet {
                 response.setContentType("text/plain");
                 outputStream.write("Failed to send image".getBytes());
             }
+        } catch (IOException e) {
+            LOGGER.log(Level.ERROR, "Failed to send image", e);
         }
     }
 
@@ -101,6 +104,7 @@ public class UploadFileServlet extends Servlet {
      * @see HttpServlet#doPost(HttpServletRequest request,
      * HttpServletResponse response)
      */
+    @Override
     protected void doPost(
             HttpServletRequest request,
             HttpServletResponse response)
@@ -109,10 +113,13 @@ public class UploadFileServlet extends Servlet {
         // checks if the request actually contains upload file
         if (!ServletFileUpload.isMultipartContent(request)) {
             // if not, we stop here
-            PrintWriter writer = response.getWriter();
-            writer.println("Error: Form must has enctype=multipart/form-data.");
-            writer.flush();
-            return;
+            try {
+                PrintWriter writer = response.getWriter();
+                writer.println("Error: Form must has enctype=multipart/form-data.");
+                writer.flush();
+            } catch (IOException e) {
+                LOGGER.log(Level.ERROR, "Failed to send image", e);
+            }
         }
         String path = String.format("src/main/webapp%s", UPLOAD_DIRECTORY);
         // configures upload settings
@@ -154,7 +161,7 @@ public class UploadFileServlet extends Servlet {
                     .filter(i -> fileItem.getFieldName().equals(requestFields[i]))
                     .forEach(i -> requests[i] = (fileItem.getString())));
 
-            if (formItems.size() > 0) {
+            if (!formItems.isEmpty()) {
                 // iterates over form's fields
                 for (FileItem item : formItems) {
                     // processes only fields that are not form fields
@@ -167,17 +174,17 @@ public class UploadFileServlet extends Servlet {
 
                         File storeFile = new File(filePath);
 
-                        String file_name2 = item.getName();
-                        requests[0] = (String.format("/upload?%s", file_name2));
-                        item.write(new File(path + file_name2));
-
-                        // saves the file on disk
+                        String itemName = item.getName();
+                        requests[0] = (String.format("/upload?%s", itemName));
+                        item.write(new File(path + itemName));
+                        LOGGER.log(Level.INFO, "{} saves the file on disk", itemName);
                         item.write(storeFile);
                         request.setAttribute("message", "Upload has been done successfully!");
                     }
                 }
             }
-            log.info(requests);
+
+            LOGGER.log(Level.INFO, requests);
 
             Car car = new Car.Builder()
                     .id(carId)
@@ -193,11 +200,11 @@ public class UploadFileServlet extends Servlet {
                     .build();
 
             boolean save = carService.save(car);
-            log.info(String.format("Saved: %s, %s", save, car));
+            LOGGER.log(Level.INFO, "Saved: {}, {}", save, car);
         } catch (Exception ex) {
             request.setAttribute("message", "There was an error: " + ex.getMessage());
         }
         // redirects client to message page
-        dispatch(request, response, CARS);
+        dispatch(request, response, CARS_JSP);
     }
 }

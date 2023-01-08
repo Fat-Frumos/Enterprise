@@ -3,15 +3,18 @@ package com.enterprise.rental.controller;
 import com.enterprise.rental.entity.Order;
 import com.enterprise.rental.entity.Role;
 import com.enterprise.rental.entity.User;
+import com.enterprise.rental.exception.DaoException;
+import com.enterprise.rental.exception.ServiceException;
 import com.enterprise.rental.service.OrderService;
 import com.enterprise.rental.service.UserService;
 import com.enterprise.rental.service.impl.DefaultOrderService;
 import com.enterprise.rental.service.impl.DefaultUserService;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletResponse;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -21,6 +24,8 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static com.enterprise.rental.controller.Parameter.CLIENT;
+import static com.enterprise.rental.controller.Parameter.ERROR;
 import static com.enterprise.rental.dao.jdbc.Constants.*;
 
 /**
@@ -32,12 +37,11 @@ import static com.enterprise.rental.dao.jdbc.Constants.*;
  * <li> <code>doPut</code>, if the servlet supports HTTP PUT requests (send email to user)
  * </ul>
  *
- * @author Pasha Pollack
+ * @author Pasha Polyak
  */
-@WebServlet(urlPatterns = "/user")
 public class UserServlet extends Servlet {
     private final UserService userService = new DefaultUserService();
-    private static final Logger log = Logger.getLogger(UserServlet.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * View list of orders
@@ -84,35 +88,41 @@ public class UserServlet extends Servlet {
         OrderService orderService = new DefaultOrderService();
         HttpSession session = request.getSession(false);
         String path = "/";
-        User user;
+
         if (session == null) {
-            path = FORGOT;
+            path = FORGOT_JSP;
         } else {
-            user = (User) session.getAttribute("user");
+            User user = (User) session.getAttribute(CLIENT.value());
             String role = user != null ? user.getRole() : Role.GUEST.role();
-            session.setAttribute("user", user);
-            if (Objects.equals(role, Role.ADMIN.role())) {
-                List<User> users = userService.getAll();
-                log.debug(String.format("There are %d users", users.size()));
-                request.setAttribute("users", users);
-                path = USERS;
-            } else if (Objects.equals(role, Role.MANAGER.role())) {
-                List<Order> orders = orderService.getAll();
-                request.setAttribute("orders", orders);
-                path = CONTRACT;
-            } else if (Objects.equals(role, Role.USER.role()) && user != null) {
-                List<Order> userOrders = orderService.getAll()
-                        .stream()
-                        .filter(order -> order.getUserId() == (user.getUserId()))
-                        .collect(Collectors.toList());
-                log.debug("Get userOrders: " + userOrders.size());
-                request.setAttribute("orders", userOrders);
-                path = ORDERS;
-            } else if (Objects.equals(role, Role.GUEST.role()) && user != null) {
-                path = FORGOT;
+            session.setAttribute(CLIENT.value(), user);
+            try {
+
+                if (Objects.equals(role, Role.ADMIN.role())) {
+                    List<User> users = userService.findAllBy();
+                    LOGGER.log( Level.INFO, "There are {} users", users.size());
+                    request.setAttribute("users", users);
+                    path = USERS_JSP;
+                } else if (Objects.equals(role, Role.MANAGER.role())) {
+                    List<Order> orders = orderService.findAllBy();
+                    request.setAttribute("orders", orders);
+                    path = CONTRACT_JSP;
+                } else if (Objects.equals(role, Role.USER.role()) && user != null) {
+                    List<Order> userOrders = orderService.findAllBy()
+                            .stream()
+                            .filter(order -> order.getUserId() == (user.getUserId()))
+                            .collect(Collectors.toList());
+                    LOGGER.log( Level.INFO, "Get userOrders: {}", userOrders.size());
+                    request.setAttribute("orders", userOrders);
+                    path = ORDER_JSP;
+                } else if (Objects.equals(role, Role.GUEST.role()) && user != null) {
+                    path = FORGOT_JSP;
+                }
+            } catch (ServiceException e) {
+                LOGGER.log(Level.ERROR, e.getMessage(), e);
             }
+
         }
-        log.debug(String.format("path: %s", path));
+        LOGGER.log( Level.INFO, "path: {}", path);
         dispatch(request, response, path);
     }
 
@@ -142,7 +152,7 @@ public class UserServlet extends Servlet {
             HttpServletResponse response)
             throws IOException, ServletException {
 
-        if (userService.getByName(request.getParameter("name")).isEmpty()) {
+        if (userService.findByName(request.getParameter("name")).isEmpty()) {
             User user = new User.Builder()
                     .userId(UUID.randomUUID().getMostSignificantBits() & 0x7ffffffffffL)
                     .name(request.getParameter("name"))
@@ -154,15 +164,21 @@ public class UserServlet extends Servlet {
                     .active(true)
                     .role(request.getParameter("role"))
                     .build();
-            boolean save = userService.save(user);
 
-            log.debug(String.format("%s is created: %s", user, save));
-            request.setAttribute("user", user);
-            dispatch(request, response, MAIN);
+
+            try {
+                boolean save = userService.save(user);
+                LOGGER.log( Level.INFO, "{} is created: {}", user, save);
+            } catch (ServiceException e) {
+                LOGGER.log(Level.ERROR, e.getMessage());
+            }
+
+            request.setAttribute(CLIENT.value(), user);
+            dispatch(request, response, MAIN_JSP);
         } else {
-            log.debug(String.format("%sUser is exists please try again %s", PURPLE, RESET));
-            request.setAttribute("errorMessage", "User is exists please try again");
-            redirect(request, response, LOGIN);
+            LOGGER.log( Level.INFO, "{}User is exists please try again {}", PURPLE, RESET);
+            request.setAttribute(ERROR.value(), "User is exists please try again");
+            redirect(request, response, LOGIN_JSP);
         }
     }
 
@@ -182,9 +198,13 @@ public class UserServlet extends Servlet {
             HttpServletRequest request,
             HttpServletResponse response) {
 
-        boolean sendEmail = userService.sendEmail(request.getParameter("username"));
-        log.debug(String.format("Letter sent: %b", sendEmail));
 
-        redirect(request, response, FORGOT);
+        try {
+            boolean sendEmail = userService.sendEmail(request.getParameter("username"));
+            LOGGER.log( Level.INFO, "Letter sent: %b", sendEmail);
+        } catch (DaoException e) {
+            LOGGER.log(Level.ERROR, String.format(e.getMessage(), e));
+        }
+        redirect(request, response, FORGOT_JSP);
     }
 }

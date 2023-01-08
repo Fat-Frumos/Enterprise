@@ -95,21 +95,10 @@
 </div>
 
 <script type="text/javascript">
-    // function openForm(brand, name, model, price, cost) {
-    //     $("#" + id).modal('show');
-    //     let url = '/cart' + '?id=' + id;
-    //     fetch(url, {
-    //         method: 'PUT',
-    //     }).then(response => {
-    //         console.log('Ok:', response);
-    //         window.location.href = url;
-    //     }).catch(err => {
-    //         console.error(err)
-    //     })
+
 
     let index = 0;
     let slides = document.querySelectorAll(".slides");
-    // var dot = document.querySelectorAll(".dot");
 
     function changeSlide() {
 

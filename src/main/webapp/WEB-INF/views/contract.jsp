@@ -28,7 +28,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv=Content-Type content="text/html; charset=windows-1251">
-    <link rel="shortcut icon" href="<c:url value="/upload?wheel.ico"/>" type="image/x-icon">
+    <link rel="shortcut icon" href="${pageContext.request.contextPath}/upload?wheel.ico" type="image/x-icon">
 
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -55,6 +55,10 @@
             margin: 40px;
         }
 
+        .navigation ul {
+            display: flex;
+            width: 350px;
+        }
     </style>
 </head>
 <body>
@@ -90,7 +94,7 @@
             <span id="exchangeRate" hidden><fmt:message key="exchange" bundle="${lang}"/></span>
             <c:forEach items="${orders}" var="order">
                 <tr class="firstRow">
-                    <form action="<c:url value="/register"/>" method="post">
+                    <form action="${pageContext.request.contextPath}/register" method="post">
                         <td><input style="text-align: center; width: 60px" value="${order.userId}" name="userId"></td>
                         <td><input style="text-align: center; width: 90px" value="${order.orderId}" name="orderId"></td>
                         <td><input style="text-align: center; width: 80px" value="${order.carId}" name="carId"></td>
@@ -118,7 +122,6 @@
                                        class="orderPayment"
                                        type="number"
                                        min="0"
-<%--                                       pattern="0.00"--%>
                                        style="width: 100px"
                                        value="${order.payment}"
                                 >

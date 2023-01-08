@@ -1,6 +1,8 @@
 package com.enterprise.rental.exception;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.SQLException;
 
@@ -8,11 +10,11 @@ import java.sql.SQLException;
  * The <code>UserNotFoundException</code> extends <code>RuntimeException</code>
  * is used to wrap any exception that occurs during data performing.
  *
- * @author Pasha Pollack
+ * @author Pasha Polyak
  * @see RuntimeException
  */
 public class UserNotFoundException extends RuntimeException {
-    private static final Logger log = Logger.getLogger(UserNotFoundException.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * Constructs a new SQLException with the specified detail message.
@@ -22,7 +24,7 @@ public class UserNotFoundException extends RuntimeException {
      */
     public UserNotFoundException(String message, SQLException sqlException) {
         super(message, sqlException);
-        log.error(String.format("%s %s", message, sqlException.getMessage()));
+        LOGGER.log(Level.ERROR, "{}{}", message, sqlException.getMessage());
     }
 
     /**
@@ -32,6 +34,6 @@ public class UserNotFoundException extends RuntimeException {
      */
     public UserNotFoundException(String message) {
         super(message);
-        log.error(String.format("%s", message));
+        LOGGER.log(Level.ERROR, "{}", message);
     }
 }

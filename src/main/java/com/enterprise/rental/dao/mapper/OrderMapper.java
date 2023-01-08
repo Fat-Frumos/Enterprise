@@ -2,7 +2,9 @@ package com.enterprise.rental.dao.mapper;
 
 import com.enterprise.rental.entity.Order;
 import com.enterprise.rental.exception.OrderNotFoundException;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.Level;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.ResultSet;
@@ -24,7 +26,7 @@ import static com.enterprise.rental.service.locale.CurrencyConvector.exchange;
  * @see Mapper#mapRow(ResultSet)
  */
 public class OrderMapper extends Mapper<Order> {
-    private static final Logger log = Logger.getLogger(OrderMapper.class);
+    private static final Logger LOGGER = LogManager.getLogger();
     private static final String[] orderFields = {"orderId", "carId", "userId", "passport", "reason", "phone", "damage", "payment", "created", "driver"};
 
     /**
@@ -113,7 +115,7 @@ public class OrderMapper extends Mapper<Order> {
             try {
                 resultSet.close();
             } catch (SQLException e) {
-                log.error(e.getMessage());
+                LOGGER.log(Level.ERROR, e.getMessage());
             }
             throw new OrderNotFoundException(exception);
         }

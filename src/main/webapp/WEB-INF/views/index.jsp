@@ -57,17 +57,6 @@
         }
     }
 
-    // function closeForm(id) {
-    //     // // let htmlElement = document.getElementsByClassName("carousel-item");
-    //     // $(document).on('contextmenu', function (event) {
-    //     //     if (!$(event.target).hasClass("fade")) {
-    //     //         event.preventDefault()
-    //     //         window.history.back();
-    //     //     }
-    //     // })
-    //     alert("Car has been")
-    // }
-
 </script>
 
 </body>

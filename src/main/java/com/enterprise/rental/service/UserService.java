@@ -2,6 +2,8 @@ package com.enterprise.rental.service;
 
 import com.enterprise.rental.entity.Car;
 import com.enterprise.rental.entity.User;
+import com.enterprise.rental.exception.DaoException;
+import com.enterprise.rental.exception.ServiceException;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,7 +21,7 @@ import java.util.UUID;
  * The service interface for User
  * extends abstract Service {@link User}
  *
- * @author Pasha Pollack
+ * @author Pasha Polyak
  */
 public interface UserService extends Service<User> {
 
@@ -82,14 +84,14 @@ public interface UserService extends Service<User> {
      * @param user the type of User
      * @return true if method was executed and vice-versa
      */
-    boolean save(User user);
+    boolean save(User user) throws ServiceException;
 
     /**
      * Get all Users from Database.
      *
      * @return the list of entities
      */
-    List<User> getAll();
+    List<User> findAllBy() throws ServiceException;
 
     /**
      * Find all Users with String query parameter.
@@ -97,7 +99,7 @@ public interface UserService extends Service<User> {
      * @param query the parameter
      * @return the list of Users
      */
-    List<User> getAll(String query);
+    List<User> findAllBy(String query) throws ServiceException;
 
     /**
      * Find all Users with parameters.
@@ -105,7 +107,7 @@ public interface UserService extends Service<User> {
      * @param params map: pagination, sort, price, cost, name
      * @return the list of Users
      */
-    List<User> getAll(Map<String, String> params);
+    List<User> findAllBy(Map<String, String> params) throws ServiceException;
 
     /**
      * Find the User by name.
@@ -115,7 +117,7 @@ public interface UserService extends Service<User> {
      * @return Optional User
      * @see javax.validation.constraints.NotNull
      */
-    Optional<User> getByName(@NotNull String name);
+    Optional<User> findByName(@NotNull String name);
 
     /**
      * Find the User by id.
@@ -123,7 +125,7 @@ public interface UserService extends Service<User> {
      * @param id the User id
      * @return Optional User
      */
-    Optional<User> getById(long id);
+    Optional<User> findBy(Long id);
 
     /**
      * Update the User by object.
@@ -131,7 +133,7 @@ public interface UserService extends Service<User> {
      * @param user type of User
      * @return User type of the new User
      */
-    User edit(User user);
+    User edit(User user) throws ServiceException;
 
     /**
      * Delete the User by ID.
@@ -139,7 +141,7 @@ public interface UserService extends Service<User> {
      * @param id the User id
      * @return true if method was executed and vice-versa
      */
-    boolean delete(long id);
+    boolean delete(Long id) throws ServiceException;
 
     /**
      * Add car to User profiler.
@@ -158,7 +160,7 @@ public interface UserService extends Service<User> {
      * @param name a username
      * @return boolean true if executed else false
      */
-    boolean sendEmail(String name);
+    boolean sendEmail(String name) throws DaoException;
 
     /**
      * Provides a way to identify a user across more than one of the page

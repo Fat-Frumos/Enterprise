@@ -31,7 +31,7 @@
 
 <div class="loginBox">
     <img class="user" height="100px" width="100px"
-         src="<c:url value="/upload?ava.jpg"/>" alt="avatar">
+         src="<c:url value="https://raw.githubusercontent.com/Fat-Frumos/Cars/master/ava.jpg"/>" alt="avatar">
     <p><span style="color: red;">${errorMessage}</span></p>
     <h3>Sign In</h3>
     <form action="${pageContext.request.contextPath}/" method="post">
@@ -85,7 +85,7 @@
                  width="100px"
                  value="en"
                  alt=""
-                 src="<c:url value="/upload?ava.jpg"/>">
+                 src="<c:url value="https://raw.githubusercontent.com/Fat-Frumos/Cars/master/ava.jpg"/>">
 
 <%--            <jsp:include page="flag.jsp"/>--%>
 
@@ -119,8 +119,9 @@
                            required
                     >
                 </label>
-                <button type="submit">
-                    Sign Up
+                <button type="submit" class='glowing-btn'>
+            <span class='glowing-txt'>S<span class='faulty-letter'>i</span><span class='faulty-letter'>gn</span><span class='faulty-letter'>Up</span>
+            </span>
                 </button>
             </div>
             <div class="forget">
@@ -129,7 +130,7 @@
                     Cancel
                 </a>
                 <br>
-                <a href="<c:url value="/user"/>" class="sign glowing-txt" onclick="toCard()">
+                <a class="sign glowing-txt" onclick="toCard()">
                     Forgot password?
                 </a>
                 <br>
@@ -145,7 +146,7 @@
     function toCard() {
         let url = '/user';
         fetch(url, {
-            method: 'GET',
+            method: 'PUT',
         }).then(response => {
             console.log('Ok:', response);
         }).catch(err => {

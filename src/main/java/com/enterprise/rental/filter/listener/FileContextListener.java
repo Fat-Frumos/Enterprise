@@ -1,6 +1,8 @@
-package com.enterprise.rental.utils;
+package com.enterprise.rental.filter.listener;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.Level;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -12,12 +14,12 @@ import java.io.File;
  * Implementations of this interface receive files about
  * changes to the servlet context of the web application they are part of.
  *
- * @author Pasha Pollack
+ * @author Pasha Polyak
  * @see ServletContextListener
  */
 @WebListener
 public class FileContextListener implements ServletContextListener {
-    private static final Logger log = Logger.getLogger(FileContextListener.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * This method is called when the servlet context is initialized
@@ -32,7 +34,7 @@ public class FileContextListener implements ServletContextListener {
         String relativePath = ctx.getInitParameter("templates.img");
         File file = new File(String.format("%s%s%s", rootPath, File.separator, relativePath));
         if (!file.exists()) file.mkdirs();
-        log.debug("File Directory created to be used for storing files");
+        LOGGER.log( Level.INFO,"File Directory created to be used for storing files");
         ctx.setAttribute("FILES_DIR_FILE", file);
         ctx.setAttribute("FILES_DIR", String.format("%s%s%s", rootPath, File.separator, relativePath));
     }
@@ -45,6 +47,6 @@ public class FileContextListener implements ServletContextListener {
      * @param servletContextEvent is the event class for notifications
      */
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
-        log.debug("ServletContextListener destroyed");
+        LOGGER.log( Level.INFO,"ServletContextListener destroyed");
     }
 }

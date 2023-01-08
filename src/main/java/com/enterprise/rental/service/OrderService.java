@@ -3,6 +3,7 @@ package com.enterprise.rental.service;
 import com.enterprise.rental.entity.Invoice;
 import com.enterprise.rental.entity.Order;
 import com.enterprise.rental.entity.User;
+import com.enterprise.rental.exception.ServiceException;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,7 +12,7 @@ import java.util.Optional;
  * The service interface for Order
  * extends abstract Service {@link Order}
  *
- * @author Pasha Pollack
+ * @author Pasha Polyak
  */
 public interface OrderService extends Service<Order> {
 
@@ -21,14 +22,14 @@ public interface OrderService extends Service<Order> {
      * @param order the type of the entity
      * @return true if method was executed and vice-versa
      */
-    boolean save(Order order);
+    boolean save(Order order) throws ServiceException;
 
     /**
      * Find all Orders from database
      *
      * @return the list of Orders
      */
-    List<Order> getAll();
+    List<Order> findAllBy() throws ServiceException;
 
     /**
      * Find all orders with String query parameter.
@@ -36,7 +37,7 @@ public interface OrderService extends Service<Order> {
      * @param name the parameter
      * @return the list of Orders
      */
-    List<Order> getAll(String name);
+    List<Order> findAllBy(String name) throws ServiceException;
 
     /**
      * Find all Orders by user.
@@ -44,7 +45,7 @@ public interface OrderService extends Service<Order> {
      * @param user the User
      * @return the list of Orders
      */
-    List<Order> getAll(User user);
+    List<Order> getAll(User user) throws ServiceException;
 
     /**
      * Update order.
@@ -60,7 +61,7 @@ public interface OrderService extends Service<Order> {
      * @param id the id
      * @return true if method was executed and vice-versa
      */
-    boolean delete(long id);
+    boolean delete(Long id) throws ServiceException;
 
     /**
      * Find the Optional order by id.
@@ -68,7 +69,7 @@ public interface OrderService extends Service<Order> {
      * @param id the order id
      * @return Optional Order
      */
-    Optional<Order> getById(long id);
+    Optional<Order> findBy(Long id);
 
     /**
      * Save the invoice to Database.

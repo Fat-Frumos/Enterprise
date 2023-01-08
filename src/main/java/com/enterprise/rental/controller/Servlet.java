@@ -2,8 +2,14 @@ package com.enterprise.rental.controller;
 
 import com.enterprise.rental.entity.User;
 import com.enterprise.rental.exception.DataException;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import javax.servlet.*;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequestWrapper;
+import javax.servlet.ServletResponse;
+import javax.servlet.ServletResponseWrapper;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,16 +17,17 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Optional;
 
-import static com.enterprise.rental.dao.jdbc.Constants.USER;
+import static com.enterprise.rental.controller.Parameter.CLIENT;
 
 /**
  * Abstract class Servlet extends an HTTP servlet suitable <code>HttpServlet</code> for a web-site.
  * Class of <code>Servlet</code> has one method <code>dispatch</code>
  *
- * @author Pasha Pollack
+ * @author Pasha Polyak
  * @see HttpServlet
  */
 public abstract class Servlet extends HttpServlet {
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * Defines an object that receives requests from the client
@@ -61,10 +68,9 @@ public abstract class Servlet extends HttpServlet {
         response.setContentType("text/html;charset=utf-8");
 
         try {
-            RequestDispatcher dispatcher = getServletContext()
-                    .getRequestDispatcher(path);
-            dispatcher.include(request, response);
+            request.getRequestDispatcher(path).forward(request, response);
         } catch (ServletException | IOException e) {
+            LOGGER.log(Level.ERROR, "{}", e.getMessage());
             throw new DataException(e.getMessage());
         }
     }
@@ -88,6 +94,7 @@ public abstract class Servlet extends HttpServlet {
         try {
             response.sendRedirect(path);
         } catch (Exception e) {
+            LOGGER.log(Level.ERROR, "{}", e.getMessage());
             dispatch(request, response, path);
         }
     }
@@ -117,8 +124,8 @@ public abstract class Servlet extends HttpServlet {
      */
     protected static Optional<User> getUser(HttpSession session) {
 
-        if (session.getAttribute("user") != null) {
-            User user = (User) session.getAttribute("user");
+        if (session.getAttribute(CLIENT.value()) != null) {
+            User user = (User) session.getAttribute(CLIENT.value());
             return Optional.of(user);
         }
         return Optional.empty();

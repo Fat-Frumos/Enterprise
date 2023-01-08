@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 /**
  * Reflecting Entity the fields declared by the class.
  *
- * @author Pasha Pollack
+ * @author Pasha Polyak
  */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Entity {

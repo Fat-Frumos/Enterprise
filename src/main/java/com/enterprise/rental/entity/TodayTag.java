@@ -1,4 +1,4 @@
-package com.enterprise.rental.utils;
+package com.enterprise.rental.entity;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
@@ -16,7 +16,7 @@ import java.util.Date;
  * implements the Tag and IterationTag interfaces and adds additional
  * convenience methods including getter methods for the properties in Tag.
  *
- * @author Pasha Pollack
+ * @author Pasha Polyak
  * @see TagSupport
  */
 public class TodayTag extends TagSupport {

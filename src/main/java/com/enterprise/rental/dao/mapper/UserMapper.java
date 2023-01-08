@@ -2,7 +2,9 @@ package com.enterprise.rental.dao.mapper;
 
 import com.enterprise.rental.entity.User;
 import com.enterprise.rental.exception.UserNotFoundException;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.Level;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.ResultSet;
@@ -18,11 +20,11 @@ import java.util.stream.Collectors;
  * Class UserMapper extends Mapper(User).
  * Builds Entity User
  *
- * @author Pasha Pollack
+ * @author Pasha Polyak
  * @see Mapper
  */
 public class UserMapper extends Mapper<User> {
-    private static final Logger log = Logger.getLogger(UserMapper.class);
+    private static final Logger LOGGER = LogManager.getLogger();
     private static final String[] userFields = {"id", "name", "password", "passport", "phone", "language", "email", "created", "salt", "active", "closed"};
 
     /**
@@ -56,7 +58,7 @@ public class UserMapper extends Mapper<User> {
                 .closed(false)
                 .build();
 
-        log.info(params);
+        LOGGER.log(Level.INFO, params);
         return user;
     }
 
@@ -95,7 +97,7 @@ public class UserMapper extends Mapper<User> {
             try {
                 resultSet.close();
             } catch (SQLException e) {
-                log.error(e.getMessage());
+                LOGGER.log(Level.ERROR, e.getMessage());
             }
             throw new UserNotFoundException("User not found", exception);
         }

@@ -1,4 +1,4 @@
-package com.enterprise.rental.utils;
+package com.enterprise.rental.service;
 
 import org.junit.jupiter.api.Test;
 

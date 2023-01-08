@@ -10,8 +10,8 @@ import java.util.*;
  *
  * @author Pasha Pollack
  */
-public class User implements Serializable {
-    private long userId;
+public class User extends BaseEntity {
+    private Long userId;
     private String name;
     private String password;
     private String salt;
@@ -135,7 +135,7 @@ public class User implements Serializable {
     /**
      * Default constructor
      */
-    protected User() {
+    public User() {
     }
 
     /**
@@ -427,15 +427,15 @@ public class User implements Serializable {
      * @param o an object
      * @return the hash code of a non-{@code null} argument and 0 for
      * a {@code null} argument
-     * @see Object#hashCode
      */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return userId == user.userId && active == user.active && closed == user.closed && Objects.equals(name, user.name) && Objects.equals(password, user.password) && Objects.equals(salt, user.salt) && Objects.equals(email, user.email) && Objects.equals(language, user.language) && Objects.equals(role, user.role) && Objects.equals(orders, user.orders) && Objects.equals(cars, user.cars) && Objects.equals(params, user.params) && Objects.equals(car, user.car) && Objects.equals(created, user.created) && Objects.equals(passport, user.passport) && Objects.equals(phone, user.phone);
+        return active == user.active && closed == user.closed && Objects.equals(userId, user.userId) && Objects.equals(name, user.name) && Objects.equals(password, user.password) && Objects.equals(salt, user.salt) && Objects.equals(email, user.email) && Objects.equals(language, user.language) && Objects.equals(role, user.role) && Objects.equals(passport, user.passport) && Objects.equals(phone, user.phone) && Objects.equals(orders, user.orders) && Objects.equals(cars, user.cars) && Objects.equals(params, user.params) && Objects.equals(car, user.car) && Objects.equals(created, user.created);
     }
+
 
     /**
      * <p>This method is useful for implementing {@link Object#hashCode()}
@@ -446,8 +446,9 @@ public class User implements Serializable {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(userId, name, password, salt, email, language, role, active, closed, orders, cars, params, car, created, passport, phone);
+        return Objects.hash(userId, name, password, salt, email, language, role, passport, phone, active, closed, orders, cars, params, car, created);
     }
+
 
     /**
      * Returns a string representation of the object.

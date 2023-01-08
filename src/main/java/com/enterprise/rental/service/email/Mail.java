@@ -11,7 +11,7 @@ import java.util.Properties;
 /**
  * The Mail class describes the functions of a send Email with attachments service.
  *
- * @author Pasha Pollack
+ * @author Pasha Polyak
  */
 public class Mail {
     Mail() {

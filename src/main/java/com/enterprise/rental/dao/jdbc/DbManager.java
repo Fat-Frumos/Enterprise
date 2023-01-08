@@ -1,7 +1,9 @@
 package com.enterprise.rental.dao.jdbc;
 
 import com.enterprise.rental.exception.DataException;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.Level;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -17,16 +19,16 @@ import static java.sql.Connection.TRANSACTION_READ_COMMITTED;
  * Representing a Singleton instance.
  * Implementation of AutoCloseable
  *
- * @author Pasha Pollack
+ * @author Pasha Polyak
  */
 public class DbManager implements AutoCloseable {
-    private static final Logger log = Logger.getLogger(DbManager.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     // Reads properties for the database from application.properties
     private static final String DB_URL_PROPERTY_NAME = "db.url";
     private static final String DB_NAME_PROPERTY_NAME = "db.username";
     private static final String DB_PASSWORD_PROPERTY_NAME = "db.password";
-//    private static final String FILE_PROPS = "src/main/resources/application.properties";
+    private static final String FILE_PROPS = "src/main/resources/application.properties";
     private Properties properties;
     private static DbManager dbManager;
 
@@ -34,7 +36,7 @@ public class DbManager implements AutoCloseable {
      * Default constructor user for upload properties connection
      */
     public DbManager() {
-//        loadProperties();
+        loadProperties();
     }
 
     /**
@@ -64,6 +66,7 @@ public class DbManager implements AutoCloseable {
                     getDBName(),
                     getDBPassword());
         } catch (SQLException e) {
+            LOGGER.log(Level.ERROR, e.getMessage());
             throw new DataException(e);
         }
     }
@@ -76,14 +79,15 @@ public class DbManager implements AutoCloseable {
      *
      * @return a connection instance
      */
-    public static Connection configConnection() {
+    public static Connection proxyConnection() {
         try {
             Connection connection = getInstance().getConnection();
             connection.setAutoCommit(false);
             connection.setTransactionIsolation(TRANSACTION_READ_COMMITTED);
             return connection;
         } catch (SQLException sqlException) {
-            throw new DataException(sqlException.getMessage(), sqlException);
+            LOGGER.log(Level.ERROR, sqlException.getMessage());
+            throw new DataException(sqlException);
         }
     }
 
@@ -128,21 +132,18 @@ public class DbManager implements AutoCloseable {
     protected static boolean rollback(
             Connection connection,
             SQLException sqlException) {
-        log.error(String.format("Rollback: %s%n", sqlException.getMessage()));
-
         try {
             Objects.requireNonNull(connection).rollback();
             return true;
         } catch (SQLException exception) {
-            throw new DataException(
-                    String.format("Can`t rollback: %s",
-                            exception.getMessage()));
+            LOGGER.log(Level.ERROR, "Rollback: {}%n", sqlException.getMessage());
+            throw new DataException(exception.getMessage());
         } finally {
             try {
                 if (connection != null)
                     connection.rollback();
             } catch (SQLException e) {
-                log.error(String.format("connection can not rollback: %s", e.getMessage()));
+                LOGGER.log(Level.ERROR, e.getMessage());
             }
         }
     }
@@ -165,7 +166,7 @@ public class DbManager implements AutoCloseable {
                 if (connection != null)
                     connection.close();
             } catch (SQLException e) {
-                log.error(String.format("connection not closed: %s", e.getMessage()));
+                LOGGER.log(Level.ERROR, "connection not closed: {}", e.getMessage());
             }
         }
     }
@@ -180,14 +181,14 @@ public class DbManager implements AutoCloseable {
         try {
             Objects.requireNonNull(statement).close();
         } catch (SQLException e) {
-            log.debug("Prepared Statement not closed");
+            LOGGER.log(Level.INFO, "Prepared Statement not closed");
             throw new DataException(e.getMessage(), e);
         } finally {
             try {
                 if (statement != null)
                     statement.close();
             } catch (SQLException e) {
-                log.debug(String.format("Prepared Statement not closed: %s", e.getMessage()));
+                LOGGER.log(Level.INFO, "Prepared Statement not closed: {}", e.getMessage());
             }
         }
     }
@@ -205,15 +206,15 @@ public class DbManager implements AutoCloseable {
             Objects.requireNonNull(resultSet).close();
             return true;
         } catch (SQLException sqlException) {
-            log.debug(String.format("resultSet not closed: %s",
-                    sqlException.getMessage()));
+            LOGGER.log(Level.INFO, "resultSet not closed: {}",
+                    sqlException.getMessage());
             throw new DataException(sqlException);
         } finally {
             try {
                 if (resultSet != null)
                     resultSet.close();
             } catch (SQLException e) {
-                log.debug(String.format("ResultSet closed: %s", e.getMessage()));
+                LOGGER.log(Level.INFO, "ResultSet closed: {}", e.getMessage());
             }
         }
     }
@@ -229,34 +230,27 @@ public class DbManager implements AutoCloseable {
         getConnection().close();
     }
 
-
-    // Reads resource properties file
-//    private void loadProperties() {
-//        properties = new Properties();
-//        try (FileInputStream inputStream = new FileInputStream(FILE_PROPS)) {
-//            properties.load(inputStream);
-//        } catch (IOException exception) {
-//            throw new DataException("Cannot read the file", exception);
-//        }
-//    }
+    private void loadProperties() {
+        properties = new Properties();
+        try (FileInputStream inputStream = new FileInputStream(FILE_PROPS)) {
+            properties.load(inputStream);
+        } catch (IOException exception) {
+            throw new DataException("Cannot read the file", exception);
+        }
+    }
 
     // Get credentials for the property with the specified key in this property list.
     // Params: key – the property key.
     // Returns: the value in this property list with the specified key value
     private String getDBUrl() {
-        return "jdbc:postgresql://peanut.db.elephantsql.com:5432/lnycichw";
-
-//        return properties.getProperty(DB_URL_PROPERTY_NAME);
+        return properties.getProperty(DB_URL_PROPERTY_NAME);
     }
 
     private String getDBName() {
-        return "lnycichw";
-
-//        return properties.getProperty(DB_NAME_PROPERTY_NAME);
+        return properties.getProperty(DB_NAME_PROPERTY_NAME);
     }
 
     private String getDBPassword() {
-        return "hGsOS0-qZ1UiYkneTgpy8iXJZ7RzP8lY";
-//        return properties.getProperty(DB_PASSWORD_PROPERTY_NAME);
+        return properties.getProperty(DB_PASSWORD_PROPERTY_NAME);
     }
 }

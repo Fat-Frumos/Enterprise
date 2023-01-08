@@ -1,6 +1,9 @@
 package com.enterprise.rental.exception;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -10,11 +13,11 @@ import java.sql.SQLException;
  * The <code>DataException</code> extends <code>RuntimeException</code>
  * Is used to wrap any exception that occurs during data performing.
  *
- * @author Pasha Pollack
+ * @author Pasha Polyak
  * @see RuntimeException
  */
 public class DataException extends RuntimeException {
-    private static final Logger log = Logger.getLogger(DataException.class);
+    static final Logger LOGGER = LogManager.getLogger();
 
 
     /**
@@ -25,7 +28,7 @@ public class DataException extends RuntimeException {
      */
     public DataException(SQLException exception) {
         super(exception.getMessage());
-        log.error(exception.getMessage());
+        LOGGER.log(Level.ERROR, exception.getMessage());
     }
 
     /**
@@ -35,7 +38,7 @@ public class DataException extends RuntimeException {
      */
     public DataException(FileNotFoundException exception) {
         super(exception.getMessage());
-        log.error(exception.getMessage());
+        LOGGER.log(Level.ERROR, exception.getMessage());
     }
 
     /**
@@ -45,7 +48,7 @@ public class DataException extends RuntimeException {
      */
     public DataException(String message) {
         super(message);
-        log.error(message);
+        LOGGER.log(Level.ERROR, message);
     }
 
     /**
@@ -56,7 +59,7 @@ public class DataException extends RuntimeException {
      */
     public DataException(String message, SQLException exception) {
         super(message);
-        log.error(String.format("%s%s", message, exception.getMessage()));
+        LOGGER.log(Level.ERROR, "{}{}", message, exception.getMessage());
     }
 
     /**
@@ -68,7 +71,7 @@ public class DataException extends RuntimeException {
     public DataException(String message, IOException exception) {
         super(exception.getMessage());
         String format = String.format("%s%s", message, exception.getMessage());
-        log.error(format);
+        LOGGER.log(Level.ERROR, format);
     }
 
     /**
@@ -78,6 +81,6 @@ public class DataException extends RuntimeException {
      */
     public DataException(Exception exception) {
         super(exception.getMessage());
-        log.error(String.format("%s", exception.getMessage()));
+        LOGGER.log(Level.ERROR, "{}", exception.getMessage());
     }
 }

@@ -1,15 +1,16 @@
 package com.enterprise.rental.dao;
 
+import com.enterprise.rental.dao.jdbc.JdbcUserDao;
 import com.enterprise.rental.entity.User;
 import com.enterprise.rental.service.UserService;
 import com.enterprise.rental.service.impl.DefaultUserService;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Optional;
 
+import static com.enterprise.rental.entity.Role.USER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -17,9 +18,9 @@ import static org.mockito.Mockito.when;
 class UserDaoTest {
 
     HttpServletRequest request = mock(HttpServletRequest.class);
-    @Mock
-    UserDao service = mock(UserDao.class);
     HttpSession session = mock(HttpSession.class);
+    JdbcUserDao mockDao = mock(JdbcUserDao.class);
+    UserService service = new DefaultUserService(mockDao);
 
     @Test
     void testDaoService() {
@@ -33,7 +34,7 @@ class UserDaoTest {
                 .language("ua")
                 .email("email@i.ua")
                 .active(true)
-                .role("user")
+                .role(USER.role())
                 .build();
 
 
@@ -41,14 +42,10 @@ class UserDaoTest {
         when(request.getParameter("password")).thenReturn("password");
         when(service.findByName("Bob")).thenReturn(Optional.of(bob));
         when(request.getSession()).thenReturn(session);
-
-        UserService userService = new DefaultUserService(service);
-        Optional<User> optionalUser = userService.getByName("Bob");
+        Optional<User> optionalUser = service.findByName("Bob");
 
         User user = optionalUser.get();
 
-//        verify(session).setAttribute("user", bob);
         assertEquals(bob, user);
     }
-
 }

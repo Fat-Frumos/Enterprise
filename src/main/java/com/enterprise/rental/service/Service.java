@@ -1,5 +1,7 @@
 package com.enterprise.rental.service;
 
+import com.enterprise.rental.exception.ServiceException;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -7,7 +9,7 @@ import java.util.Optional;
 /**
  * The service interface for generic entity
  *
- * @author Pasha Pollack
+ * @author Pasha Polyak
  */
 public interface Service<T> {
 
@@ -17,14 +19,14 @@ public interface Service<T> {
      * @param t the type of entity
      * @return true if method was executed and vice-versa
      */
-    boolean save(T t);
+    boolean save(T t) throws ServiceException;
 
     /**
      * Find all entities
      *
      * @return the list of entities
      */
-    List<T> getAll();
+    List<T> findAllBy() throws ServiceException;
 
     /**
      * Find all entities with String query parameter.
@@ -32,7 +34,7 @@ public interface Service<T> {
      * @param query the parameter
      * @return the list of entities
      */
-    List<T> getAll(String query);
+    List<T> findAllBy(String query) throws ServiceException;
 
     /**
      * Find all entities.
@@ -40,7 +42,7 @@ public interface Service<T> {
      * @param params Map (String key, String value)
      * @return the list of entities
      */
-    List<T> getAll(Map<String, String> params);
+    List<T> findAllBy(Map<String, String> params) throws ServiceException;
 
     /**
      * Find the entity by id.
@@ -48,7 +50,7 @@ public interface Service<T> {
      * @param id the entity id
      * @return Optional T
      */
-    Optional<T> getById(long id);
+    Optional<T> findBy(Long id);
 
     /**
      * Update the entity by object.
@@ -56,7 +58,7 @@ public interface Service<T> {
      * @param t object
      * @return T type of the entity
      */
-    T edit(T t);
+    T edit(T t) throws ServiceException;
 
     /**
      * Delete the entity.
@@ -64,5 +66,5 @@ public interface Service<T> {
      * @param id the id
      * @return true if method was executed and vice-versa
      */
-    boolean delete(long id);
+    boolean delete(Long id) throws ServiceException;
 }

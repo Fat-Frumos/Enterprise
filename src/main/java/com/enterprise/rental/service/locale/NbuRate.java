@@ -3,7 +3,7 @@ package com.enterprise.rental.service.locale;
 /**
  * NbuRate Dto class representing json format Nbu rate from locale NBUStatService
  *
- * @author Pasha Pollack
+ * @author Pasha Polyak
  */
 public class NbuRate {
     private String r030;

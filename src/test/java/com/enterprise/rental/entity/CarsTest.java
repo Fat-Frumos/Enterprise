@@ -1,9 +1,14 @@
 package com.enterprise.rental.entity;
 
 import com.enterprise.rental.dao.jdbc.JdbcCarDao;
+import com.enterprise.rental.exception.DaoException;
+import com.enterprise.rental.exception.ServiceException;
 import com.enterprise.rental.service.CarService;
 import com.enterprise.rental.service.impl.DefaultCarService;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,7 +24,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class CarsTest {
-    Logger log = Logger.getLogger(CarsTest.class);
+    static final Logger LOGGER = LogManager.getLogger();
     private static final List<Car> cars = new ArrayList<>();
     private static final Timestamp now = new Timestamp(System.currentTimeMillis());
     static final Car X7 = new Car.Builder().id(1L).name("X7").brand("BMW").model("G07").path("http//").price(25000.0).cost(10000.0).year(2022).date(now).build();
@@ -28,7 +33,7 @@ class CarsTest {
     static CarService service = new DefaultCarService(mockCarDao);
 
     @BeforeEach
-    void init() {
+    void init() throws ServiceException, DaoException {
         cars.add(X5);
         cars.add(X7);
         service = new DefaultCarService(mockCarDao);
@@ -36,21 +41,21 @@ class CarsTest {
 
     @Test
     @DisplayName(value = "Set Car name")
-    void testSetBrandNewCar() {
+    void testSetBrandNewCar() throws ServiceException, DaoException {
         String brand = "BMW";
         Car car = new Car();
         car.setBrand(brand);
-        assertEquals(brand, car.getName());
+        assertEquals(brand, car.getBrand());
     }
 
     @Test
-    void testFindByBrand() {
+    void testFindByBrand() throws ServiceException, DaoException {
         Car car = new Car.Builder().id(2L).name("X5").brand("BMW").model("GT-2").path("http//").price(10000.0).cost(10000.0).year(2020).date(now).build();
-        when(service.getAll("BMW")).thenReturn(cars);
+        when(service.findAllBy("BMW")).thenReturn(cars);
 
-        log.debug(String.format("%s", service.getAll()));
-        log.debug(String.format("%s", car));
-        log.debug(String.format("%s", cars));
+        LOGGER.log(Level.INFO, "{}", service.findAllBy());
+        LOGGER.log(Level.INFO, "{}", car);
+        LOGGER.log(Level.INFO, "{}", cars);
 
         assertEquals(2, car.getId());
         assertEquals(10000.0, car.getPrice());
@@ -58,7 +63,7 @@ class CarsTest {
     }
 
     @Test
-    void testFindAllReturnCorrectData() {
+    void testFindAllReturnCorrectData() throws ServiceException, DaoException {
         when(mockCarDao.findAll()).thenReturn(cars);
         List<Car> auto = mockCarDao.findAll();
         assertFalse(auto.isEmpty());
@@ -72,7 +77,7 @@ class CarsTest {
 
     @Test
     @DisplayName(value = "Test Find All Cars")
-    void testFindAllCars() {
+    void testFindAllCars() throws ServiceException, DaoException {
         when(mockCarDao.findAll()).thenReturn(cars);
         List<Car> auto = mockCarDao.findAll();
         auto.forEach(Assertions::assertNotNull);
@@ -80,39 +85,39 @@ class CarsTest {
 
     @Test
     @DisplayName(value = "Test Size Find Cars By Brand")
-    void testFindCarsByBrandIdSize() {
+    void testFindCarsByBrandIdSize() throws ServiceException, DaoException {
         String brand = "BMW";
         List<Car> cars = mockCarDao.findAll(brand);
         when(mockCarDao.findAll(brand)).thenReturn(List.of(X5, X7));
-        assertEquals(cars.size(), service.getAll().size());
+        assertEquals(cars.size(), service.findAllBy().size());
     }
 
     @Test
     @DisplayName(value = "Test get All Cars")
-    void getAll() {
+    void getAll() throws ServiceException, DaoException {
         when(mockCarDao.findAll()).thenReturn(List.of(X5, X7));
-        assertEquals(2, service.getAll().size());
+        assertEquals(2, service.findAllBy().size());
     }
 
     @Test
     @DisplayName(value = "Test Find Car By Id")
-    void findById() {
+    void findById() throws ServiceException, DaoException {
         when(mockCarDao.findById(X7.getId())).thenReturn(Optional.of(X7));
-        Optional<Car> optionalCar = service.getById(X7.getId());
+        Optional<Car> optionalCar = service.findBy(X7.getId());
         assertTrue(optionalCar.isPresent());
         assertEquals("X7", optionalCar.get().getName());
     }
 
     @Test
     @DisplayName(value = "Test Save Car")
-    void save() {
+    void save() throws ServiceException, DaoException {
         when(mockCarDao.save(X5)).thenReturn(true);
         assertTrue(service.save(X5));
     }
 
     @Test
     @DisplayName(value = "Test Delete Car")
-    void delete() {
+    void delete() throws ServiceException, DaoException {
         when(mockCarDao.delete(X5.getId())).thenReturn(true);
         assertTrue(service.delete(X5.getId()));
     }

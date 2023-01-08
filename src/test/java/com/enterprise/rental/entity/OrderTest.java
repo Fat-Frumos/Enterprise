@@ -37,7 +37,7 @@ class OrderTest {
     @DisplayName(value = "Test Order ID and get Long")
     void testNewOrderID() {
         assertNotNull(order.getOrderId());
-        long id = 10l;
+        Long id = 10l;
         order.setOrderId(id);
         assertEquals(id, order.getOrderId());
     }
@@ -46,7 +46,7 @@ class OrderTest {
     @Test
     @DisplayName(value = "Test User ID and get Long")
     void testSetNewOrderUserID() {
-        long id = 11l;
+        Long id = 11l;
         order.setUserId(id);
         assertEquals(id, order.getUserId());
         assertNotNull(order.getUserId());
@@ -55,7 +55,7 @@ class OrderTest {
     @Test
     @DisplayName(value = "Test Car ID")
     void testSetNewOrderCarID() {
-        long id = 12l;
+        Long id = 12l;
         order.setCarId(id);
         assertEquals(id, order.getCarId());
         assertNotNull(order.getCarId());

@@ -1,11 +1,10 @@
-package com.enterprise.rental.utils;
+package com.enterprise.rental.service;
 
 import com.enterprise.rental.service.locale.BungleEn;
 import com.enterprise.rental.service.locale.BungleUa;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;

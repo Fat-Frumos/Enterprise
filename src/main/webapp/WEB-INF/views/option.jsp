@@ -26,7 +26,7 @@
         <div class="priceInput">
             <div onclick="brand()">
                 <label for="brand"><fmt:message key="label.brand" bundle="${lang}"/>:</label>
-                <select style="width: 180px" id="brand" name="brand">
+                <select style="width: 182px" id="brand" name="brand">
                     <option value="" selected disabled hidden>
                         <fmt:message key="option.choose" bundle="${lang}"/>
                     </option>
@@ -41,8 +41,8 @@
                     <option value="Xpeng">Xpeng</option>
                 </select>
             </div>
-            <label for="price"><fmt:message key="label.price" bundle="${lang}"/>:</label>
-            <input style="width: 195px" type="number" id="price" name="price" min="100" max="1500">
+            <label for="price"><fmt:message key="label.price" bundle="${lang}"/> $:</label>
+            <input style="width: 185px" type="number" id="price" name="price">
             <ul class="pagination mt-2">
                 <c:if test="${page != 1}">
                     <li class="page-item">

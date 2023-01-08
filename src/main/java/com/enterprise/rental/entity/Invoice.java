@@ -7,12 +7,12 @@ import java.util.UUID;
  * Java class that represent an Invoice,
  * implements {@link Serializable} interface.
  *
- * @author Pasha Pollack
+ * @author Pasha Polyak
  */
-public class Invoice implements Serializable {
-    private final long invoiceId = UUID.randomUUID().getMostSignificantBits() & 0x7fffffL;
-    private final long userId;
-    private final long carId;
+public class Invoice extends BaseEntity {
+    private final Long invoiceId = UUID.randomUUID().getMostSignificantBits() & 0x7fffffL;
+    private final Long userId;
+    private final Long carId;
     private final String damage;
     private final String passport;
     private final String phone;
@@ -72,7 +72,7 @@ public class Invoice implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Invoice invoice = (Invoice) o;
-        return invoiceId == invoice.invoiceId && userId == invoice.userId && carId == invoice.carId && Double.compare(invoice.payment, payment) == 0 && Objects.equals(damage, invoice.damage) && Objects.equals(passport, invoice.passport) && Objects.equals(phone, invoice.phone) && Objects.equals(reason, invoice.reason) && Objects.equals(email, invoice.email);
+        return Double.compare(invoice.payment, payment) == 0 && Objects.equals(invoiceId, invoice.invoiceId) && Objects.equals(userId, invoice.userId) && Objects.equals(carId, invoice.carId) && Objects.equals(damage, invoice.damage) && Objects.equals(passport, invoice.passport) && Objects.equals(phone, invoice.phone) && Objects.equals(reason, invoice.reason) && Objects.equals(email, invoice.email);
     }
 
     @Override

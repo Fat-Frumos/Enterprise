@@ -17,7 +17,7 @@ import static org.mockito.Mockito.when;
  * Class test OrderMapper
  * it used for test mapping data from ResultSet to Order
  *
- * @author Pasha Pollack
+ * @author Pasha Polyak
  */
 class OrderMapperTest {
     OrderMapper mapper = new OrderMapper();

@@ -1,6 +1,7 @@
 package com.enterprise.rental.dao;
 
 import com.enterprise.rental.entity.User;
+import com.enterprise.rental.exception.DaoException;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,9 +11,9 @@ import java.util.Optional;
  * <code>UserDao</code> extends <code>Dao</code> interface
  * for performing CRUD operations on instances of {@link User}.
  *
- * @author Pasha Pollack
+ * @author Pasha Polyak
  */
-public interface UserDao extends Dao<User> {
+public interface UserDao extends Dao<User>  {
 
     /**
      * <p>Gets the details of the user specified by its name.
@@ -28,5 +29,5 @@ public interface UserDao extends Dao<User> {
      *
      * @return the collection of all users
      */
-    List<User> findAll();
+    List<User> findAll() throws DaoException;
 }

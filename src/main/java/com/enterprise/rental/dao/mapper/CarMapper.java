@@ -3,8 +3,9 @@ package com.enterprise.rental.dao.mapper;
 import com.enterprise.rental.entity.Car;
 import com.enterprise.rental.exception.CarNotFoundException;
 import com.enterprise.rental.exception.DataException;
-import com.enterprise.rental.service.locale.CurrencyConvector;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.ResultSet;
@@ -22,12 +23,11 @@ import static com.enterprise.rental.service.locale.CurrencyConvector.exchange;
  * It used for mapping data from ResultSet to Car
  * It used for mapping data from HttpServletRequest to Entity
  *
- * @author Pasha Pollack
+ * @author Pasha Polyak
  * @see Mapper#mapRow(ResultSet)
  */
 public class CarMapper extends Mapper<Car> {
-    private static final Logger log = Logger.getLogger(CarMapper.class);
-    private static final CurrencyConvector discount = new CurrencyConvector();
+    private static final Logger LOGGER = LogManager.getLogger();
     private static final String[] carFields = {"id", "name", "brand", "model", "path", "price", "cost", "year", "rent", "date"};
 
     /**
@@ -78,7 +78,6 @@ public class CarMapper extends Mapper<Car> {
                 .path(params.get(carFields[4]))
                 .price(pay)
                 .cost(cost)
-//                .year(Integer.parseInt(params.get(carFields[7])))
                 .date(timestamp)
                 .rent((params.get(carFields[8]) == null
                         ? "off"
@@ -100,7 +99,6 @@ public class CarMapper extends Mapper<Car> {
             String date = resultSet.getString(carFields[9]);
             Timestamp term = date == null ? create : Timestamp.valueOf(date);
 
-            Double discountPrice = discount.discount(50, resultSet.getDouble(carFields[5]));
 
             return new Car.Builder()
                     .id(resultSet.getLong(carFields[0]))
@@ -110,7 +108,7 @@ public class CarMapper extends Mapper<Car> {
                     .brand(resultSet.getString(carFields[2]))
                     .model(resultSet.getString(carFields[3]))
                     .path(resultSet.getString(carFields[4]))
-                    .price(discountPrice)
+                    .price(resultSet.getDouble(carFields[5]))
                     .cost(resultSet.getDouble(carFields[6]))
                     .date(term)
                     .build();
@@ -118,8 +116,10 @@ public class CarMapper extends Mapper<Car> {
             try {
                 resultSet.close();
             } catch (SQLException e) {
+                LOGGER.log(Level.ERROR, e);
                 throw new DataException("Cannot close resultSet", e);
             }
+            LOGGER.log(Level.ERROR, exception.getMessage());
             throw new CarNotFoundException(exception.getMessage());
         }
     }

@@ -3,11 +3,14 @@ package com.enterprise.rental.controller;
 import com.enterprise.rental.entity.Car;
 import com.enterprise.rental.entity.Order;
 import com.enterprise.rental.entity.User;
+import com.enterprise.rental.exception.ServiceException;
 import com.enterprise.rental.service.CarService;
 import com.enterprise.rental.service.UserService;
 import com.enterprise.rental.service.impl.DefaultCarService;
 import com.enterprise.rental.service.impl.DefaultUserService;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -18,8 +21,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
+import static com.enterprise.rental.controller.Parameter.*;
 import static com.enterprise.rental.dao.jdbc.Constants.*;
-import static com.itextpdf.text.BaseColor.ORANGE;
+import static com.enterprise.rental.entity.Role.USER;
 
 /**
  * Java class that represent a user Cart in HTTP servlet suitable for a Web-site
@@ -32,12 +36,12 @@ import static com.itextpdf.text.BaseColor.ORANGE;
  * <li> <code>doDelete</code>, if the servlet supports HTTP DELETE requests (remove car to cart)
  * </ul>
  *
- * @author Pasha Pollack
+ * @author Pasha Polyak
  */
 public class CartServlet extends Servlet {
     private final CarService carService = new DefaultCarService();
     private final UserService userService = new DefaultUserService();
-    private static final Logger log = Logger.getLogger(CartServlet.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * <p>Cars bucket for user: get list and set Attribute User from Session</p>
@@ -64,19 +68,25 @@ public class CartServlet extends Servlet {
             throws IOException, ServletException {
 
         Optional<User> optionalUser = getUser(request);
-
+        String path = LOGIN_JSP;
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            log.debug(String.format("Get into session User %s bucket cars: %s",
-                    user.getName(), user.getCars().size()));
+            LOGGER.log( Level.INFO, "Get into session User {} bucket cars: {}",
+                    user.getName(), user.getCars().size());
             List<Car> userCars = user.getCars();
             int size = userCars.size();
-            request.setAttribute("car", size);
-            request.setAttribute("cars", userCars);
-            dispatch(request, response, INDEX);
-        } else {
-            redirect(request, response, LOGIN);
+            if (size == 0) {
+                try {
+                    userCars = carService.findAllBy("id BETWEEN 219 AND 235");
+                } catch (ServiceException e) {
+                    LOGGER.log(Level.ERROR, e.getMessage());
+                }
+            }
+            request.setAttribute(CAR.value(), size);
+            request.setAttribute(CARS.value(), userCars);
+            path = INDEX_JSP;
         }
+        dispatch(request, response, path);
     }
 
     /**
@@ -100,27 +110,27 @@ public class CartServlet extends Servlet {
             throws ServletException, IOException {
 
         Optional<User> optionalUser = getUser(request);
-        String path = LOGIN;
+        String path = LOGIN_JSP;
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            log.debug(String.format("Session %s", user));
-            if (Objects.equals(user.getRole(), "user")) {
-                int id = Integer.parseInt(request.getParameter("id"));
-                Optional<Car> optional = carService.getById(id);
+            LOGGER.log( Level.INFO, "Session {}", user);
+            if (Objects.equals(user.getRole(), USER.role())) {
+                long id = Long.parseLong(request.getParameter("id"));
+                Optional<Car> optional = carService.findBy(id);
                 if (optional.isPresent()) {
                     Order order = new Order(id, user.getUserId());
-                    log.debug(String.format("%s from User session %s saved: %s",
-                            optional.get().getName(), user.getName(), order));
+                    LOGGER.log( Level.INFO, "{} from User session {} saved: {}",
+                            optional.get().getName(), user.getName(), order);
                     Set<Order> orders = user.getOrders();
                     if (orders != null) {
                         orders.add(order);
                         user.setOrders(orders);
-                        path = USER;
+                        path = USER_URL;
                     } else {
-                        path = MAIN;
+                        path = MAIN_JSP;
                     }
                 } else {
-                    path = CART;
+                    path = CART_URL;
                 }
             }
         }
@@ -146,30 +156,30 @@ public class CartServlet extends Servlet {
     protected void doPut(
             HttpServletRequest request,
             HttpServletResponse response) {
-        String path = LOGIN;
+        String path = LOGIN_JSP;
         Optional<User> optionalUser = getUser(request);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            log.debug(String.format("%sSession %s %s From Put%s",
-                    RED, user.getRole(), user.getName(), RESET));
+            LOGGER.log( Level.INFO, "{}Session {} {} From Put{}",
+                    RED, user.getRole(), user.getName(), RESET);
 
             String carId = request.getParameter("id");
             try {
-                long id = Long.parseLong(carId);
-                Optional<Car> optionalCar = carService.getById(id);
+                Long id = Long.parseLong(carId);
+                Optional<Car> optionalCar = carService.findBy(id);
                 if (optionalCar.isPresent()) {
                     Car car = optionalCar.get();
                     user = userService.toCart(car, user);
-                    request.setAttribute("auto", user.getCar());
-                    request.setAttribute("user", user);
-                    log.debug(String.format("Put new Car %s into the Cart: %s",
-                            car.getBrand(), user.getCars().size()));
-                    path = CART;
+                    request.setAttribute(AUTO.value(), user.getCar());
+                    request.setAttribute(CLIENT.value(), user);
+                    LOGGER.log( Level.INFO, "Put new Car {} into the Cart: {}",
+                            car.getBrand(), user.getCars().size());
+                    path = CART_URL;
                 }
             } catch (NumberFormatException e) {
-                log.debug(String.format("%sCar by id not found%s", PURPLE, RESET));
-                request.setAttribute("errorMessage", "Car not found");
-                path = ORDERS;
+                LOGGER.log( Level.INFO, "{}Car by id not found{}", PURPLE, RESET);
+                request.setAttribute(ERROR.value(), "Car not found");
+                path = ORDER_JSP;
             } finally {
                 redirect(request, response, path);
             }
@@ -197,6 +207,6 @@ public class CartServlet extends Servlet {
     protected void doDelete(
             HttpServletRequest request,
             HttpServletResponse response) {
-        dispatch(request, response, ORDERS);
+        dispatch(request, response, ORDER_JSP);
     }
 }

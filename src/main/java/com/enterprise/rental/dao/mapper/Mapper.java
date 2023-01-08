@@ -15,7 +15,7 @@ import java.util.Set;
  * invocation of a <code>ResultSet</code> method which requires a
  * current row will result in a <code>SQLException</code> being thrown.
  *
- * @author Pasha Pollack
+ * @author Pasha Polyak
  * @see ResultSet#next
  */
 public abstract class Mapper<T> {
@@ -55,7 +55,7 @@ public abstract class Mapper<T> {
      * @throws SQLException if an input or output error is
      *                      detected when the servlet handles the request
      */
-    public Set<T> getAll(
+    public Set<T> getAllFields(
             ResultSet resultSet,
             Set<T> elements)
             throws SQLException {
@@ -65,7 +65,7 @@ public abstract class Mapper<T> {
         } else {
             T t = mapRow(resultSet);
             elements.add(t);
-            return getAll(resultSet, elements);
+            return getAllFields(resultSet, elements);
         }
     }
 }

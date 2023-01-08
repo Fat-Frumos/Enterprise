@@ -1,0 +1,6 @@
+.product-carousel {
+  height: 600px;
+}
+.product-carousel .thumbnails {
+  top: -90px;
+}

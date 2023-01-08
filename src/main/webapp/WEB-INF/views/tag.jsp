@@ -7,10 +7,7 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
-
-<%--<title>Animated tags sphere</title>--%>
 <span id="tags" class="content" hidden>
-  <!-- <h1 contenteditable data-text="Grow">Grow</h1> -->
 </span>
 
 <script src="https://cdn.jsdelivr.net/npm/TagCloud@2.2.0/dist/TagCloud.min.js"> </script>
@@ -34,8 +31,4 @@
     let colors = ['#2C001e','#505550', '#005c00', '#5d38df', '#000', '#C20100'];
     let random_color = colors[Math.floor(Math.random() * colors.length)];
     document.querySelector('.content').style.color = random_color;
-    // var h1 = document.querySelector("h1");
-    // h1.addEventListener("input", function() {
-    //   this.setAttribute("data-text", this.innerText);
-    // });
 </script>

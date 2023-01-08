@@ -2,7 +2,9 @@ package com.enterprise.rental.filter;
 
 import com.enterprise.rental.entity.Role;
 import com.enterprise.rental.entity.User;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.Level;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -10,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
+import static com.enterprise.rental.controller.Parameter.CLIENT;
 import static com.enterprise.rental.dao.jdbc.Constants.*;
 import static java.lang.String.format;
 
@@ -20,7 +23,7 @@ import static java.lang.String.format;
  * Checks the {@link User} with {@link Role} and give permission for admin and manager
  * <p>
  *
- * @author Pasha Pollack
+ * @author Pasha Polyak
  * @see javax.servlet.Filter
  */
 public class SecurityFilter implements Filter {
@@ -28,7 +31,7 @@ public class SecurityFilter implements Filter {
      * A filter configuration object used by a servlet container to pass information to a filter during initialization
      */
     protected FilterConfig filterConfig;
-    private static final Logger log = Logger.getLogger(SecurityFilter.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * The servlet container calls the init method exactly once after instantiating the filter
@@ -40,7 +43,7 @@ public class SecurityFilter implements Filter {
     public void init(FilterConfig filterConfig) throws ServletException {
         this.filterConfig = filterConfig;
         String filterName = filterConfig.getFilterName();
-        log.debug(String.format("Init Security Filter: %s", filterName));
+        LOGGER.log( Level.INFO, "Init Security Filter: %s", filterName );
     }
 
     /**
@@ -68,21 +71,21 @@ public class SecurityFilter implements Filter {
         HttpServletResponse servletResponse = (HttpServletResponse) response;
 
         HttpSession session = servletRequest.getSession(false);
-        if (session == null || session.getAttribute("user") == null) {
-            log.debug("Access is FORBIDDEN");
-            RequestDispatcher dispatcher = request.getRequestDispatcher(LOGIN);
+        if (session == null || session.getAttribute(CLIENT.value()) == null) {
+            LOGGER.log( Level.INFO,"Access is FORBIDDEN");
+            RequestDispatcher dispatcher = request.getRequestDispatcher(LOGIN_JSP);
             if (dispatcher != null) {
                 dispatcher.forward(servletRequest, servletResponse);
             }
         } else {
-            User user = (User) session.getAttribute("user");
+            User user = (User) session.getAttribute(CLIENT.value());
             // Check the user role is manager or admin, otherwise send on Login page
             if (!Role.ADMIN.role().equals(user.getRole())
                     && !Role.MANAGER.role().equals(user.getRole())) {
                 return;
             }
-            log.debug(format("%sManager Level#2:%s Access is granted for %s, role %s", RED, RESET, user.getName(), user.getRole()));
-            request.setAttribute("user", user);
+            LOGGER.log( Level.INFO,format("{}Manager Level#2:{} Access is granted for {}, role {}", RED, RESET, user.getName(), user.getRole()));
+            request.setAttribute(CLIENT.value(), user);
             chain.doFilter(servletRequest, servletResponse);
         }
     }
@@ -98,7 +101,7 @@ public class SecurityFilter implements Filter {
      */
     @Override
     public void destroy() {
-        log.info("Security Filter destroyed");
+        LOGGER.log(Level.INFO, "Security Filter destroyed");
         filterConfig = null;
     }
 }

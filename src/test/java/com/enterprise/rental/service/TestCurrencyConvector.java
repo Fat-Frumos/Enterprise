@@ -1,12 +1,16 @@
-package com.enterprise.rental.utils;
+package com.enterprise.rental.service;
 
 import com.enterprise.rental.service.locale.CurrencyConvector;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.Level;
 import org.junit.jupiter.api.Test;
 
 import static com.enterprise.rental.service.locale.CurrencyConvector.exchange;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TestCurrencyConvector {
+    private static final Logger LOGGER = LogManager.getLogger();
 
     @Test
     void testCurrencyConvector() {
@@ -30,7 +34,7 @@ class TestCurrencyConvector {
 
         CurrencyConvector currencyConvector = new CurrencyConvector();
         double discount = currencyConvector.discount(25, 100);
-        System.out.println(discount);
+        LOGGER.log(Level.INFO, discount);
         assertEquals(25, discount, 0.001);
     }
 
@@ -38,7 +42,7 @@ class TestCurrencyConvector {
     void testCurrencyStatic() {
         CurrencyConvector currencyConvector = new CurrencyConvector();
         double usd = currencyConvector.exchangeMultiply(1D, "USD");
-        System.out.println(usd);
+        LOGGER.log(Level.INFO, usd);
         assertEquals(exchange, usd, 2.001);
     }
 }

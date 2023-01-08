@@ -1,2 +1,37 @@
-<Connector port="8080" protocol="HTTP/1.1" 
-  connectionTimeout="20000" redirectPort="8443" />
+<ResourceParams name="jdbc/postgres"
+                auth="Container"
+                scope="Shareable"
+                type="javax.sql.DataSource">
+    <parameter>
+        <name>factory</name>
+        <value>org.apache.commons.dbcp.BasicDataSourceFactory</value>
+    </parameter>
+    <parameter>
+        <name>driverClassName</name>
+        <value>org.postgresql.Driver</value>
+    </parameter>
+    <parameter>
+        <name>url</name>
+        <value>jdbc:postgresql://peanut.db.elephantsql.com:5432/lnycichw</value>
+    </parameter>
+    <parameter>
+        <name>username</name>
+        <value>lnycichw</value>
+    </parameter>
+    <parameter>
+        <name>password</name>
+        <value>hGsOS0-qZ1UiYkneTgpy8iXJZ7RzP8lY</value>
+    </parameter>
+    <parameter>
+        <name>maxActive</name>
+        <value>20</value>
+    </parameter>
+    <parameter>
+        <name>maxIdle</name>
+        <value>10</value>
+    </parameter>
+    <parameter>
+        <name>maxWait</name>
+        <value>-1</value>
+    </parameter>
+</ResourceParams>

@@ -17,10 +17,12 @@
 
         <slf4j.version>2.0.0</slf4j.version>
         <servlet-api-version>2.5</servlet-api-version>
-        <mockito.version>4.8.0</mockito.version>
+        <mockito.version>4.11.0</mockito.version>
         <exec.mainClass>com.enterprise.Starter</exec.mainClass>
         <heroku.appName>rent-a-car-enterprise</heroku.appName>
         <jackson.version>2.14.0</jackson.version>
+        <log.version>2.19.0</log.version>
+
     </properties>
     <distributionManagement>
         <repository>
@@ -30,7 +32,6 @@
         </repository>
     </distributionManagement>
     <dependencies>
-
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
@@ -61,7 +62,7 @@
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
-            <version>9.8.3</version>
+            <version>9.10.2</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -75,33 +76,29 @@
             <version>${mockito.version}</version>
             <scope>test</scope>
         </dependency>
-
-        <!--        <dependency>-->
-        <!--            <groupId>org.testcontainers</groupId>-->
-        <!--            <artifactId>postgresql</artifactId>-->
-        <!--            <version>1.17.6</version>-->
-        <!--            <scope>test</scope>-->
-        <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>org.hamcrest</groupId>-->
-        <!--            <artifactId>hamcrest</artifactId>-->
-        <!--            <version>2.2</version>-->
-        <!--            <scope>test</scope>-->
-        <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>org.apache.httpcomponents</groupId>-->
-        <!--            <artifactId>httpclient</artifactId>-->
-        <!--            <version>4.5.13</version>-->
-        <!--            <scope>test</scope>-->
-        <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>org.json</groupId>-->
-        <!--            <artifactId>json</artifactId>-->
-        <!--            <version>20220320</version>-->
-        <!--        </dependency>-->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
+            <version>2.0.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+            <version>${log.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>${log.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>${log.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
             <version>2.0.5</version>
         </dependency>
         <dependency>
@@ -139,17 +136,6 @@
             <artifactId>jackson-databind</artifactId>
             <version>2.14.0</version>
         </dependency>
-                <dependency>
-                    <groupId>org.apache.tomcat.embed</groupId>
-                    <artifactId>tomcat-embed-core</artifactId>
-                    <version>9.0.46</version>
-                </dependency>
-<!--        <dependency>-->
-<!--            <groupId>junit</groupId>-->
-<!--            <artifactId>junit</artifactId>-->
-<!--            <version>4.13.2</version>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
     </dependencies>
 
     <build>
@@ -182,6 +168,9 @@
                         <server>TomcatServer</server>
                         <port>8080</port>
                         <contextReloadable>true</contextReloadable>
+                        <url>http://localhost:8080/manager/text</url>
+                        <username>admin</username>
+                        <password>admin</password>
                         <path>/</path>
                         <mode>war</mode>
                     </configuration>

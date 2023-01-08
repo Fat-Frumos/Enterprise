@@ -1,6 +1,8 @@
 package com.enterprise.rental.filter;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -11,11 +13,11 @@ import java.io.IOException;
  * on either the request to a resource (a servlet or static content),
  * or on the response from a resource, or both. Implementation of <code>Filter</code>
  *
- * @author Pasha Pollack
+ * @author Pasha Polyak
  * @see javax.servlet.Filter
  */
 public class CharsetFilter implements Filter {
-    private static final Logger log = Logger.getLogger(CharsetFilter.class);
+    private static final Logger LOGGER = LogManager.getLogger();
     protected String encoding;
 
     /**
@@ -35,7 +37,7 @@ public class CharsetFilter implements Filter {
     public void init(FilterConfig config) {
 
         filterConfig = config;
-        log.info("Encoding filter initiated");
+        LOGGER.log(Level.INFO, "Encoding filter initiated");
         //read Parameter
         encoding = encoding
                 != null
@@ -107,7 +109,7 @@ public class CharsetFilter implements Filter {
      */
     @Override
     public void destroy() {
-        log.info("Encoding filter destroyed");
+        LOGGER.log(Level.INFO, "Encoding filter destroyed");
         encoding = null;
         filterConfig = null;
     }

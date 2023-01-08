@@ -9,12 +9,12 @@ import java.util.UUID;
  * Java class that represent an Order,
  * implements {@link Serializable} interface.
  *
- * @author Pasha Pollack
+ * @author Pasha Polyak
  */
-public class Order implements Serializable {
-    private long orderId = UUID.randomUUID().getMostSignificantBits() & 0x7ffffffL;
-    private long userId;
-    private long carId;
+public class Order extends BaseEntity {
+    private Long orderId = UUID.randomUUID().getMostSignificantBits() & 0x7ffffffL;
+    private Long userId;
+    private Long carId;
     private Timestamp term;
     private double payment;
     private boolean driver;
@@ -50,22 +50,6 @@ public class Order implements Serializable {
         this.carId = carId;
         this.userId = userId;
     }
-//
-//    public Order(long orderId, long userId, long carId, Timestamp term, double payment, boolean driver, boolean rejected, boolean closed, Timestamp created, String phone, String damage, String passport, String reason) {
-//        this.orderId = orderId;
-//        this.userId = userId;
-//        this.carId = carId;
-//        this.term = term;
-//        this.payment = payment;
-//        this.driver = driver;
-//        this.rejected = rejected;
-//        this.closed = closed;
-//        this.created = created;
-//        this.phone = phone;
-//        this.damage = damage;
-//        this.passport = passport;
-//        this.reason = reason;
-//    }
 
     public Order() {
     }
@@ -151,21 +135,21 @@ public class Order implements Serializable {
         this.closed = closed;
     }
 
-    public void setOrderId(long id) {
+    public void setOrderId(Long id) {
         this.orderId = id;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Order)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         Order order = (Order) o;
-        return term == order.term && orderId == order.orderId && userId == order.userId && driver == order.driver && rejected == order.rejected && Double.compare(order.payment, payment) == 0 && closed == order.closed && Objects.equals(created, order.created) && Objects.equals(phone, order.phone) && Objects.equals(damage, order.damage);
+        return Double.compare(order.payment, payment) == 0 && driver == order.driver && rejected == order.rejected && closed == order.closed && Objects.equals(orderId, order.orderId) && Objects.equals(userId, order.userId) && Objects.equals(carId, order.carId) && Objects.equals(term, order.term) && Objects.equals(created, order.created) && Objects.equals(phone, order.phone) && Objects.equals(damage, order.damage) && Objects.equals(passport, order.passport) && Objects.equals(reason, order.reason);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(term, orderId, userId, driver, rejected, created, phone, damage, payment, closed);
+        return Objects.hash(orderId, userId, carId, term, payment, driver, rejected, closed, created, phone, damage, passport, reason);
     }
 
     @Override

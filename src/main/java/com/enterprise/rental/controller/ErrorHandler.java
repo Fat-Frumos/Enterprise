@@ -1,7 +1,9 @@
 package com.enterprise.rental.controller;
 
 import com.enterprise.rental.exception.DataException;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -17,14 +19,14 @@ import java.io.PrintWriter;
  * It`s catches all Exceptions for the Identity Provisioning UI
  * and sends them to ExceptionAction to handle.
  *
- * @author Pasha Pollack
-  */
+ * @author Pasha Polyak
+ */
 @WebServlet("/error")
 public class ErrorHandler extends HttpServlet {
 
     private static final long serialVersionUID = 31L;
 
-    private static final Logger log =Logger.getLogger(ErrorHandler.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * @see HttpServlet #HttpServlet()
@@ -65,7 +67,7 @@ public class ErrorHandler extends HttpServlet {
      * Analyze the servlet exception
      * Set response content type
      *
-     * @param request The http request.
+     * @param request  The http request.
      * @param response The http response.
      */
     private void processError(
@@ -91,12 +93,12 @@ public class ErrorHandler extends HttpServlet {
             out.write("<html><head><title>Exception/Error Details</title></head><body>");
 
             if (statusCode != 500) {
-                log.debug("Error Details");
+                LOGGER.log( Level.INFO, "Error Details");
                 out.write("<h3>Error Details</h3>");
                 out.write("<strong>Status Code</strong>:" + statusCode + "<br>");
                 out.write("<strong>Requested URI</strong>:" + requestUri);
             } else {
-                log.debug("Exception Details");
+                LOGGER.log( Level.INFO, "Exception Details");
                 out.write("<h3>Exception Details</h3>");
                 out.write(String.format("<ul><li>Servlet Name:%s</li>", servletName));
                 out.write(String.format("<li>Exception Name:%s</li>", throwable.getClass().getName()));

@@ -11,7 +11,7 @@ import java.util.ListResourceBundle;
  * The first element of each pair is the key, which must be a String,
  * and the second element is the value associated with that key.
  *
- * @author Pasha Pollack
+ * @author Pasha Polyak
  * @see java.util.ResourceBundle
  */
 public class BungleUa extends ListResourceBundle {
@@ -59,8 +59,8 @@ public class BungleUa extends ListResourceBundle {
 //login
             {"h3.sign", "\u0417\u0430\u0439\u0442\u0438"},
             {"button.signup", "\u0417\u0430\u0440\u0435\u0454\u0441\u0442\u0440\u0443\u0432\u0430\u0442\u0438\u0441\u044F"},
-            {"button.price", "P\u0430\u0445\u0443\u043D\u043E\u043A"},
-            {"button.cost", "\u0426\u0456\u043D\u0430"},
+            {"button.price", "\u0426\u0456\u043D\u0430"},
+            {"button.cost", "\u0412\u0430\u0440\u0442\u0456\u0441\u0442\u044C"},
             {"button.search", "\u041F\u043E\u0448\u0443\u043A"},
             {"button.submit", "\u041F\u0456\u0434\u0442\u0432\u0435\u0440\u0434\u0438\u0442\u0438"},
 

@@ -3,7 +3,12 @@ package com.enterprise.rental.service.impl;
 import com.enterprise.rental.dao.CarDao;
 import com.enterprise.rental.dao.jdbc.JdbcCarDao;
 import com.enterprise.rental.entity.Car;
+import com.enterprise.rental.exception.DaoException;
+import com.enterprise.rental.exception.ServiceException;
 import com.enterprise.rental.service.CarService;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -18,10 +23,8 @@ import java.util.stream.IntStream;
  * @see JdbcCarDao
  */
 public class DefaultCarService implements CarService {
+    private static final Logger LOGGER = LogManager.getLogger();
 
-    /**
-     * Autowired CarDao
-     */
     private final CarDao carDao;
 
     /**
@@ -47,8 +50,12 @@ public class DefaultCarService implements CarService {
      * @return true if method was executed and vice-versa
      */
     @Override
-    public boolean save(Car car) {
-        return carDao.save(car);
+    public boolean save(Car car) throws ServiceException {
+        try {
+            return carDao.save(car);
+        } catch (DaoException e) {
+            throw new ServiceException(e);
+        }
     }
 
     /**
@@ -72,19 +79,25 @@ public class DefaultCarService implements CarService {
      * @see Optional#empty
      */
     @Override
-    public Optional<Car> getById(long id) {
+    public Optional<Car> findBy(Long id) {
         return carDao.findById(id);
     }
 
     /**
      * Find all cars and returns a sequential IntStream for the range of int elements.
      * Randomly permutes the specified list using a default source of randomness.
+     *
      * @param size max cars
      * @return the list of cars
      */
     public List<Car> getRandom(int size) {
 
-        List<Car> list = new ArrayList<>(carDao.findAll());
+        List<Car> list = null;
+        try {
+            list = new ArrayList<>(carDao.findAll());
+        } catch (DaoException e) {
+            LOGGER.log(Level.ERROR, e.getMessage());
+        }
 
         Collections.shuffle(list);
         return IntStream.range(0, size)
@@ -99,8 +112,12 @@ public class DefaultCarService implements CarService {
      * and {@link List#isEmpty()} if no results are found
      */
     @Override
-    public List<Car> getAll() {
-        return carDao.findAll();
+    public List<Car> findAllBy() throws ServiceException {
+        try {
+            return carDao.findAll();
+        } catch (DaoException e) {
+            throw new ServiceException(e);
+        }
     }
 
     /**
@@ -111,8 +128,12 @@ public class DefaultCarService implements CarService {
      * @return the list of cars
      */
     @Override
-    public List<Car> getAll(Map<String, String> params, int offset) {
-        return carDao.findAll(params, offset);
+    public List<Car> findAllBy(Map<String, String> params, int offset) throws ServiceException {
+        try {
+            return carDao.findAll(params, offset);
+        } catch (DaoException e) {
+            throw new ServiceException(e);
+        }
     }
 
     /**
@@ -124,9 +145,13 @@ public class DefaultCarService implements CarService {
      * @return the list of cars
      */
     @Override
-    public List<Car> getAll(Map<String, String> params) {
+    public List<Car> findAllBy(Map<String, String> params) throws ServiceException {
 
-        return carDao.findAll(params);
+        try {
+            return carDao.findAll(params);
+        } catch (DaoException e) {
+            throw new ServiceException(e);
+        }
     }
 
     /**
@@ -137,8 +162,13 @@ public class DefaultCarService implements CarService {
      * @return the collection of all Generic Cars.
      */
     @Override
-    public List<Car> getAll(String query) {
-        return carDao.findAll(query);
+    public List<Car> findAllBy(String query) throws ServiceException {
+        try {
+            return carDao.findAll(query);
+        } catch (DaoException e) {
+            LOGGER.log(Level.ERROR, "{}", e.getMessage());
+            throw new ServiceException(e);
+        }
     }
 
     /**
@@ -149,8 +179,13 @@ public class DefaultCarService implements CarService {
      * @return Car changed object.
      */
     @Override
-    public Car edit(Car car) {
-        return carDao.edit(car);
+    public Car edit(Car car) throws ServiceException {
+        try {
+            return carDao.edit(car);
+        } catch (DaoException e) {
+            LOGGER.log(Level.ERROR, "{}", e.getMessage());
+            throw new ServiceException(e);
+        }
     }
 
     /**
@@ -161,7 +196,11 @@ public class DefaultCarService implements CarService {
      * @return true if method was executed and vice-versa
      */
     @Override
-    public boolean delete(long id) {
-        return carDao.delete(id);
+    public boolean delete(Long id) throws ServiceException {
+        try {
+            return carDao.delete(id);
+        } catch (DaoException e) {
+            throw new ServiceException(e);
+        }
     }
 }

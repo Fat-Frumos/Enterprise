@@ -3,9 +3,10 @@ package com.enterprise.rental.dao.jdbc;
 import com.enterprise.rental.dao.CarDao;
 import com.enterprise.rental.dao.OrderDao;
 import com.enterprise.rental.entity.Car;
-import com.enterprise.rental.entity.Order;
 import com.enterprise.rental.exception.OrderNotFoundException;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,8 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.enterprise.rental.dao.jdbc.DbManager.*;
 import static com.enterprise.rental.dao.jdbc.Constants.*;
+import static com.enterprise.rental.dao.jdbc.DbManager.*;
 import static com.enterprise.rental.dao.jdbc.JdbcCarTemplate.*;
 
 /**
@@ -25,13 +26,20 @@ import static com.enterprise.rental.dao.jdbc.JdbcCarTemplate.*;
  * JdbcCarDao the Java API that manages connecting to a database,
  * issuing queries and commands, and handling result sets obtained from the database.
  *
- * @author Pasha Pollack
+ * @author Pasha Polyak
  * @see OrderDao
  */
 public class JdbcCarDao implements CarDao {
-    private static final Logger log = Logger.getLogger(JdbcCarDao.class);
+    private static final Logger LOGGER = LogManager.getLogger();
     private static final List<Car> carList = getCarsQuery(FIND_ALL_SQL);
 
+    /**
+     * <p>Retrieves all defined cars
+     * Is used to get all the objects from the database.
+     *
+     * @return the collection of all Cars
+     * @see Constants#FIND_ALL_SQL
+     */
     @Override
     public List<Car> findAll() {
         return carList;
@@ -42,6 +50,12 @@ public class JdbcCarDao implements CarDao {
         return getCarById(id);
     }
 
+    /**
+     * Find User by name.
+     *
+     * @param name the username
+     * @return {@code Optional<User>}, if a value is present, otherwise {@code Optional.empty()}.
+     */
     @Override
     public Optional<Car> findByName(String name) {
         return getCarQuery(name);
@@ -61,7 +75,7 @@ public class JdbcCarDao implements CarDao {
 
     @Override
     public Car edit(Car car) {
-        long id = car.getId();
+        Long id = car.getId();
         String brand = car.getBrand();
         String model = car.getModel();
         String name = car.getName();
@@ -77,14 +91,14 @@ public class JdbcCarDao implements CarDao {
 
 
     @Override
-    public boolean delete(long id) {
+    public boolean delete(Long id) {
 
         Optional<Car> optionalCar = getCarById(id);
         if (optionalCar.isPresent()) {
             Car car = optionalCar.get();
             String query = String.format("DELETE FROM car where id = %d", id);
             Car updatedCar = updateCar(car, query);
-            log.debug(String.format("%sDeleted: %n%s%s %s%s", RED, updatedCar, YELLOW, query, RESET));
+            LOGGER.log( Level.INFO, "{}Deleted: %n{}{} {}{}", RED, updatedCar, YELLOW, query, RESET);
             return true;
         }
         return false;
@@ -101,14 +115,14 @@ public class JdbcCarDao implements CarDao {
     }
 
     private static Car updateCar(Car car, String query) {
-        log.debug(String.format("%s%s%s", YELLOW, query, RESET));
+        LOGGER.log( Level.INFO, "{}{}{}", YELLOW, query, RESET);
         Connection connection = null;
         PreparedStatement statement = null;
         try {
-            connection = configConnection();
+            connection = proxyConnection();
             statement = connection.prepareStatement(query);
             boolean update = statement.executeUpdate() > 0;
-            log.debug(String.format("update car %s", update));
+            LOGGER.log( Level.INFO, "update car {}", update);
             connection.commit();
             return car;
         } catch (SQLException sqlException) {
@@ -121,12 +135,12 @@ public class JdbcCarDao implements CarDao {
 
     @Override
     public Integer countId(String sql) {
-        log.debug(String.format("%s%s%s", YELLOW, sql, RESET));
+        LOGGER.log( Level.INFO, "{}{}{}", YELLOW, sql, RESET);
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try {
-            connection = configConnection();
+            connection = proxyConnection();
             statement = connection.prepareStatement(sql);
             resultSet = statement.executeQuery();
             connection.commit();
@@ -135,7 +149,7 @@ public class JdbcCarDao implements CarDao {
 
         } catch (SQLException sqlException) {
             rollback(connection, sqlException);
-            log.debug("Vehicle not found");
+            LOGGER.log( Level.INFO, "Vehicle not found");
             return 0;
         } finally {
             eventually(connection, statement, resultSet);

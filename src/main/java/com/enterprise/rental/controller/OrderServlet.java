@@ -5,12 +5,14 @@ import com.enterprise.rental.entity.Car;
 import com.enterprise.rental.entity.Invoice;
 import com.enterprise.rental.entity.Order;
 import com.enterprise.rental.entity.User;
+import com.enterprise.rental.exception.ServiceException;
 import com.enterprise.rental.service.CarService;
+import com.enterprise.rental.service.OrderService;
 import com.enterprise.rental.service.impl.DefaultCarService;
 import com.enterprise.rental.service.impl.DefaultOrderService;
-import com.enterprise.rental.service.OrderService;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -21,7 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.enterprise.rental.controller.Parameter.*;
 import static com.enterprise.rental.dao.jdbc.Constants.*;
+import static com.enterprise.rental.entity.Role.MANAGER;
 
 /**
  * <p>Order Servlet extends an abstract Servlet suitable for a Web-site.
@@ -36,7 +40,8 @@ import static com.enterprise.rental.dao.jdbc.Constants.*;
  */
 
 public class OrderServlet extends Servlet {
-    private static final Log log = LogFactory.getLog(OrderServlet.class);
+
+    private static final Logger LOGGER = LogManager.getLogger();
     private static final CarService carService = new DefaultCarService();
     private static final OrderService orderService = new DefaultOrderService();
     private static final OrderMapper ORDER_MAPPER = new OrderMapper();
@@ -49,24 +54,24 @@ public class OrderServlet extends Servlet {
         String path;
         HttpSession session = request.getSession(false);
 
-        if (session == null || session.getAttribute("user") == null) {
-            path = LOGIN;
+        if (session == null || session.getAttribute(CLIENT.value()) == null) {
+            path = LOGIN_JSP;
         } else {
-            User user = (User) session.getAttribute("user");
+            User user = (User) session.getAttribute(CLIENT.value());
             String id = request.getParameter("id");
             if (id != null) {
                 long carId = Long.parseLong(id);
 
-                Optional<Car> optionalCar = carService.getById(carId);
+                Optional<Car> optionalCar = carService.findBy(carId);
                 if (optionalCar.isPresent()) {
                     Car car = optionalCar.get();
-                    log.debug(String.format("Get order Rental Car: %s, User : %s", car.getBrand(), user.getName()));
+                    LOGGER.log(Level.INFO, "Get order Rental Car: {}, User : {}", car.getBrand(), user.getName());
                     request.setAttribute("auto", car);
                 }
                 setUserAttribute(request, user, carId);
-                path = MAIN;
+                path = MAIN_JSP;
             } else {
-                path = CARS;
+                path = CARS_JSP;
             }
         }
         dispatch(request, response, path);
@@ -96,14 +101,20 @@ public class OrderServlet extends Servlet {
 
         if (optional.isPresent()) {
             User user = optional.get();
-            log.debug(String.format("%s %s From Request session",
-                    user.getRole(), user.getName()));
+            LOGGER.log(Level.INFO, "{} {} From Request session", user.getRole(), user.getName());
             Car car = user.getCar();
             if (car != null) {
-                log.debug(String.format("Car %s ", car.getBrand()));
+                LOGGER.log(Level.INFO, "Car {}", car.getBrand());
+
                 Order mapper = ORDER_MAPPER.mapper(request);
+
                 if (mapper != null) {
-                    boolean saved = orderService.save(mapper);
+                    boolean saved = false;
+                    try {
+                        saved = orderService.save(mapper);
+                    } catch (ServiceException e) {
+                        LOGGER.log(Level.ERROR, "Car {} ", car.getBrand());
+                    }
                     if (saved) {
                         List<Car> userCars = user.getCars();
                         for (Car userCar : userCars) {
@@ -112,21 +123,26 @@ public class OrderServlet extends Servlet {
                                 user.setCars(userCars);
                             }
                         }
-                        List<Order> orderList = orderService.getAll(user);
+                        List<Order> orderList = new ArrayList<>();
+                        try {
+                            orderList = orderService.getAll(user);
+                        } catch (ServiceException e) {
+                            LOGGER.log(Level.ERROR, "{}", e.getMessage());
+                        }
                         request.setAttribute("order", orderList);
                         user.setCar(new Car());
                     }
                 }
             }
         }
-        response.sendRedirect("/user");
+        redirect(request, response, USER_URL);
     }
 
     /**
      * role manager, create the invoice
      */
     @Override
-    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) {
         String userId = request.getParameter("userId");
         String carId = request.getParameter("carId");
         String damage = (request.getParameter("damage"));
@@ -137,14 +153,11 @@ public class OrderServlet extends Servlet {
         long uid = Long.parseLong(userId);
         long cid = Long.parseLong(carId);
         double pay = Double.parseDouble(payment);
-//        Optional<User> optionalUser = userService.getById(uid);
-//        log.debug(String.format("Email: %s", optionalUser.get().getEmail()));
-//
         Invoice invoice = new Invoice(uid, cid, damage, passport, phone, reason, "bob@i.ua", pay);
-        log.debug(String.format("Invoice: %s", invoice));
+        LOGGER.log(Level.INFO, "Invoice: {}", invoice);
         boolean created = orderService.save(invoice);
-        log.debug(String.format("create Invoice: %s", created));
-        response.sendRedirect("/user");
+        LOGGER.log(Level.INFO, "create Invoice: {}", created);
+        redirect(request, response, USER_URL);
     }
 
     /**
@@ -153,28 +166,30 @@ public class OrderServlet extends Servlet {
     @Override
     protected void doDelete(
             HttpServletRequest request,
-            HttpServletResponse response)
-            throws IOException {
+            HttpServletResponse response) {
 
         String id = (request.getParameter("orderId"));
-        log.debug(String.format("Delete order %s", id));
+        LOGGER.log(Level.INFO, "Delete order {}", id);
 
         Optional<User> optionalUser = getUser(request.getSession(false));
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            if ("manager".equals(user.getRole()) && id != null) {
-                boolean delete = orderService.delete(Long.parseLong(id));
-                log.debug(String.format("Order# %s, deleted %b", id, delete));
-                List<Order> userOrders = orderService.getAll();
-                request.setAttribute("orders", userOrders);
-                request.setAttribute("user", user);
-                log.debug(String.format("%s%s%s", GREEN, user, RESET));
+            if (MANAGER.role().equals(user.getRole()) && id != null) {
 
-                log.debug(String.format("%s %s From Request session",
-                        user.getRole(), user.getName()));
+                try {
+                    boolean delete = orderService.delete(Long.parseLong(id));
+                    LOGGER.log(Level.INFO, "Order# {}, deleted {}", id, delete);
+                    List<Order> userOrders = orderService.findAllBy();
+                    request.setAttribute(ORDER.value(), userOrders);
+                    request.setAttribute(CLIENT.value(), user);
+                    LOGGER.log(Level.INFO, "{}{}{}, {} {} From Request session",
+                            GREEN, user, RESET, user.getRole(), user.getName());
+                } catch (ServiceException e) {
+                    LOGGER.log(Level.ERROR, e.getMessage());
+                }
             }
         }
-        response.sendRedirect("/user");
+        redirect(request, response, USER_URL);
     }
 
     private static void setUserAttribute(
@@ -190,11 +205,11 @@ public class OrderServlet extends Servlet {
                         .filter(auto -> cars.size() < 3)
                         .forEachOrdered(cars::add);
                 user.setCar(car);
-                request.setAttribute("cars", cars);
+                request.setAttribute(CARS.value(), cars);
                 break;
             }
         }
-        request.setAttribute("car", userCars.size());
-        request.setAttribute("user", user);
+        request.setAttribute(CAR.value(), userCars.size());
+        request.setAttribute(CLIENT.value(), user);
     }
 }

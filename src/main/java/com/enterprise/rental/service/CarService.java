@@ -1,6 +1,7 @@
 package com.enterprise.rental.service;
 
 import com.enterprise.rental.entity.Car;
+import com.enterprise.rental.exception.ServiceException;
 
 import java.util.List;
 import java.util.Map;
@@ -10,7 +11,7 @@ import java.util.Map;
  * extends abstract Service {@link Car}
  * Base class for all Car specific services.
  *
- * @author Pasha Pollack
+ * @author Pasha Polyak
  */
 public interface CarService extends Service<Car> {
 
@@ -20,7 +21,7 @@ public interface CarService extends Service<Car> {
      * @param params map: pagination, sort, price, cost, name
      * @return the list of cars
      */
-    List<Car> getAll(Map<String, String> params);
+    List<Car> findAllBy(Map<String, String> params) throws ServiceException;
 
     /**
      * Find all cars with parameters.
@@ -29,7 +30,7 @@ public interface CarService extends Service<Car> {
      * @param offset for sql query
      * @return the list of cars
      */
-    List<Car> getAll(Map<String, String> params, int offset);
+    List<Car> findAllBy(Map<String, String> params, int offset) throws ServiceException;
 
     /**
      * Count of all cars from DataBase.

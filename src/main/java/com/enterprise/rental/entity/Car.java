@@ -14,27 +14,27 @@ import java.util.Objects;
  * <p>
  * Annotation for query builder
  *
- * @author Pasha Pollack
+ * @author Pasha Polyak
  * @see Column
  * @see Table
  * @see Entity
  */
 @Entity
 @Table(name = "car")
-public class Car implements Serializable {
-    @Column(name = "id", length = 1024)
-    private long id;
-    @Column(name = "name", length = 1024)
+public class Car extends BaseEntity {
+    @Column(name = "id", length = 256)
+    private Long id;
+    @Column(name = "name", length = 256)
     private String name;
-    @Column(name = "brand", length = 1024)
+    @Column(name = "brand", length = 256)
     private String brand;
-    @Column(name = "model", length = 1024)
+    @Column(name = "model", length = 256)
     private String model;
-    @Column(name = "path", length = 1024)
+    @Column(name = "path", length = 256)
     private String path;
-    @Column(name = "price", length = 1024)
+    @Column(name = "price", length = 256)
     private Double price;
-    @Column(name = "cost", length = 1024)
+    @Column(name = "cost", length = 256)
     private Double cost;
     @Column(name = "year", length = 256)
     private int year;
@@ -91,11 +91,11 @@ public class Car implements Serializable {
         return year;
     }
 
-    protected void setBrand(String name) {
-        this.name = name;
+    protected void setBrand(String brand) {
+        this.brand = brand;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -121,9 +121,9 @@ public class Car implements Serializable {
 
     /**
      * The builder pattern creates new entity of User.
-      */
+     */
     public static class Builder {
-        private long id;
+        private Long id;
         private String name;
         private String brand;
         private String model;
@@ -134,7 +134,7 @@ public class Car implements Serializable {
         private boolean rent;
         private Timestamp date;
 
-        public Builder id(long id) {
+        public Builder id(Long id) {
             this.id = id;
             return this;
         }
@@ -208,14 +208,14 @@ public class Car implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Car)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         Car car = (Car) o;
-        return id == car.id && year == car.year && Objects.equals(name, car.name) && Objects.equals(brand, car.brand) && Objects.equals(model, car.model) && Objects.equals(price, car.price) && Objects.equals(cost, car.cost) && Objects.equals(path, car.path);
+        return year == car.year && rent == car.rent && Objects.equals(id, car.id) && Objects.equals(name, car.name) && Objects.equals(brand, car.brand) && Objects.equals(model, car.model) && Objects.equals(path, car.path) && Objects.equals(price, car.price) && Objects.equals(cost, car.cost) && Objects.equals(date, car.date) && Objects.equals(driver, car.driver);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, brand, model, year, price, cost, path);
+        return Objects.hash(id, name, brand, model, path, price, cost, year, rent, date, driver);
     }
 
     @Override

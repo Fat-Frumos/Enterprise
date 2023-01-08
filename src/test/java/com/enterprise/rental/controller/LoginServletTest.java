@@ -1,6 +1,9 @@
 package com.enterprise.rental.controller;
 
+import com.enterprise.rental.dao.UserDao;
+import com.enterprise.rental.dao.jdbc.JdbcUserDao;
 import com.enterprise.rental.entity.User;
+import com.enterprise.rental.service.impl.DefaultUserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -10,25 +13,36 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 
-import static com.enterprise.rental.dao.jdbc.Constants.INDEX;
+import static com.enterprise.rental.controller.Parameter.CLIENT;
+import static com.enterprise.rental.dao.jdbc.Constants.USERS_JSP;
+import static com.enterprise.rental.entity.Role.USER;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 class LoginServletTest {
-    int port;
-    HttpSession session;
-    HttpServletRequest request;
-    HttpServletResponse response;
+
+    private static LoginServlet servlet;
+    private static HttpServletRequest request;
+    private static HttpServletResponse response;
+    private static RequestDispatcher dispatcher;
+    private static HttpSession session;
+    private static DefaultUserService userService;
+    private static UserDao mockDao;
     User bob;
+    int port;
 
     @BeforeEach
-    void init() {
+    void setUp() {
         port = 8080;
+        servlet = new LoginServlet();
+        dispatcher = mock(RequestDispatcher.class);
         session = mock(HttpSession.class);
         request = mock(HttpServletRequest.class);
         response = mock(HttpServletResponse.class);
+        mockDao = mock(JdbcUserDao.class);
+//        userService = new DefaultUserService(mockDao);
+        userService = new DefaultUserService();
         bob = new User.Builder()
                 .userId(11L)
                 .name("Bob")
@@ -37,8 +51,9 @@ class LoginServletTest {
                 .language("ua")
                 .email("email@i.ua")
                 .active(true)
-                .role("user")
+                .role(USER.role())
                 .build();
+        session.setAttribute(CLIENT.value(), bob);
     }
 
     @Test
@@ -51,34 +66,38 @@ class LoginServletTest {
 
         verify(request, times(1)).getSession();
         verify(session, times(1)).invalidate();
+    }
+
+    @Test
+    void testLoginDoGetSessionRequestDispatcherForward() throws ServletException, IOException {
+
+        when(request.getSession()).thenReturn(session);
+        when(request.getRequestDispatcher(anyString())).thenReturn(dispatcher);
+        servlet.doGet(request, response);
+
+        verify(request, times(1)).getSession();
+        verify(dispatcher).forward(request, response);
+    }
+
+
+    @Test
+    void testDoGetInvalidateSessionRequestDispatcherForward() throws IOException, ServletException {
+        when(request.getSession()).thenReturn(session);
+        when(request.getRequestDispatcher(anyString())).thenReturn(dispatcher);
+
+        servlet.doGet(request, response);
+        verify(session, times(1)).invalidate();
+        verify(dispatcher).forward(request, response);
 
     }
 
-//    @Test
-//    void TestLoginServlet() throws IOException, ServletException {
-//
-//        when(request.getParameter("name")).thenReturn("Mockito");
-//        when(request.getParameter("password")).thenReturn("Test");
-//
-//        StringWriter stringWriter = new StringWriter();
-//        PrintWriter writer = new PrintWriter(stringWriter);
-//        when(response.getWriter()).thenReturn(writer);
-//
-//        RequestDispatcher dispatcher = mock(RequestDispatcher.class);
-//        HttpSession session = mock(HttpSession.class);
-//
-//        when(request.getRequestDispatcher(INDEX)).thenReturn(dispatcher);
-//        when(request.getSession()).thenReturn(session);
+    @Test
+    void testDoPutDispatcherForward() throws ServletException, IOException {
+        when(request.getRequestDispatcher(USERS_JSP)).thenReturn(dispatcher);
 
-//        HttpGet req = new HttpGet(String.format("http://localhost:%d/cars", port));
-//        HttpPost rep = new HttpPost(String.format("http://localhost:%d/cars", port));
-//
-//        System.out.println(req);
-//        System.out.println(rep);
+        servlet.doPut(request, response);
 
-//        UserServlet userServlet = new UserServlet();
-//        userServlet.doGet(request, response);
-//        verify(session).setAttribute("user", bob);
-//        verify(dispatcher).forward(request, response);
-//    }
+        verify(dispatcher).forward(request, response);
+
+    }
 }

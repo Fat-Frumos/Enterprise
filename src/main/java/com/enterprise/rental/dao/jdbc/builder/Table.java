@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 /**
  * Reflecting Table the fields declared by the class.
  *
- * @author Pasha Pollack
+ * @author Pasha Polyak
  */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Table {

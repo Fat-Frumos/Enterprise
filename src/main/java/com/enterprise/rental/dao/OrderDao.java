@@ -7,7 +7,7 @@ import com.enterprise.rental.entity.Order;
  * The <code>OrderDao</code> extends <code>Dao</code> interface
  * for performing CRUD operations on instances of {@link Order}.
  *
- * @author Pasha Pollack
+ * @author Pasha Polyak
  */
 public interface OrderDao extends Dao<Order> {
     /**

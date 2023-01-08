@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+        <Context>
+            <Resource name="cars"
+                      auth="Container"
+                      type="javax.sql.DataSource"
+                      validationQuery="SELECT 1"
+                      validationInterval="30000"
+                      maxActive="100"
+                      maxIdle="10"
+                      maxWait="10000"
+                      maxTotal="50"
+                      initialSize="10"
+                      jmxEnabled="true"
+                      defaultAutoCommit="false"
+                      defaultTransactionIsolation="TRANSACTION_READ_COMMITTED"
+                      username="lnycichw" 
+                      password="hGsOS0-qZ1UiYkneTgpy8iXJZ7RzP8lY"
+                      driverClassName="org.postgresql.Drive"
+                      url="jdbc:postgresql://peanut.db.elephantsql.com:5432/lnycichw"/>
+        </Context>

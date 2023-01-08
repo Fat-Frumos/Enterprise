@@ -1,16 +1,18 @@
 package com.enterprise.rental.exception;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * The <code>CarNotFoundException</code> extends <code>RuntimeException</code>
  * is used to wrap any exception that occurs during data performing.
  *
- * @author Pasha Pollack
+ * @author Pasha Polyak
  * @see RuntimeException
  */
 public class CarNotFoundException extends RuntimeException {
-    private static final Logger log = Logger.getLogger(CarNotFoundException.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * Constructs a new exception with the specified detail message.
@@ -19,6 +21,6 @@ public class CarNotFoundException extends RuntimeException {
      */
     public CarNotFoundException(String message) {
         super(message);
-        log.error(message);
+        LOGGER.log(Level.ERROR, message);
     }
 }

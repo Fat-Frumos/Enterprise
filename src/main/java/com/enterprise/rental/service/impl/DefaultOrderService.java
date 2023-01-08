@@ -3,7 +3,12 @@ package com.enterprise.rental.service.impl;
 import com.enterprise.rental.dao.OrderDao;
 import com.enterprise.rental.dao.jdbc.JdbcOrderDao;
 import com.enterprise.rental.entity.*;
+import com.enterprise.rental.exception.DaoException;
+import com.enterprise.rental.exception.ServiceException;
 import com.enterprise.rental.service.OrderService;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 
@@ -12,14 +17,12 @@ import java.util.*;
  * The OrderService provides information useful for forcing an order to create, edit, or remove,
  * and retrieving information about the orders of user who is currently logged-in.
  *
- * @author Pasha Pollack
+ * @author Pasha Polyak
  * @see JdbcOrderDao
  */
 public class DefaultOrderService implements OrderService {
+    private static final Logger LOGGER = LogManager.getLogger();
 
-    /**
-     * Autowired OrderDao
-     */
     private final OrderDao orderDao;
 
     /**
@@ -45,8 +48,13 @@ public class DefaultOrderService implements OrderService {
      * @return true if method was executed and vice-versa
      */
     @Override
-    public boolean save(Order order) {
-        return orderDao.save(order);
+    public boolean save(Order order) throws ServiceException {
+        try {
+            return orderDao.save(order);
+        } catch (DaoException e) {
+            LOGGER.log(Level.ERROR, "{}", e.getMessage());
+            throw new ServiceException(e);
+        }
     }
 
     /**
@@ -71,7 +79,7 @@ public class DefaultOrderService implements OrderService {
      * @see Optional#empty
      */
     @Override
-    public Optional<Order> getById(long id) {
+    public Optional<Order> findBy(Long id) {
 
         return id != 0
                 ? orderDao.findById(id)
@@ -85,8 +93,12 @@ public class DefaultOrderService implements OrderService {
      * and {@link List#isEmpty()} if no results are found
      */
     @Override
-    public List<Order> getAll() {
-        return orderDao.findAll();
+    public List<Order> findAllBy() throws ServiceException {
+        try {
+            return orderDao.findAll();
+        } catch (DaoException e) {
+            throw new ServiceException(e);
+        }
     }
 
     /**
@@ -97,8 +109,12 @@ public class DefaultOrderService implements OrderService {
      * @return the collection of all Generic Cars.
      */
     @Override
-    public List<Order> getAll(String query) {
-        return orderDao.findAll(query);
+    public List<Order> findAllBy(String query) throws ServiceException {
+        try {
+            return orderDao.findAll(query);
+        } catch (DaoException e) {
+            throw new ServiceException(e);
+        }
     }
 
     /**
@@ -108,8 +124,12 @@ public class DefaultOrderService implements OrderService {
      * @return the list of cars
      */
     @Override
-    public List<Order> getAll(Map<String, String> params) {
-        return orderDao.findAll();
+    public List<Order> findAllBy(Map<String, String> params) throws ServiceException {
+        try {
+            return orderDao.findAll();
+        } catch (DaoException e) {
+            throw new ServiceException(e);
+        }
     }
 
     /**
@@ -120,11 +140,15 @@ public class DefaultOrderService implements OrderService {
      * @return the collection of all Generic Order.
      */
     @Override
-    public List<Order> getAll(User user) {
-        return user.isActive()
-                && Objects.equals(user.getRole(), Role.USER.role())
-                ? getAll(String.valueOf(user.getUserId()))
-                : new ArrayList<>();
+    public List<Order> getAll(User user) throws ServiceException {
+        try {
+            return user.isActive()
+                    && Objects.equals(user.getRole(), Role.USER.role())
+                    ? findAllBy(String.valueOf(user.getUserId()))
+                    : new ArrayList<>();
+        } catch (ServiceException e) {
+            throw new ServiceException(e);
+        }
     }
 
     /**
@@ -147,10 +171,14 @@ public class DefaultOrderService implements OrderService {
      * @return true if method was executed and vice-versa
      */
     @Override
-    public boolean delete(long id) {
+    public boolean delete(Long id) throws ServiceException {
 
-        if (id != 0 && getById(id).isPresent()) {
-            return orderDao.delete(id);
+        if (id != 0 && this.findBy(id).isPresent()) {
+            try {
+                return orderDao.delete(id);
+            } catch (DaoException e) {
+                throw new ServiceException(e);
+            }
         }
         return false;
     }

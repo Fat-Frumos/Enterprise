@@ -2,7 +2,9 @@ package com.enterprise.rental.filter;
 
 import com.enterprise.rental.entity.Role;
 import com.enterprise.rental.entity.User;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -11,6 +13,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Objects;
 
+import static com.enterprise.rental.controller.Parameter.CLIENT;
 import static com.enterprise.rental.dao.jdbc.Constants.*;
 
 /**
@@ -20,7 +23,7 @@ import static com.enterprise.rental.dao.jdbc.Constants.*;
  * Checks the {@link User} with {@link Role}
  * and give permission for admin, manager. and users
  *
- * @author Pasha Pollack
+ * @author Pasha Polyak
  * @see javax.servlet.Filter
  */
 public class UserFilter implements Filter {
@@ -30,7 +33,7 @@ public class UserFilter implements Filter {
      */
     protected FilterConfig filterConfig;
 
-    private static final Logger log = Logger.getLogger(UserFilter.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * <p>The servlet container calls the init method exactly once after instantiating the filter
@@ -43,7 +46,7 @@ public class UserFilter implements Filter {
     public void init(FilterConfig filterConfig) throws ServletException {
         this.filterConfig = filterConfig;
         String filterName = filterConfig.getFilterName();
-        log.debug(String.format("%sSecurityFilter: %s%s", RED, filterName, RESET));
+        LOGGER.log( Level.INFO, "{}SecurityFilter: {}{}", RED, filterName, RESET);
     }
 
     /**
@@ -79,22 +82,21 @@ public class UserFilter implements Filter {
 
         HttpSession session = servletRequest.getSession(false);
 
-        if (session != null && session.getAttribute("user") != null) {
+        if (session != null && session.getAttribute(CLIENT.value()) != null) {
             // Get the user from session if it exists
-            User user = (User) session.getAttribute("user");
+            User user = (User) session.getAttribute(CLIENT.value());
             // Check the user is registered, otherwise send on Login page
             if (Objects.equals(user.getRole(), Role.USER.role())
                     || Objects.equals(user.getRole(), Role.MANAGER.role())
                     || Objects.equals(user.getRole(), Role.ADMIN.role())) {
 //                user.setExchange("ua".equals(user.getLanguage()) ? exchangeRate : 1);
-                log.debug(String.format(
-                        "%sUser Level#3: Access is granted for %s, role %s, %s",
-                        CYAN, user.getName(), user.getRole(),  RESET));
-                request.setAttribute("user", user);
+                LOGGER.log( Level.INFO, "{}User Level#3: Access is granted for {}, role {}, {}",
+                        CYAN, user.getName(), user.getRole(), RESET);
+                request.setAttribute(CLIENT.value(), user);
                 chain.doFilter(request, response);
             } else {
-                log.debug(String.format("%sAccess is FORBIDDEN", RED));
-                request.getRequestDispatcher(LOGIN)
+                LOGGER.log( Level.INFO, "{}Access is FORBIDDEN", RED);
+                request.getRequestDispatcher(LOGIN_JSP)
                         .forward(servletRequest, servletResponse);
             }
         }
@@ -109,7 +111,7 @@ public class UserFilter implements Filter {
      */
     @Override
     public void destroy() {
-        log.info("User filter destroyed");
+        LOGGER.log(Level.INFO, "User filter destroyed");
         filterConfig = null;
     }
 }

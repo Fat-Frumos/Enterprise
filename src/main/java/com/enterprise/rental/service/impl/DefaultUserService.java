@@ -6,9 +6,12 @@ import com.enterprise.rental.dao.mapper.UserMapper;
 import com.enterprise.rental.entity.Car;
 import com.enterprise.rental.entity.Session;
 import com.enterprise.rental.entity.User;
-import com.enterprise.rental.exception.DataException;
+import com.enterprise.rental.exception.DaoException;
+import com.enterprise.rental.exception.ServiceException;
 import com.enterprise.rental.service.UserService;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.*;
 import javax.validation.constraints.NotNull;
@@ -16,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.enterprise.rental.controller.Parameter.CLIENT;
 import static com.enterprise.rental.service.email.InvoicePdf.createPdf;
 import static com.enterprise.rental.service.email.Mail.sendEmailWithAttachments;
 
@@ -24,36 +28,32 @@ import static com.enterprise.rental.service.email.Mail.sendEmailWithAttachments;
  * The UserService provides information useful for forcing a user to log in or out,
  * and retrieving information about the user who is currently logged-in.
  *
- * @author Pasha Pollack
+ * @author Pasha Polyak
  * @see JdbcUserDao
  */
 public class DefaultUserService implements UserService {
-    private static final Logger log = Logger.getLogger(DefaultUserService.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
-    /**
-     * Autowired UserDao, UserMapper, Session
-     */
     private final UserMapper userMapper;
     private final UserDao userDao;
     private final Session session;
 
-    /**
-     * Init UserDao in constructor
-     */
-    public DefaultUserService() {
-        this.session = new Session();
-        this.userDao = new JdbcUserDao();
-        this.userMapper = new UserMapper();
-    }
 
     /**
      * Set userDao in constructor
      * Init UserMapper, Session
-     *
-     * @param userDao the entity of type UserDao
      */
-    public DefaultUserService(UserDao userDao) {
-        this.userDao = userDao;
+    public DefaultUserService() {
+        this.userDao = new JdbcUserDao();
+        this.session = new Session();
+        this.userMapper = new UserMapper();
+    }
+
+    /**
+     * Init UserMapper, Session, userDao into constructor
+     */
+    public DefaultUserService(UserDao jdbcUserDao) {
+        this.userDao = jdbcUserDao;
         this.session = new Session();
         this.userMapper = new UserMapper();
     }
@@ -65,8 +65,12 @@ public class DefaultUserService implements UserService {
      * @return true if method was executed and vice-versa
      */
     @Override
-    public boolean save(User user) {
-        return userDao.save(user);
+    public boolean save(User user) throws ServiceException {
+        try {
+            return userDao.save(user);
+        } catch (DaoException e) {
+            throw new ServiceException(e);
+        }
     }
 
     /**
@@ -78,7 +82,7 @@ public class DefaultUserService implements UserService {
      * @see javax.validation.constraints.NotNull
      */
     @Override
-    public Optional<User> getByName(@NotNull String name) {
+    public Optional<User> findByName(@NotNull String name) {
         return userDao.findByName(name);
     }
 
@@ -89,8 +93,12 @@ public class DefaultUserService implements UserService {
      * and {@link List#isEmpty()} if no results are found
      */
     @Override
-    public List<User> getAll() {
-        return userDao.findAll();
+    public List<User> findAllBy() throws ServiceException {
+        try {
+            return userDao.findAll();
+        } catch (DaoException e) {
+            throw new ServiceException(e);
+        }
     }
 
     /**
@@ -101,8 +109,12 @@ public class DefaultUserService implements UserService {
      * @return the collection of all Generic User.
      */
     @Override
-    public List<User> getAll(String query) {
-        return userDao.findAll(query);
+    public List<User> findAllBy(String query) throws ServiceException {
+        try {
+            return userDao.findAll(query);
+        } catch (DaoException e) {
+            throw new ServiceException(e);
+        }
     }
 
     /**
@@ -112,8 +124,12 @@ public class DefaultUserService implements UserService {
      * @return the list of cars
      */
     @Override
-    public List<User> getAll(Map<String, String> params) {
-        return userDao.findAll();
+    public List<User> findAllBy(Map<String, String> params) throws ServiceException {
+        try {
+            return userDao.findAll();
+        } catch (DaoException e) {
+            throw new ServiceException(e);
+        }
     }
 
     /**
@@ -127,7 +143,7 @@ public class DefaultUserService implements UserService {
      * @see Optional#empty
      */
     @Override
-    public Optional<User> getById(long id) {
+    public Optional<User> findBy(Long id) {
         return userDao.findById(id);
     }
 
@@ -156,8 +172,12 @@ public class DefaultUserService implements UserService {
      * @return User type of the new User
      */
     @Override
-    public User edit(User user) {
-        return userDao.edit(user);
+    public User edit(User user) throws ServiceException {
+        try {
+            return userDao.edit(user);
+        } catch (DaoException e) {
+            throw new ServiceException(e);
+        }
     }
 
 
@@ -168,8 +188,12 @@ public class DefaultUserService implements UserService {
      * @return true if method was executed and vice-versa
      */
     @Override
-    public boolean delete(long id) {
-        return userDao.delete(id);
+    public boolean delete(Long id) throws ServiceException {
+        try {
+            return userDao.delete(id);
+        } catch (DaoException e) {
+            throw new ServiceException(e);
+        }
     }
 
     /**
@@ -179,13 +203,13 @@ public class DefaultUserService implements UserService {
      * @param name a username
      */
     @Override
-    public boolean sendEmail(String name) {
+    public boolean sendEmail(String name) throws DaoException {
         Optional<User> optionalUser = userDao.findByName(name);
         if (optionalUser.isEmpty()) {
             return false;
         }
 
-        log.debug(String.valueOf(optionalUser));
+        LOGGER.log(Level.INFO, optionalUser);
         createPdf();
 
         // SMTP info
@@ -209,10 +233,10 @@ public class DefaultUserService implements UserService {
                     mailTo, subject, message,
                     attachFiles);
 
-            log.debug("Email sent");
+            LOGGER.log(Level.INFO, "Email sent");
             return true;
         } catch (Exception ex) {
-            throw new DataException("\"Could not send email.\"" + ex.getMessage());
+            throw new DaoException("\"Could not send email.\"" + ex.getMessage());
         }
     }
 
@@ -245,7 +269,7 @@ public class DefaultUserService implements UserService {
         for (Cookie cookie : cookies) {
             if (cookie.getName().equals("user-token")) {
                 this.session.setToken((cookie.getValue()));
-                session.setAttribute("user", user);
+                session.setAttribute(CLIENT.value(), user);
             } else {
                 cookie = new Cookie("user-token", UserService.generateUUID());
                 cookie.setMaxAge(300);

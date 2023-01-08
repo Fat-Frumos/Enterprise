@@ -1,6 +1,7 @@
 package com.enterprise.rental.dao;
 
 import com.enterprise.rental.entity.Car;
+import com.enterprise.rental.exception.DaoException;
 
 import java.util.List;
 import java.util.Map;
@@ -10,7 +11,7 @@ import java.util.Map;
  * <code>CarDao</code> extends <code>Dao</code> interface
  * for performing CRUD operations on instances of {@link Car}.
  *
- * @author Pasha Pollack
+ * @author Pasha Polyak
  */
 public interface CarDao extends Dao<Car> {
 
@@ -21,7 +22,7 @@ public interface CarDao extends Dao<Car> {
      *               pagination, sort, price, cost, name
      * @return the list of cars
      */
-    List<Car> findAll(Map<String, String> params);
+    List<Car> findAll(Map<String, String> params) throws DaoException;
 
     /**
      * Find all cars with parameters and offset.
@@ -30,7 +31,7 @@ public interface CarDao extends Dao<Car> {
      * @param offset range of query
      * @return the list of cars
      */
-    List<Car> findAll(Map<String, String> params, int offset);
+    List<Car> findAll(Map<String, String> params, int offset) throws DaoException;
 
     /**
      * Count of all cars from DataBase.

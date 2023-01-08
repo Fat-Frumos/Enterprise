@@ -81,7 +81,6 @@
     }
 
     function uaLang() {
-        // add_element();
         flag.value = 'ua';
         document.getElementById("ua").style.top = '0';
         document.getElementById("en").style.top = '-20px';

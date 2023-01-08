@@ -43,7 +43,7 @@ class TestFilters extends Mockito {
 
         when(mockReq.getRequestURI()).thenReturn("/");
         when(mockReq.getReader()).thenReturn(br);
-        when(mockReq.getRequestDispatcher(USERS)).thenReturn(dispatcher);
+        when(mockReq.getRequestDispatcher(USERS_JSP)).thenReturn(dispatcher);
 
         filter.init(mockFilterConfig);
         filter.doFilter(mockReq, mockResp, mockFilterChain);
@@ -58,9 +58,9 @@ class TestFilters extends Mockito {
 
         when(mockReq.getReader()).thenReturn(br);
         when(mockReq.getRequestURI()).thenReturn("/register");
-        when(mockReq.getRequestDispatcher(ORDERS)).thenReturn(dispatcher);
+        when(mockReq.getRequestDispatcher(ORDER_JSP)).thenReturn(dispatcher);
         when(mockReq.getRequestURI()).thenReturn("/user");
-        when(mockReq.getRequestDispatcher(USERS)).thenReturn(dispatcher);
+        when(mockReq.getRequestDispatcher(USERS_JSP)).thenReturn(dispatcher);
 
         filter.init(mockFilterConfig);
         filter.doFilter(mockReq, mockResp, mockFilterChain);
@@ -73,7 +73,7 @@ class TestFilters extends Mockito {
         CharsetFilter filter = new CharsetFilter();
 
         when(mockReq.getRequestURI()).thenReturn("/");
-        when(mockReq.getRequestDispatcher(INDEX)).thenReturn(dispatcher);
+        when(mockReq.getRequestDispatcher(INDEX_JSP)).thenReturn(dispatcher);
         when(mockReq.getReader()).thenReturn(br);
 
         filter.init(mockFilterConfig);

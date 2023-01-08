@@ -3,8 +3,10 @@ package com.enterprise.rental.dao.jdbc;
 import com.enterprise.rental.dao.UserDao;
 import com.enterprise.rental.dao.mapper.UserMapper;
 import com.enterprise.rental.entity.User;
-import com.enterprise.rental.exception.DataException;
-import org.apache.log4j.Logger;
+import com.enterprise.rental.exception.DaoException;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.validation.constraints.NotNull;
 import java.sql.Connection;
@@ -27,13 +29,13 @@ import static com.enterprise.rental.service.UserService.saltedPassword;
  * JdbcUserDao the Java API that manages connecting to a database,
  * issuing queries and commands, and handling result sets obtained from the database.
  *
- * @author Pasha Pollack
+ * @author Pasha Polyak
  * @see UserDao
  */
 public class JdbcUserDao implements UserDao {
     private static final UserMapper ROW_MAPPER = new UserMapper();
 
-    private static final Logger log = Logger.getLogger(JdbcUserDao.class);
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /**
      * Find User by name.
@@ -68,8 +70,8 @@ public class JdbcUserDao implements UserDao {
      * @return boolean true, or false if the entity was not saved
      */
     @Override
-    public boolean save(User user) {
-        return setUserQuery(user);
+    public boolean save(User user) throws DaoException {
+        return setUserQuery(user, INSERT_USER_SQL);
     }
 
     /**
@@ -84,22 +86,22 @@ public class JdbcUserDao implements UserDao {
 
         String query = getQuery(user);
 
-        log.debug(String.format("%s%n%s", user, query));
+        LOGGER.log(Level.INFO, "{}%n{}", user, query);
 
         Connection connection = null;
         PreparedStatement statement = null;
 
         try {
-            connection = configConnection();
+            connection = proxyConnection();
             statement = connection.prepareStatement(query);
 
             boolean update = statement.executeUpdate() > 0;
-            log.debug(String.format("updated: %b", update));
+            LOGGER.log(Level.INFO, "updated: {}", update);
             connection.commit();
             return user;
 
         } catch (SQLException sqlException) {
-            log.error(query);
+            LOGGER.log(Level.ERROR, query);
             rollback(connection, sqlException);
 
         } finally {
@@ -116,9 +118,19 @@ public class JdbcUserDao implements UserDao {
      * @return false because method not implemented
      */
     @Override
-    public boolean delete(long id) {
+    public boolean delete(Long id) throws DaoException {
+        Optional<User> optionalUser = findById(id);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            String query = String.format("%s%d", DELETE_USER_SQL, id);
+            boolean removed = setUserQuery(user, query);
+            LOGGER.log(Level.INFO, "{}Deleted: %n{}{} {}{}", RED, removed, YELLOW, query, RESET);
+            return true;
+        }
         return false;
+
     }
+
 
     /**
      * <p>Retrieves all defined User</p>
@@ -134,17 +146,16 @@ public class JdbcUserDao implements UserDao {
         PreparedStatement statement = null;
 
         try {
-            connection = configConnection();
+            connection = proxyConnection();
             statement = connection.prepareStatement(query);
             return getAllUsers(statement, new ArrayList<>());
 
         } catch (SQLException sqlException) {
-            log.error(query, sqlException);
+            LOGGER.log(Level.ERROR, query, sqlException);
             rollback(connection, sqlException);
 
         } finally {
             eventually(connection, statement);
-//            log.debug("Connection closed");
         }
         return new ArrayList<>();
     }
@@ -173,13 +184,13 @@ public class JdbcUserDao implements UserDao {
      */
     private Optional<User> getUserSql(String query) {
 
-        log.debug(String.format("%s%s%s", YELLOW, query, RESET));
+        LOGGER.log(Level.INFO, "{}{}{}", YELLOW, query, RESET);
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
 
         try {
-            connection = configConnection();
+            connection = proxyConnection();
             statement = connection.prepareStatement(query);
             resultSet = statement.executeQuery();
             connection.commit();
@@ -190,7 +201,7 @@ public class JdbcUserDao implements UserDao {
 
         } catch (SQLException sqlException) {
             rollback(connection, sqlException);
-            log.debug(String.format("rollback (connection): %s", query));
+            LOGGER.log(Level.INFO, "rollback (connection): {}", query);
 
         } finally {
             eventually(connection, statement, resultSet);
@@ -203,32 +214,31 @@ public class JdbcUserDao implements UserDao {
      *
      * @param user the user
      */
-    private boolean setUserQuery(@NotNull User user) throws DataException {
+    private boolean setUserQuery(@NotNull User user, String query) throws DaoException {
 
         Connection connection = null;
         PreparedStatement statement = null;
-        boolean execute = false;
 
         if (user.getRole().equals("guest")) {
             return false;
         }
 
         try {
-            connection = configConnection();
-            statement = connection.prepareStatement(INSERT_USER_SQL);
-            log.debug(String.format("%s%s%s", YELLOW, INSERT_USER_SQL, RESET));
+            connection = proxyConnection();
+            statement = connection.prepareStatement(query);
+            LOGGER.log(Level.INFO, "{}{}{}", YELLOW, query, RESET);
             connection.commit();
             setUser(user, statement);
-            execute = statement.execute();
+            boolean execute = statement.execute();
             connection.commit();
             return execute;
         } catch (SQLException sqlException) {
             rollback(connection, sqlException);
-            log.debug(String.format("%s User can`t added: %s", user.getName(), INSERT_USER_SQL));
+            LOGGER.log(Level.ERROR, "{} User can`t added: {}", user.getName(), query);
+            throw new DaoException();
         } finally {
             eventually(connection, statement);
         }
-        return execute;
     }
 
     /**
@@ -260,17 +270,17 @@ public class JdbcUserDao implements UserDao {
         ResultSet resultSet = null;
         Connection connection = null;
         try {
-            connection = configConnection();
+            connection = proxyConnection();
             statement = connection.prepareStatement(USERS_SQL);
-            log.debug(String.format("%s", USERS_SQL));
+            LOGGER.log(Level.INFO, "{}", USERS_SQL);
             resultSet = statement.executeQuery();
             connection.commit();
             return getResultSetUser(users, resultSet);
 
         } catch (SQLException sqlException) {
             rollback(connection, sqlException);
-            log.debug(String.format("Customer not found %s: %s",
-                    sqlException.getMessage(), USERS_SQL));
+            LOGGER.log(Level.INFO, "Customer not found {}: {}",
+                    sqlException.getMessage(), USERS_SQL);
         } finally {
             eventually(connection, statement, resultSet);
         }
@@ -307,8 +317,8 @@ public class JdbcUserDao implements UserDao {
             @NotNull User user,
             PreparedStatement statement) throws SQLException {
         String salt = addSalt(user);
-        log.debug(String.format("RawPassword: %s%n salt:%s", user.getPassword(), user.getSalt()));
-        log.debug(String.format("%s%n%s", INSERT_USER_SQL, user.getName()));
+        LOGGER.log(Level.INFO, "RawPassword: {}%n salt:{}{}%n{}",
+                user.getPassword(), user.getSalt(), INSERT_USER_SQL, user.getName());
         statement.setLong(1, UUID.randomUUID().getMostSignificantBits() & 0x7fffL);
         statement.setString(2, user.getName());
         statement.setString(3, user.getEmail());

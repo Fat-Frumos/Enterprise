@@ -7,7 +7,7 @@
         <uri>/WEB-INF/tags/dataTag</uri>
         <tag>
             <name>today</name>
-            <tag-class>com.enterprise.rental.utils.TodayTag</tag-class>
+            <tag-class>com.enterprise.rental.entity.TodayTag</tag-class>
             <body-content>empty</body-content>
 <!--            <description>This Tag Display current server date in user defined format</description>-->
             <attribute>

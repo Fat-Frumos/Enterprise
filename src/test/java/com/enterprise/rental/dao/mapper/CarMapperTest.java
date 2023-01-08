@@ -1,6 +1,7 @@
 package com.enterprise.rental.dao.mapper;
 
 import com.enterprise.rental.entity.Car;
+import com.enterprise.rental.exception.DaoException;
 import org.junit.jupiter.api.Test;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,7 +17,7 @@ class CarMapperTest {
     private final CarMapper mapper = new CarMapper();
 
     @Test
-    void testMapRow() throws SQLException {
+    void testMapRow() throws SQLException, DaoException {
 
 //        long carId = params.get(carFields[0]) != null ? Long.parseLong(params.get(carFields[0])) : UUID.randomUUID().getMostSignificantBits() & 0x7fffffL;
 
@@ -41,7 +42,7 @@ class CarMapperTest {
         assertEquals("X7", car.getName());
         assertEquals("G07", car.getModel());
         assertEquals("http//", car.getPath());
-        assertEquals(500.0/2, car.getPrice());
+        assertEquals(500.0, car.getPrice());
         assertEquals(25000.0, car.getCost());
         assertEquals(2022, car.getYear());
     }

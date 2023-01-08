@@ -11,7 +11,7 @@ import java.util.ListResourceBundle;
  * The first element of each pair is the key, which must be a String,
  * and the second element is the value associated with that key.
  *
- * @author Pasha Pollack
+ * @author Pasha Polyak
  * @see java.util.ResourceBundle
  */
 public class BungleEn extends ListResourceBundle {

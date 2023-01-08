@@ -25,7 +25,7 @@ class UserMapperTest {
     void testResultSetMapRow() {
         try {
             Timestamp created = new Timestamp(System.currentTimeMillis());
-            long id = resultSet.getLong("id");
+            Long id = resultSet.getLong("id");
             String name = resultSet.getString("name");
             String email = resultSet.getString("email");
             String salt = resultSet.getString("salt");
@@ -102,7 +102,7 @@ class UserMapperTest {
     void testRowRequestDeclaredFieldsWithBuilderNotNull() {
 
         Timestamp created = new Timestamp(System.currentTimeMillis());
-//            long id = Long.parseLong(request.getParameter("id"));
+//            Long id = Long.parseLong(request.getParameter("id"));
         String name = request.getParameter("name");
         String email = request.getParameter("email");
         String salt = request.getParameter("salt");

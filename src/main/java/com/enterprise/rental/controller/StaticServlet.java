@@ -2,11 +2,14 @@ package com.enterprise.rental.controller;
 
 import com.enterprise.rental.entity.Car;
 import com.enterprise.rental.entity.User;
+import com.enterprise.rental.exception.ServiceException;
 import com.enterprise.rental.service.CarService;
 import com.enterprise.rental.service.UserService;
 import com.enterprise.rental.service.impl.DefaultCarService;
 import com.enterprise.rental.service.impl.DefaultUserService;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -16,8 +19,10 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.enterprise.rental.controller.Parameter.*;
 import static com.enterprise.rental.dao.jdbc.Constants.*;
 import static com.enterprise.rental.service.UserService.saltedPassword;
+
 
 /**
  * StaticServlet class that represent an index page <code>Main</code> an HTTP servlet suitable for a Web-site.
@@ -30,13 +35,14 @@ import static com.enterprise.rental.service.UserService.saltedPassword;
  * <li> <code>setRequestAttribute</code> set request attribute from session
  * </ul>
  *
- * @author Pasha Pollack
+ * @author Pasha Polyak
  */
 public class StaticServlet extends Servlet {
-    private static final Logger log = Logger.getLogger(StaticServlet.class);
+    private static final Logger LOGGER = LogManager.getLogger();
     private static final CarService carService = new DefaultCarService();
     private static final UserService userService = new DefaultUserService();
     private static int rows = carService.getNumberOfRows();
+
 
     /**
      * <p>If the HTTP GET request is correctly formatted,
@@ -62,8 +68,8 @@ public class StaticServlet extends Servlet {
             HttpServletRequest request,
             HttpServletResponse response)
             throws ServletException, IOException {
-        String lang = request.getParameter("lang");
 
+        String lang = request.getParameter("lang");
 
         String[] carFields = {"id", "name", "brand", "model", "path", "price", "cost", "year", "sort", "direction", "page", "date"};
 
@@ -103,28 +109,29 @@ public class StaticServlet extends Servlet {
             begin = nOfPages - 6;
         }
 
-        List<Car> cars = getAuto(params, page);
+
+        List<Car> cars = getCars(params, page);
         params.put("page", String.valueOf(page));
         params.put("limit", String.valueOf(start));
-        request.setAttribute("cars", cars);
-        request.setAttribute("page", page);
+        request.setAttribute(CARS.value(), cars);
+        request.setAttribute(PAGE.value(), page);
         request.setAttribute("noOfPages", tail);
         request.setAttribute("begin", String.valueOf(begin));
         request.setAttribute("recordsPerPage", offset);
 
         HttpSession session = request.getSession();
 
-        if (session != null && session.getAttribute("user") != null) {
-            User user = (User) session.getAttribute("user");
+        if (session != null && session.getAttribute(CLIENT.value()) != null) {
+            User user = (User) session.getAttribute(CLIENT.value());
             if (lang != null) {
-            user.setLanguage(lang);
+                user.setLanguage(lang);
             }
 
             user.addParams(params);
             request.setAttribute("car", user.getCars().size());
-            log.debug(String.format("User: %s", user));
+            LOGGER.log(Level.INFO, "User: {}", user);
         }
-        dispatch(request, response, CARS);
+        dispatch(request, response, CARS_JSP);
     }
 
     /**
@@ -152,21 +159,20 @@ public class StaticServlet extends Servlet {
         String name = request.getParameter("name");
         String password = request.getParameter("password");
 
-        String path = LOGIN;
+        String path = LOGIN_JSP;
         if (name != null && password != null) {
-            Optional<User> optionalUser = userService.getByName(name);
+            Optional<User> optionalUser = userService.findByName(name);
             if (optionalUser.isPresent()) {
                 User user = optionalUser.get();
                 String saltedPassword = saltedPassword(password, user.getSalt());
 
-                log.debug(String.format("%s%s: %s/%s%s",
-                        PURPLE, user.getName(), password, saltedPassword, RESET));
+                LOGGER.log(Level.INFO, "{}{}: {}/{}{}", PURPLE, user.getName(), password, saltedPassword, RESET);
 
                 boolean isValid = Objects.equals(name, user.getName()) && saltedPassword.equals(user.getPassword());
 
                 path = setRequestAttribute(request, carService.getRandom(3), user, isValid);
             } else {
-                request.setAttribute("errorMessage", "User not found");
+                request.setAttribute(ERROR.value(), "User not found");
             }
             dispatch(request, response, path);
         }
@@ -185,14 +191,20 @@ public class StaticServlet extends Servlet {
      * @return {@code List<Car>}, if a value is present,
      * otherwise {@code empty List}.
      */
-    private static List<Car> getAuto(Map<String, String> params, int page) {
-        return params.keySet()
-                .stream()
-                .map(key -> String.format("&%s=%s", key, params.get(key)))
-                .collect(Collectors.joining())
-                .equals("")
-                ? carService.getAll(params)
-                : carService.getAll(params, page);
+    private static List<Car> getCars(Map<String, String> params, int page) {
+        List<Car> cars = new ArrayList<>();
+        try {
+            cars = params.keySet()
+                    .stream()
+                    .map(key -> String.format("&%s=%s", key, params.get(key)))
+                    .collect(Collectors.joining())
+                    .equals("")
+                    ? carService.findAllBy(params)
+                    : carService.findAllBy(params, page);
+        } catch (ServiceException e) {
+            LOGGER.log(Level.ERROR, e.getMessage());
+        }
+        return cars;
     }
 
     /**
@@ -211,17 +223,16 @@ public class StaticServlet extends Servlet {
      * otherwise {@code Optional.empty()}.
      */
     private static String setRequestAttribute(HttpServletRequest request, List<Car> auto, User user, boolean isValid) {
-        String path = LOGIN;
-        if (isValid) {
-            HttpSession session = request.getSession();
-            session.setAttribute("user", user);
-            request.setAttribute("cars", auto);
-            request.setAttribute("auto", auto.get(0));
-            log.debug(String.format("%s%s%s", GREEN, auto.get(0), RESET));
-            log.debug(String.format("%sSession customer: %s(%s)%s", RED, user.getName(), user.getRole(), RESET));
-            path = MAIN;
+        String path = LOGIN_JSP;
+        if (!isValid) {
+            request.setAttribute(ERROR.value(), "Your name/password is incorrect");
         } else {
-            request.setAttribute("errorMessage", "Your name/password is incorrect");
+            HttpSession session = request.getSession();
+            session.setAttribute(CLIENT.value(), user);
+            request.setAttribute(CARS.value(), auto);
+            request.setAttribute(AUTO.value(), auto.get(0));
+            LOGGER.log(Level.INFO, "{}{}{}", GREEN, auto.get(0), RESET);
+            path = MAIN_JSP;
         }
         return path;
     }

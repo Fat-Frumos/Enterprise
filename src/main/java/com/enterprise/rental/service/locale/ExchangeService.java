@@ -9,7 +9,7 @@ package com.enterprise.rental.service.locale;
  * <li> <code>exchangeDivide</code>, Divide currency by exchange
  * </ul>
  *
- * @author Pasha Pollack
+ * @author Pasha Polyak
  * @see CurrencyConvector
  */
 public interface ExchangeService {

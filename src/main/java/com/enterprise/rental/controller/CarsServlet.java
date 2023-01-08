@@ -4,20 +4,21 @@ import com.enterprise.rental.dao.mapper.CarMapper;
 import com.enterprise.rental.entity.Car;
 import com.enterprise.rental.entity.Role;
 import com.enterprise.rental.entity.User;
+import com.enterprise.rental.exception.ServiceException;
 import com.enterprise.rental.service.CarService;
 import com.enterprise.rental.service.impl.DefaultCarService;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
+import static com.enterprise.rental.controller.Parameter.*;
 import static com.enterprise.rental.dao.jdbc.Constants.*;
 
 /**
@@ -30,13 +31,21 @@ import static com.enterprise.rental.dao.jdbc.Constants.*;
  * <li> <code>doDelete</code>, if the servlet supports HTTP DELETE requests (remove cars)
  * </ul>
  *
- * @author Pasha Pollack
+ * @author Pasha Polyak
  */
 public class CarsServlet extends Servlet {
-    private static final Logger log = Logger.getLogger(CarsServlet.class);
+    private static final Logger LOGGER = LogManager.getLogger();
     private static final CarMapper CAR_MAPPER = new CarMapper();
     private static final CarService carService = new DefaultCarService();
-    private final List<Car> cars = carService.getAll("id BETWEEN 219 AND 235");
+    private static List<Car> cars = new ArrayList<>();
+
+    public CarsServlet() {
+        try {
+            cars = carService.findAllBy("id BETWEEN 219 AND 235");
+        } catch (ServiceException e) {
+            LOGGER.log(Level.ERROR, e.getMessage());
+        }
+    }
 
     /**
      * <p>If the HTTP GET request is correctly formatted,
@@ -62,8 +71,8 @@ public class CarsServlet extends Servlet {
             throws IOException, ServletException {
 
         Collections.shuffle(cars);
-        request.setAttribute("cars", cars);
-        dispatch(request, response, INDEX);
+        request.setAttribute(CARS.value(), cars);
+        dispatch(request, response, INDEX_JSP);
     }
 
     /**
@@ -93,22 +102,28 @@ public class CarsServlet extends Servlet {
         if (optionalUser.isPresent()
                 && Objects.equals(optionalUser.get().getRole(), Role.ADMIN.role())) {
 
-            Optional<Car> optionalCar = carService.getById(request.getParameter("id") != null
+            Optional<Car> optionalCar = carService.findBy(request.getParameter("id") != null
                     ? Long.parseLong(request.getParameter("id"))
                     : 0);
 
             Car requestCar = CAR_MAPPER.mapper(request);
             if (optionalCar.isPresent() && optionalCar.get().getId() == requestCar.getId()) {
-                Car update = carService.edit(requestCar);
-                log.debug(String.format("Updated: %s", update));
-                update.setPath(optionalCar.get().getPath());
-                request.setAttribute("auto", update);
+
+                try {
+                    Car update = carService.edit(requestCar);
+                    LOGGER.log(Level.INFO, "Updated: {}", update);
+                    update.setPath(optionalCar.get().getPath());
+                    request.setAttribute(AUTO.value(), update);
+                    LOGGER.log(Level.INFO, "{}{}{}", GREEN, optionalCar, RESET);
+                } catch (ServiceException e) {
+                    LOGGER.log(Level.ERROR, "{}", e.getMessage());
+                }
+
             }
-            log.debug(String.format("%s%s%s", GREEN, optionalCar, RESET));
-            session.setAttribute("user", optionalUser.get());
+            session.setAttribute(CLIENT.value(), optionalUser.get());
         }
 
-        dispatch(request, response, MAIN);
+        dispatch(request, response, MAIN_JSP);
 
     }
 
@@ -121,28 +136,30 @@ public class CarsServlet extends Servlet {
      *                 contains the request the client has made of the servlet
      * @param response an {@link HttpServletResponse} object that
      *                 contains the response the servlet sends to the client
-     * @throws IOException if an input or output error is
-     *                     detected when the servlet handles the request
      */
     @Override
     protected void doPut(
             HttpServletRequest request,
-            HttpServletResponse response)
-            throws IOException {
+            HttpServletResponse response) {
 
-        String path = LOGIN;
+        String path = LOGIN_JSP;
 
         Optional<User> user = getUser(request.getSession(false));
         //check admin role and car before create
         if (user.isPresent() && Objects.equals(user.get().getRole(), Role.ADMIN.role())) {
             Car carRow = CAR_MAPPER.mapper(request);
-            boolean save = carService.save(carRow);
-            log.debug(String.format("%s%s%nCreated: %s", user.get().getRole(), carRow, save));
-            request.setAttribute("auto", carRow);
-            request.setAttribute("cars", user.get().getCars());
-            path = INDEX;
+            boolean save = false;
+            try {
+                save = carService.save(carRow);
+            } catch (ServiceException e) {
+                LOGGER.log(Level.ERROR, e.getMessage());
+            }
+            LOGGER.log(Level.INFO, "{}{}%nCreated: {}", user.get().getRole(), carRow, save);
+            request.setAttribute(AUTO.value(), carRow);
+            request.setAttribute(CARS.value(), user.get().getCars());
+            path = INDEX_JSP;
         }
-        response.sendRedirect(path);
+        dispatch(request, response, path);
     }
 
     /**
@@ -154,15 +171,13 @@ public class CarsServlet extends Servlet {
      *                 contains the request the client has made of the servlet
      * @param response an {@link HttpServletResponse} object that
      *                 contains the response the servlet sends to the client
-     * @throws IOException if an input or output error is
-     *                     detected when the servlet handles the request
      */
     @Override
     protected void doDelete(
             HttpServletRequest request,
-            HttpServletResponse response) throws IOException {
+            HttpServletResponse response)  {
 
-
+        String path = CAR_URL;
         Optional<User> optionalUser = getUser(request.getSession(false));
         //check admin role and car before remove
         if (optionalUser.isPresent() && Objects.equals(optionalUser.get().getRole(), Role.ADMIN.role())) {
@@ -170,17 +185,24 @@ public class CarsServlet extends Servlet {
             long carId = (request.getParameter("id")) != null
                     ? Long.parseLong((request.getParameter("id")))
                     : 0;
-            Optional<Car> optionalCar = carService.getById(carId);
+            Optional<Car> optionalCar = carService.findBy(carId);
             if (optionalCar.isPresent()) {
-                boolean delete = carService.delete(carId);
+
+                try {
+                    boolean delete = carService.delete(carId);
+                    LOGGER.log(Level.INFO, "Car was removed {}", delete);
+                } catch (ServiceException e) {
+                    LOGGER.log(Level.ERROR, e.getMessage());
+                    path = ERROR_404_JSP;
+                }
+
                 List<Car> userCars = user.getCars();
                 userCars.remove(optionalCar.get());
                 user.setCars(userCars);
-                request.setAttribute("user", user);
-                request.setAttribute("cars", user.getCars());
-                log.debug(String.format("Car was removed  %b", delete));
+                request.setAttribute(CLIENT.value(), user);
+                request.setAttribute(CARS.value(), user.getCars());
             }
         }
-        response.sendRedirect("/cars");
+        redirect(request, response, path);
     }
 }
