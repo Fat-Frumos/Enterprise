@@ -3,6 +3,8 @@ package com.enterprise.rental.dao;
 import com.enterprise.rental.entity.Invoice;
 import com.enterprise.rental.entity.Order;
 
+import java.util.List;
+
 /**
  * The <code>OrderDao</code> extends <code>Dao</code> interface
  * for performing CRUD operations on instances of {@link Order}.
@@ -25,4 +27,7 @@ public interface OrderDao extends Dao<Order> {
      * @return boolean true, or false if the entity was not saved
      */
     boolean save(Invoice invoice);
+
+    List<Invoice> findAllInvoices();
 }
+

@@ -25,7 +25,6 @@ import java.util.UUID;
  */
 public interface UserService extends Service<User> {
 
-
     /**
      * Set generated UUID and salted Password in the User
      *

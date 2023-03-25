@@ -1,9 +1,12 @@
 package com.enterprise.rental.service.impl;
 
+import com.enterprise.rental.dao.OrderDao;
 import com.enterprise.rental.dao.UserDao;
+import com.enterprise.rental.dao.jdbc.JdbcOrderDao;
 import com.enterprise.rental.dao.jdbc.JdbcUserDao;
 import com.enterprise.rental.dao.mapper.UserMapper;
 import com.enterprise.rental.entity.Car;
+import com.enterprise.rental.entity.Order;
 import com.enterprise.rental.entity.Session;
 import com.enterprise.rental.entity.User;
 import com.enterprise.rental.exception.DaoException;
@@ -15,9 +18,7 @@ import org.apache.logging.log4j.Logger;
 
 import javax.servlet.http.*;
 import javax.validation.constraints.NotNull;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static com.enterprise.rental.controller.Parameter.CLIENT;
 import static com.enterprise.rental.service.email.InvoicePdf.createPdf;
@@ -34,9 +35,33 @@ import static com.enterprise.rental.service.email.Mail.sendEmailWithAttachments;
 public class DefaultUserService implements UserService {
     private static final Logger LOGGER = LogManager.getLogger();
 
+    private final OrderDao orderDao;
     private final UserMapper userMapper;
     private final UserDao userDao;
     private final Session session;
+
+
+    public Map<String, List<String>> getUserDamageMap() throws ServiceException {
+        Map<String, List<String>> allDamages = new HashMap<>();
+
+        try {
+            List<User> userDaoAll = userDao.findAll();
+            for (User user : userDaoAll) {
+                List<String> damages = new ArrayList<>();
+                if (user.getOrders().size() > 0) {
+                    for (Order order : user.getOrders()) {
+                        if (order.getDamage() != null) {
+                            damages.add(order.getDamage());
+                        }
+                    }
+                    allDamages.put(user.getName(), damages);
+                }
+            }
+        } catch (DaoException e) {
+            throw new ServiceException(e);
+        }
+        return allDamages;
+    }
 
 
     /**
@@ -44,6 +69,7 @@ public class DefaultUserService implements UserService {
      * Init UserMapper, Session
      */
     public DefaultUserService() {
+        this.orderDao = new JdbcOrderDao();
         this.userDao = new JdbcUserDao();
         this.session = new Session();
         this.userMapper = new UserMapper();
@@ -53,6 +79,7 @@ public class DefaultUserService implements UserService {
      * Init UserMapper, Session, userDao into constructor
      */
     public DefaultUserService(UserDao jdbcUserDao) {
+        this.orderDao = new JdbcOrderDao();
         this.userDao = jdbcUserDao;
         this.session = new Session();
         this.userMapper = new UserMapper();

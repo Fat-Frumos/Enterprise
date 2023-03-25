@@ -80,6 +80,40 @@ public class JdbcOrderDao implements OrderDao {
         return templateOrder(query);
     }
 
+    /**
+     * @return
+     */
+    @Override
+    public List<Invoice> findAllInvoices() {
+        String query = "SELECT * FROM invoices";
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet executeSet = null;
+        List<Invoice> orders = new ArrayList<>();
+        LOGGER.log( Level.INFO, "{}{}{}", YELLOW, query, RESET);
+        try {
+            connection = proxyConnection();
+            statement = connection.prepareStatement(query);
+            executeSet = statement.executeQuery();
+            connection.commit();
+
+            if (executeSet.next()) {
+                while (executeSet.next()) {
+                    Order order = ORDER_ROW_MAPPER.mapRow(executeSet);
+//                    orders.add(order);
+                }
+                LOGGER.log( Level.INFO, "{} order(s)", orders.size());
+                return orders;
+            }
+
+        } catch (SQLException sqlException) {
+            rollback(connection, sqlException);
+        } finally {
+            eventually(connection, statement, executeSet);
+        }
+        return orders;
+    }
+
     private static boolean templateOrder(String query) {
         boolean execute = false;
 
