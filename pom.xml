@@ -22,8 +22,8 @@
         <heroku.appName>rent-a-car-enterprise</heroku.appName>
         <jackson.version>2.14.0</jackson.version>
         <log.version>2.19.0</log.version>
-
     </properties>
+
     <distributionManagement>
         <repository>
             <id>internal.repo</id>
@@ -149,6 +149,7 @@
             </resource>
         </resources>
         <pluginManagement>
+
             <plugins>
                 <!-- starts tomcat before test execution and stops after-->
                 <plugin>
@@ -195,75 +196,6 @@
                         <excludes>
                             <exclude>**/TomcatPingTest.java</exclude>
                         </excludes>
-                    </configuration>
-                </plugin>
-                <!-- starts tomcat before test execution and stops after-->
-                <plugin>
-                    <groupId>org.apache.tomcat.maven</groupId>
-                    <artifactId>tomcat7-maven-plugin</artifactId>
-                    <version>2.2</version>
-                    <executions>
-                        <execution>
-                            <id>run-tomcat</id>
-                            <phase>pre-integration-test</phase>
-                            <goals>
-                                <goal>run</goal>
-                                <goal>deploy</goal>
-                            </goals>
-                        </execution>
-                        <execution>
-                            <id>stop-tomcat</id>
-                            <phase>post-integration-test</phase>
-                            <goals>
-                                <goal>shutdown</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                    <configuration>
-                        <fork>true</fork>
-                        <port>8000</port>
-                        <path>/index</path>
-                    </configuration>
-                </plugin>
-                <!-- runs tests -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-failsafe-plugin</artifactId>
-                    <version>2.12</version>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>integration-test</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                    <configuration>
-                        <includes>
-                            <include>**/TomcatPingTest.java</include>
-                        </includes>
-                    </configuration>
-                </plugin>
-
-                <plugin>
-                    <groupId>com.heroku.sdk</groupId>
-                    <artifactId>heroku-maven-plugin</artifactId>
-                    <version>3.0.4</version>
-                    <configuration>
-                        <appName>${heroku.appName}</appName>
-                        <jdkVersion>${maven.compiler.source}</jdkVersion>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.flywaydb</groupId>
-                    <artifactId>flyway-maven-plugin</artifactId>
-                    <version>8.5.13</version>
-                    <configuration>
-                        <url>jdbc:postgresql://localhost:5432/postgres</url>
-                        <user>admin</user>
-                        <password>admin</password>
-                        <schemas>
-                            <schema>testOrders</schema>
-                        </schemas>
                     </configuration>
                 </plugin>
             </plugins>

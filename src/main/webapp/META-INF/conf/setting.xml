@@ -29,4 +29,7 @@
             <mirrorOf>*</mirrorOf>
         </mirror>
     </mirrors>
+    <pluginGroups>
+        <pluginGroup>org.apache.tomcat.maven</pluginGroup>
+    </pluginGroups>
 </settings>
